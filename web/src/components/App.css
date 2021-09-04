@@ -1,0 +1,26 @@
+.nui-wrapper {
+  text-align: center;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+pre {
+  counter-reset:line-numbering;
+  background:#2c3e50;
+  padding:12px 0px 14px 0;
+  color:#ecf0f1;
+  line-height:140%;
+}
+
+.popup-thing {
+  background: #282c34;
+  border-radius: 10px;
+  width: 500px;
+  height: 400px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+}
