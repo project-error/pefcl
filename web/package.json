@@ -4,6 +4,9 @@
   "homepage": "web/build",
   "private": true,
   "dependencies": {
+    "@emotion/react": "^11.7.1",
+    "@emotion/styled": "^11.6.0",
+    "@mui/material": "^5.2.4",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^12.0.0",
     "@testing-library/user-event": "^12.1.10",
@@ -13,7 +16,9 @@
     "@types/react-dom": "^17.0.9",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-router-dom": "^6.2.1",
     "react-scripts": "4.0.3",
+    "recoil": "^0.5.2",
     "typescript": "^4.1.2",
     "web-vitals": "^2.1.0"
   },
@@ -43,6 +48,7 @@
     ]
   },
   "devDependencies": {
+    "@craco/craco": "6.1.1",
     "craco": "^0.0.3",
     "cross-env": "^7.0.3"
   }
