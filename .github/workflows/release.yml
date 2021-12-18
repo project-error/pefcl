@@ -2,7 +2,7 @@ name: Tagged Release
 on:
   push:
     tags:
-      - "v*"
+      - 'v*'
 jobs:
   create-tagged-release:
     name: Create Release
@@ -27,4 +27,3 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           prerelease: false
         id: auto_release
-          

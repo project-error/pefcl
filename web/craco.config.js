@@ -1,4 +1,4 @@
-const path = require("path");
+const path = require('path');
 
 const { getLoader, loaderByName } = require('@craco/craco');
 
@@ -11,10 +11,10 @@ module.exports = {
       // Because CEF has issues with loading source maps properly atm,
       // lets use the best we can get in line with `eval-source-map`
       if (webpackConfig.mode === 'development' && process.env.IN_GAME_DEV) {
-        webpackConfig.devtool = 'eval-source-map'
-        webpackConfig.output.path = path.join(__dirname, 'build')
+        webpackConfig.devtool = 'eval-source-map';
+        webpackConfig.output.path = path.join(__dirname, 'build');
       }
-  
+
       const { isFound, match } = getLoader(webpackConfig, loaderByName('babel-loader'));
       if (isFound) {
         const include = Array.isArray(match.loader.include)
@@ -23,16 +23,16 @@ module.exports = {
         match.loader.include = include.concat([path.join(__dirname, '../typings')]);
       }
 
-      return webpackConfig
-    }
+      return webpackConfig;
+    },
   },
 
   devServer: (devServerConfig) => {
     if (process.env.IN_GAME_DEV) {
-     // Used for in-game dev mode
-     devServerConfig.writeToDisk = true
+      // Used for in-game dev mode
+      devServerConfig.writeToDisk = true;
     }
 
-    return devServerConfig
-  }
-}
+    return devServerConfig;
+  },
+};

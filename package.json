@@ -1,0 +1,14 @@
+{
+  "name": "pe-financial",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/project-error/pe-financial",
+  "author": "itschip <onlygamernerd@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "format": "prettier --write ."
+  },
+  "devDependencies": {
+    "prettier": "^2.5.1"
+  }
+}
