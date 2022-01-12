@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import './App.css';
-import { useNuiEvent } from '../hooks/useNuiEvent';
-import { debugData } from '../utils/debugData';
-import { BankContainer, BankWrapper } from './ui/BankContainer';
+import { useNuiEvent } from './hooks/useNuiEvent';
+import { debugData } from './utils/debugData';
+import { BankContainer, BankWrapper } from './components/BankContainer';
 import { CircularProgress, Grid } from '@mui/material';
-import AccountsSidebar from './accounts/AccountsSidebar';
-import BankDetails from './details/BankDetails';
+import AccountsSidebar from './features/accounts/AccountsSidebar';
+import BankDetails from './features/details/BankDetails';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 debugData([
@@ -31,9 +31,11 @@ const App: React.FC = () => {
               <Grid container spacing={2} marginTop={1}>
                 <React.Suspense fallback={<CircularProgress />}>
                   <AccountsSidebar />
+                  {/*
                   <Routes>
                     <Route path="account/:id" element={<BankDetails />} />
                   </Routes>
+*/}
                 </React.Suspense>
               </Grid>
             </BankContainer>

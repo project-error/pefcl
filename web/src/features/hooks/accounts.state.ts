@@ -1,9 +1,9 @@
-import { atom, selector, useRecoilValue } from 'recoil';
-import { Account, AccountEvents } from '../../../typings/accounts';
-import { fetchNui } from '../utils/fetchNui';
-import { ServerPromiseResp } from '../../../typings/common';
-import { isEnvBrowser } from '../utils/misc';
-import { MockAccounts } from '../components/accounts/utils/constants';
+import { atom, selector, useRecoilValue, useSetRecoilState } from 'recoil';
+import { Account, AccountEvents } from '../../../../typings/accounts';
+import { fetchNui } from '../../utils/fetchNui';
+import { ServerPromiseResp } from '../../../../typings/common';
+import { isEnvBrowser } from '../../utils/misc';
+import { MockAccounts } from '../accounts/utils/constants';
 
 export const accountsState = {
   accounts: atom<Account[]>({
@@ -32,11 +32,15 @@ export const accountsState = {
   filteredAccounts: selector({
     key: 'defaultFilteredAccountsValue',
     get: ({ get }) => {
+      const searchValue: string = get(accountsState.filterInput);
       const accounts: Account[] = get(accountsState.accounts);
 
-      return accounts;
+      const regExp = new RegExp(searchValue, 'gi');
+
+      return accounts.filter((acc) => acc.accountName.match(regExp));
     },
   }),
 };
 
 export const useAccountsValue = () => useRecoilValue(accountsState.filteredAccounts);
+export const useSetFilteredAccounts = () => useSetRecoilState(accountsState.filterInput);

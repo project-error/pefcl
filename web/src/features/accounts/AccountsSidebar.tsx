@@ -1,8 +1,11 @@
 import React, { useCallback } from 'react';
-import { useAccountsValue } from '../../state/accounts.state';
-import { Box, Grid, Input } from '@mui/material';
+import { useAccountsValue } from '../hooks/accounts.state';
+import { Box, Button, Divider, Grid, Input } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import AccountList from './AccountList';
+import AccountSearchbar from './components/AccountSearchbar';
+import IconLabelButton from '../../components/IconLabelButton';
+import AddIcon from '@mui/icons-material/Add';
 
 const AccountsSidebar: React.FC = () => {
   const accounts = useAccountsValue();
@@ -17,16 +20,13 @@ const AccountsSidebar: React.FC = () => {
   );
 
   return (
-    <Grid item xs={3}>
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'flex-start',
-          paddingLeft: 2,
-        }}
-      >
-        <Input fullWidth placeholder="Search for accounts" />
-      </Box>
+    <Grid item xs={3} sx={{ ml: 1 }}>
+      <AccountSearchbar />
+      <Divider />
+      <IconLabelButton size="small" sx={{ mb: 1 }} variant="contained" icon={<AddIcon />}>
+        New account
+      </IconLabelButton>
+      <Divider />
       <AccountList accounts={accounts} handleChangeAccount={handleChangeAccount} />
     </Grid>
   );
