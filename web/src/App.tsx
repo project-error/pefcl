@@ -31,11 +31,9 @@ const App: React.FC = () => {
               <Grid container spacing={2} marginTop={1}>
                 <React.Suspense fallback={<CircularProgress />}>
                   <AccountsSidebar />
-                  {/*
                   <Routes>
                     <Route path="account/:id" element={<BankDetails />} />
                   </Routes>
-*/}
                 </React.Suspense>
               </Grid>
             </BankContainer>
