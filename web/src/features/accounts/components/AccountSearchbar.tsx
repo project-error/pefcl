@@ -1,5 +1,5 @@
 import React from 'react';
-import { useSetFilteredAccounts } from '../../hooks/accounts.state';
+import { useSetFilteredAccounts } from '../hooks/accounts.state';
 import { Icon, InputBase, Paper, styled } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 

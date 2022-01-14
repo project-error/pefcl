@@ -1,9 +1,9 @@
 import { atom, selector, useRecoilValue, useSetRecoilState } from 'recoil';
-import { Account, AccountEvents } from '../../../../typings/accounts';
-import { fetchNui } from '../../utils/fetchNui';
-import { ServerPromiseResp } from '../../../../typings/common';
-import { isEnvBrowser } from '../../utils/misc';
-import { MockAccounts } from '../accounts/utils/constants';
+import { Account, AccountEvents } from '../../../../../typings/accounts';
+import { fetchNui } from '../../../utils/fetchNui';
+import { ServerPromiseResp } from '../../../../../typings/common';
+import { isEnvBrowser } from '../../../utils/misc';
+import { MockAccounts } from '../utils/constants';
 
 export const accountsState = {
   accounts: atom<Account[]>({

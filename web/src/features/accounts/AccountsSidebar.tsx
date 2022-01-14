@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { useAccountsValue } from '../hooks/accounts.state';
+import { useAccountsValue } from './hooks/accounts.state';
 import { Divider, Grid } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import AccountList from './AccountList';
