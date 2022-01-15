@@ -1,4 +1,5 @@
 import { Account, AccountType } from '../../../../../typings/accounts';
+import { Transaction } from '../../../../../typings/transactions';
 
 export const MockAccounts: Account[] = [
   {
@@ -24,5 +25,22 @@ export const MockAccounts: Account[] = [
     owner: false,
     isDefault: false,
     type: AccountType.Shared,
+  },
+];
+
+export const MockTransactions: Transaction[] = [
+  {
+    id: 1,
+    type: 'deposit',
+    amount: '2342',
+    date: '1642276186',
+    target: 'Taso',
+  },
+  {
+    id: 1,
+    type: 'withdraw',
+    amount: '93',
+    date: '1642276186',
+    target: 'Rocky',
   },
 ];

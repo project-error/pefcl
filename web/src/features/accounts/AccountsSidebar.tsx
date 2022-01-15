@@ -1,6 +1,6 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useAccountsValue } from './hooks/accounts.state';
-import { Divider, Grid } from '@mui/material';
+import { Divider, Grid, Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import AccountList from './AccountList';
 import AccountSearchbar from './components/AccountSearchbar';
@@ -21,8 +21,12 @@ const AccountsSidebar: React.FC = () => {
     [accounts, navigate],
   );
 
+  useEffect(() => {
+    navigate(`/account/${accounts[0].id}`);
+  }, []);
+
   return (
-    <Grid item xs={3} sx={{ ml: 1 }}>
+    <Box sx={{ ml: 1 }}>
       <AccountSearchbar />
       <Divider />
       <IconLabelButton
@@ -37,7 +41,7 @@ const AccountsSidebar: React.FC = () => {
       <Divider />
       <AccountList accounts={accounts} handleChangeAccount={handleChangeAccount} />
       <NewAccountModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
-    </Grid>
+    </Box>
   );
 };
 

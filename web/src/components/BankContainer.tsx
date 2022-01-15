@@ -9,7 +9,7 @@ export const BankWrapper = styled(Box)(({ theme }) => ({
 }));
 
 export const BankContainer = styled(Box)(({ theme }) => ({
-  width: '90%',
-  height: '90%',
+  width: '1400px',
+  height: '800px',
   backgroundColor: theme.palette.background.default,
 }));

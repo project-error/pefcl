@@ -28,12 +28,16 @@ const App: React.FC = () => {
         <BrowserRouter>
           <BankWrapper>
             <BankContainer>
-              <Grid container spacing={2} marginTop={1}>
+              <Grid container spacing={4} marginTop={0.1}>
                 <React.Suspense fallback={<CircularProgress />}>
-                  <AccountsSidebar />
-                  <Routes>
-                    <Route path="account/:id" element={<BankDetails />} />
-                  </Routes>
+                  <Grid item xs={3}>
+                    <AccountsSidebar />
+                  </Grid>
+                  <Grid item xs={4}>
+                    <Routes>
+                      <Route path="account/:id" element={<BankDetails />} />
+                    </Routes>
+                  </Grid>
                 </React.Suspense>
               </Grid>
             </BankContainer>
