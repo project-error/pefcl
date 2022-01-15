@@ -1,21 +1,17 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "*": ["types/*"]
-    },
     "outDir": "./",
     "noImplicitAny": true,
     "module": "commonjs",
-    "target": "ES2018",
+    "target": "es2018",
     "allowJs": false,
-    "lib": ["ES2018", "DOM"],
-    "types": ["@citizenfx/server", "@types/node", "jest"],
+    "lib": ["es2018", "DOM"],
+    "types": ["@citizenfx/server", "@types/node"],
     "moduleResolution": "node",
-    "sourceMap": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
     "resolveJsonModule": true,
-    "esModuleInterop": true,
-    "experimentalDecorators": true
+    "esModuleInterop": true
   },
   "include": ["./**/*"],
   "exclude": ["**/node_modules", "**/__tests__/*"]

@@ -1,5 +1,6 @@
 import { container } from 'tsyringe';
 import { DIToken, IController } from '../../../typings/common';
+import mysql, { Pool } from 'mysql2/promise';
 
 export class Bank {
   static container = container;
@@ -11,7 +12,7 @@ export class Bank {
 
     Bank.container.afterResolution(DIToken.Controller, (_t, controllers: IController[]) => {
       for (const controller of controllers) {
-        console.log(`Initialized ${controller.name}`);
+        console.log(`Initialized ${controller.name} controller`);
       }
     });
 

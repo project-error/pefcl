@@ -14,8 +14,7 @@ games {
 
 ui_page 'web/build/index.html'
 
-client_script "client/**/*"
-server_script "server/**/*"
+server_script "src/dist/server.js"
 
 files {
   'web/build/index.html',
