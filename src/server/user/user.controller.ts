@@ -10,9 +10,4 @@ export class UserController {
   constructor(userService: UserService) {
     this._userService = userService;
   }
-
-  @NetPromise('nfwd:getUser')
-  async handleGetUser(req: Request, res: Response<any>) {
-    res({ status: 'ok', data: 'fuck you' });
-  }
 }

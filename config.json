@@ -1,0 +1,8 @@
+{
+  "database": {
+    "profileQueries": true
+  },
+  "debug": {
+    "level": "silly"
+  }
+}

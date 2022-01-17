@@ -16,6 +16,7 @@
     "@types/react": "^17.0.18",
     "@types/react-dom": "^17.0.9",
     "dayjs": "^1.10.7",
+    "esbuild": "^0.14.11",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-router-dom": "^6.2.1",
@@ -28,6 +29,7 @@
     "start": "craco start",
     "start:game": "cross-env IN_GAME_DEV=1 craco start",
     "build": "craco build",
+    "build:esbuild": "node scripts/build_ui.js",
     "test": "craco test",
     "eject": "react-scripts eject"
   },
@@ -51,7 +53,9 @@
   },
   "devDependencies": {
     "@craco/craco": "6.1.1",
+    "@testing-library/react-hooks": "^7.0.2",
     "craco": "^0.0.3",
-    "cross-env": "^7.0.3"
+    "cross-env": "^7.0.3",
+    "react-test-renderer": "^17.0.2"
   }
 }

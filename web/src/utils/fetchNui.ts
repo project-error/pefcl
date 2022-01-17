@@ -9,7 +9,7 @@
  * @return returnData - A promise for the data sent back by the NuiCallbacks CB argument
  */
 
-export async function fetchNui<T = any>(eventName: string, data?: any): Promise<T> {
+export async function fetchNui<D = any, T = any>(eventName: string, data?: D): Promise<T> {
   const options = {
     method: 'post',
     headers: {
@@ -20,7 +20,7 @@ export async function fetchNui<T = any>(eventName: string, data?: any): Promise<
 
   const resourceName = (window as any).GetParentResourceName
     ? (window as any).GetParentResourceName()
-    : 'nui-frame-app';
+    : 'pe-financial';
 
   const resp = await fetch(`https://${resourceName}/${eventName}`, options);
 

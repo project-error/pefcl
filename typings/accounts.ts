@@ -3,6 +3,10 @@ export enum AccountType {
   Shared = 'shared',
 }
 
+export type PreDBAccount = {
+  accountName: string;
+};
+
 export interface Account {
   id: string;
   accountName: string;
@@ -14,5 +18,6 @@ export interface Account {
 }
 
 export enum AccountEvents {
-  GetAccounts = 'pe-fcl:getAccounts',
+  GetAccounts = 'pefcl:getAccounts',
+  CreateAccount = 'pefcl:createAccount',
 }

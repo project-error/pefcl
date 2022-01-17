@@ -1,7 +1,7 @@
 import { atom, selector, useRecoilValue, useSetRecoilState } from 'recoil';
 import { Account, AccountEvents } from '../../../../../typings/accounts';
 import { fetchNui } from '../../../utils/fetchNui';
-import { ServerPromiseResp } from '../../../../../typings/common';
+import { ServerPromiseResp } from '../../../../../typings/http';
 import { isEnvBrowser } from '../../../utils/misc';
 import { MockAccounts } from '../utils/constants';
 
@@ -12,8 +12,9 @@ export const accountsState = {
       key: 'defaultAccountsValue',
       get: async () => {
         try {
-          const res = await fetchNui<ServerPromiseResp<Account[]>>(AccountEvents.GetAccounts);
+          const res = await fetchNui<void, ServerPromiseResp<Account[]>>(AccountEvents.GetAccounts);
 
+          console.log('got accounts', res.data);
           return res.data;
         } catch (e) {
           if (isEnvBrowser()) {
@@ -29,6 +30,7 @@ export const accountsState = {
     key: 'defaultAccountsFilter',
     default: '',
   }),
+  /*
   filteredAccounts: selector({
     key: 'defaultFilteredAccountsValue',
     get: ({ get }) => {
@@ -40,7 +42,15 @@ export const accountsState = {
       return accounts.filter((acc) => acc.accountName.match(regExp));
     },
   }),
+*/
+  activeAccount: atom<Account>({
+    key: 'defaultActiveAccount',
+    default: null,
+  }),
 };
 
-export const useAccountsValue = () => useRecoilValue(accountsState.filteredAccounts);
+export const useAccountsValue = () => useRecoilValue(accountsState.accounts);
 export const useSetFilteredAccounts = () => useSetRecoilState(accountsState.filterInput);
+
+export const useSetActiveAccount = () => useSetRecoilState(accountsState.activeAccount);
+export const useActiveAccountValue = () => useRecoilValue(accountsState.activeAccount);

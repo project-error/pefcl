@@ -1,47 +1,56 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useAccountsValue } from './hooks/accounts.state';
-import { Divider, Grid, Box } from '@mui/material';
+import { useAccountsValue, useSetActiveAccount } from './hooks/accounts.state';
+import { Box, CircularProgress } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import AccountList from './AccountList';
 import AccountSearchbar from './components/AccountSearchbar';
 import IconLabelButton from '../../components/IconLabelButton';
 import AddIcon from '@mui/icons-material/Add';
 import NewAccountModal from './components/NewAccountModal';
+import { Account } from '../../../../typings/accounts';
 
 const AccountsSidebar: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const accounts = useAccountsValue();
-
+  const setActiveAccount = useSetActiveAccount();
   const navigate = useNavigate();
 
   const handleChangeAccount = useCallback(
-    (id: string) => {
-      navigate(`/account/${id}`);
+    (account: Account) => {
+      navigate(`/${account.id}`);
+      setActiveAccount(account);
     },
-    [accounts, navigate],
+    [navigate, setActiveAccount],
   );
 
+  /*
   useEffect(() => {
-    navigate(`/account/${accounts[0].id}`);
-  }, []);
+    navigate(`/${accounts[0].id}`);
+    setActiveAccount(accounts[0]);
+  }, [accounts]);
+*/
+
+  if (!accounts) return <CircularProgress />;
 
   return (
-    <Box sx={{ ml: 1 }}>
-      <AccountSearchbar />
-      <Divider />
-      <IconLabelButton
-        onClick={() => setIsModalOpen(true)}
-        size="small"
-        sx={{ mb: 1 }}
-        variant="contained"
-        icon={<AddIcon />}
-      >
-        New account
-      </IconLabelButton>
-      <Divider />
-      <AccountList accounts={accounts} handleChangeAccount={handleChangeAccount} />
-      <NewAccountModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
-    </Box>
+    <React.Suspense fallback={<CircularProgress />}>
+      <Box sx={{ ml: 1 }}>
+        <IconLabelButton
+          onClick={() => setIsModalOpen(true)}
+          size="small"
+          sx={{ mb: 1 }}
+          variant="contained"
+          icon={<AddIcon />}
+        >
+          New account
+        </IconLabelButton>
+        {/*
+        <AccountSearchbar />
+*/}
+        <AccountList accounts={accounts} handleChangeAccount={handleChangeAccount} />
+        <NewAccountModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      </Box>
+    </React.Suspense>
   );
 };
 

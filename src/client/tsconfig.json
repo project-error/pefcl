@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "target": "es6",
+    "module": "commonjs",
+    "resolveJsonModule": true,
+    "lib": ["ES2017"],
+    "allowJs": true,
+    "types": ["@citizenfx/client", "@types/node"],
+    "esModuleInterop": true,
+    "moduleResolution": "node"
+  },
+  "include": ["./**/*"],
+  "exclude": ["**/node_modules", "**/__tests__/*"]
+}

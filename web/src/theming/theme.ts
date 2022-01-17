@@ -16,13 +16,6 @@ const theme = createTheme({
       secondary: '#ddd',
     },
   },
-  components: {
-    MuiListItem: {
-      styleOverrides: {
-        divider: '#ddd',
-      },
-    },
-  },
   typography: {
     fontFamily: "'Montserrat', 'sans-serif'",
   },

@@ -1,11 +1,12 @@
-import React, { memo } from 'react';
-import { List, ListItem, ListItemText, ListSubheader } from '@mui/material';
+import React from 'react';
+import { CircularProgress, List, ListSubheader } from '@mui/material';
 import { Account, AccountType } from '../../../../typings/accounts';
 import AccountItem from './components/AccountItem';
+import { useActiveAccountValue } from './hooks/accounts.state';
 
 interface AccountListProps {
   accounts: Account[];
-  handleChangeAccount: (id: string) => void;
+  handleChangeAccount: (account: Account) => void;
 }
 
 const AccountList: React.FC<AccountListProps> = ({ accounts, handleChangeAccount }) => {
@@ -15,24 +16,13 @@ const AccountList: React.FC<AccountListProps> = ({ accounts, handleChangeAccount
         disablePadding
         subheader={<ListSubheader sx={{ borderRadius: 1 }}>Personal</ListSubheader>}
       >
-        {accounts
-          .filter((a) => a.type === AccountType.Personal)
-          .map((account) => (
-            <AccountItem account={account} onClick={() => handleChangeAccount(account.id)} />
-          ))}
-      </List>
-      <List
-        disablePadding
-        subheader={<ListSubheader sx={{ borderRadius: 1 }}>Shared</ListSubheader>}
-      >
-        {accounts
-          .filter((a) => a.type === AccountType.Shared)
-          .map((account) => (
-            <AccountItem account={account} onClick={() => handleChangeAccount(account.id)} />
+        {accounts &&
+          accounts.map((account) => (
+            <AccountItem account={account} onClick={() => handleChangeAccount(account)} />
           ))}
       </List>
     </>
   );
 };
 
-export default memo(AccountList);
+export default AccountList;

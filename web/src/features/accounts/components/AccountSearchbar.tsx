@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSetFilteredAccounts } from '../hooks/accounts.state';
-import { Icon, InputBase, Paper, styled } from '@mui/material';
+import { InputBase, Paper, styled } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 
 const StyledBase = styled(Paper)({
@@ -20,7 +20,12 @@ const AccountSearchbar: React.FC = () => {
 
   return (
     <StyledBase>
-      <InputBase sx={{ pl: 1, flex: 1 }} onChange={handleSearchChange} />
+      <InputBase
+        placeholder="Search for accounts"
+        name="filter-accounts"
+        sx={{ pl: 1, flex: 1 }}
+        onChange={handleSearchChange}
+      />
       <SearchIcon sx={{ pr: 1 }} />
     </StyledBase>
   );

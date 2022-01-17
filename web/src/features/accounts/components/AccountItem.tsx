@@ -1,14 +1,15 @@
 import React from 'react';
-import { ListItem, ListItemText } from '@mui/material';
+import { ListItemText, ListItemButton } from '@mui/material';
 import { Account } from '../../../../../typings/accounts';
 
 interface AccountItemProps {
   account: Account;
   onClick: () => void;
+  selected?: boolean;
 }
 
-const AccountItem: React.FC<AccountItemProps> = ({ account, onClick }) => (
-  <ListItem divider button onClick={onClick}>
+const AccountItem: React.FC<AccountItemProps> = ({ selected, account, onClick }) => (
+  <ListItemButton divider onClick={onClick}>
     <ListItemText
       primaryTypographyProps={{
         color: 'text.primary',
@@ -16,7 +17,7 @@ const AccountItem: React.FC<AccountItemProps> = ({ account, onClick }) => (
       primary={account.accountName}
       secondary={account.balance}
     />
-  </ListItem>
+  </ListItemButton>
 );
 
 export default AccountItem;
