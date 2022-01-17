@@ -5,9 +5,6 @@ import { debugData } from './utils/debugData';
 import { BankContainer, BankWrapper } from './components/BankContainer';
 import { CircularProgress, Grid } from '@mui/material';
 import AccountsSidebar from './features/accounts/AccountsSidebar';
-import BankDetails from './features/details/BankDetails';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import BankLayout from './components/BankLayout';
 
 debugData([
   {
@@ -34,15 +31,6 @@ const App: React.FC = () => {
                 <React.Suspense fallback={<CircularProgress />}>
                   <AccountsSidebar />
                 </React.Suspense>
-              </Grid>
-              <Grid item xs={4}>
-                {/*
-                  <Routes>
-                    <Route path="/" element={<BankLayout />}>
-                      <Route path=":id" element={<BankDetails />} />
-                    </Route>
-                  </Routes>
-*/}
               </Grid>
             </Grid>
           </BankContainer>

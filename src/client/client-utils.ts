@@ -85,7 +85,6 @@ export const playerLoaded = () => {
 export const RegisterNuiProxy = (event: string) => {
   RegisterNuiCallbackType(event);
   on(`__cfx_nui:${event}`, async (data: unknown, cb: Function) => {
-    if (!global.isPlayerLoaded) await playerLoaded();
     try {
       const res = await ClUtils.emitNetPromise(event, data);
       cb(res);

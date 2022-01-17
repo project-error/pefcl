@@ -9,6 +9,11 @@ RegisterCommand(
     bankOpen = !bankOpen;
     console.log(bankOpen);
     SendNUIMessage({ action: 'setVisible', data: bankOpen });
+    if (bankOpen) {
+      SetNuiFocus(true, true);
+    } else {
+      SetNuiFocus(false, false);
+    }
   },
   false,
 );

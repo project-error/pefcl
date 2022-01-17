@@ -10,6 +10,8 @@ interface AccountListProps {
 }
 
 const AccountList: React.FC<AccountListProps> = ({ accounts, handleChangeAccount }) => {
+  if (!accounts) return <h1>Loading...</h1>;
+
   return (
     <>
       <List

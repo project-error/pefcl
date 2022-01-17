@@ -1,6 +1,4 @@
-import { ServerUtils } from '@project-error/pe-utils';
-
-const svUtils = new ServerUtils();
+import { onNetPromise } from '../lib/onNetPromise';
 
 export const NetPromise = (eventName: string) => {
   return function (target: unknown, key: string) {
@@ -32,7 +30,7 @@ export const PromiseEventListener = () => {
         const promiseEvents: any[] = Reflect.getMetadata('promiseEvents', this);
 
         for (const { eventName, key } of promiseEvents) {
-          svUtils.onNetPromise(eventName, (...args: any[]) => {
+          onNetPromise(eventName, async (...args: any[]) => {
             this[key](...args);
           });
         }

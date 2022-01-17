@@ -14,7 +14,7 @@ export const accountsState = {
         try {
           const res = await fetchNui<void, ServerPromiseResp<Account[]>>(AccountEvents.GetAccounts);
 
-          console.log('got accounts', res.data);
+          console.log('got res accounts', res.data);
           return res.data;
         } catch (e) {
           if (isEnvBrowser()) {
@@ -30,7 +30,6 @@ export const accountsState = {
     key: 'defaultAccountsFilter',
     default: '',
   }),
-  /*
   filteredAccounts: selector({
     key: 'defaultFilteredAccountsValue',
     get: ({ get }) => {
@@ -42,14 +41,13 @@ export const accountsState = {
       return accounts.filter((acc) => acc.accountName.match(regExp));
     },
   }),
-*/
   activeAccount: atom<Account>({
     key: 'defaultActiveAccount',
     default: null,
   }),
 };
 
-export const useAccountsValue = () => useRecoilValue(accountsState.accounts);
+export const useAccountsValue = () => useRecoilValue(accountsState.filteredAccounts);
 export const useSetFilteredAccounts = () => useSetRecoilState(accountsState.filterInput);
 
 export const useSetActiveAccount = () => useSetRecoilState(accountsState.activeAccount);
