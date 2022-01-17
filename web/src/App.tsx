@@ -5,6 +5,7 @@ import { debugData } from './utils/debugData';
 import { BankContainer, BankWrapper } from './components/BankContainer';
 import { CircularProgress, Grid } from '@mui/material';
 import AccountsSidebar from './features/accounts/AccountsSidebar';
+import BankDetails from './features/details/BankDetails';
 
 debugData([
   {
@@ -30,6 +31,11 @@ const App: React.FC = () => {
               <Grid item xs={3}>
                 <React.Suspense fallback={<CircularProgress />}>
                   <AccountsSidebar />
+                </React.Suspense>
+              </Grid>
+              <Grid item xs={4}>
+                <React.Suspense fallback={<CircularProgress />}>
+                  <BankDetails />
                 </React.Suspense>
               </Grid>
             </Grid>

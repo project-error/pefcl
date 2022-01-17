@@ -1,8 +1,7 @@
-import React from 'react';
-import { CircularProgress, List, ListSubheader } from '@mui/material';
+import React, { memo } from 'react';
+import { List, ListSubheader } from '@mui/material';
 import { Account, AccountType } from '../../../../typings/accounts';
 import AccountItem from './components/AccountItem';
-import { useActiveAccountValue } from './hooks/accounts.state';
 
 interface AccountListProps {
   accounts: Account[];
@@ -10,6 +9,8 @@ interface AccountListProps {
 }
 
 const AccountList: React.FC<AccountListProps> = ({ accounts, handleChangeAccount }) => {
+  const hasSharedAccounts = accounts.find((acc) => acc.type === AccountType.Shared);
+
   if (!accounts) return <h1>Loading...</h1>;
 
   return (
@@ -19,12 +20,33 @@ const AccountList: React.FC<AccountListProps> = ({ accounts, handleChangeAccount
         subheader={<ListSubheader sx={{ borderRadius: 1 }}>Personal</ListSubheader>}
       >
         {accounts &&
-          accounts.map((account) => (
-            <AccountItem account={account} onClick={() => handleChangeAccount(account)} />
-          ))}
+          accounts
+            .filter((acc) => acc.type === AccountType.Personal)
+            .map((account) => (
+              <AccountItem
+                key={account.id}
+                account={account}
+                onClick={() => handleChangeAccount(account)}
+              />
+            ))}
+      </List>
+      <List
+        disablePadding
+        subheader={<ListSubheader sx={{ borderRadius: 1 }}>Shared</ListSubheader>}
+      >
+        {hasSharedAccounts &&
+          accounts
+            .filter((acc) => acc.type === AccountType.Shared)
+            .map((account) => (
+              <AccountItem
+                key={account.id}
+                account={account}
+                onClick={() => handleChangeAccount(account)}
+              />
+            ))}
       </List>
     </>
   );
 };
 
-export default AccountList;
+export default memo(AccountList);

@@ -14,7 +14,6 @@ export const accountsState = {
         try {
           const res = await fetchNui<void, ServerPromiseResp<Account[]>>(AccountEvents.GetAccounts);
 
-          console.log('got res accounts', res.data);
           return res.data;
         } catch (e) {
           if (isEnvBrowser()) {
@@ -47,8 +46,11 @@ export const accountsState = {
   }),
 };
 
-export const useAccountsValue = () => useRecoilValue(accountsState.filteredAccounts);
-export const useSetFilteredAccounts = () => useSetRecoilState(accountsState.filterInput);
+export const useAccountsValue = () => useRecoilValue(accountsState.accounts);
+export const useSetFilterAccounts = () => useSetRecoilState(accountsState.filterInput);
+
+// This is purely used for filtering accounts in the list. We otherwise rely on `useAccountsValue`
+export const useFilteredAccountsValue = () => useRecoilValue(accountsState.filteredAccounts);
 
 export const useSetActiveAccount = () => useSetRecoilState(accountsState.activeAccount);
 export const useActiveAccountValue = () => useRecoilValue(accountsState.activeAccount);

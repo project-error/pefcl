@@ -1,5 +1,5 @@
 import React from 'react';
-import { useSetFilteredAccounts } from '../hooks/accounts.state';
+import { useSetFilterAccounts } from '../hooks/accounts.state';
 import { InputBase, Paper, styled } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 
@@ -12,7 +12,7 @@ const StyledBase = styled(Paper)({
 });
 
 const AccountSearchbar: React.FC = () => {
-  const setFilteredAccounts = useSetFilteredAccounts();
+  const setFilteredAccounts = useSetFilterAccounts();
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFilteredAccounts(e.currentTarget.value);
