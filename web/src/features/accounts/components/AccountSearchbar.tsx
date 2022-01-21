@@ -2,6 +2,7 @@ import React from 'react';
 import { useSetFilterAccounts } from '../hooks/accounts.state';
 import { InputBase, Paper, styled } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
+import { useTranslation } from 'react-i18next';
 
 const StyledBase = styled(Paper)({
   marginBottom: 10,
@@ -13,6 +14,7 @@ const StyledBase = styled(Paper)({
 
 const AccountSearchbar: React.FC = () => {
   const setFilteredAccounts = useSetFilterAccounts();
+  const [t] = useTranslation();
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFilteredAccounts(e.currentTarget.value);
@@ -21,7 +23,7 @@ const AccountSearchbar: React.FC = () => {
   return (
     <StyledBase>
       <InputBase
-        placeholder="Search for accounts"
+        placeholder={t('accounts.searchAccountsPlaceholder')}
         name="filter-accounts"
         sx={{ pl: 1, flex: 1 }}
         onChange={handleSearchChange}

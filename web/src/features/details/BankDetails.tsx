@@ -5,9 +5,11 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import { useActiveAccountValue } from '../accounts/hooks/accounts.state';
 import DetailsSkeleton from './components/DetailsSkeleton';
 import { AccountType } from '../../../../typings/accounts';
+import { useTranslation } from 'react-i18next';
 
 const BankDetails: React.FC = () => {
   const account = useActiveAccountValue();
+  const [t] = useTranslation();
 
   if (!account) return <DetailsSkeleton />;
 
@@ -17,7 +19,7 @@ const BankDetails: React.FC = () => {
         <Box>
           <Box sx={{ mt: -1 }}>
             <Typography variant="h6" sx={{ color: 'text.secondary' }}>
-              Your balance
+              {t('details.balance')}
             </Typography>
           </Box>
           <Typography variant="h4" style={{ fontWeight: 'bold' }} sx={{ color: 'text.primary' }}>
@@ -27,7 +29,7 @@ const BankDetails: React.FC = () => {
         {account.type === AccountType.Personal && (
           <Box>
             <IconLabelButton variant="contained" size="small" icon={<SettingsIcon />}>
-              Permissions
+              {t('details.permissions')}
             </IconLabelButton>
           </Box>
         )}

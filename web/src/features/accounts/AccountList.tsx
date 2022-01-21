@@ -2,6 +2,7 @@ import React, { memo } from 'react';
 import { List, ListSubheader } from '@mui/material';
 import { Account, AccountType } from '../../../../typings/accounts';
 import AccountItem from './components/AccountItem';
+import { useTranslation } from 'react-i18next';
 
 interface AccountListProps {
   accounts: Account[];
@@ -9,6 +10,8 @@ interface AccountListProps {
 }
 
 const AccountList: React.FC<AccountListProps> = ({ accounts, handleChangeAccount }) => {
+  const [t] = useTranslation();
+
   const hasSharedAccounts = accounts.find((acc) => acc.type === AccountType.Shared);
 
   if (!accounts) return <h1>Loading...</h1>;
@@ -17,7 +20,9 @@ const AccountList: React.FC<AccountListProps> = ({ accounts, handleChangeAccount
     <>
       <List
         disablePadding
-        subheader={<ListSubheader sx={{ borderRadius: 1 }}>Personal</ListSubheader>}
+        subheader={
+          <ListSubheader sx={{ borderRadius: 1 }}>{t('accounts.list.personal')}</ListSubheader>
+        }
       >
         {accounts &&
           accounts
@@ -32,7 +37,9 @@ const AccountList: React.FC<AccountListProps> = ({ accounts, handleChangeAccount
       </List>
       <List
         disablePadding
-        subheader={<ListSubheader sx={{ borderRadius: 1 }}>Shared</ListSubheader>}
+        subheader={
+          <ListSubheader sx={{ borderRadius: 1 }}>{t('accounts.list.shared')}</ListSubheader>
+        }
       >
         {hasSharedAccounts &&
           accounts

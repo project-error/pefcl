@@ -11,6 +11,7 @@ export const useConfig = () => {
 
     fetch(`https://cfx-nui-${resourceName}/config.json`).then(async (res) => {
       const config = await res.json();
+      console.log('config', config);
       setConfig(config);
     });
   }, [setConfig]);

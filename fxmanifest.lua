@@ -19,5 +19,6 @@ server_script "src/dist/server.js"
 
 files {
   'web/build/index.html',
-  'web/build/**/*'
+  'web/build/**/*',
+  'config.json'
 }

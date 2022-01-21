@@ -1,0 +1,19 @@
+{
+  "translation": {
+    "accounts": {
+      "actions": {
+        "newAccount": "New account",
+        "createAccount": "Create account"
+      },
+      "list": {
+        "personal": "Personal",
+        "shared": "Shared"
+      },
+      "searchAccountsPlaceholder": "Search for accounts"
+    },
+    "details": {
+      "balance": "Your balance",
+      "permissions": "Permissions"
+    }
+  }
+}

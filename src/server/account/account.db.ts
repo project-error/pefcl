@@ -15,7 +15,7 @@ export class AccountDB {
   }
 
   async getAccount(id: number): Promise<Account> {
-    const query = `SELECT account_name as accountName, balance, type, id
+    const query = `SELECT account_name as accountName, balance, type, id, is_default as isDefault
                    FROM pefcl_accounts
                    WHERE id = ?
                    LIMIT 1`;
@@ -26,10 +26,22 @@ export class AccountDB {
     return result[0];
   }
 
+  /**
+   * Used to create an account
+   * The reason why we explicitly set 'is_defualt' to false, is because we don't want a default account unless a config option is true.
+   * This should then trigger a creation of a account through a export elsewhere.
+   * @param accountName
+   * @returns
+   */
   async createAccount(accountName: string): Promise<number> {
-    const query = `INSERT INTO pefcl_accounts (account_name, balance, type)
-                   VALUES (?, ?, ?)`;
-    const [results] = await DbInterface._rawExec(query, [accountName, 0, AccountType.Personal]);
+    const query = `INSERT INTO pefcl_accounts (account_name, balance, type, is_default)
+                   VALUES (?, ?, ?, ?)`;
+    const [results] = await DbInterface._rawExec(query, [
+      accountName,
+      0,
+      AccountType.Personal,
+      false,
+    ]);
     const result = results as ResultSetHeader;
 
     return result.insertId;

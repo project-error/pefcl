@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.css';
 import { useNuiEvent } from './hooks/useNuiEvent';
 import { debugData } from './utils/debugData';
@@ -6,7 +6,8 @@ import { BankContainer, BankWrapper } from './components/BankContainer';
 import { CircularProgress, Grid } from '@mui/material';
 import AccountsSidebar from './features/accounts/AccountsSidebar';
 import BankDetails from './features/details/BankDetails';
-import { useConfig } from './hooks/useConfig';
+import { useTranslation } from 'react-i18next';
+import { useConfigValue } from './states/bank';
 
 debugData([
   {
@@ -17,13 +18,18 @@ debugData([
 
 const App: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
+  const { i18n } = useTranslation();
 
   useNuiEvent<boolean>('setVisible', (data) => {
     console.log('actually getting someting', data);
     setIsVisible(data);
   });
 
-  useConfig();
+  const config = useConfigValue();
+
+  useEffect(() => {
+    i18n.changeLanguage(config.locale).catch((e) => console.error(e));
+  }, [i18n, config]);
 
   return (
     <>

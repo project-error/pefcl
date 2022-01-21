@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Dialog, DialogContent, DialogTitle, TextField } from '@mui/material';
 import { useAccountAPI } from '../api/useAccountAPI';
+import { useTranslation } from 'react-i18next';
 
 interface NewAccountModalProps {
   isOpen: boolean;
@@ -12,6 +13,7 @@ const NewAccountModal: React.FC<NewAccountModalProps> = ({ isOpen, onClose }) =>
   const [error, setError] = useState<boolean>(false);
 
   const { createAccount } = useAccountAPI();
+  const [t] = useTranslation();
 
   const handleCreateAccount = () => {
     if (!accountName) return setError(true);
@@ -20,7 +22,7 @@ const NewAccountModal: React.FC<NewAccountModalProps> = ({ isOpen, onClose }) =>
 
   return (
     <Dialog open={isOpen} onClose={onClose}>
-      <DialogTitle>New account</DialogTitle>
+      <DialogTitle>{t('accounts.actions.newAccount')}</DialogTitle>
       <DialogContent>
         <TextField
           error={error}
@@ -30,7 +32,7 @@ const NewAccountModal: React.FC<NewAccountModalProps> = ({ isOpen, onClose }) =>
           value={accountName}
         />
         <Button sx={{ mt: 2 }} variant="contained" onClick={handleCreateAccount}>
-          Create account
+          {t('accounts.actions.createAccount')}
         </Button>
       </DialogContent>
     </Dialog>
