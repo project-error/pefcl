@@ -12,9 +12,9 @@ export interface Account {
   accountName: string;
   type: AccountType;
   balance: string;
+  isDefault: boolean;
   participants?: string[];
   owner: boolean;
-  isDefault: boolean;
 }
 
 export enum AccountEvents {

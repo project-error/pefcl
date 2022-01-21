@@ -47,6 +47,7 @@ export const accountsState = {
 };
 
 export const useAccountsValue = () => useRecoilValue(accountsState.accounts);
+export const useSetAccounts = () => useSetRecoilState(accountsState.accounts);
 export const useSetFilterAccounts = () => useSetRecoilState(accountsState.filterInput);
 
 // This is purely used for filtering accounts in the list. We otherwise rely on `useAccountsValue`
