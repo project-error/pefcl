@@ -11,18 +11,21 @@ interface IUseAccountAPI {
 export const useAccountAPI = (): IUseAccountAPI => {
   const setAccounts = useSetAccounts();
 
-  const createAccount = useCallback((accountName: string) => {
-    console.log('account name', accountName);
-    fetchNui<PreDBAccount, ServerPromiseResp<Account>>(AccountEvents.CreateAccount, {
-      accountName,
-    }).then((res) => {
-      if (res.status !== 'ok') {
-        return 'something';
-      }
+  const createAccount = useCallback(
+    (accountName: string) => {
+      console.log('account name', accountName);
+      fetchNui<PreDBAccount, ServerPromiseResp<Account>>(AccountEvents.CreateAccount, {
+        accountName,
+      }).then((res) => {
+        if (res.status !== 'ok') {
+          return 'something';
+        }
 
-      setAccounts((curAccounts) => [...curAccounts, res.data]);
-    });
-  }, []);
+        setAccounts((curAccounts) => [...curAccounts, res.data]);
+      });
+    },
+    [setAccounts],
+  );
 
   return { createAccount };
 };

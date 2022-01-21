@@ -4,5 +4,6 @@
   },
   "debug": {
     "level": "silly"
-  }
+  },
+  "locale": "en"
 }

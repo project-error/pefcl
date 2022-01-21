@@ -6,6 +6,7 @@ import { BankContainer, BankWrapper } from './components/BankContainer';
 import { CircularProgress, Grid } from '@mui/material';
 import AccountsSidebar from './features/accounts/AccountsSidebar';
 import BankDetails from './features/details/BankDetails';
+import { useConfig } from './hooks/useConfig';
 
 debugData([
   {
@@ -21,6 +22,8 @@ const App: React.FC = () => {
     console.log('actually getting someting', data);
     setIsVisible(data);
   });
+
+  useConfig();
 
   return (
     <>

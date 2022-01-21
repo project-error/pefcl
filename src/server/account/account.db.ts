@@ -8,7 +8,7 @@ export class AccountDB {
   async getAccounts(): Promise<Account[]> {
     const query = `SELECT account_name as accountName, balance, type, id, is_default as isDefault
                    FROM pefcl_accounts
-                   ORDER BY id DESC`;
+                   ORDER BY id ASC`;
     const [results] = await DbInterface._rawExec(query);
 
     return <Account[]>results;
