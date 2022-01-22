@@ -1,4 +1,7 @@
 export interface ResourceConfig {
+  exports: {
+    resourceName: string;
+  };
   general: {
     useFrameworkIntegration: boolean;
   };

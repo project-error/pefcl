@@ -16,6 +16,6 @@ export class UserController {
     console.log('New player loaded');
     if (config.general.useFrameworkIntegration) return;
 
-    this._userService.getPlayer(source);
+    this._userService.savePlayer({ source });
   }
 }

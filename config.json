@@ -1,4 +1,7 @@
 {
+  "exports": {
+    "resourceName": "my-resource"
+  },
   "general": {
     "useFrameworkIntegration": false
   },
