@@ -10,7 +10,7 @@ export const useAccountActions = (): IUseAccountActions => {
   const findAccountById = useRecoilCallback<[string], Account | null>(
     ({ snapshot }) =>
       (id: string) => {
-        const { state, contents } = snapshot.getLoadable(accountsState.filterInput);
+        const { state, contents } = snapshot.getLoadable(accountsState.accounts);
 
         if (state !== 'hasValue') return;
 

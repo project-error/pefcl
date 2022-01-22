@@ -11,5 +11,6 @@ export const BankWrapper = styled(Box)(({ theme }) => ({
 export const BankContainer = styled(Box)(({ theme }) => ({
   width: '1400px',
   height: '800px',
+  borderRadius: 7,
   backgroundColor: theme.palette.background.default,
 }));

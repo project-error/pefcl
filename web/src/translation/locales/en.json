@@ -14,6 +14,13 @@
     "details": {
       "balance": "Your balance",
       "permissions": "Permissions"
+    },
+    "permissions": {
+      "dialogTitle": "Permissions",
+      "tabs": {
+        "access": "Access",
+        "settings": "Settings"
+      }
     }
   }
 }

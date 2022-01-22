@@ -1,4 +1,7 @@
 {
+  "general": {
+    "useFrameworkIntegration": false
+  },
   "database": {
     "profileQueries": true
   },

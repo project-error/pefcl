@@ -1,13 +1,21 @@
-import { AccountEvents } from '../../../typings/accounts';
-import { Request, Response } from '../../../typings/http';
 import { Controller } from '../decorators/Controller';
-import { NetPromise, PromiseEventListener } from '../decorators/NetPromise';
+import { EventListener, Event } from '../decorators/Event';
+import { config } from '../server-config';
+import { UserService } from './user.service';
 
 @Controller('User')
-@PromiseEventListener()
+@EventListener()
 export class UserController {
-  constructor() {}
+  private readonly _userService: UserService;
+  constructor(userService: UserService) {
+    this._userService = userService;
+  }
 
-  @NetPromise('getUser')
-  getUser(req: Request, res: Response<any>) {}
+  @Event('playerJoining')
+  playerJoining(source: number) {
+    console.log('New player loaded');
+    if (config.general.useFrameworkIntegration) return;
+
+    this._userService.getPlayer(source);
+  }
 }
