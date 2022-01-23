@@ -1,17 +1,17 @@
 import { singleton } from 'tsyringe';
-import { User, UserDTO } from '../../../typings/user';
+import { UserDTO } from '../../../typings/user';
 import { getGameLicense } from '../utils/miscUtils';
 import { UserModule } from './user.module';
 
 @singleton()
 export class UserService {
-  private readonly playersBySource: Map<number, UserModule>; // Player class
+  private readonly usersBySource: Map<number, UserModule>; // Player class
   constructor() {
-    this.playersBySource = new Map<number, UserModule>();
+    this.usersBySource = new Map<number, UserModule>();
   }
 
-  getPlayer(source: number) {
-    return this.playersBySource.get(source);
+  getUser(source: number) {
+    return this.usersBySource.get(source);
   }
 
   /**
@@ -19,7 +19,7 @@ export class UserService {
    * @param source
    */
   deletePlayer(source: number) {
-    this.playersBySource.delete(source);
+    this.usersBySource.delete(source);
   }
 
   savePlayer(userDTO: UserDTO) {
@@ -28,7 +28,8 @@ export class UserService {
     }
 
     const user = new UserModule({ source: userDTO.source, identifier: userDTO.identifier });
+    console.log('New user loaded for pe-fcl', user);
 
-    this.playersBySource.set(source, user);
+    this.usersBySource.set(userDTO.source, user);
   }
 }

@@ -20,4 +20,6 @@ export interface Account {
 export enum AccountEvents {
   GetAccounts = 'pefcl:getAccounts',
   CreateAccount = 'pefcl:createAccount',
+  DeleteAccount = 'pefcl:deleteAccount',
+  DepositMoney = 'pefcl:depositMoney',
 }

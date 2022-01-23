@@ -2,7 +2,7 @@ import { fetchNui } from '../../../utils/fetchNui';
 import { Account, AccountEvents, PreDBAccount } from '../../../../../typings/accounts';
 import { ServerPromiseResp } from '../../../../../typings/http';
 import { useCallback } from 'react';
-import { useSetAccounts } from '../hooks/accounts.state';
+import { useSetAccounts, useSetActiveAccount } from '../hooks/accounts.state';
 
 interface IUseAccountAPI {
   createAccount: (accountName: string) => void;
@@ -10,6 +10,7 @@ interface IUseAccountAPI {
 
 export const useAccountAPI = (): IUseAccountAPI => {
   const setAccounts = useSetAccounts();
+  const setActiveAccount = useSetActiveAccount();
 
   const createAccount = useCallback(
     (accountName: string) => {
@@ -22,6 +23,7 @@ export const useAccountAPI = (): IUseAccountAPI => {
         }
 
         setAccounts((curAccounts) => [...curAccounts, res.data]);
+        setActiveAccount(res.data);
       });
     },
     [setAccounts],

@@ -18,6 +18,7 @@ const NewAccountModal: React.FC<NewAccountModalProps> = ({ isOpen, onClose }) =>
   const handleCreateAccount = () => {
     if (!accountName) return setError(true);
     createAccount(accountName);
+    onClose();
   };
 
   return (

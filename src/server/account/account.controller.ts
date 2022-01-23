@@ -8,6 +8,7 @@ import { AccountService } from './account.service';
 @PromiseEventListener()
 export class AccountController {
   private readonly _accountService: AccountService;
+
   constructor(accountService: AccountService) {
     this._accountService = accountService;
   }
@@ -21,8 +22,21 @@ export class AccountController {
 
   @NetPromise(AccountEvents.CreateAccount)
   async createAccount(req: Request<PreDBAccount>, res: Response<Account>) {
-    const account = await this._accountService.handleCreateAccount(req);
+    try {
+      const account = await this._accountService.handleCreateAccount(req);
 
-    res({ status: 'ok', data: account });
+      res({ status: 'ok', data: account });
+    } catch (err) {
+      res({ status: 'error', errorMsg: err.message });
+    }
   }
+
+  @NetPromise(AccountEvents.DeleteAccount)
+  async deleteAccount(req: Request<number>, res: Response<void>) {
+    res({ status: 'ok' });
+  }
+
+  // type these later when we have specs
+  @NetPromise(AccountEvents.DepositMoney)
+  async depositMoney(req: Request<any>, res: Response<any>) {}
 }

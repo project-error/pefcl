@@ -26,21 +26,14 @@ export class AccountDB {
     return result[0];
   }
 
-  /**
-   * Used to create an account
-   * The reason why we explicitly set 'is_defualt' to false, is because we don't want a default account unless a config option is true.
-   * This should then trigger a creation of a account through a export elsewhere.
-   * @param accountName
-   * @returns
-   */
-  async createAccount(accountName: string): Promise<number> {
+  async createAccount(accountName: string, identifier: string, isDefault = false): Promise<number> {
     const query = `INSERT INTO pefcl_accounts (account_name, balance, type, is_default)
                    VALUES (?, ?, ?, ?)`;
     const [results] = await DbInterface._rawExec(query, [
       accountName,
       0,
       AccountType.Personal,
-      false,
+      isDefault,
     ]);
     const result = results as ResultSetHeader;
 
