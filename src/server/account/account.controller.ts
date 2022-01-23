@@ -14,7 +14,7 @@ export class AccountController {
   }
 
   @NetPromise(AccountEvents.GetAccounts)
-  async getAccounts(req: Request, res: Response<Account[]>) {
+  async getAccounts(req: Request<void>, res: Response<Account[]>) {
     const accounts = await this._accountService.handleGetAccounts();
 
     res({ status: 'ok', data: accounts });

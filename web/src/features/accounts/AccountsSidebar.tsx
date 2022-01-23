@@ -4,26 +4,26 @@ import IconLabelButton from '../../components/IconLabelButton';
 import AddIcon from '@mui/icons-material/Add';
 import { Account } from '../../../../typings/accounts';
 import AccountList from './AccountList';
-import {
-  useAccountsValue,
-  useFilteredAccountsValue,
-  useSetActiveAccount,
-} from './hooks/accounts.state';
+import { useFilteredAccountsValue, useSetActiveAccount } from './hooks/accounts.state';
 import AccountSearchbar from './components/AccountSearchbar';
 import NewAccountModal from './components/NewAccountModal';
 import { useTranslation } from 'react-i18next';
+import { useAccountActions } from './hooks/useAccountActions';
 
 const AccountsSidebar: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
-  const filteredAccounts = useFilteredAccountsValue();
-  const accounts = useAccountsValue();
-  const setActiveAccount = useSetActiveAccount();
+  const { getDefaultAccount } = useAccountActions();
   const [t] = useTranslation();
 
+  const setActiveAccount = useSetActiveAccount();
+  const filteredAccounts = useFilteredAccountsValue();
+
+  // We need a function that gets the default account. As of now, it will select the default account each time the accounts state is updated.
   useEffect(() => {
-    setActiveAccount(accounts[0]);
-  }, []);
+    const account = getDefaultAccount();
+    setActiveAccount(account);
+  }, [setActiveAccount, getDefaultAccount]);
 
   const handleChangeAccounts = useCallback(
     (account: Account) => {

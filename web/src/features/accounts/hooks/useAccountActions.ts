@@ -4,6 +4,7 @@ import { Account } from '../../../../../typings/accounts';
 
 interface IUseAccountActions {
   findAccountById: (id: string) => Account | null;
+  getDefaultAccount: () => Account;
 }
 
 export const useAccountActions = (): IUseAccountActions => {
@@ -23,5 +24,19 @@ export const useAccountActions = (): IUseAccountActions => {
     [],
   );
 
-  return { findAccountById };
+  const getDefaultAccount = useRecoilCallback(
+    ({ snapshot }) =>
+      () => {
+        const { state, contents } = snapshot.getLoadable(accountsState.accounts);
+
+        if (state !== 'hasValue') return;
+
+        for (const account of contents) {
+          if (account.isDefault) return account;
+        }
+      },
+    [],
+  );
+
+  return { findAccountById, getDefaultAccount };
 };

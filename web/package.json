@@ -56,8 +56,12 @@
   "devDependencies": {
     "@craco/craco": "6.1.1",
     "@testing-library/react-hooks": "^7.0.2",
+    "@typescript-eslint/eslint-plugin": "^5.10.0",
+    "@typescript-eslint/parser": "^5.10.0",
     "craco": "^0.0.3",
     "cross-env": "^7.0.3",
+    "eslint-plugin-react": "^7.28.0",
+    "eslint-plugin-react-hooks": "^4.3.0",
     "react-test-renderer": "^17.0.2"
   }
 }

@@ -26,7 +26,7 @@ export const useAccountAPI = (): IUseAccountAPI => {
         setActiveAccount(res.data);
       });
     },
-    [setAccounts],
+    [setAccounts, setActiveAccount],
   );
 
   return { createAccount };
