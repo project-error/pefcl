@@ -1,6 +1,7 @@
 import { atom, selector, useRecoilValue, useSetRecoilState } from 'recoil';
 import { ResourceConfig } from '../../../typings/config';
 import { getResourceName, isEnvBrowser } from '../utils/misc';
+import MockConfig from '../config/default.json';
 
 export const bankState = {
   resourceConfig: atom<ResourceConfig>({
@@ -15,7 +16,7 @@ export const bankState = {
           return await res.json();
         } catch (err) {
           if (isEnvBrowser()) {
-            return null;
+            return MockConfig;
           }
           console.error(err);
           return null;

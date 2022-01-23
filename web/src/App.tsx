@@ -21,7 +21,6 @@ const App: React.FC = () => {
   const { i18n } = useTranslation();
 
   useNuiEvent<boolean>('setVisible', (data) => {
-    console.log('actually getting someting', data);
     setIsVisible(data);
   });
 

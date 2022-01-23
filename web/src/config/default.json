@@ -1,0 +1,15 @@
+{
+  "exports": {
+    "resourceName": "my-resource"
+  },
+  "general": {
+    "useFrameworkIntegration": false
+  },
+  "database": {
+    "profileQueries": true
+  },
+  "debug": {
+    "level": "silly"
+  },
+  "locale": "en"
+}
