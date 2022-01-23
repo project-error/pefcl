@@ -37,5 +37,9 @@ export class AccountService {
     if (config.general.useFrameworkIntegration) {
       exp[config.exports.resourceName].FCLDepositMoney(req.source);
     }
+
+    // do something with db on our side
+
+    const currentBalance = this._userService.getUser(req.source).getBalance();
   }
 }

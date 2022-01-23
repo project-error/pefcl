@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Dialog, DialogContent, DialogTitle, Tabs, Tab, Typography } from '@mui/material';
+import { Box, Dialog, DialogContent, DialogTitle, Tabs, Tab } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 interface PermissionsModalProps {
@@ -39,12 +39,8 @@ const PermissionsModal: React.FC<PermissionsModalProps> = ({ open, onClose }) =>
           <Tab label={t('permissions.tabs.access')} />
           <Tab label={t('permissions.tabs.settings')} />
         </Tabs>
-        <TabPanel index={0} value={tabValue}>
-          <Typography>Set permissions for members</Typography>
-          <Box>
-            <h2>Some user with more stuff</h2>
-          </Box>
-        </TabPanel>
+        <TabPanel index={0} value={tabValue}></TabPanel>
+        <TabPanel index={1} value={tabValue}></TabPanel>
       </DialogContent>
     </Dialog>
   );

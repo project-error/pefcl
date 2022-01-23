@@ -16,6 +16,7 @@ export const bankState = {
           return await res.json();
         } catch (err) {
           if (isEnvBrowser()) {
+            console.log('is browser');
             return MockConfig;
           }
           console.error(err);

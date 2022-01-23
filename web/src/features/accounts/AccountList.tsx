@@ -12,7 +12,7 @@ interface AccountListProps {
 const AccountList: React.FC<AccountListProps> = ({ accounts, handleChangeAccount }) => {
   const [t] = useTranslation();
 
-  const hasSharedAccounts = accounts.find((acc) => acc.type === AccountType.Shared);
+  const hasSharedAccounts = accounts.some((acc) => acc.type === AccountType.Shared);
 
   if (!accounts) return <h1>Loading...</h1>;
 

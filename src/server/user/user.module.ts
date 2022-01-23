@@ -16,7 +16,7 @@ export class UserModule {
     return this.identifier;
   }
 
-  getBalance() {
-    exp[config.exports.resourceName].getCurrentBalance(this._source);
+  getBalance(): number {
+    return exp[config.exports.resourceName].getCurrentBalance(this._source);
   }
 }
