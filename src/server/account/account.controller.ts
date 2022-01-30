@@ -38,5 +38,7 @@ export class AccountController {
 
   // type these later when we have specs
   @NetPromise(AccountEvents.DepositMoney)
-  async depositMoney(req: Request<any>, res: Response<any>) {}
+  async depositMoney(req: Request<any>, res: Response<any>) {
+  
+  }
 }

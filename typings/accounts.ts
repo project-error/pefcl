@@ -17,6 +17,12 @@ export interface Account {
   owner: boolean;
 }
 
+export interface DepositDTO {
+  tgtAccount: Account;
+  amount: number;
+  message: string;
+}
+
 export enum AccountEvents {
   GetAccounts = 'pefcl:getAccounts',
   CreateAccount = 'pefcl:createAccount',

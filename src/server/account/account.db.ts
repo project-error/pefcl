@@ -39,4 +39,10 @@ export class AccountDB {
 
     return result.insertId;
   }
+  
+  async updateAccountBalance(account: Account, balance: number): Promise<void> {
+    const query = `UPDATE pefcl_accounts SET balance = ? WHERE id = ?`;
+    
+    await DbInterface._rawExec(query, [balance, account.id]);
+  }
 }

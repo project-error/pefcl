@@ -19,7 +19,7 @@ export class UserController {
 
     this._userService.savePlayer({ source });
   }
-
+  
   @Event('onServerResourceStart')
   async onServerResourceStart(resource: string) {
     if (resource === GetCurrentResourceName()) {
