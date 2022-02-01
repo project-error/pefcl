@@ -32,13 +32,22 @@ export class AccountController {
   }
 
   @NetPromise(AccountEvents.DeleteAccount)
-  async deleteAccount(req: Request<number>, res: Response<void>) {
-    res({ status: 'ok' });
+  async deleteAccount(req: Request<string>, res: Response<void>) {
+    try {
+      await this._accountService.handleDeleteAccount(req.data);
+      res({ status: 'ok' });
+    } catch (err) {
+      res({ status: 'error', errorMsg: err.message });
+    }
   }
 
   // type these later when we have specs
   @NetPromise(AccountEvents.DepositMoney)
   async depositMoney(req: Request<any>, res: Response<any>) {
-  
+    try {
+      await this._accountService.handleDepositMoney(req.data);
+    } catch (err) {
+      res({ status: 'error', errorMsg: err.message });
+    }
   }
 }

@@ -41,7 +41,7 @@ const App: React.FC = () => {
                   <AccountsSidebar />
                 </React.Suspense>
               </Grid>
-              <Grid item xs={4}>
+              <Grid marginTop={5} item xs={4}>
                 <React.Suspense fallback={<CircularProgress />}>
                   <BankDetails />
                 </React.Suspense>

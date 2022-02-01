@@ -39,10 +39,20 @@ export class AccountDB {
 
     return result.insertId;
   }
-  
+
+  async deleteAccount(accountId: string) {
+    const query = `DELETE
+                   FROM pefcl_accounts
+                   WHERE id = ?`;
+
+    await DbInterface._rawExec(query, [accountId]);
+  }
+
   async updateAccountBalance(account: Account, balance: number): Promise<void> {
-    const query = `UPDATE pefcl_accounts SET balance = ? WHERE id = ?`;
-    
+    const query = `UPDATE pefcl_accounts
+                   SET balance = ?
+                   WHERE id = ?`;
+
     await DbInterface._rawExec(query, [balance, account.id]);
   }
 }

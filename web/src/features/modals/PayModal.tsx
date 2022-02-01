@@ -38,7 +38,7 @@ const PayModal: React.FC<PayModalProps> = ({ open, onClose }) => {
         <Box mt={2}>
           <Autocomplete
             getOptionLabel={(account) => account.accountName}
-            groupBy={(account) => account.type}
+            groupBy={(account) => account.type.toUpperCase()}
             renderInput={(props) => (
               <TextField placeholder={t('modal.pay.selectAccount')} variant="standard" {...props} />
             )}
