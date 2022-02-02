@@ -3,13 +3,20 @@ import { createTheme } from '@mui/material';
 const theme = createTheme({
   palette: {
     background: {
-      paper: '#383838',
-      default: '#212121',
+      paper: '#2c3036',
+      default: '#212529',
     },
     primary: {
       light: '#fff',
-      main: '#12A581',
+      main: '#d84e4b',
       contrastText: '#fff',
+    },
+    divider: '#2c3036',
+    action: {
+      selectedOpacity: 1,
+    },
+    common: {
+      white: '#2c3036',
     },
     text: {
       primary: '#fff',
@@ -18,6 +25,20 @@ const theme = createTheme({
   },
   typography: {
     fontFamily: "'Montserrat', 'sans-serif'",
+  },
+  components: {
+    MuiListItem: {
+      styleOverrides: {
+        selected: {
+          background: '#fff',
+          backgroundColor: '#fff',
+        },
+        root: {
+          height: 60,
+          borderRadius: 1,
+        },
+      },
+    },
   },
 });
 
