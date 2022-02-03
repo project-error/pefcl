@@ -1,7 +1,7 @@
 import React from 'react';
-import { ListItemText, ListItemButton, ListItem } from '@mui/material';
 import { Account } from '../../../../../typings/accounts';
 import { useActiveAccountValue } from '../hooks/accounts.state';
+import { Item } from './AccountItem.styles';
 
 interface AccountItemProps {
   account: Account;
@@ -14,15 +14,9 @@ const AccountItem: React.FC<AccountItemProps> = ({ account, onClick }) => {
   const isSelected = activeAccount?.id === account.id;
 
   return (
-    <ListItem button divider selected={isSelected} onClick={onClick}>
-      <ListItemText
-        primaryTypographyProps={{
-          color: 'text.primary',
-        }}
-        primary={account.accountName}
-        secondary={`$${account.balance}`}
-      />
-    </ListItem>
+    <Item selected={isSelected} onClick={onClick}>
+      <div>{account.accountName}</div>${account.balance}
+    </Item>
   );
 };
 

@@ -18,12 +18,7 @@ const AccountList: React.FC<AccountListProps> = ({ accounts, handleChangeAccount
 
   return (
     <>
-      <List
-        disablePadding
-        subheader={
-          <ListSubheader sx={{ borderRadius: 1 }}>{t('accounts.list.personal')}</ListSubheader>
-        }
-      >
+      <div>
         {accounts &&
           accounts
             .filter((acc) => acc.type === AccountType.Personal)
@@ -34,7 +29,8 @@ const AccountList: React.FC<AccountListProps> = ({ accounts, handleChangeAccount
                 onClick={() => handleChangeAccount(account)}
               />
             ))}
-      </List>
+      </div>
+      {/*
       <List
         disablePadding
         subheader={
@@ -52,6 +48,7 @@ const AccountList: React.FC<AccountListProps> = ({ accounts, handleChangeAccount
               />
             ))}
       </List>
+*/}
     </>
   );
 };
