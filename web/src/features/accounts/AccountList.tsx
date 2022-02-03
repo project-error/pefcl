@@ -3,6 +3,7 @@ import { List, ListSubheader } from '@mui/material';
 import { Account, AccountType } from '../../../../typings/accounts';
 import AccountItem from './components/AccountItem';
 import { useTranslation } from 'react-i18next';
+import { AccountListHeader } from './AccountList.styles';
 
 interface AccountListProps {
   accounts: Account[];
@@ -18,7 +19,8 @@ const AccountList: React.FC<AccountListProps> = ({ accounts, handleChangeAccount
 
   return (
     <>
-      <div>
+      <AccountListHeader>{t('accounts.list.personal')}</AccountListHeader>
+      <div style={{ marginBottom: 30 }}>
         {accounts &&
           accounts
             .filter((acc) => acc.type === AccountType.Personal)
@@ -30,13 +32,8 @@ const AccountList: React.FC<AccountListProps> = ({ accounts, handleChangeAccount
               />
             ))}
       </div>
-      {/*
-      <List
-        disablePadding
-        subheader={
-          <ListSubheader sx={{ borderRadius: 1 }}>{t('accounts.list.shared')}</ListSubheader>
-        }
-      >
+      <AccountListHeader>{t('accounts.list.shared')}</AccountListHeader>
+      <div>
         {hasSharedAccounts &&
           accounts
             .filter((acc) => acc.type === AccountType.Shared)
@@ -47,8 +44,7 @@ const AccountList: React.FC<AccountListProps> = ({ accounts, handleChangeAccount
                 onClick={() => handleChangeAccount(account)}
               />
             ))}
-      </List>
-*/}
+      </div>
     </>
   );
 };
