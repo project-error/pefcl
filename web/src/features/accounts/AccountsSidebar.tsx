@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Box } from '@mui/material';
-import IconLabelButton from '../../components/IconLabelButton';
+import IconLabelButton, { IconButton } from '../../components/IconLabelButton';
 import AddIcon from '@mui/icons-material/Add';
 import { Account } from '../../../../typings/accounts';
 import AccountList from './AccountList';
@@ -41,16 +41,7 @@ const AccountsSidebar: React.FC = () => {
   };
 
   return (
-    <Box sx={{ ml: 1 }}>
-      <IconLabelButton
-        onClick={openModal}
-        size="small"
-        sx={{ mb: 1 }}
-        variant="contained"
-        icon={<AddIcon />}
-      >
-        {t('accounts.actions.newAccount')}
-      </IconLabelButton>
+    <Box>
       <AccountSearchbar />
       <AccountList accounts={filteredAccounts} handleChangeAccount={handleChangeAccounts} />
       <NewAccountModal isOpen={isModalOpen} onClose={closeModal} />

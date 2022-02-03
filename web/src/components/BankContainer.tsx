@@ -1,16 +1,18 @@
-import { Box } from '@mui/material';
-import { styled } from '@mui/system';
+import styled from '@emotion/styled';
+import React from 'react';
 
-export const BankWrapper = styled(Box)({
+export const BankWrapper = styled('div')({
   height: '100%',
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
 });
 
-export const BankContainer = styled(Box)(({ theme }) => ({
+export const BankContainer = styled('div')({
   width: '1400px',
   height: '800px',
   borderRadius: 7,
-  backgroundColor: theme.palette.background.default,
-}));
+  backgroundColor: '#212529',
+  display: 'flex',
+  flexDirection: 'row',
+});

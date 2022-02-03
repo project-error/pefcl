@@ -8,6 +8,7 @@ import AccountsSidebar from './features/accounts/AccountsSidebar';
 import BankDetails from './features/details/BankDetails';
 import { useTranslation } from 'react-i18next';
 import { useConfigValue } from './states/bank';
+import { SidebarWrapper } from './styles/Sidebar.styles';
 
 debugData([
   {
@@ -35,18 +36,16 @@ const App: React.FC = () => {
       {isVisible && (
         <BankWrapper>
           <BankContainer>
-            <Grid container spacing={4} marginTop={0.1}>
-              <Grid item xs={3}>
-                <React.Suspense fallback={<CircularProgress />}>
-                  <AccountsSidebar />
-                </React.Suspense>
-              </Grid>
-              <Grid marginTop={5} item xs={4}>
-                <React.Suspense fallback={<CircularProgress />}>
-                  <BankDetails />
-                </React.Suspense>
-              </Grid>
-            </Grid>
+            <SidebarWrapper>
+              <React.Suspense fallback={<CircularProgress />}>
+                <AccountsSidebar />
+              </React.Suspense>
+            </SidebarWrapper>
+            <div style={{ paddingTop: 70 }}>
+              <React.Suspense fallback={<CircularProgress />}>
+                <BankDetails />
+              </React.Suspense>
+            </div>
           </BankContainer>
         </BankWrapper>
       )}

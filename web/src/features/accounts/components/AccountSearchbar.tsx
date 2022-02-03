@@ -1,15 +1,46 @@
 import React from 'react';
 import { useSetFilterAccounts } from '../hooks/accounts.state';
-import { InputBase, Paper, styled } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
+import { SearchIcon } from '@heroicons/react/outline';
 import { useTranslation } from 'react-i18next';
+import styled from '@emotion/styled';
+import { accountIcons } from '../../../icons/svgProvider';
 
+/*
 const StyledBase = styled(Paper)({
   marginBottom: 10,
   paddingBottom: 4,
   paddingTop: 4,
+  background: '#42464A',
   display: 'flex',
   alignItems: 'center',
+});
+*/
+
+const StyledBase = styled('div')({
+  marginBottom: 10,
+  paddingBottom: 4,
+  paddingTop: 4,
+  paddingRight: 10,
+  background: '#42464A',
+  display: 'flex',
+  alignItems: 'center',
+  borderRadius: 7,
+  boxShadow: '0px 2px 2px rgba(0, 0, 0, 0.25)',
+});
+
+const InputBase = styled('input')({
+  paddingLeft: 1,
+  flex: 1,
+  background: 'transparent',
+  border: 'none',
+  outline: 'none',
+  color: '#fff',
+  fontWeight: 500,
+  fontSize: 15,
+  textIndent: 5,
+  '&::placeholder': {
+    color: '#B5B5B5',
+  },
 });
 
 const AccountSearchbar: React.FC = () => {
@@ -23,12 +54,10 @@ const AccountSearchbar: React.FC = () => {
   return (
     <StyledBase>
       <InputBase
-        placeholder={t('accounts.searchAccountsPlaceholder')}
-        name="filter-accounts"
-        sx={{ pl: 1, flex: 1 }}
         onChange={handleSearchChange}
+        placeholder={t('accounts.searchAccountsPlaceholder')}
       />
-      <SearchIcon sx={{ pr: 1 }} />
+      {accountIcons.searchIcon}
     </StyledBase>
   );
 };
