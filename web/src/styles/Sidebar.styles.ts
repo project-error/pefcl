@@ -7,4 +7,6 @@ export const SidebarWrapper = styled('div')({
   paddingRight: '20px',
   paddingLeft: '20px',
   width: 300,
+  borderTopLeftRadius: 7,
+  borderBottomLeftRadius: 7,
 });

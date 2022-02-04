@@ -1,5 +1,4 @@
 import React, { memo } from 'react';
-import { List, ListSubheader } from '@mui/material';
 import { Account, AccountType } from '../../../../typings/accounts';
 import AccountItem from './components/AccountItem';
 import { useTranslation } from 'react-i18next';

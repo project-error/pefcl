@@ -20,6 +20,7 @@ const SecondaryText = styled('p')({
   margin: 0,
   marginTop: 5,
   color: '#B5B5B5',
+  fontSize: 14,
 });
 
 const AccountItem: React.FC<AccountItemProps> = ({ account, onClick }) => {

@@ -1,19 +1,12 @@
 import React, { useState } from 'react';
-import {
-  Autocomplete,
-  Box,
-  Dialog,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  InputAdornment,
-  TextField,
-} from '@mui/material';
+import { Box, Dialog, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useAccountsValue } from '../accounts/hooks/accounts.state';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import IconTextField from '../../components/IconTextField';
-import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
+import { Autocomplete } from '../../components/Autocomplete/Autocomplete';
+import { accountIcons } from '../../icons/svgProvider';
+import { Account } from '../../../../typings/accounts';
 
 interface PayModalProps {
   open: boolean;
@@ -36,14 +29,7 @@ const PayModal: React.FC<PayModalProps> = ({ open, onClose }) => {
       <DialogContent sx={{ backgroundColor: 'background.default' }}>
         <DialogContentText>{t('modal.pay.contextText')}</DialogContentText>
         <Box mt={2}>
-          <Autocomplete
-            getOptionLabel={(account) => account.accountName}
-            groupBy={(account) => account.type.toUpperCase()}
-            renderInput={(props) => (
-              <TextField placeholder={t('modal.pay.selectAccount')} variant="standard" {...props} />
-            )}
-            options={accounts}
-          />
+          <Autocomplete data={accounts} />
         </Box>
         <Box mt={4}>
           <IconTextField
