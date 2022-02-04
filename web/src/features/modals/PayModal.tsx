@@ -21,6 +21,10 @@ const PayModal: React.FC<PayModalProps> = ({ open, onClose }) => {
 
   const accounts = useAccountsValue();
 
+  const handleSelectedAccount = (account: Account) => {
+    // do something
+  };
+
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogTitle sx={{ backgroundColor: 'background.default' }}>
@@ -29,7 +33,7 @@ const PayModal: React.FC<PayModalProps> = ({ open, onClose }) => {
       <DialogContent sx={{ backgroundColor: 'background.default' }}>
         <DialogContentText>{t('modal.pay.contextText')}</DialogContentText>
         <Box mt={2}>
-          <Autocomplete data={accounts} />
+          <Autocomplete onChange={handleSelectedAccount} data={accounts} />
         </Box>
         <Box mt={4}>
           <IconTextField

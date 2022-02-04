@@ -53,9 +53,10 @@ export const AutocompleteGroup = styled('div')({
 
 interface AutocompleteProps {
   data: Account[];
+  onChange: (account: Account) => void;
 }
 
-export const Autocomplete: React.FC<AutocompleteProps> = ({ data }) => {
+export const Autocomplete: React.FC<AutocompleteProps> = ({ data, onChange }) => {
   const [t] = useTranslation();
 
   const [search, setSearch] = useState<{ text: string; options: Account[] }>({
@@ -71,8 +72,6 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({ data }) => {
 
       const suggestions = data.filter((option) => option.accountName.match(regExp));
 
-      console.log(suggestions);
-
       setSearch({ options: suggestions, text: value });
     } else {
       setSearch({ options: [], text: '' });
@@ -84,6 +83,8 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({ data }) => {
       text: value.accountName,
       options: [],
     });
+
+    onChange(value);
   };
 
   const { options } = search;
