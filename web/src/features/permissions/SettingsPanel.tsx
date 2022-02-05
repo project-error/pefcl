@@ -1,16 +1,29 @@
 import React from 'react';
-import { Typography } from "@mui/material";
-import IconLabelButton from "../../components/IconLabelButton";
+import IconLabelButton from '../../components/IconLabelButton';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { useAccountAPI } from '../accounts/api/useAccountAPI';
+import { useActiveAccountValue } from '../accounts/hooks/accounts.state';
 
-const SettingsPanel: React.FC = () => {
-	return (
-		<div>
-			<IconLabelButton variant="contained" icon={<DeleteIcon />}>
-				Delete
-			</IconLabelButton>
-		</div>
-	)
+interface SettingsPanelProps {
+  onClose: () => void;
 }
+
+const SettingsPanel: React.FC<SettingsPanelProps> = ({ onClose }) => {
+  const { deleteAccount } = useAccountAPI();
+  const activeAccount = useActiveAccountValue();
+
+  const handleDeleteAccount = async () => {
+    deleteAccount(activeAccount);
+    onClose();
+  };
+
+  return (
+    <div>
+      <IconLabelButton onClick={handleDeleteAccount} variant="contained" icon={<DeleteIcon />}>
+        Delete
+      </IconLabelButton>
+    </div>
+  );
+};
 
 export default SettingsPanel;

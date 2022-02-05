@@ -101,7 +101,7 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({ data, onChange }) =>
       {options.length > 0 && (
         <AutocompleteContainer>
           <div>
-            <AutocompleteGroup>Personal</AutocompleteGroup>
+            <AutocompleteGroup>{t('accounts.list.personal')}</AutocompleteGroup>
             {options
               .filter((acc) => acc.type === AccountType.Personal)
               .map((item: Account) => (
@@ -111,7 +111,7 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({ data, onChange }) =>
               ))}
           </div>
           <div>
-            <AutocompleteGroup>Shared</AutocompleteGroup>
+            <AutocompleteGroup>{t('accounts.list.shared')}</AutocompleteGroup>
             {options
               .filter((acc) => acc.type === AccountType.Shared)
               .map((item: Account) => (

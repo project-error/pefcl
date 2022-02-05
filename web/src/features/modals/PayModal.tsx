@@ -5,7 +5,6 @@ import { useAccountsValue } from '../accounts/hooks/accounts.state';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import IconTextField from '../../components/IconTextField';
 import { Autocomplete } from '../../components/Autocomplete/Autocomplete';
-import { accountIcons } from '../../icons/svgProvider';
 import { Account } from '../../../../typings/accounts';
 
 interface PayModalProps {
@@ -14,7 +13,7 @@ interface PayModalProps {
 }
 
 const PayModal: React.FC<PayModalProps> = ({ open, onClose }) => {
-  const [selectedAccount, setSelectedAccount] = useState<any>(null);
+  /*const [selectedAccount, setSelectedAccount] = useState<Account>(null);*/
   const [amount, setAmount] = useState<number>(0);
 
   const [t] = useTranslation();

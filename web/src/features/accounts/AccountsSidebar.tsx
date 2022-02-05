@@ -1,20 +1,16 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Box } from '@mui/material';
-import IconLabelButton, { IconButton } from '../../components/IconLabelButton';
-import AddIcon from '@mui/icons-material/Add';
 import { Account } from '../../../../typings/accounts';
 import AccountList from './AccountList';
 import { useFilteredAccountsValue, useSetActiveAccount } from './hooks/accounts.state';
 import AccountSearchbar from './components/AccountSearchbar';
 import NewAccountModal from './components/NewAccountModal';
-import { useTranslation } from 'react-i18next';
 import { useAccountActions } from './hooks/useAccountActions';
 
 const AccountsSidebar: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   const { getDefaultAccount } = useAccountActions();
-  const [t] = useTranslation();
 
   const setActiveAccount = useSetActiveAccount();
   const filteredAccounts = useFilteredAccountsValue();
@@ -32,9 +28,11 @@ const AccountsSidebar: React.FC = () => {
     [setActiveAccount],
   );
 
+  /*
   const openModal = () => {
     setIsModalOpen(true);
   };
+*/
 
   const closeModal = () => {
     setIsModalOpen(false);

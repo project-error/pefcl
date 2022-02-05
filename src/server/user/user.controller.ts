@@ -13,13 +13,15 @@ export class UserController {
   }
 
   @Event('playerJoining')
-  playerJoining(source: number) {
-    console.log(`New player loaded: ${GetPlayerName(source.toString())}`);
+  playerJoining() {
+    const _source = global.source;
+
+    console.log(`New player loaded: ${GetPlayerName(_source.toString())}`);
     if (config.general.useFrameworkIntegration) return;
 
-    this._userService.savePlayer({ source });
+    this._userService.savePlayer({ source: _source });
   }
-  
+
   @Event('onServerResourceStart')
   async onServerResourceStart(resource: string) {
     if (resource === GetCurrentResourceName()) {

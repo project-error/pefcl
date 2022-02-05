@@ -3,31 +3,53 @@ import { Account, AccountEvents, PreDBAccount } from '../../../../../typings/acc
 import { ServerPromiseResp } from '../../../../../typings/http';
 import { useCallback } from 'react';
 import { useSetAccounts, useSetActiveAccount } from '../hooks/accounts.state';
+import { useSnackbar } from 'notistack';
 
 interface IUseAccountAPI {
   createAccount: (accountName: string) => void;
+  deleteAccount: (account: Account) => void;
 }
 
 export const useAccountAPI = (): IUseAccountAPI => {
   const setAccounts = useSetAccounts();
   const setActiveAccount = useSetActiveAccount();
+  const { enqueueSnackbar } = useSnackbar();
 
   const createAccount = useCallback(
     (accountName: string) => {
-      console.log('account name', accountName);
       fetchNui<PreDBAccount, ServerPromiseResp<Account>>(AccountEvents.CreateAccount, {
         accountName,
       }).then((res) => {
         if (res.status !== 'ok') {
-          return 'something';
+          return enqueueSnackbar('Failed to create an account. Try again later', {
+            variant: 'error',
+          });
         }
 
         setAccounts((curAccounts) => [...curAccounts, res.data]);
         setActiveAccount(res.data);
+        enqueueSnackbar('Successfully created a new account', { variant: 'success' });
       });
     },
-    [setAccounts, setActiveAccount],
+    [setAccounts, setActiveAccount, enqueueSnackbar],
   );
 
-  return { createAccount };
+  const deleteAccount = useCallback(
+    (account: Account) => {
+      fetchNui<Account, ServerPromiseResp<void>>(AccountEvents.DeleteAccount, account).then(
+        (res) => {
+          if (res.status !== 'ok') {
+            return enqueueSnackbar('Failed to delete the account. Try again later.', {
+              variant: 'error',
+            });
+          }
+
+          setAccounts((curAccounts) => curAccounts.filter((acc) => acc.id !== account.id));
+          enqueueSnackbar('Successfully deleted the account.', { variant: 'success' });
+        },
+      );
+    },
+    [setAccounts, enqueueSnackbar],
+  );
+  return { createAccount, deleteAccount };
 };

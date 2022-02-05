@@ -34,8 +34,10 @@ export class AccountService {
     await this._accountDB.createAccount('Default account', userIdentifier, true);
   }
 
-  async handleDeleteAccount(accountId: string) {
-    await this._accountDB.deleteAccount(accountId);
+  async handleDeleteAccount(account: Account) {
+    console.log('deleted account', account);
+
+    await this._accountDB.deleteAccount(account.id);
   }
 
   /**
@@ -51,7 +53,7 @@ export class AccountService {
     // TODO: Error handling
     if (currentBalance >= depositAmount) {
       if (config.general.useFrameworkIntegration && tgtAccount.isDefault) {
-        exp.pefclDepositMoney(req.source, req.data.amount);
+        exp.pefclDepositMoney(req.source, depositAmount);
       }
 
       await this._accountDB.updateAccountBalance(tgtAccount, depositAmount);

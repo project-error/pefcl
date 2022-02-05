@@ -32,7 +32,8 @@ export class AccountController {
   }
 
   @NetPromise(AccountEvents.DeleteAccount)
-  async deleteAccount(req: Request<string>, res: Response<void>) {
+  async deleteAccount(req: Request<Account>, res: Response<void>) {
+    console.log('delete req', req);
     try {
       await this._accountService.handleDeleteAccount(req.data);
       res({ status: 'ok' });
