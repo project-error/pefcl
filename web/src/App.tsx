@@ -19,7 +19,7 @@ debugData([
 ]);
 
 const App: React.FC = () => {
-  const [isVisible, setIsVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
   const { i18n } = useTranslation();
 
   useNuiEvent<boolean>('setVisible', (data) => {
