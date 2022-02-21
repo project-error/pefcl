@@ -53,29 +53,25 @@ const BankDetails: React.FC = () => {
         </Box>
         {account.type === AccountType.Personal && (
           <Box>
-            <IconLabelButton
+            {/*<IconLabelButton
               onClick={openPermissionModal}
               variant="contained"
               size="small"
               icon={<SettingsIcon />}
             >
               {t('details.permissions')}
-            </IconLabelButton>
+            </IconLabelButton>*/}
+            <Button onClick={openPermissionModal} icon={<SettingsIcon />}>
+              {t('details.permissions')}
+            </Button>
           </Box>
         )}
       </Stack>
       <Box mt={3}>
-        <Stack direction="row" spacing={2}>
-          <IconLabelButton variant="contained" icon={<PaymentIcon />}>
-            Deposit
-          </IconLabelButton>
-          <IconLabelButton variant="contained" icon={<PaymentIcon />}>
-            Withdraw
-          </IconLabelButton>
-          {/*<IconLabelButton onClick={openPayModal} variant="contained" icon={<PaymentIcon />}>
-            Pay
-          </IconLabelButton>*/}
-          <Button>Pay</Button>
+        <Stack direction="row" alignItems="stretch" spacing={2}>
+          <Button icon={<PaymentIcon />}>Deposit</Button>
+          <Button icon={<PaymentIcon />}>Withdraw</Button>
+          <Button icon={<PaymentIcon />}>Pay</Button>
         </Stack>
       </Box>
       {/*
