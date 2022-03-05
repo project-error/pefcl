@@ -25,7 +25,7 @@ export const mainLogger = createLogger({
     }),
     new transports.Console({
       format: format.combine(
-        format.label({ label: '[NPWD]' }),
+        format.label({ label: '[PEFCL]' }),
         format.colorize({ all: true }),
         format.printf(formatLogs),
       ),

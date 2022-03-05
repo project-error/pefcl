@@ -11,5 +11,6 @@
   "debug": {
     "level": "silly"
   },
-  "locale": "en"
+  "language": "sv",
+  "currency": "SEK"
 }

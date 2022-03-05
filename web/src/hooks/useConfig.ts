@@ -1,18 +1,8 @@
-import { getResourceName, isEnvBrowser } from '../utils/misc';
-import { useSetConfig } from '../states/bank';
-import { useEffect } from 'react';
+import { useAtom } from 'jotai';
+import { ResourceConfig } from '../../../typings/config';
+import { configAtom } from '../data/resourceConfig';
 
-export const useConfig = () => {
-  const setConfig = useSetConfig();
-
-  useEffect(() => {
-    if (isEnvBrowser()) return;
-    const resourceName = getResourceName();
-
-    fetch(`https://cfx-nui-${resourceName}/config.json`).then(async (res) => {
-      const config = await res.json();
-      console.log('config', config);
-      setConfig(config);
-    });
-  }, [setConfig]);
+export const useConfig = (): ResourceConfig => {
+  const [config] = useAtom(configAtom);
+  return config;
 };

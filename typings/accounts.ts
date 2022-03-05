@@ -8,14 +8,16 @@ export type PreDBAccount = {
 };
 
 export interface Account {
-  id: string;
+  id: number;
+  balance: number;
+  owner: string;
+  isOwner: boolean;
+  isDefault: boolean;
   accountName: string;
   type: AccountType;
-  balance: string;
-  isDefault: boolean;
-  participants?: string[];
-  owner: boolean;
 }
+
+export type TransactionAccount = Pick<Account, 'id' | 'accountName'>;
 
 export interface DepositDTO {
   tgtAccount: Account;
@@ -28,4 +30,12 @@ export enum AccountEvents {
   CreateAccount = 'pefcl:createAccount',
   DeleteAccount = 'pefcl:deleteAccount',
   DepositMoney = 'pefcl:depositMoney',
+}
+
+export enum TransactionEvents {
+  Get = 'pefcl:getTransactions',
+}
+
+export enum InvoiceEvents {
+  Get = 'pefcl:getInvoices',
 }

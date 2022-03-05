@@ -1,7 +1,10 @@
+import { TransactionAccount } from './accounts';
+
 export interface Transaction {
   id: number;
-  amount: string;
-  type: string;
-  date: string;
-  target: string;
+  amount: number;
+  message: string;
+  createdAt: string;
+  to: TransactionAccount;
+  from: TransactionAccount;
 }

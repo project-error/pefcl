@@ -13,7 +13,7 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ onClose }) => {
   const activeAccount = useActiveAccountValue();
 
   const handleDeleteAccount = async () => {
-    deleteAccount(activeAccount);
+    activeAccount && deleteAccount(activeAccount);
     onClose();
   };
 

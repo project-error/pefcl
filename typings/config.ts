@@ -11,5 +11,6 @@ export interface ResourceConfig {
   debug: {
     level: string;
   };
-  locale: string;
+  language: string;
+  currency: string;
 }

@@ -2,14 +2,32 @@ import React, { useEffect, useState } from 'react';
 import './App.css';
 import { useNuiEvent } from './hooks/useNuiEvent';
 import { debugData } from './utils/debugData';
-import { BankContainer, BankWrapper } from './components/BankContainer';
-import { CircularProgress } from '@mui/material';
-import AccountsSidebar from './features/accounts/AccountsSidebar';
-import BankDetails from './features/details/BankDetails';
 import { useTranslation } from 'react-i18next';
-import { useConfigValue } from './states/bank';
-import { SidebarWrapper } from './styles/Sidebar.styles';
-import { SnackbarProvider } from 'notistack';
+import styled from '@emotion/styled';
+import { useConfig } from './hooks/useConfig';
+import { Route, Routes } from 'react-router-dom';
+import Dashboard from './views/dashboard/Dashboard';
+import theme from './utils/theme';
+import dayjs from 'dayjs';
+
+const Container = styled.div`
+  padding: 4rem;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const Content = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 1400px;
+  height: 800px;
+  overflow: hidden;
+  border-radius: 1rem;
+  color: ${theme.palette.text.primary};
+  background: ${theme.palette.background.default};
+`;
 
 debugData([
   {
@@ -19,6 +37,7 @@ debugData([
 ]);
 
 const App: React.FC = () => {
+  const config = useConfig();
   const [isVisible, setIsVisible] = useState(true);
   const { i18n } = useTranslation();
 
@@ -26,31 +45,38 @@ const App: React.FC = () => {
     setIsVisible(data);
   });
 
-  const config = useConfigValue();
+  useEffect(() => {
+    i18n.changeLanguage(config.language).catch((e) => console.error(e));
+  }, [i18n, config]);
 
   useEffect(() => {
-    i18n.changeLanguage(config.locale).catch((e) => console.error(e));
+    dayjs.locale(config.language);
   }, [i18n, config]);
 
   return (
     <>
       {isVisible && (
-        <SnackbarProvider maxSnack={2}>
-          <BankWrapper>
-            <BankContainer>
-              <SidebarWrapper>
-                <React.Suspense fallback={<CircularProgress />}>
-                  <AccountsSidebar />
-                </React.Suspense>
-              </SidebarWrapper>
-              <div style={{ paddingTop: 20 }}>
-                <React.Suspense fallback={<CircularProgress />}>
-                  <BankDetails />
-                </React.Suspense>
-              </div>
-            </BankContainer>
-          </BankWrapper>
-        </SnackbarProvider>
+        <Container>
+          <Content>
+            <Routes>
+              <Route path="/*" element={<Dashboard />} />
+            </Routes>
+          </Content>
+
+          {/* <Content>
+            <SidebarContainer>
+              <React.Suspense fallback={<CircularProgress />}>
+                <AccountsSidebar />
+              </React.Suspense>
+            </SidebarContainer>
+
+            <BaseContainer>
+              <React.Suspense fallback={<CircularProgress />}>
+                <BankDetails />
+              </React.Suspense>
+            </BaseContainer>
+          </Content> */}
+        </Container>
       )}
     </>
   );

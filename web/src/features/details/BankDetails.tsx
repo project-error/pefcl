@@ -9,7 +9,8 @@ import { AccountType } from '../../../../typings/accounts';
 import { useTranslation } from 'react-i18next';
 import PermissionsModal from '../permissions/PermissionsModal';
 import PayModal from '../modals/PayModal';
-import Button from '../../components/Button';
+import Button from '../../components/ui/Button';
+// import Button from '../../components/Button';
 
 const BankDetails: React.FC = () => {
   const [permissionModal, setPermissionModal] = useState<boolean>(false);
@@ -61,17 +62,15 @@ const BankDetails: React.FC = () => {
             >
               {t('details.permissions')}
             </IconLabelButton>*/}
-            <Button onClick={openPermissionModal} icon={<SettingsIcon />}>
-              {t('details.permissions')}
-            </Button>
+            <Button onClick={openPermissionModal}>{t('details.permissions')}</Button>
           </Box>
         )}
       </Stack>
       <Box mt={3}>
         <Stack direction="row" alignItems="stretch" spacing={2}>
-          <Button icon={<PaymentIcon />}>Deposit</Button>
+          {/* <Button icon={<PaymentIcon />}>Deposit</Button>
           <Button icon={<PaymentIcon />}>Withdraw</Button>
-          <Button icon={<PaymentIcon />}>Pay</Button>
+          <Button icon={<PaymentIcon />}>Pay</Button> */}
         </Stack>
       </Box>
       {/*

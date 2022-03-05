@@ -3,6 +3,8 @@ import { Account } from '../../../../../typings/accounts';
 import { useActiveAccountValue } from '../hooks/accounts.state';
 import { Item } from './AccountItem.styles';
 import styled from '@emotion/styled';
+import { useAtom } from 'jotai';
+import { activeAccountAtom, activeAccountAtomId } from '../../../data/accounts';
 
 interface AccountItemProps {
   account: Account;
@@ -24,9 +26,8 @@ const SecondaryText = styled('p')({
 });
 
 const AccountItem: React.FC<AccountItemProps> = ({ account, onClick }) => {
-  const activeAccount = useActiveAccountValue();
-
-  const isSelected = activeAccount?.id === account.id;
+  const [activeId] = useAtom(activeAccountAtomId);
+  const isSelected = activeId === account.id;
 
   return (
     <Item selected={isSelected} onClick={onClick}>
