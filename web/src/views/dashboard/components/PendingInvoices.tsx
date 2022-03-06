@@ -14,7 +14,7 @@ import { pendingInvoicesAtom } from '../../../data/invoices';
 import { Invoice } from '../../../../../typings/Invoice';
 import { useTranslation } from 'react-i18next';
 import Button from '../../../components/ui/Button';
-import PayInvoiceModal from '../../../components/Modals/PayInvoice/PayInvoice';
+import PayInvoiceModal from '../../../components/Modals/PayInvoice';
 
 dayjs.extend(calendar);
 dayjs.extend(relative);

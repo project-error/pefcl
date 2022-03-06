@@ -5,6 +5,8 @@ const theme = createTheme({
     background: {
       light4: 'rgba(255, 255, 255, 0.04)',
       light8: 'rgba(255, 255, 255, 0.08)',
+      dark4: 'rgba(0, 0, 0, 0.04)',
+      dark12: 'rgba(0, 0, 0, 0.12)',
       paper: '#131E2A',
       default: 'linear-gradient(179.77deg, #152333 0.2%, #17212C 99.8%);',
     },
@@ -51,28 +53,11 @@ const theme = createTheme({
 });
 
 declare module '@mui/material/styles' {
-  // interface Theme {
-  //   palette: {
-  //     ;
-  //   };
-  // }
-
-  // interface PaletteOptions {
-  //   background: {
-  //     light: string;
-  //   } & TypeBackground;
-  // }
-
-  // allow configuration using `createTheme`
-  // interface ThemeOptions {
-  //   background?: {
-  //     light: string;
-  //   };
-  // }
-
   interface TypeBackground {
     light4: string;
     light8: string;
+    dark4: string;
+    dark12: string;
   }
 }
 

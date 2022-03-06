@@ -30,3 +30,7 @@ export const activeAccountAtom = atom(
   (get) => get(accountsAtom).find((account) => account.id === get(activeAccountAtomId)),
   (_get, set, str: number) => set(activeAccountAtomId, str),
 );
+
+export const defaultAccountAtom = atom(
+  (get) => get(accountsAtom).find((account) => account.isDefault) ?? get(accountsAtom)[0],
+);

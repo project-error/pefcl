@@ -2,20 +2,23 @@ import styled from '@emotion/styled';
 import { Paper, Stack } from '@mui/material';
 import dayjs from 'dayjs';
 import calendar from 'dayjs/plugin/calendar';
-import React from 'react';
+import { useAtom } from 'jotai';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Invoice } from '../../../../../typings/Invoice';
-import { useConfig } from '../../../hooks/useConfig';
-import { formatMoney } from '../../../utils/currency';
-import theme from '../../../utils/theme';
-import Summary from '../../Summary';
-import Button from '../../ui/Button';
-import { BodyText } from '../../ui/Typography/BodyText';
-import { Heading2, Heading5, Heading6 } from '../../ui/Typography/Headings';
+import { Invoice } from '../../../../typings/Invoice';
+import { accountsAtom, defaultAccountAtom } from '../../data/accounts';
+import { useConfig } from '../../hooks/useConfig';
+import { formatMoney } from '../../utils/currency';
+import theme from '../../utils/theme';
+import AccountSelect from '../AccountSelect';
+import Summary from '../Summary';
+import Button from '../ui/Button';
+import { BodyText } from '../ui/Typography/BodyText';
+import { Heading2, Heading3, Heading5, Heading6 } from '../ui/Typography/Headings';
 
 dayjs.extend(calendar);
 
-const Amount = styled(Heading2)`
+const Amount = styled(Heading3)`
   font-weight: ${theme.typography.fontWeightLight};
 `;
 
@@ -25,10 +28,14 @@ interface PayInvoiceModalProps {
 }
 
 const PayInvoiceModal: React.FC<PayInvoiceModalProps> = ({ onCancel, invoice }) => {
+  const [accounts] = useAtom(accountsAtom);
+  const [defaultAccount] = useAtom(defaultAccountAtom);
+  const [selectedAccountId, setSelectedAccountId] = useState(defaultAccount.id);
   const config = useConfig();
   const { t } = useTranslation();
 
   const date = dayjs(invoice.expiresAt);
+  const selectedAccount = accounts.find((account) => account.id === selectedAccountId);
 
   return (
     <Paper>
@@ -55,9 +62,9 @@ const PayInvoiceModal: React.FC<PayInvoiceModalProps> = ({ onCancel, invoice }) 
         </Stack>
 
         <Stack spacing={4} flex={1}>
-          <BodyText>Choose account here</BodyText>
+          <AccountSelect options={accounts} onSelect={setSelectedAccountId} />
 
-          <Summary balance={40000} payment={invoice.amount} />
+          <Summary balance={selectedAccount?.balance ?? 0} payment={invoice.amount} />
 
           <Stack direction="row" justifyContent="space-between">
             <Button color="error" onClick={onCancel}>
