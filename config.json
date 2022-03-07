@@ -9,7 +9,7 @@
     "profileQueries": true
   },
   "debug": {
-    "level": "silly"
+    "level": "error"
   },
   "language": "sv",
   "currency": "SEK"

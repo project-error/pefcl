@@ -1,7 +1,6 @@
-import mysql from 'mysql2/promise';
-import { CONNECTION_STRING, parseSemiColonFormat } from './db_utils';
+import { Sequelize } from 'sequelize';
+import { CONNECTION_STRING } from '../utils/dbUtils';
 
-// we require set mysql_connection_string  to be set in the config
 const mysqlConnectionString = GetConvar(CONNECTION_STRING, 'none');
 if (mysqlConnectionString === 'none') {
   const error = new Error(
@@ -9,6 +8,30 @@ if (mysqlConnectionString === 'none') {
   );
   throw error;
 }
+
+export const sequelize = new Sequelize(mysqlConnectionString, {
+  pool: {
+    max: 5,
+    min: 0,
+    acquire: 30000,
+    idle: 60000,
+  },
+  sync: {
+    alter: true,
+    force: true,
+  },
+});
+
+const initDatabase = async () => {
+  try {
+    await sequelize.authenticate();
+    console.log('Connection has been established successfully.');
+  } catch (error) {
+    console.error('Unable to connect to the database:', error);
+  }
+};
+
+initDatabase();
 
 /**
  * Most fivem servers utilize fivem-mysql-async (https://brouznouf.github.io/fivem-mysql-async/) and
@@ -18,35 +41,35 @@ if (mysqlConnectionString === 'none') {
  * fivem-mysql-async allows for two different connection string formats defined here:
  * https://brouznouf.github.io/fivem-mysql-async/config/ and we need to handle both of them.
  */
-export function generateConnectionPool() {
-  try {
-    const config = mysqlConnectionString.includes('mysql://')
-      ? { uri: mysqlConnectionString }
-      : parseSemiColonFormat(mysqlConnectionString);
+// export function generateConnectionPool() {
+//   try {
+//     const config = mysqlConnectionString.includes('mysql://')
+//       ? { uri: mysqlConnectionString }
+//       : parseSemiColonFormat(mysqlConnectionString);
 
-    return mysql.createPool({
-      connectTimeout: 60000,
-      ...config,
-    });
-  } catch (e) {
-    console.log('ugh');
-  }
-}
+//     return mysql.createPool({
+//       connectTimeout: 60000,
+//       ...config,
+//     });
+//   } catch (e) {
+//     console.log('ugh');
+//   }
+// }
 
-export const pool = generateConnectionPool();
+// export const pool = generateConnectionPool();
 
-export async function withTransaction(queries: Promise<any>[]): Promise<any[]> {
-  const connection = await pool.getConnection();
-  connection.beginTransaction();
+// export async function withTransaction(queries: Promise<any>[]): Promise<any[]> {
+//   const connection = await pool.getConnection();
+//   connection.beginTransaction();
 
-  try {
-    const results = await Promise.all(queries);
-    await connection.commit();
-    await connection.release();
-    return results;
-  } catch (err) {
-    await connection.rollback();
-    await connection.release();
-    return Promise.reject(err);
-  }
-}
+//   try {
+//     const results = await Promise.all(queries);
+//     await connection.commit();
+//     await connection.release();
+//     return results;
+//   } catch (err) {
+//     await connection.rollback();
+//     await connection.release();
+//     return Promise.reject(err);
+//   }
+// }

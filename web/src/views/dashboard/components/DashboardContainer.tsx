@@ -26,6 +26,26 @@ const Total = styled.div`
   background-color: ${theme.palette.background.light4};
 `;
 
+const Content = styled.div`
+  ::-webkit-scrollbar {
+    width: 0.25rem;
+  }
+
+  ::-webkit-scrollbar-track {
+    background-color: ${theme.palette.background.dark4};
+    border-radius: 2rem;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border-radius: 2rem;
+    background-color: #80cae24a;
+  }
+
+  padding-right: 12px;
+  max-height: 16rem;
+  overflow: auto;
+`;
+
 interface DashboardContainerProps {
   title: string;
   total: number;
@@ -42,7 +62,7 @@ const DashboardContainer: React.FC<DashboardContainerProps> = ({ children, total
           <Total>{total}</Total>
         </Stack>
 
-        <div>{children}</div>
+        <Content>{children}</Content>
 
         <Stack justifyContent="flex-end" alignItems="flex-end">
           <Button>{t('View all')}</Button>

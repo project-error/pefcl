@@ -64,7 +64,14 @@ type CardProps = Account & {
   onClick(event: MouseEvent<HTMLDivElement>): void;
 };
 
-export const Card: React.FC<CardProps> = ({ id, balance, isDefault, owner, type, ...props }) => {
+export const Card: React.FC<CardProps> = ({
+  id,
+  balance,
+  isDefault,
+  type,
+  accountName,
+  ...props
+}) => {
   const { t } = useTranslation();
   const config = useConfig();
 
@@ -80,8 +87,8 @@ export const Card: React.FC<CardProps> = ({ id, balance, isDefault, owner, type,
 
       <RowEnd>
         <Col>
-          <Heading6>Card Holder</Heading6>
-          <BodyText>{owner}</BodyText>
+          <Heading6>{t('Account name')}</Heading6>
+          <BodyText>{accountName}</BodyText>
         </Col>
 
         <StyledIcon />

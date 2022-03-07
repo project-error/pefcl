@@ -1,6 +1,7 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 import { config } from './server-config';
 import path from 'path';
+import winston from 'winston';
 const { createLogger, transports, format } = require('./logform');
 
 // Needed to manually apply a color to componenent property of log
@@ -16,7 +17,8 @@ const formatLogs = (log: any): string => {
 
 const findLogPath = () => `${path.join(GetResourcePath(GetCurrentResourceName()), 'sv_pefcl.log')}`;
 
-export const mainLogger = createLogger({
+console.log('LEVEL:', config.debug.level);
+export const mainLogger: winston.Logger = createLogger({
   level: config.debug.level,
   transports: [
     new transports.File({

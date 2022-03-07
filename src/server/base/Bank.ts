@@ -1,5 +1,6 @@
 import { container } from 'tsyringe';
-import { DIToken, IController } from '../../../typings/common';
+import { DIToken, IController, TYPES } from '../../../typings/common';
+import { TransactionModel } from '../services/transaction/transaction.model';
 import { mainLogger } from '../sv_logger';
 
 const baseLogger = mainLogger.child({ module: 'bank' });

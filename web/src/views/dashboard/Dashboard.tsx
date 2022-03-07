@@ -16,6 +16,8 @@ import { totalNumberOfTransaction } from '../../data/transactions';
 import { accountsAtom, activeAccountAtom, totalBalanceAtom } from '../../data/accounts';
 import { totalPendingInvoices } from '../../data/invoices';
 import PendingInvoices from './components/PendingInvoices';
+import { fetchNui } from '../../utils/fetchNui';
+import { AccountEvents } from '../../../../typings/accounts';
 
 const CardContainer = styled.div`
   display: flex;
@@ -45,9 +47,15 @@ const Dashboard = () => {
   const { t } = useTranslation();
   const [accounts] = useAtom(accountsAtom);
   const [totalBalance] = useAtom(totalBalanceAtom);
-  const [activeAccount, setActiveAccountId] = useAtom(activeAccountAtom);
   const [totalTransactions] = useAtom(totalNumberOfTransaction);
   const [totalInvoices] = useAtom(totalPendingInvoices);
+
+  console.log({ accounts });
+
+  const handleSetDefault = (id: number) => {
+    console.log('setting default to:', id);
+    fetchNui(AccountEvents.SetDefaultAccount, { accountId: id });
+  };
 
   return (
     <Layout>
@@ -62,8 +70,8 @@ const Dashboard = () => {
             <CardContainer key={account.id}>
               <Card
                 {...account}
-                isDefault={activeAccount?.id === account.id}
-                onClick={() => setActiveAccountId(account.id)}
+                // isDefault={activeAccount?.id === account.id}
+                onClick={() => handleSetDefault(account.id)}
               />
             </CardContainer>
           ))}

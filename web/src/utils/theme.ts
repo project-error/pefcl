@@ -11,7 +11,7 @@ const theme = createTheme({
       default: 'linear-gradient(179.77deg, #152333 0.2%, #17212C 99.8%);',
     },
     primary: {
-      light: '#fff',
+      light: '#56CCF2',
       main: '#56CCF2',
       contrastText: '#fff',
     },

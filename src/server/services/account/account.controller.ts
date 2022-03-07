@@ -1,7 +1,7 @@
-import { Controller } from '../decorators/Controller';
-import { NetPromise, PromiseEventListener } from '../decorators/NetPromise';
-import { Account, AccountEvents, PreDBAccount } from '../../../typings/accounts';
-import { Request, Response } from '../../../typings/http';
+import { Controller } from '../../decorators/Controller';
+import { NetPromise, PromiseEventListener } from '../../decorators/NetPromise';
+import { Account, AccountEvents, DepositDTO, PreDBAccount } from '../../../../typings/accounts';
+import { Request, Response } from '../../../../typings/http';
 import { AccountService } from './account.service';
 
 @Controller('Account')
@@ -15,8 +15,7 @@ export class AccountController {
 
   @NetPromise(AccountEvents.GetAccounts)
   async getAccounts(req: Request<void>, res: Response<Account[]>) {
-    const accounts = await this._accountService.handleGetAccounts();
-
+    const accounts = await this._accountService.handleGetMyAccounts(req.source);
     res({ status: 'ok', data: accounts });
   }
 
@@ -33,7 +32,6 @@ export class AccountController {
 
   @NetPromise(AccountEvents.DeleteAccount)
   async deleteAccount(req: Request<Account>, res: Response<void>) {
-    console.log('delete req', req);
     try {
       await this._accountService.handleDeleteAccount(req.data);
       res({ status: 'ok' });
@@ -44,9 +42,19 @@ export class AccountController {
 
   // type these later when we have specs
   @NetPromise(AccountEvents.DepositMoney)
-  async depositMoney(req: Request<any>, res: Response<any>) {
+  async depositMoney(req: Request<DepositDTO>, res: Response<any>) {
     try {
-      await this._accountService.handleDepositMoney(req.data);
+      await this._accountService.handleDepositMoney(req);
+    } catch (err) {
+      res({ status: 'error', errorMsg: err.message });
+    }
+  }
+
+  @NetPromise(AccountEvents.SetDefaultAccount)
+  async setDefaultAccount(req: Request<{ accountId: number }>, res: Response<any>) {
+    console.log({ req });
+    try {
+      await this._accountService.handleSetDefaultAccount(req);
     } catch (err) {
       res({ status: 'error', errorMsg: err.message });
     }

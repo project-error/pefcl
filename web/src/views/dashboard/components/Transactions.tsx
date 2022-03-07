@@ -28,13 +28,14 @@ const TransactionMessage = styled(BodyText)`
 
 const TransactionItem: React.FC<Transaction> = ({ message, amount, id, createdAt, ...props }) => {
   const config = useConfig();
-  const date = dayjs.unix(parseInt(createdAt, 10));
+  const date = dayjs(createdAt);
 
   return (
     <div {...props} key={id}>
       <Stack flexDirection="row" justifyContent="space-between">
         <Stack spacing={1}>
           <TransactionMessage>{message}</TransactionMessage>
+          <span>{props.toAccount?.accountName}</span>
           <TransactionDate>{date.calendar()}</TransactionDate>
         </Stack>
 
