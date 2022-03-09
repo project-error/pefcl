@@ -4,9 +4,10 @@ export enum AccountType {
 }
 
 export type PreDBAccount = {
+  fromAccountId: number;
   accountName: string;
   isDefault?: boolean;
-  type?: AccountType;
+  isShared?: boolean;
 };
 
 export interface Account {
@@ -38,6 +39,7 @@ export enum AccountEvents {
 
 export enum TransactionEvents {
   Get = 'pefcl:getTransactions',
+  CreateTransfer = 'pefcl:createTransfer',
 }
 
 export enum InvoiceEvents {

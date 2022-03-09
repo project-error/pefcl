@@ -11,6 +11,9 @@ export interface ResourceConfig {
   debug: {
     level: string;
   };
+  prices: {
+    newAccount: number;
+  };
   language: string;
   currency: string;
 }

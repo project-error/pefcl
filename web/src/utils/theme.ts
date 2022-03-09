@@ -39,10 +39,6 @@ const theme = createTheme({
   components: {
     MuiListItem: {
       styleOverrides: {
-        selected: {
-          background: '#fff',
-          backgroundColor: '#fff',
-        },
         root: {
           height: 60,
           borderRadius: 1,

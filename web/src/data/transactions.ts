@@ -18,8 +18,20 @@ const getTransactions = async (): Promise<Transaction[]> => {
   }
 };
 
-export const transactionsAtom = atom(async () => {
-  return await getTransactions();
-});
+export const rawTransactionsAtom = atom<Transaction[]>([]);
+export const transactionsAtom = atom(
+  async (get) => {
+    const transactions =
+      get(rawTransactionsAtom).length === 0 ? await getTransactions() : get(rawTransactionsAtom);
+    const sorted = transactions.sort((a, b) =>
+      (a?.createdAt ?? '') > (b?.createdAt ?? '') ? -1 : 1,
+    );
+
+    return sorted;
+  },
+  async (_get, set) => {
+    return set(rawTransactionsAtom, await getTransactions());
+  },
+);
 
 export const totalNumberOfTransaction = atom((get) => get(transactionsAtom).length);

@@ -17,9 +17,17 @@ const getDefaultAccounts = async (): Promise<Account[]> => {
   }
 };
 
-export const accountsAtom = atom(async () => {
-  return await getDefaultAccounts();
-});
+const rawAccountAtom = atom<Account[]>([]);
+export const accountsAtom = atom(
+  async (get) => {
+    const accounts =
+      get(rawAccountAtom).length === 0 ? await getDefaultAccounts() : get(rawAccountAtom);
+    return accounts;
+  },
+  async (_get, set) => {
+    return set(rawAccountAtom, await getDefaultAccounts());
+  },
+);
 
 export const totalBalanceAtom = atom((get) =>
   get(accountsAtom).reduce((prev, curr) => prev + curr.balance, 0),
@@ -31,6 +39,38 @@ export const activeAccountAtom = atom(
   (_get, set, str: number) => set(activeAccountAtomId, str),
 );
 
-export const defaultAccountAtom = atom(
-  (get) => get(accountsAtom).find((account) => account.isDefault) ?? get(accountsAtom)[0],
+export const defaultAccountAtom = atom((get) =>
+  get(accountsAtom).find((account) => account.isDefault),
+);
+
+/* Saved order for cards */
+type OrderedAccounts = Record<number, number>;
+const accountOrderAtom = atom<string>(localStorage.getItem('order') ?? '');
+
+export const orderedAccountsAtom = atom<Account[], OrderedAccounts>(
+  (get) => {
+    const accounts = get(accountsAtom);
+    const storageOrder = get(accountOrderAtom);
+
+    try {
+      JSON.parse(storageOrder);
+    } catch {
+      return accounts;
+    }
+
+    const order = JSON.parse(storageOrder);
+
+    const sorted = accounts.sort((a, b) => {
+      const aIndex = order?.[a.id] ?? 0;
+      const bIndex = order?.[b.id] ?? 0;
+
+      return aIndex > bIndex ? 1 : -1;
+    });
+
+    return sorted;
+  },
+  (_get, set, by: OrderedAccounts) => {
+    set(accountOrderAtom, JSON.stringify(by));
+    localStorage.setItem('order', JSON.stringify(by));
+  },
 );

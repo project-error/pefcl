@@ -6,11 +6,17 @@ import { useAtom } from 'jotai';
 import React from 'react';
 import { Transaction } from '../../../../../typings/transactions';
 import { BodyText } from '../../../components/ui/Typography/BodyText';
-import { Heading6 } from '../../../components/ui/Typography/Headings';
+import { Heading5, Heading6 } from '../../../components/ui/Typography/Headings';
 import { transactionsAtom } from '../../../data/transactions';
 import { useConfig } from '../../../hooks/useConfig';
 import { formatMoney } from '../../../utils/currency';
 import theme from '../../../utils/theme';
+import {
+  ArrowRight,
+  ArrowRightAltOutlined,
+  ArrowRightOutlined,
+  ArrowRightRounded,
+} from '@mui/icons-material';
 
 dayjs.extend(calendar);
 
@@ -26,16 +32,26 @@ const TransactionMessage = styled(BodyText)`
   overflow: hidden;
 `;
 
-const TransactionItem: React.FC<Transaction> = ({ message, amount, id, createdAt, ...props }) => {
+const TransactionItem: React.FC<{ transaction: Transaction }> = ({ transaction, ...rest }) => {
+  const { message, amount, id, createdAt, toAccount, fromAccount } = transaction;
   const config = useConfig();
   const date = dayjs(createdAt);
 
   return (
-    <div {...props} key={id}>
+    <div key={id} {...rest}>
       <Stack flexDirection="row" justifyContent="space-between">
         <Stack spacing={1}>
           <TransactionMessage>{message}</TransactionMessage>
-          <span>{props.toAccount?.accountName}</span>
+          <Stack direction="row" alignItems="center">
+            {fromAccount && (
+              <>
+                <Heading6>{fromAccount?.accountName}</Heading6>
+                <ArrowRightRounded color="primary" />
+              </>
+            )}
+
+            <Heading6>{toAccount?.accountName}</Heading6>
+          </Stack>
           <TransactionDate>{date.calendar()}</TransactionDate>
         </Stack>
 
@@ -51,7 +67,7 @@ const Transactions: React.FC = () => {
   return (
     <Stack spacing={2}>
       {transactions.map((transaction) => (
-        <TransactionItem key={transaction.id} {...transaction} />
+        <TransactionItem key={transaction.id} transaction={transaction} />
       ))}
     </Stack>
   );

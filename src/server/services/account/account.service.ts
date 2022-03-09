@@ -47,19 +47,92 @@ export class AccountService {
     return accounts.map((account) => account.toJSON());
   }
 
-  async handleCreateAccount(dto: Request<PreDBAccount>): Promise<Account> {
-    const userIdentifier = this._userService.getUser(dto.source).getIdentifier();
-    const account = await this._accountDB.createAccount({
-      ...dto.data,
-      type: dto.data.type ?? AccountType.Personal,
-      isDefault: dto.data.isDefault ?? false,
-      ownerIdentifier: userIdentifier,
-    });
-    return account.toJSON();
+  async handleCreateAccount(req: Request<PreDBAccount>): Promise<Account> {
+    logger.silly('Trying to create a new account ...');
+    logger.silly(req);
+
+    const userIdentifier = this._userService.getUser(req.source).getIdentifier();
+
+    const t = await sequelize.transaction();
+    t.LOCK;
+    try {
+      if (req.data.isDefault) {
+        const defaultAccount = await this._accountDB.getDefaultAccountByIdentifier(userIdentifier);
+        defaultAccount.update({ isDefault: false });
+      }
+
+      const userAccounts = await this._accountDB.getAccountsByIdentifier(userIdentifier);
+      const fromAccount = await this._accountDB.getAccount(req.data.fromAccountId);
+
+      const isFirstSetup = userAccounts.length === 0;
+      const isShared = req.data.isShared && !isFirstSetup;
+      const isDefault = isFirstSetup ?? req.data.isDefault;
+
+      if (fromAccount?.getDataValue('balance') < config.prices.newAccount && !isFirstSetup) {
+        throw new Error('Insufficent funds available on account');
+      }
+
+      if (!isFirstSetup) {
+        await fromAccount?.decrement('balance', { by: config.prices.newAccount });
+      }
+
+      const account = await this._accountDB.createAccount({
+        ...req.data,
+        accountName: req.data.accountName ?? 'Pension',
+        type: isShared ? AccountType.Shared : AccountType.Personal,
+        isDefault: isDefault,
+        ownerIdentifier: userIdentifier,
+      });
+
+      t.commit();
+      return account.toJSON();
+    } catch (e) {
+      t.rollback();
+      logger.silly('Failed to create a new account');
+      logger.silly(req);
+      logger.error(e);
+    }
   }
 
-  async handleDeleteAccount(account: Account) {
-    await this._accountDB.deleteAccount(account.id);
+  async handleDeleteAccount(req: Request<{ accountId: number }>) {
+    logger.silly('Trying to DELETE account ...');
+    logger.silly(req);
+
+    const t = await sequelize.transaction();
+    try {
+      const accounts = await this.getMyAccounts(req.source);
+      const defaultAccount = accounts.find((account) => account.getDataValue('isDefault'));
+      const deletingAccount = accounts.find(
+        (account) => account.getDataValue('id') === req.data.accountId,
+      );
+      const deletingAccountBalance = deletingAccount.getDataValue('balance');
+
+      if (!deletingAccount) {
+        throw new Error('This is not your account'); // TODO: Implement smarter way of doing this check. Generally you can't access other players accounts :p
+      }
+
+      if (!defaultAccount) {
+        throw new Error('No default account was found. Nowhere to transfer money.');
+      }
+
+      if (deletingAccountBalance < 0) {
+        throw new Error('The balance of the account is too low. It cannot be deleted!');
+      }
+
+      await defaultAccount.increment('balance', { by: deletingAccountBalance });
+      await deletingAccount.destroy();
+
+      t.commit();
+    } catch (e) {
+      t.rollback();
+      logger.silly('Failed to delete account');
+      logger.silly(req);
+      return;
+    }
+
+    logger.silly('Successfullt deleted account!');
+    logger.silly(req);
+    return;
   }
 
   async transferBalance(fromId: number, toId: number, amount: number, source: number) {
@@ -95,7 +168,7 @@ export class AccountService {
     const depositionAmount = req.data.amount;
 
     const userBalance = this._userService.getUser(req.source).getBalance();
-    const currentAccountBalance = targetAccount.getDataValue('balance');
+    const currentAccountBalance = targetAccount?.getDataValue('balance');
 
     if (userBalance < depositionAmount) {
       logger.silly({ userBalance, depositionAmount, currentAccountBalance });
@@ -128,14 +201,19 @@ export class AccountService {
       const defaultAccount = await this._accountDB.getDefaultAccountByIdentifier(user.identifier);
       const newDefaultAccount = await this._accountDB.getAccount(req.data.accountId);
 
-      if (defaultAccount.getDataValue('id') === req.data.accountId) {
+      if (defaultAccount?.getDataValue('id') === req.data.accountId) {
         throw new Error('This is already the default account');
       }
 
-      await defaultAccount.update({ isDefault: false });
+      if (!newDefaultAccount.getDataValue('id')) {
+        throw new Error('No such account exist with specified ID.');
+      }
+
+      await defaultAccount?.update({ isDefault: false });
       await newDefaultAccount.update({ isDefault: true });
 
       t.commit();
+      return newDefaultAccount;
     } catch (err) {
       logger.error(`Failed to change default account for ${user.identifier}`);
       logger.error(err);

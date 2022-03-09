@@ -1,3 +1,5 @@
+import { ResourceConfig } from '../../../typings/config';
+
 type FormatMoneyOptions = {
   currency: string;
   language: string;
@@ -19,10 +21,10 @@ export const formatMoneyWithoutCurrency = (amount: number, language: string) => 
   return formatter.format(amount);
 };
 
-export const getSignLocation = (formatLng: string, currency: string): 'before' | 'after' => {
-  const formatter = new Intl.NumberFormat(formatLng, {
+export const getSignLocation = (config: ResourceConfig): 'before' | 'after' => {
+  const formatter = new Intl.NumberFormat(config.language, {
     style: 'currency',
-    currency: currency,
+    currency: config.currency,
   });
 
   const result = formatter.format(0);
@@ -31,10 +33,10 @@ export const getSignLocation = (formatLng: string, currency: string): 'before' |
   return isBefore ? 'before' : 'after';
 };
 
-export const getCurrencySign = (formatLng: string, currency: string): string => {
-  const formatter = new Intl.NumberFormat(formatLng, {
+export const getCurrencySign = (config: ResourceConfig): string => {
+  const formatter = new Intl.NumberFormat(config.language, {
     style: 'currency',
-    currency: currency,
+    currency: config.currency,
   });
 
   const [result] = formatter.formatToParts(0).filter((part) => part.type === 'currency');

@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import { Stack } from '@mui/material';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { useHistory } from 'react-router-dom';
 import Button from '../../../components/ui/Button';
 import { Heading5 } from '../../../components/ui/Typography/Headings';
 import theme from '../../../utils/theme';
@@ -49,10 +50,17 @@ const Content = styled.div`
 interface DashboardContainerProps {
   title: string;
   total: number;
+  viewAllRoute: string;
 }
 
-const DashboardContainer: React.FC<DashboardContainerProps> = ({ children, total, title }) => {
+const DashboardContainer: React.FC<DashboardContainerProps> = ({
+  children,
+  total,
+  title,
+  viewAllRoute,
+}) => {
   const { t } = useTranslation();
+  const { push } = useHistory();
 
   return (
     <Container>
@@ -65,7 +73,7 @@ const DashboardContainer: React.FC<DashboardContainerProps> = ({ children, total
         <Content>{children}</Content>
 
         <Stack justifyContent="flex-end" alignItems="flex-end">
-          <Button>{t('View all')}</Button>
+          <Button onClick={() => push(viewAllRoute)}>{t('View all')}</Button>
         </Stack>
       </Stack>
     </Container>

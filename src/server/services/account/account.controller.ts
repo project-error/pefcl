@@ -31,10 +31,10 @@ export class AccountController {
   }
 
   @NetPromise(AccountEvents.DeleteAccount)
-  async deleteAccount(req: Request<Account>, res: Response<void>) {
+  async deleteAccount(req: Request<{ accountId: number }>, res: Response<any>) {
     try {
-      await this._accountService.handleDeleteAccount(req.data);
-      res({ status: 'ok' });
+      await this._accountService.handleDeleteAccount(req);
+      res({ status: 'ok', data: {} });
     } catch (err) {
       res({ status: 'error', errorMsg: err.message });
     }
@@ -52,9 +52,9 @@ export class AccountController {
 
   @NetPromise(AccountEvents.SetDefaultAccount)
   async setDefaultAccount(req: Request<{ accountId: number }>, res: Response<any>) {
-    console.log({ req });
     try {
       await this._accountService.handleSetDefaultAccount(req);
+      res({ status: 'ok', data: {} });
     } catch (err) {
       res({ status: 'error', errorMsg: err.message });
     }

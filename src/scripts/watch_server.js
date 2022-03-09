@@ -14,6 +14,9 @@ esbuild
     platform: 'node',
     target: 'node16',
     outfile: 'dist/server.js',
+    define: {
+      'process.env.NODE_ENV': '"development"',
+    },
     plugins: [
       esbuildDecorators({
         tsconfig: 'server/tsconfig.json',

@@ -5,10 +5,12 @@ import { debugData } from './utils/debugData';
 import { useTranslation } from 'react-i18next';
 import styled from '@emotion/styled';
 import { useConfig } from './hooks/useConfig';
-import { Route, Routes } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 import Dashboard from './views/dashboard/Dashboard';
 import theme from './utils/theme';
 import dayjs from 'dayjs';
+import Transactions from './views/transactions/Transactions';
+import Accounts from './views/accounts/Accounts';
 
 const Container = styled.div`
   padding: 4rem;
@@ -58,24 +60,10 @@ const App: React.FC = () => {
       {isVisible && (
         <Container>
           <Content>
-            <Routes>
-              <Route path="/*" element={<Dashboard />} />
-            </Routes>
+            <Route path="/" exact component={Dashboard} />
+            <Route path="/accounts" component={Accounts} />
+            <Route path="/transactions" component={Transactions} />
           </Content>
-
-          {/* <Content>
-            <SidebarContainer>
-              <React.Suspense fallback={<CircularProgress />}>
-                <AccountsSidebar />
-              </React.Suspense>
-            </SidebarContainer>
-
-            <BaseContainer>
-              <React.Suspense fallback={<CircularProgress />}>
-                <BankDetails />
-              </React.Suspense>
-            </BaseContainer>
-          </Content> */}
         </Container>
       )}
     </>

@@ -1,0 +1,6 @@
+{
+    "watch": ["dist"],
+    "ext": "ts,mjs,js,json,graphql",
+    "exec": "node ./dist/server.js",
+    "legacyWatch": true
+  }

@@ -8,9 +8,12 @@
   "database": {
     "profileQueries": true
   },
-  "debug": {
-    "level": "error"
+  "prices": {
+    "newAccount": 25
   },
   "language": "sv",
-  "currency": "SEK"
+  "currency": "SEK",
+  "debug": {
+    "level": "silly"
+  }
 }

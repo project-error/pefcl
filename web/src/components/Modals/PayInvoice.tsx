@@ -30,7 +30,7 @@ interface PayInvoiceModalProps {
 const PayInvoiceModal: React.FC<PayInvoiceModalProps> = ({ onCancel, invoice }) => {
   const [accounts] = useAtom(accountsAtom);
   const [defaultAccount] = useAtom(defaultAccountAtom);
-  const [selectedAccountId, setSelectedAccountId] = useState(defaultAccount.id);
+  const [selectedAccountId, setSelectedAccountId] = useState(defaultAccount?.id ?? 0);
   const config = useConfig();
   const { t } = useTranslation();
 
@@ -62,7 +62,7 @@ const PayInvoiceModal: React.FC<PayInvoiceModalProps> = ({ onCancel, invoice }) 
         </Stack>
 
         <Stack spacing={4} flex={1}>
-          <AccountSelect options={accounts} onSelect={setSelectedAccountId} />
+          <AccountSelect accounts={accounts} onSelect={setSelectedAccountId} />
 
           <Summary balance={selectedAccount?.balance ?? 0} payment={invoice.amount} />
 

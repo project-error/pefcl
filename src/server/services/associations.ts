@@ -11,4 +11,6 @@ TransactionModel.belongsTo(AccountModel, {
   as: 'fromAccount',
 });
 
-// sequelize.sync();
+// AccountModel.hasMany(TransactionModel);
+
+sequelize.sync();

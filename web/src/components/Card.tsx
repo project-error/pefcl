@@ -15,7 +15,7 @@ const Container = styled.div<{ accountType: AccountType }>`
   background: ${({ accountType }) =>
     accountType === AccountType.Personal
       ? 'linear-gradient(90deg, #264f82 0%, #1d3757 100%)'
-      : 'linear-gradient(90deg, rgba(48, 67, 91, 0.7) 0%, #263140 100%)'};
+      : 'linear-gradient(90deg, rgb(45, 58, 75) 0%, #263140 100%)'};
 
   border-radius: 1rem;
   display: grid;
@@ -60,18 +60,12 @@ const DefaultText = styled(Heading6)`
   font-weight: ${theme.typography.fontWeightLight};
 `;
 
-type CardProps = Account & {
-  onClick(event: MouseEvent<HTMLDivElement>): void;
+type CardProps = {
+  account: Account;
 };
 
-export const Card: React.FC<CardProps> = ({
-  id,
-  balance,
-  isDefault,
-  type,
-  accountName,
-  ...props
-}) => {
+export const Card: React.FC<CardProps> = ({ account, ...props }) => {
+  const { type, id, balance, isDefault, accountName } = account;
   const { t } = useTranslation();
   const config = useConfig();
 

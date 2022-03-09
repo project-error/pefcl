@@ -12,9 +12,12 @@ const colors = {
   info: '',
   warning: '',
   error: css`
+    color: ${theme.palette.error.main};
     background-color: rgba(255, 77, 77, 0.14);
   `,
-  primary: css``,
+  primary: css`
+    color: ${theme.palette.primary.main};
+  `,
 };
 
 const StyledButtonBase = styled(ButtonBase)`
@@ -27,8 +30,8 @@ const StyledButtonBase = styled(ButtonBase)`
   ${({ color }) => colors[color ?? 'primary']};
 
   :disabled {
-    opacity: 0.35;
-    background-color: rgba(255, 255, 255, 0.04);
+    opacity: 0.25;
+    ${({ color }) => colors[color ?? 'primary']};
   }
 `;
 

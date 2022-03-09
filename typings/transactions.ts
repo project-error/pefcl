@@ -13,3 +13,10 @@ export interface Transaction {
   createdAt?: string;
   updatedAt?: string;
 }
+
+export interface Transfer {
+  toAccountId: number;
+  fromAccountId: number;
+  message: string;
+  amount: number;
+}

@@ -1,13 +1,6 @@
 import styled from '@emotion/styled';
-import {
-  InputBase,
-  ListSubheader,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
-  Stack,
-} from '@mui/material';
-import React, { useState } from 'react';
+import { InputBase, MenuItem, Select, SelectChangeEvent, Stack } from '@mui/material';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Account, AccountType } from '../../../typings/accounts';
 import { ResourceConfig } from '../../../typings/config';
@@ -37,7 +30,13 @@ const StyledMenuItem = styled(MenuItem)`
     background: ${theme.palette.background.dark12};
   }
 
+  &.Mui-selected:focus-visible,
+  &.Mui-selected:focus,
   &.Mui-selected:hover {
+    background: ${theme.palette.background.dark12};
+  }
+
+  &.Mui-focusVisible {
     background: ${theme.palette.background.dark4};
   }
 `;
@@ -57,30 +56,37 @@ const ListItem = styled.div`
 `;
 
 const Option: React.FC<{ account: Account; config: ResourceConfig }> = ({ account, config }) => {
+  const { t } = useTranslation();
   return (
     <ListItem>
       <Stack p="0rem 0.5rem">
         <BodyText>{account.accountName}</BodyText>
         <BalanceText>{formatMoney(account.balance, config)}</BalanceText>
       </Stack>
-      {/* <Heading6>{account.type === AccountType.Personal ? t('Personal') : t('Shared')}</Heading6> */}
+      <Heading6>{account.type === AccountType.Personal ? t('Personal') : t('Shared')}</Heading6>
     </ListItem>
   );
 };
 
 interface AccountSelect {
-  options: Account[];
+  accounts: Account[];
+  selectedId?: number;
   onSelect(accountId: number): void;
 }
 
-const AccountSelect: React.FC<AccountSelect> = ({ options, onSelect }) => {
-  const { t } = useTranslation();
+const AccountSelect: React.FC<AccountSelect> = ({ accounts: accounts, onSelect, selectedId }) => {
   const config = useConfig();
-  const initialValue = options[0].id;
+  const initialValue = accounts.find((account) => account.isDefault)?.id ?? 0;
   const [selected, setSelected] = useState<number>(initialValue);
 
-  const sharedAccounts = options.filter((account) => account.type === AccountType.Shared);
-  const personalAccounts = options.filter((account) => account.type === AccountType.Personal);
+  const sharedAccounts = accounts.filter((account) => account.type === AccountType.Shared);
+  const personalAccounts = accounts.filter((account) => account.type === AccountType.Personal);
+
+  useEffect(() => {
+    if (selectedId) {
+      setSelected(selectedId);
+    }
+  }, [selectedId]);
 
   const handleChange = (event: SelectChangeEvent<number>) => {
     const value = Number(event.target.value);
@@ -94,7 +100,6 @@ const AccountSelect: React.FC<AccountSelect> = ({ options, onSelect }) => {
 
   return (
     <div>
-      {/* <InputLabel id="account-select">{t('Select account')}</InputLabel> */}
       <Select
         id="account-select"
         value={selected}
@@ -106,16 +111,14 @@ const AccountSelect: React.FC<AccountSelect> = ({ options, onSelect }) => {
           return <SelectIcon {...props} />;
         }}
       >
-        <ListSubheader>{t('Personal')}</ListSubheader>
         {personalAccounts.map((account) => (
-          <StyledMenuItem key={account.id} value={account.id}>
+          <StyledMenuItem key={account.id} value={account.id} disabled={selectedId === account.id}>
             <Option account={account} config={config} />
           </StyledMenuItem>
         ))}
 
-        <ListSubheader>{t('Shared')}</ListSubheader>
         {sharedAccounts.map((account) => (
-          <StyledMenuItem key={account.id} value={account.id}>
+          <StyledMenuItem key={account.id} value={account.id} disabled={selectedId === account.id}>
             <Option account={account} config={config} />
           </StyledMenuItem>
         ))}

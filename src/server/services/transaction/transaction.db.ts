@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { Transaction } from '../../../../typings/accounts';
+import { Transaction } from '../../../../typings/transactions';
 import { AccountModel } from '../account/account.model';
 import { TransactionModel } from './transaction.model';
 
@@ -19,19 +19,17 @@ export class TransactionDB {
   }
 
   async create(transaction: Partial<Transaction>): Promise<TransactionModel> {
-    const newTransaction = await TransactionModel.create(
-      {
-        ...transaction,
-        toAccount: transaction.toAccount.id,
-        fromAccount: transaction.fromAccount?.id,
-      },
-      {
-        include: [
-          { model: AccountModel, as: 'toAccount' },
-          { model: AccountModel, as: 'fromAccount' },
-        ],
-      },
-    );
-    return newTransaction;
+    console.log('Creating transaction', transaction);
+    const { toAccount, fromAccount, ...dbTransaction } = transaction;
+    const newTransaction = await TransactionModel.create({
+      ...dbTransaction,
+    });
+
+    //@ts-ignore
+    await newTransaction.setToAccount(toAccount.id);
+    //@ts-ignore
+    await newTransaction.setFromAccount(fromAccount.id);
+
+    return await newTransaction.save();
   }
 }

@@ -23,7 +23,20 @@ module.exports = {
         match.loader.include = include.concat([path.join(__dirname, '../typings')]);
       }
 
-      return webpackConfig;
+      return {
+        ...webpackConfig,
+        module: {
+          ...webpackConfig.module,
+          rules: [
+            ...webpackConfig.module.rules,
+            {
+              type: 'javascript/auto',
+              test: /\.mjs$/,
+              include: /node_modules/,
+            },
+          ],
+        },
+      };
     },
   },
 

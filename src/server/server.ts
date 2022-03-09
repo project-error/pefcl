@@ -12,6 +12,7 @@ import {
   AccountEvents,
   AccountType,
   DepositDTO,
+  InvoiceEvents,
   PreDBAccount,
   TransactionEvents,
 } from '../../typings/accounts';
@@ -22,6 +23,7 @@ import bodyParser from 'body-parser';
 
 /* Create associations after the models etc */
 import './services/associations';
+import { Transfer } from '../../typings/transactions';
 
 new Bank().bootstrap();
 
@@ -34,7 +36,6 @@ const createEndpoint = (eventName: string): [string, RequestHandler] => {
   return [
     endpoint,
     async (req, res) => {
-      console.log('retrieved:', req);
       emitNet(eventName, responseEventName, req.body);
       const result = await new Promise((resolve) => {
         onNet(responseEventName, (_source: number, data: ServerPromiseResp<unknown>) => {
@@ -58,8 +59,11 @@ if (isDevelopment) {
   });
 
   app.post(...createEndpoint(AccountEvents.GetAccounts));
+  app.post(...createEndpoint(AccountEvents.DeleteAccount));
   app.post(...createEndpoint(AccountEvents.SetDefaultAccount));
+  app.post(...createEndpoint(AccountEvents.CreateAccount));
   app.post(...createEndpoint(TransactionEvents.Get));
+  app.post(...createEndpoint(TransactionEvents.CreateTransfer));
 
   app.listen(port, () => {
     console.log(`Example app listening on port ${port}`);
@@ -69,31 +73,47 @@ if (isDevelopment) {
 const test = async () => {
   await sequelize.authenticate();
   await new Promise((resolve) => {
-    setTimeout(resolve, 400);
+    setTimeout(resolve, 500);
   });
 
   global.source = 2;
   emit('playerJoining', {});
 
   /* Emit something */
-  // const createAccountPayload: PreDBAccount = {
-  //   accountName: 'Bennys AB',
-  //   type: AccountType.Shared,
-  // };
+  const createAccountPayload1: PreDBAccount = {
+    accountName: 'Bennys AB',
+    isShared: true,
+    fromAccountId: 0,
+  };
 
-  // emitNet(AccountEvents.CreateAccount, AccountEvents.CreateAccountResponse, createAccountPayload);
+  emitNet(AccountEvents.CreateAccount, AccountEvents.CreateAccountResponse, createAccountPayload1);
+  const createAccountPayload2: PreDBAccount = {
+    accountName: 'Pension',
+    isDefault: false,
+    fromAccountId: 0,
+  };
+
+  emitNet(AccountEvents.CreateAccount, AccountEvents.CreateAccountResponse, createAccountPayload2);
 
   await new Promise((resolve) => {
-    setTimeout(resolve, 1500);
+    setTimeout(resolve, 800);
   });
 
   const payload: DepositDTO = {
     amount: 800,
     message: 'ATM Deposition',
-    accountId: 10,
+    accountId: 1,
   };
 
   emitNet(AccountEvents.DepositMoney, AccountEvents.CreateAccountResponse, payload);
+
+  const transaction: Transfer = {
+    amount: 25000,
+    message: 'Internal transfer',
+    toAccountId: 1,
+    fromAccountId: 2,
+  };
+  emitNet(TransactionEvents.CreateTransfer, AccountEvents.CreateAccountResponse, transaction);
 
   //   //   const tgtAccount = req.data.tgtAccount;
   //   //   const depositAmount = req.data.amount;
