@@ -1,24 +1,15 @@
-import { useEffect, useRef } from 'react';
-import { noop } from '../utils/misc';
+import { useEffect } from 'react';
 import { fetchNui } from '../utils/fetchNui';
-
-type FrameVisibleSetter = (bool: boolean) => void;
+import { GeneralEvents } from '@typings/accounts';
+import { isEnvBrowser } from '@utils/misc';
 
 const LISTENED_KEYS = ['Escape', 'Backspace'];
 
-// Basic hook to listen for key presses in NUI in order to exit
-export const useExitListener = (visibleSetter: FrameVisibleSetter) => {
-  const setterRef = useRef<FrameVisibleSetter>(noop);
-
-  useEffect(() => {
-    setterRef.current = visibleSetter;
-  }, [visibleSetter]);
-
+export const useExitListener = () => {
   useEffect(() => {
     const keyHandler = (e: KeyboardEvent) => {
-      if (LISTENED_KEYS.includes(e.code)) {
-        setterRef.current(false);
-        fetchNui('hideFrame');
+      if (LISTENED_KEYS.includes(e.code) && !isEnvBrowser()) {
+        fetchNui(GeneralEvents.CloseBank);
       }
     };
 

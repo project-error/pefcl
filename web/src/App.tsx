@@ -11,6 +11,7 @@ import dayjs from 'dayjs';
 import Transactions from './views/transactions/Transactions';
 import Accounts from './views/accounts/Accounts';
 import { useNuiEvent } from 'react-fivem-hooks';
+import { useExitListener } from '@hooks/useExitListener';
 
 const Container = styled.div`
   padding: 4rem;
@@ -45,6 +46,7 @@ const App: React.FC = () => {
     defaultValue: process.env.NODE_ENV === 'development',
   });
   const { i18n } = useTranslation();
+  useExitListener();
 
   useEffect(() => {
     i18n.changeLanguage(config.language).catch((e) => console.error(e));

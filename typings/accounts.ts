@@ -28,6 +28,10 @@ export interface ATMInput {
   accountId?: number;
 }
 
+export enum GeneralEvents {
+  CloseBank = 'pefcl:closeNui',
+}
+
 export enum AccountEvents {
   GetAccounts = 'pefcl:getAccounts',
   CreateAccount = 'pefcl:createAccount',
