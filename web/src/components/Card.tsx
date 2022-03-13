@@ -10,6 +10,7 @@ import { BodyText } from './ui/Typography/BodyText';
 import { Heading3, Heading6 } from './ui/Typography/Headings';
 
 const Container = styled.div<{ accountType: AccountType }>`
+  user-select: none;
   width: 100%;
   padding: 1rem;
   background: ${({ accountType }) =>
@@ -27,7 +28,7 @@ const Container = styled.div<{ accountType: AccountType }>`
   box-shadow: ${theme.shadows[4]};
 
   :hover {
-    box-shadow: ${theme.shadows[12]};
+    box-shadow: ${theme.shadows[6]};
   }
 `;
 

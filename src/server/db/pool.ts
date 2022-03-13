@@ -21,7 +21,6 @@ export const sequelize = new Sequelize(mysqlConnectionString, {
     acquire: 30000,
     idle: 60000,
   },
-  logging: logger.silly,
   sync: {
     alter: true,
     force: true,

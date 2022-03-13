@@ -35,6 +35,7 @@ const LayoutHeader = () => {
         onClose={() => setIsTransferOpen(false)}
         maxWidth={'sm'}
         fullWidth
+        hideBackdrop
       >
         <TransferFundsModal onClose={() => setIsTransferOpen(false)} />
       </Dialog>

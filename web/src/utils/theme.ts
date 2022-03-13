@@ -45,6 +45,15 @@ const theme = createTheme({
         },
       },
     },
+    MuiChip: {
+      styleOverrides: {
+        root: {
+          ':hover': {
+            background: '#21426a',
+          },
+        },
+      },
+    },
   },
 });
 

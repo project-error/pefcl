@@ -40,9 +40,11 @@ debugData([
 
 const App: React.FC = () => {
   const config = useConfig();
-  const { data: isVisible } = useNuiEvent<boolean>({ event: 'setVisible' });
+  const { data: isVisible } = useNuiEvent<boolean>({
+    event: 'setVisible',
+    defaultValue: process.env.NODE_ENV === 'development',
+  });
   const { i18n } = useTranslation();
-  console.log('app rendered');
 
   useEffect(() => {
     i18n.changeLanguage(config.language).catch((e) => console.error(e));

@@ -58,7 +58,7 @@ const InvoiceItem: React.FC<{ invoice: Invoice }> = ({ invoice, ...props }) => {
 
   return (
     <div {...props} key={id}>
-      <Dialog open={isPayOpen} onClose={handleCloseModal} maxWidth="md" fullWidth>
+      <Dialog open={isPayOpen} onClose={handleCloseModal} maxWidth="md" fullWidth hideBackdrop>
         <PayInvoiceModal onClose={handleCloseModal} invoice={invoice} />
       </Dialog>
 

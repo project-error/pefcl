@@ -11,11 +11,13 @@ import PriceField from '../ui/Fields/PriceField';
 import { fetchNui } from '../../utils/fetchNui';
 import { TransactionEvents } from '../../../../typings/accounts';
 import { Transfer } from '../../../../typings/transactions';
+import { transactionsAtom } from 'src/data/transactions';
 
 const TransferFundsModal: React.FC<{ onClose(): void }> = ({ onClose }) => {
   const { t } = useTranslation();
   const [amount, setAmount] = useState('');
-  const [accounts, update] = useAtom(accountsAtom);
+  const [accounts, updateAccounts] = useAtom(accountsAtom);
+  const [, updateTransactions] = useAtom(transactionsAtom);
   const [defaultAccount] = useAtom(defaultAccountAtom);
   const [fromAccountId, setFromAccountId] = useState(defaultAccount?.id ?? 0);
   const [toAccountId, setToAccountID] = useState(-1);
@@ -40,7 +42,8 @@ const TransferFundsModal: React.FC<{ onClose(): void }> = ({ onClose }) => {
     };
 
     await fetchNui(TransactionEvents.CreateTransfer, payload).finally(() => {});
-    await update();
+    await updateAccounts();
+    await updateTransactions();
 
     setIsTransfering(false);
     onClose();

@@ -7,6 +7,11 @@ import LayoutHeader from './LayoutHeader';
 const Container = styled.div`
   position: relative;
   padding: 3rem;
+  height: 100%;
+`;
+
+const Content = styled.div`
+  height: 100%;
 `;
 
 const Layout: React.FC = ({ children }) => {
@@ -32,7 +37,7 @@ const Layout: React.FC = ({ children }) => {
         </MenuList>
       </Popover>
 
-      {children}
+      <Content>{children}</Content>
     </Container>
   );
 };

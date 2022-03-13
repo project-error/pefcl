@@ -18,6 +18,9 @@ import './services/associations';
 new Bank().bootstrap();
 
 const isMocking = process.env.NODE_ENV === 'mocking';
+type BaseData = {
+  data: unknown;
+};
 
 const createEndpoint = (eventName: string): [string, RequestHandler] => {
   const endpoint = `/${eventName.replace(':', '-')}`;
@@ -28,8 +31,8 @@ const createEndpoint = (eventName: string): [string, RequestHandler] => {
     async (req, res) => {
       emitNet(eventName, responseEventName, req.body);
       const result = await new Promise((resolve) => {
-        onNet(responseEventName, (_source: number, data: ServerPromiseResp<unknown>) => {
-          resolve(data.data);
+        onNet(responseEventName, (_source: number, data: ServerPromiseResp<BaseData>) => {
+          resolve(data);
         });
       });
 

@@ -93,6 +93,7 @@ const Dashboard = () => {
         onClose={() => setIsCreateAccountOpen(false)}
         maxWidth="md"
         fullWidth
+        hideBackdrop
       >
         <CreateAccountModal onClose={() => setIsCreateAccountOpen(false)} />
       </Dialog>
