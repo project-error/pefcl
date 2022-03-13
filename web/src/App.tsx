@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import './App.css';
-import { useNuiEvent } from './hooks/useNuiEvent';
 import { debugData } from './utils/debugData';
 import { useTranslation } from 'react-i18next';
 import styled from '@emotion/styled';
@@ -11,6 +10,7 @@ import theme from './utils/theme';
 import dayjs from 'dayjs';
 import Transactions from './views/transactions/Transactions';
 import Accounts from './views/accounts/Accounts';
+import { useNuiEvent } from 'react-fivem-hooks';
 
 const Container = styled.div`
   padding: 4rem;
@@ -40,12 +40,9 @@ debugData([
 
 const App: React.FC = () => {
   const config = useConfig();
-  const [isVisible, setIsVisible] = useState(true);
+  const { data: isVisible } = useNuiEvent<boolean>({ event: 'setVisible' });
   const { i18n } = useTranslation();
-
-  useNuiEvent<boolean>('setVisible', (data) => {
-    setIsVisible(data);
-  });
+  console.log('app rendered');
 
   useEffect(() => {
     i18n.changeLanguage(config.language).catch((e) => console.error(e));

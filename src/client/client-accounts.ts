@@ -1,6 +1,12 @@
 import { RegisterNuiCB, RegisterNuiProxy } from './client-utils';
-import { AccountEvents } from '../../typings/accounts';
+import { AccountEvents, InvoiceEvents, TransactionEvents } from '../../typings/accounts';
 
 RegisterNuiProxy(AccountEvents.GetAccounts);
 RegisterNuiProxy(AccountEvents.CreateAccount);
 RegisterNuiProxy(AccountEvents.DeleteAccount);
+RegisterNuiProxy(AccountEvents.SetDefaultAccount);
+RegisterNuiProxy(InvoiceEvents.Get);
+RegisterNuiProxy(InvoiceEvents.CreateInvoice);
+RegisterNuiProxy(InvoiceEvents.PayInvoice);
+RegisterNuiProxy(TransactionEvents.Get);
+RegisterNuiProxy(TransactionEvents.CreateTransfer);

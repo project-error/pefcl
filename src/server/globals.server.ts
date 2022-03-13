@@ -3,9 +3,7 @@ import { readFileSync } from 'fs';
 import path from 'path';
 
 const isMocking = process.env.NODE_ENV === 'mocking';
-const baseDir = path.resolve(__dirname + '/../../');
 
-console.log({ isMocking });
 const convars = {
   mysql_connection_string: 'mysql://root:bruv@localhost/dev',
 };
@@ -18,6 +16,7 @@ const players = {
 };
 
 if (isMocking) {
+  const baseDir = path.resolve(__dirname + '/../../');
   const ServerEmitter = new EventEmitter();
   const NetEmitter = new EventEmitter();
 

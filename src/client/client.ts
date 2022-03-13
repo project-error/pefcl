@@ -7,8 +7,9 @@ RegisterCommand(
   'bank',
   () => {
     bankOpen = !bankOpen;
-    console.log(bankOpen);
-    SendNUIMessage({ action: 'setVisible', data: bankOpen });
+    // SendNUIMessage({ action: 'setVisible', data: bankOpen });
+    SendNUIMessage({ type: 'setVisible', payload: bankOpen });
+
     if (bankOpen) {
       SetNuiFocus(true, true);
     } else {

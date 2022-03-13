@@ -81,7 +81,7 @@ const Dashboard = () => {
   const [orderedAccounts, setOrderedAccounts] = useAtom(orderedAccountsAtom);
 
   const handleReOrder = (accounts: Account[]) => {
-    const order = accounts.reduce((prev, curr, index) => ({ ...prev, [curr.id]: index }), {});
+    const order = accounts?.reduce((prev, curr, index) => ({ ...prev, [curr.id]: index }), {});
     setOrderedAccounts(order);
     setRefreshOrder(order); // TODO: This would not be needed if the 'orderedAccounts' was updated. Not sure why it doesn't.
   };

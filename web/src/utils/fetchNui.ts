@@ -19,5 +19,5 @@ export const fetchNui = async <T = any>(eventName: string, data?: any): Promise<
   const res = await fetch(url, options);
   const response = await res.json();
 
-  return response;
+  return response.data;
 };

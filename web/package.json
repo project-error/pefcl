@@ -26,6 +26,7 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-error-overlay": "^6.0.9",
+    "react-fivem-hooks": "^1.0.1-2",
     "react-hook-form": "^7.27.1",
     "react-i18next": "^11.15.3",
     "react-router-dom": "5.3.0",
@@ -38,6 +39,7 @@
   },
   "scripts": {
     "dev": "yarn webpack-dev-server",
+    "build": "yarn webpack --mode=production",
     "start": "yarn webpack",
     "start:game": "cross-env IN_GAME_DEV=1 yarn dev",
     "build:esbuild": "node scripts/build_ui.js",

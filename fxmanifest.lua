@@ -1,6 +1,6 @@
 fx_version "cerulean"
 
-description "Basic React (TypeScript) & Lua Game Scripts Boilerplate"
+description "Financing resource. Accounts, Cash, Invoices, Transactions."
 author "Project Error"
 version '1.0.0'
 repository 'https://github.com/project-error/fivem-react-boilerplate-lua'
@@ -12,13 +12,13 @@ games {
   "rdr3"
 }
 
-ui_page 'web/build/index.html'
+ui_page 'web/dist/index.html'
 
 client_script "src/dist/client.js"
 server_script "src/dist/server.js"
 
 files {
-  'web/build/index.html',
-  'web/build/**/*',
+  'web/dist/index.html',
+  'web/dist/**/*',
   'config.json'
 }

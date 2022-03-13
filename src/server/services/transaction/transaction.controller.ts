@@ -16,8 +16,8 @@ export class TransactionController {
 
   @NetPromise(TransactionEvents.Get)
   async getTransactions(req: Request<void>, res: Response<Transaction[]>) {
-    const data = await this._TransactionService.handleGetMyTransactions(req.source);
-    res({ status: 'ok', data });
+    const transactions = await this._TransactionService.handleGetMyTransactions(req.source);
+    res({ status: 'ok', data: transactions });
   }
 
   @NetPromise(TransactionEvents.CreateTransfer)
