@@ -15,7 +15,7 @@ esbuild
     target: 'node16',
     outfile: 'dist/server.js',
     define: {
-      'process.env.NODE_ENV': '"development"',
+      'process.env.NODE_ENV': '"mocking"', // Mocking is value that's checked for mocking globals etc when running the server outside FiveM
     },
     plugins: [
       esbuildDecorators({

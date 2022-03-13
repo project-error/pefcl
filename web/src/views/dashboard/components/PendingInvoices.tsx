@@ -11,10 +11,12 @@ import { useConfig } from '../../../hooks/useConfig';
 import { formatMoney } from '../../../utils/currency';
 import theme from '../../../utils/theme';
 import { pendingInvoicesAtom } from '../../../data/invoices';
-import { Invoice } from '../../../../../typings/Invoice';
+import { Invoice, PayInvoiceInput } from '../../../../../typings/Invoice';
 import { useTranslation } from 'react-i18next';
 import Button from '../../../components/ui/Button';
 import PayInvoiceModal from '../../../components/Modals/PayInvoice';
+import { fetchNui } from '../../../utils/fetchNui';
+import { InvoiceEvents } from '../../../../../typings/accounts';
 
 dayjs.extend(calendar);
 dayjs.extend(relative);
@@ -46,8 +48,8 @@ const InvoiceItem: React.FC<{ invoice: Invoice }> = ({ invoice, ...props }) => {
   const { message, amount, id, createdAt, expiresAt, from } = invoice;
   const { t } = useTranslation();
   const config = useConfig();
-  const expiresDate = dayjs.unix(parseInt(expiresAt, 10));
-  const createdDate = dayjs.unix(parseInt(createdAt, 10));
+  const expiresDate = dayjs(expiresAt);
+  const createdDate = dayjs(createdAt);
   const [isPayOpen, setIsPayOpen] = useState(false);
 
   const handleCloseModal = () => {
@@ -57,7 +59,7 @@ const InvoiceItem: React.FC<{ invoice: Invoice }> = ({ invoice, ...props }) => {
   return (
     <div {...props} key={id}>
       <Dialog open={isPayOpen} onClose={handleCloseModal} maxWidth="md" fullWidth>
-        <PayInvoiceModal onCancel={handleCloseModal} invoice={invoice} />
+        <PayInvoiceModal onClose={handleCloseModal} invoice={invoice} />
       </Dialog>
 
       <Stack spacing={0}>

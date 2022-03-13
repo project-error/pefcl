@@ -19,16 +19,16 @@ export class TransactionDB {
   }
 
   async create(transaction: Partial<Transaction>): Promise<TransactionModel> {
-    console.log('Creating transaction', transaction);
     const { toAccount, fromAccount, ...dbTransaction } = transaction;
     const newTransaction = await TransactionModel.create({
       ...dbTransaction,
     });
 
+    // TODO: Get TS support for this shit.
     //@ts-ignore
-    await newTransaction.setToAccount(toAccount.id);
+    await newTransaction.setToAccount(toAccount?.id);
     //@ts-ignore
-    await newTransaction.setFromAccount(fromAccount.id);
+    await newTransaction.setFromAccount(fromAccount?.id);
 
     return await newTransaction.save();
   }

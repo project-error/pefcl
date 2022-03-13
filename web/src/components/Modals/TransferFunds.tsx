@@ -11,11 +11,8 @@ import PriceField from '../ui/Fields/PriceField';
 import { fetchNui } from '../../utils/fetchNui';
 import { TransactionEvents } from '../../../../typings/accounts';
 import { Transfer } from '../../../../typings/transactions';
-import { formatMoney } from '../../utils/currency';
-import { useConfig } from '../../hooks/useConfig';
 
 const TransferFundsModal: React.FC<{ onClose(): void }> = ({ onClose }) => {
-  const config = useConfig();
   const { t } = useTranslation();
   const [amount, setAmount] = useState('');
   const [accounts, update] = useAtom(accountsAtom);
@@ -26,7 +23,6 @@ const TransferFundsModal: React.FC<{ onClose(): void }> = ({ onClose }) => {
 
   const parsedAmount = Number(amount.replace(/\D/g, ''));
   const fromAccount = accounts.find((account) => account.id === fromAccountId);
-  const toAccount = accounts.find((account) => account.id === toAccountId);
 
   const switchAccounts = () => {
     setFromAccountId(toAccountId);
@@ -38,11 +34,7 @@ const TransferFundsModal: React.FC<{ onClose(): void }> = ({ onClose }) => {
 
     const payload: Transfer = {
       amount: parsedAmount,
-      message: t('Transfered {{amount}} from account {{from}} to {{to}}.', {
-        amount: formatMoney(parsedAmount, config),
-        from: fromAccount?.accountName,
-        to: toAccount?.accountName,
-      }),
+      message: t('Internal transfer'),
       fromAccountId,
       toAccountId,
     };

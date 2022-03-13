@@ -1,5 +1,5 @@
-import { User } from '../../../typings/user';
-import { config } from '../server-config';
+import { User } from '../../../../typings/user';
+import { config } from '../../server-config';
 
 const exp = global.exports;
 
@@ -17,7 +17,7 @@ export class UserModule {
   }
 
   getBalance(): number {
-    return 1000; //exp[config.exports.resourceName].getCurrentBalance(this._source);
+    return exp[config.exports.resourceName].getCurrentBalance(this._source);
   }
 
   getBankBalance(): number {

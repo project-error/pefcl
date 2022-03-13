@@ -1,6 +1,6 @@
-import { Account, AccountType } from '../../../../../typings/accounts';
-import { Transaction } from '../../../../../typings/transactions';
-import { Invoice, InvoiceStatus } from '../../../../../typings/Invoice';
+import { Account, AccountType } from '../../../typings/accounts';
+import { Transaction } from '../../../typings/transactions';
+import { Invoice, InvoiceStatus } from '../../../typings/Invoice';
 import dayjs from 'dayjs';
 
 export const resourceDefaultName = 'pe-financial';

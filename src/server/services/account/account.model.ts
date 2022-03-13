@@ -1,6 +1,7 @@
 import { DataTypes, Model } from 'sequelize';
 import { Account, AccountType } from '../../../../typings/accounts';
 import { sequelize } from '../../db/pool';
+import { config } from '../../server-config';
 
 export class AccountModel extends Model<Account> {}
 
@@ -28,7 +29,7 @@ AccountModel.init(
     },
     balance: {
       type: DataTypes.INTEGER,
-      defaultValue: 0,
+      defaultValue: config.accounts.defaultAmount ?? 0,
     },
     type: {
       type: DataTypes.STRING,

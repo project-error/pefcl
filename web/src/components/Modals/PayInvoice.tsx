@@ -5,10 +5,14 @@ import calendar from 'dayjs/plugin/calendar';
 import { useAtom } from 'jotai';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Invoice } from '../../../../typings/Invoice';
+import { InvoiceEvents } from '../../../../typings/accounts';
+import { Invoice, PayInvoiceInput } from '../../../../typings/Invoice';
 import { accountsAtom, defaultAccountAtom } from '../../data/accounts';
+import { invoicesAtom } from '../../data/invoices';
+import { transactionsAtom } from '../../data/transactions';
 import { useConfig } from '../../hooks/useConfig';
 import { formatMoney } from '../../utils/currency';
+import { fetchNui } from '../../utils/fetchNui';
 import theme from '../../utils/theme';
 import AccountSelect from '../AccountSelect';
 import Summary from '../Summary';
@@ -24,18 +28,35 @@ const Amount = styled(Heading3)`
 
 interface PayInvoiceModalProps {
   invoice: Invoice;
-  onCancel(): void;
+  onClose(): void;
 }
 
-const PayInvoiceModal: React.FC<PayInvoiceModalProps> = ({ onCancel, invoice }) => {
-  const [accounts] = useAtom(accountsAtom);
+const PayInvoiceModal: React.FC<PayInvoiceModalProps> = ({ onClose, invoice }) => {
+  const [accounts, updateAccounts] = useAtom(accountsAtom);
   const [defaultAccount] = useAtom(defaultAccountAtom);
+  const [, updateInvoices] = useAtom(invoicesAtom);
+  const [, updateTransactions] = useAtom(transactionsAtom);
   const [selectedAccountId, setSelectedAccountId] = useState(defaultAccount?.id ?? 0);
   const config = useConfig();
   const { t } = useTranslation();
 
   const date = dayjs(invoice.expiresAt);
   const selectedAccount = accounts.find((account) => account.id === selectedAccountId);
+
+  const handlePayInvoice = () => {
+    const payload: PayInvoiceInput = {
+      fromAccountId: selectedAccountId,
+      invoiceId: invoice.id,
+    };
+
+    fetchNui(InvoiceEvents.PayInvoice, payload)
+      .then(() => {
+        updateInvoices();
+        updateAccounts();
+        updateTransactions();
+      })
+      .finally(onClose);
+  };
 
   return (
     <Paper>
@@ -55,9 +76,11 @@ const PayInvoiceModal: React.FC<PayInvoiceModalProps> = ({ onCancel, invoice }) 
             <BodyText>{invoice.message}</BodyText>
           </Stack>
 
-          <Stack>
+          <Stack spacing={0.25}>
             <Heading6>{t('Expires')}</Heading6>
-            <BodyText>{date.calendar()}</BodyText>
+            <BodyText>
+              {date.calendar()} ({date.fromNow()})
+            </BodyText>
           </Stack>
         </Stack>
 
@@ -67,10 +90,10 @@ const PayInvoiceModal: React.FC<PayInvoiceModalProps> = ({ onCancel, invoice }) 
           <Summary balance={selectedAccount?.balance ?? 0} payment={invoice.amount} />
 
           <Stack direction="row" justifyContent="space-between">
-            <Button color="error" onClick={onCancel}>
+            <Button color="error" onClick={onClose}>
               {t('Cancel')}
             </Button>
-            <Button>{t('Pay invoice')}</Button>
+            <Button onClick={handlePayInvoice}>{t('Pay invoice')}</Button>
           </Stack>
         </Stack>
       </Stack>

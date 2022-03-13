@@ -1,25 +1,25 @@
-import React, { useState } from 'react';
-import { Card } from './../../components/Card';
-import Layout from '../../components/Layout';
-import { Heading1 } from '../../components/ui/Typography/Headings';
-import { PreHeading } from '../../components/ui/Typography/BodyText';
 import styled from '@emotion/styled';
-import theme from '../../utils/theme';
+import { Add } from '@mui/icons-material';
+import { Dialog, Stack } from '@mui/material';
+import { AnimatePresence, Reorder } from 'framer-motion';
 import { useAtom } from 'jotai';
-import { formatMoney } from '../../utils/currency';
-import { useConfig } from '../../hooks/useConfig';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import DashboardContainer from './components/DashboardContainer';
-import Transactions from './components/Transactions';
-import { totalNumberOfTransaction } from '../../data/transactions';
+import { Account } from '../../../../typings/accounts';
+import Layout from '../../components/Layout';
+import CreateAccountModal from '../../components/Modals/CreateAccount';
+import { PreHeading } from '../../components/ui/Typography/BodyText';
+import { Heading1 } from '../../components/ui/Typography/Headings';
 import { orderedAccountsAtom, totalBalanceAtom } from '../../data/accounts';
 import { totalPendingInvoices } from '../../data/invoices';
+import { totalNumberOfTransaction } from '../../data/transactions';
+import { useConfig } from '../../hooks/useConfig';
+import { formatMoney } from '../../utils/currency';
+import theme from '../../utils/theme';
+import { Card } from './../../components/Card';
+import DashboardContainer from './components/DashboardContainer';
 import PendingInvoices from './components/PendingInvoices';
-import { Account } from '../../../../typings/accounts';
-import CreateAccountModal from '../../components/Modals/CreateAccount';
-import { Reorder } from 'framer-motion';
-import { Dialog, Stack } from '@mui/material';
-import { Add } from '@mui/icons-material';
+import Transactions from './components/Transactions';
 
 const CardContainer = styled(Reorder.Item)`
   display: flex;
@@ -104,11 +104,13 @@ const Dashboard = () => {
         </Stack>
 
         <Cards values={orderedAccounts} onReorder={handleReOrder} axis="x">
-          {orderedAccounts.map((account) => (
-            <CardContainer key={account.id} value={account}>
-              <Card account={account} />
-            </CardContainer>
-          ))}
+          <AnimatePresence initial={false}>
+            {orderedAccounts.map((account) => (
+              <CardContainer key={account.id} value={account}>
+                <Card account={account} />
+              </CardContainer>
+            ))}
+          </AnimatePresence>
 
           {orderedAccounts.length < 4 && (
             <CreateCard onClick={() => setIsCreateAccountOpen(true)}>
@@ -133,9 +135,10 @@ const Dashboard = () => {
         >
           <PendingInvoices />
         </DashboardContainer>
-        <DashboardContainer title={t('Fines')} total={2} viewAllRoute="/transactions">
+
+        {/* <DashboardContainer title={t('Fines')} total={2} viewAllRoute="/transactions">
           <PendingInvoices />
-        </DashboardContainer>
+        </DashboardContainer> */}
       </Lists>
     </Layout>
   );

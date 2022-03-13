@@ -1,6 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
 import { singleton } from 'tsyringe';
-import { Transaction } from '../../../../typings/transactions';
+import { Transaction, TransactionType } from '../../../../typings/transactions';
 import { sequelize } from '../../db/pool';
 
 interface TransactionDB extends Omit<Transaction, 'toAccount' | 'fromAccount'> {
@@ -29,6 +29,10 @@ TransactionModel.init(
     amount: {
       type: DataTypes.INTEGER,
       defaultValue: 0,
+    },
+    type: {
+      type: DataTypes.STRING,
+      defaultValue: TransactionType.Outgoing, // Outgoing = Money leaves ur account, Incoming = Money goes into ur account
     },
   },
   { sequelize: sequelize, tableName: 'transactions' },

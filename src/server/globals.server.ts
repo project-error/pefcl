@@ -2,9 +2,10 @@ import EventEmitter from 'events';
 import { readFileSync } from 'fs';
 import path from 'path';
 
-const isDevelopment = process.env.NODE_ENV === 'development';
+const isMocking = process.env.NODE_ENV === 'mocking';
 const baseDir = path.resolve(__dirname + '/../../');
 
+console.log({ isMocking });
 const convars = {
   mysql_connection_string: 'mysql://root:bruv@localhost/dev',
 };
@@ -16,7 +17,7 @@ const players = {
   },
 };
 
-if (isDevelopment) {
+if (isMocking) {
   const ServerEmitter = new EventEmitter();
   const NetEmitter = new EventEmitter();
 
@@ -37,9 +38,12 @@ if (isDevelopment) {
     return [players[source].license];
   };
 
+  global.getPlayers = () => {
+    return Object.keys(players);
+  };
+
   global.GetResourcePath = () => {
     const path = '/';
-    console.log('GetResourcePath:', path);
     return path;
   };
 
@@ -50,7 +54,14 @@ if (isDevelopment) {
   global.exports = {
     'my-resource': {
       pefclDepositMoney: () => {
-        console.log('deposited money');
+        console.log('Depositing money ..');
+        console.log('Depositing money ..');
+        console.log('Depositing money ..');
+        throw new Error('no funds');
+      },
+      getCurrentBalance: () => {
+        console.log('Getting balance ..');
+        return 2500;
       },
     },
   };

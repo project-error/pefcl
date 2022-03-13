@@ -1,6 +1,6 @@
 // Will return whether the current environment is in a regular browser
 
-import { resourceDefaultName } from '../features/accounts/utils/constants';
+import { resourceDefaultName } from './constants';
 
 // and not CEF
 export const isEnvBrowser = (): boolean => !(window as any).invokeNative;

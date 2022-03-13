@@ -6,7 +6,6 @@
       "dom.iterable",
       "esnext"
     ],
-    "types": ["@types/node"],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -21,10 +20,18 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    "jsxImportSource": "@emotion/react"
+    "jsxImportSource": "@emotion/react",
+    "baseUrl": ".",
+    "paths": {
+      "@components/*": ["src/components/*"],
+      "@ui/*": ["src/components/ui/*"],
+      "@hooks/*": ["src/hooks/*"],
+      "@utils/*": ["src/utils/*"],
+      "@typings/*": ["../typings/*"]
+    }
   },
   "include": [
-    "src",
+    "./src/**/*",
     "src/setupTests.ts"
   ]
 }

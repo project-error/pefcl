@@ -22,10 +22,10 @@ export interface Account {
 
 export type TransactionAccount = Pick<Account, 'id' | 'accountName'>;
 
-export interface DepositDTO {
+export interface ATMInput {
   amount: number;
   message: string;
-  accountId: number;
+  accountId?: number;
 }
 
 export enum AccountEvents {
@@ -35,6 +35,7 @@ export enum AccountEvents {
   SetDefaultAccount = 'pefcl:setDefaultAccount',
   DeleteAccount = 'pefcl:deleteAccount',
   DepositMoney = 'pefcl:depositMoney',
+  WithdrawMoney = 'pefcl:withdrawMoney',
 }
 
 export enum TransactionEvents {
@@ -44,4 +45,6 @@ export enum TransactionEvents {
 
 export enum InvoiceEvents {
   Get = 'pefcl:getInvoices',
+  CreateInvoice = 'pefcl:createInvoice',
+  PayInvoice = 'pefcl:payInvoice',
 }

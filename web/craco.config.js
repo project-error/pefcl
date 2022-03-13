@@ -1,5 +1,5 @@
 const path = require('path');
-
+const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const { getLoader, loaderByName } = require('@craco/craco');
 
 module.exports = {
@@ -23,6 +23,8 @@ module.exports = {
         match.loader.include = include.concat([path.join(__dirname, '../typings')]);
       }
 
+      webpackConfig.resolve.plugins.push(new TsconfigPathsPlugin());
+
       return {
         ...webpackConfig,
         module: {
@@ -42,7 +44,6 @@ module.exports = {
 
   devServer: (devServerConfig) => {
     if (process.env.IN_GAME_DEV) {
-      // Used for in-game dev mode
       devServerConfig.writeToDisk = true;
     }
 

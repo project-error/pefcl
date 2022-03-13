@@ -1,7 +1,8 @@
 import { sequelize } from '../db/pool';
-import { UserModule } from '../user/user.module';
+import { config } from '../server-config';
 import { AccountModel } from './account/account.model';
 import { TransactionModel } from './transaction/transaction.model';
+import './invoice/invoice.model';
 
 TransactionModel.belongsTo(AccountModel, {
   as: 'toAccount',
@@ -11,6 +12,6 @@ TransactionModel.belongsTo(AccountModel, {
   as: 'fromAccount',
 });
 
-// AccountModel.hasMany(TransactionModel);
-
-sequelize.sync();
+if (config.database.shouldSync) {
+  sequelize.sync();
+}

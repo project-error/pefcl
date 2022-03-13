@@ -1,10 +1,13 @@
 import { Sequelize } from 'sequelize';
 import { CONNECTION_STRING } from '../utils/dbUtils';
+// import { mainLogger } from '../sv_logger';
+
+// const logger = mainLogger.child({ module: 'db' });
 
 const mysqlConnectionString = GetConvar(CONNECTION_STRING, 'none');
 if (mysqlConnectionString === 'none') {
   const error = new Error(
-    `No connection string provided. make sure "${CONNECTION_STRING}" is set in your config.`,
+    `No connection string provided. make sure "${CONNECTION_STRING}" is set in server.cfg`,
   );
   throw error;
 }
@@ -16,22 +19,12 @@ export const sequelize = new Sequelize(mysqlConnectionString, {
     acquire: 30000,
     idle: 60000,
   },
+  // logging: logger.silly,
   sync: {
     alter: true,
     force: true,
   },
 });
-
-const initDatabase = async () => {
-  try {
-    await sequelize.authenticate();
-    console.log('Connection has been established successfully.');
-  } catch (error) {
-    console.error('Unable to connect to the database:', error);
-  }
-};
-
-initDatabase();
 
 /**
  * Most fivem servers utilize fivem-mysql-async (https://brouznouf.github.io/fivem-mysql-async/) and

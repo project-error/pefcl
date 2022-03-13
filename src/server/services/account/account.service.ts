@@ -1,29 +1,34 @@
 import { AccountDB } from './account.db';
 import { singleton } from 'tsyringe';
 import { Request } from '../../../../typings/http';
-import { Account, AccountType, DepositDTO, PreDBAccount } from '../../../../typings/accounts';
-import { UserService } from '../../user/user.service';
+import { Account, AccountType, ATMInput, PreDBAccount } from '../../../../typings/accounts';
+import { UserService } from '../user/user.service';
 import { config } from '../../server-config';
 import { AccountServiceExports } from '../../../../typings/exports';
 import { mainLogger } from '../../sv_logger';
 import { sequelize } from '../../db/pool';
 import { TransactionService } from '../transaction/transaction.service';
+import { CashService } from '../cash/cash.service';
 const exp: AccountServiceExports = global.exports[config.exports.resourceName];
 
-const logger = mainLogger.child({ module: 'accountService' });
+const logger = mainLogger.child({ module: 'accounts' });
+const useFrameworkIntegration = config.general.useFrameworkIntegration;
 
 @singleton()
 export class AccountService {
   _accountDB: AccountDB;
+  _cashService: CashService;
   _userService: UserService;
   _transactionService: TransactionService;
 
   constructor(
     accountDB: AccountDB,
     userService: UserService,
+    cashService: CashService,
     transactionService: TransactionService,
   ) {
     this._accountDB = accountDB;
+    this._cashService = cashService;
     this._userService = userService;
     this._transactionService = transactionService;
   }
@@ -34,17 +39,41 @@ export class AccountService {
     return accounts;
   }
 
-  async handleGetAccounts() {
-    // const user = this._userService.getUser(source);
-    const accounts = await this._accountDB.getAccounts();
+  async handleGetDefaultAccount(source: number) {
+    const user = this._userService.getUser(source);
+    return await this._accountDB.getDefaultAccountByIdentifier(user.identifier);
+  }
 
-    // Add user here, or create relation thing.
-    return accounts.map((account) => ({ ...account.toJSON() }));
+  async handleGetAccounts() {
+    const accounts = await this._accountDB.getAccounts();
+    return accounts.map((account) => account.toJSON());
   }
 
   async handleGetMyAccounts(source: number) {
     const accounts = await this.getMyAccounts(source);
     return accounts.map((account) => account.toJSON());
+  }
+
+  async createInitialAccount(source: number): Promise<Account> {
+    logger.silly('Checking if default account exists ...');
+    const user = this._userService.getUser(source);
+    const defaultAccount = await this._accountDB.getDefaultAccountByIdentifier(user.identifier);
+
+    if (defaultAccount) {
+      logger.silly('Default account exists.');
+      return defaultAccount.toJSON();
+    }
+
+    logger.debug('Creating initial account ...');
+    const initialAccount = await this._accountDB.createAccount({
+      accountName: config.accounts?.defaultName ?? 'Default',
+      isDefault: true,
+      ownerIdentifier: user.identifier,
+      type: AccountType.Personal,
+    });
+
+    logger.debug('Successfully created initial account.');
+    return initialAccount.toJSON();
   }
 
   async handleCreateAccount(req: Request<PreDBAccount>): Promise<Account> {
@@ -162,32 +191,85 @@ export class AccountService {
    * Will then update whatever player's main bank account in any framework.
    * @param req
    */
-  async handleDepositMoney(req: Request<DepositDTO>) {
-    logger.silly(`Depositing ${req.data.amount} into account ${req.data.accountId} ...`);
-    const targetAccount = await this._accountDB.getAccount(req.data.accountId);
+  async handleDepositMoney(req: Request<ATMInput>) {
+    logger.silly(
+      `Source "${req.source}" depositing "${req.data.amount}" into "${
+        req.data.accountId ?? 'DEFAULT'
+      }"`,
+    );
     const depositionAmount = req.data.amount;
+    const targetAccount = req.data.accountId
+      ? await this._accountDB.getAccount(req.data.accountId)
+      : await this.handleGetDefaultAccount(req.source);
 
-    const userBalance = this._userService.getUser(req.source).getBalance();
+    const userBalance = await this._cashService.getMyCash(req.source);
     const currentAccountBalance = targetAccount?.getDataValue('balance');
 
-    if (userBalance < depositionAmount) {
+    /* Only run the export when account is the default(?). Not sure about this. */
+    const t = await sequelize.transaction();
+    try {
+      if (userBalance < depositionAmount) {
+        logger.debug({ userBalance, depositionAmount, currentAccountBalance });
+        throw new Error('Insufficent funds.');
+      }
+
+      /* Check this part. - Deposition from. */
+      await this._cashService.handleTakeCash(req.source, depositionAmount);
+      await targetAccount.increment({ balance: depositionAmount });
+      await this._transactionService.handleCreateTransaction(
+        depositionAmount,
+        req.data.message,
+        targetAccount.toJSON(),
+      );
+
+      logger.silly(
+        `Successfully deposited ${depositionAmount} into account ${targetAccount.getDataValue(
+          'id',
+        )}`,
+      );
       logger.silly({ userBalance, depositionAmount, currentAccountBalance });
-      throw new Error('Insufficent funds.');
+      t.commit();
+    } catch (err) {
+      logger.error(`Failed to deposit money into account ${targetAccount.getDataValue('id')}`);
+      logger.error(err);
+      t.rollback();
     }
+  }
+
+  async handleWithdrawMoney(req: Request<ATMInput>) {
+    logger.silly(`"${req.source}" withdrawing "${req.data.amount}"`);
+    const targetAccount = req.data.accountId
+      ? await this._accountDB.getAccount(req.data.accountId)
+      : await this.handleGetDefaultAccount(req.source);
+    const withdrawAmount = req.data.amount;
+    const accountId = targetAccount.getDataValue('id');
+    const currentAccountBalance = targetAccount?.getDataValue('balance');
 
     /* Only run the export when account is the default(?). Not sure about this. */
-    if (config.general.useFrameworkIntegration && targetAccount.getDataValue('isDefault')) {
-      exp.pefclDepositMoney(req.source, depositionAmount);
-    }
+    const t = await sequelize.transaction();
+    try {
+      if (currentAccountBalance < withdrawAmount) {
+        logger.debug({ withdrawAmount, currentAccountBalance });
+        throw new Error('Insufficent funds.');
+      }
 
-    await targetAccount.increment({ balance: depositionAmount });
-    await this._transactionService.handleCreateTransaction(
-      depositionAmount,
-      req.data.message,
-      targetAccount.toJSON(),
-    );
-    logger.silly(`Successfully deposited ${depositionAmount} into account ${req.data.accountId}`);
-    logger.silly({ userBalance, depositionAmount, currentAccountBalance });
+      await this._cashService.handleGiveCash(req.source, withdrawAmount);
+      await targetAccount.decrement({ balance: withdrawAmount });
+
+      await this._transactionService.handleCreateTransaction(
+        withdrawAmount,
+        req.data.message,
+        targetAccount.toJSON(),
+      );
+
+      logger.silly(`Withdrew ${withdrawAmount} from account ${accountId}`);
+      logger.silly({ withdrawAmount, currentAccountBalance });
+      t.commit();
+    } catch (err) {
+      logger.error(`Failed to withdraw money from account ${accountId}`);
+      logger.error(err);
+      t.rollback();
+    }
   }
 
   async handleSetDefaultAccount(req: Request<{ accountId: number }>) {

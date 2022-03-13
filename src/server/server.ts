@@ -4,30 +4,20 @@ import { ServerPromiseResp } from '@project-error/pe-utils';
 import 'reflect-metadata';
 import './server-config';
 import './db/pool';
-import './user/user.controller';
-import './services/account/account.controller';
-import './services/transaction/transaction.controller';
+import './services/controllers';
+
 import { Bank } from './base/Bank';
-import {
-  AccountEvents,
-  AccountType,
-  DepositDTO,
-  InvoiceEvents,
-  PreDBAccount,
-  TransactionEvents,
-} from '../../typings/accounts';
-import { sequelize as sequelize } from './db/pool';
+import { AccountEvents, InvoiceEvents, TransactionEvents } from '../../typings/accounts';
 import express, { RequestHandler } from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 
 /* Create associations after the models etc */
 import './services/associations';
-import { Transfer } from '../../typings/transactions';
 
 new Bank().bootstrap();
 
-const isDevelopment = process.env.NODE_ENV === 'development';
+const isMocking = process.env.NODE_ENV === 'mocking';
 
 const createEndpoint = (eventName: string): [string, RequestHandler] => {
   const endpoint = `/${eventName.replace(':', '-')}`;
@@ -48,7 +38,7 @@ const createEndpoint = (eventName: string): [string, RequestHandler] => {
   ];
 };
 
-if (isDevelopment) {
+if (isMocking) {
   const app = express();
   const port = 3005;
   app.use(cors());
@@ -64,75 +54,85 @@ if (isDevelopment) {
   app.post(...createEndpoint(AccountEvents.CreateAccount));
   app.post(...createEndpoint(TransactionEvents.Get));
   app.post(...createEndpoint(TransactionEvents.CreateTransfer));
+  app.post(...createEndpoint(InvoiceEvents.Get));
+  app.post(...createEndpoint(InvoiceEvents.CreateInvoice));
+  app.post(...createEndpoint(InvoiceEvents.PayInvoice));
 
   app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`);
+    console.log(`[MOCKSERVER]: listening on port: ${port}`);
   });
 }
 
 const test = async () => {
-  await sequelize.authenticate();
+  emit('onServerResourceStart', 'pe-financial');
+
   await new Promise((resolve) => {
     setTimeout(resolve, 500);
   });
 
   global.source = 2;
-  emit('playerJoining', {});
+  // emit('playerJoining', {});
 
-  /* Emit something */
-  const createAccountPayload1: PreDBAccount = {
-    accountName: 'Bennys AB',
-    isShared: true,
-    fromAccountId: 0,
-  };
+  /* */
+  /* */
+  /** DEBUGGING STUFF */
+  /* */
+  /* */
 
-  emitNet(AccountEvents.CreateAccount, AccountEvents.CreateAccountResponse, createAccountPayload1);
-  const createAccountPayload2: PreDBAccount = {
-    accountName: 'Pension',
-    isDefault: false,
-    fromAccountId: 0,
-  };
-
-  emitNet(AccountEvents.CreateAccount, AccountEvents.CreateAccountResponse, createAccountPayload2);
-
-  await new Promise((resolve) => {
-    setTimeout(resolve, 800);
+  emitNet(AccountEvents.WithdrawMoney, 'returnEvent', {
+    amount: 2000,
+    message: 'ATM Withdrawal',
   });
 
-  const payload: DepositDTO = {
-    amount: 800,
-    message: 'ATM Deposition',
-    accountId: 1,
-  };
+  // emitNet(AccountEvents.DepositMoney, 'returnEvent', {
+  //   amount: 2000,
+  //   message: 'ATM Deposition',
+  // });
 
-  emitNet(AccountEvents.DepositMoney, AccountEvents.CreateAccountResponse, payload);
+  // const payload: InvoiceInput = {
+  //   to: 'license:1',
+  //   from: 'Karl-Jan',
+  //   message: 'I need the money',
+  //   amount: 500,
+  // };
 
-  const transaction: Transfer = {
-    amount: 25000,
-    message: 'Internal transfer',
-    toAccountId: 1,
-    fromAccountId: 2,
-  };
-  emitNet(TransactionEvents.CreateTransfer, AccountEvents.CreateAccountResponse, transaction);
+  // emitNet(InvoiceEvents.CreateInvoice, AccountEvents.CreateAccountResponse, payload);
 
-  //   //   const tgtAccount = req.data.tgtAccount;
-  //   //   const depositAmount = req.data.amount;
-  //   //   const currentBalance = this._userService.getUser(req.source).getBalance();
+  /* Emit something */
+  // const createAccountPayload1: PreDBAccount = {
+  //   accountName: 'Bennys AB',
+  //   isShared: true,
+  //   fromAccountId: 0,
+  // };
 
-  //   emitNet(AccountEvents.DepositMoney, AccountEvents.CreateAccountResponse, {
-  //     tgtAccount: {
-  //       isDefault: true,
-  //     },
-  //     amount: 800,
-  //   });
+  // emitNet(AccountEvents.CreateAccount, AccountEvents.CreateAccountResponse, createAccountPayload1);
+  // const createAccountPayload2: PreDBAccount = {
+  //   accountName: 'Pension',
+  //   isDefault: false,
+  //   fromAccountId: 0,
+  // };
 
-  // const accounts = await AccountModel.findAll();
-  // const transaction = await TransactionModel.create(
-  //   { amount: 2800, message: 'Repairs' },
-  //   { include: { all: true } },
-  // );
+  // emitNet(AccountEvents.CreateAccount, AccountEvents.CreateAccountResponse, createAccountPayload2);
 
-  // console.log({ transaction, accounts });
+  // await new Promise((resolve) => {
+  //   setTimeout(resolve, 800);
+  // });
+
+  // const payload: DepositDTO = {
+  //   amount: 800,
+  //   message: 'ATM Deposition',
+  //   accountId: 1,
+  // };
+
+  // emitNet(AccountEvents.DepositMoney, AccountEvents.CreateAccountResponse, payload);
+
+  // const transaction: Transfer = {
+  //   amount: 25000,
+  //   message: 'Internal transfer',
+  //   toAccountId: 1,
+  //   fromAccountId: 2,
+  // };
+  // emitNet(TransactionEvents.CreateTransfer, AccountEvents.CreateAccountResponse, transaction);
 };
 
 test();

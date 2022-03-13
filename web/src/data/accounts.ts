@@ -1,6 +1,6 @@
 import { atom } from 'jotai';
 import { Account, AccountEvents } from '../../../typings/accounts';
-import { mockedAccounts } from '../features/accounts/utils/constants';
+import { mockedAccounts } from '../utils/constants';
 import { fetchNui } from '../utils/fetchNui';
 import { isEnvBrowser } from '../utils/misc';
 

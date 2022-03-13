@@ -1,10 +1,10 @@
 import { singleton } from 'tsyringe';
 import { Account } from '../../../../typings/accounts';
 import { Request } from '../../../../typings/http';
-import { Transaction, Transfer } from '../../../../typings/transactions';
+import { Transaction, TransactionType, Transfer } from '../../../../typings/transactions';
 import { sequelize } from '../../db/pool';
 import { mainLogger } from '../../sv_logger';
-import { UserService } from '../../user/user.service';
+import { UserService } from '../user/user.service';
 import { AccountDB } from '../account/account.db';
 import { AccountModel } from '../account/account.model';
 import { TransactionDB } from './transaction.db';
@@ -52,6 +52,7 @@ export class TransactionService {
         amount: req.data.amount,
         message: req.data.message,
         toAccount: toAccount.toJSON(),
+        type: TransactionType.Transfer,
         fromAccount: fromAccount.toJSON(),
       });
 

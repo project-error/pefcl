@@ -1,11 +1,11 @@
 import styled from '@emotion/styled';
+import { ArrowDropDownRounded } from '@mui/icons-material';
 import { InputBase, MenuItem, Select, SelectChangeEvent, Stack } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Account, AccountType } from '../../../typings/accounts';
 import { ResourceConfig } from '../../../typings/config';
 import { useConfig } from '../hooks/useConfig';
-import CaretIcon from '../icons/CaretIcon';
 import { formatMoney } from '../utils/currency';
 import theme from '../utils/theme';
 import { BodyText } from './ui/Typography/BodyText';
@@ -41,7 +41,7 @@ const StyledMenuItem = styled(MenuItem)`
   }
 `;
 
-const SelectIcon = styled(CaretIcon)`
+const SelectIcon = styled(ArrowDropDownRounded)`
   color: ${theme.palette.text.primary};
   color: white !important;
   margin-right: 0.5rem;
