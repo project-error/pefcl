@@ -20,6 +20,12 @@ export class AccountDB {
     return await AccountModel.findOne({ where: { id } });
   }
 
+  async editAccount(input: Partial<Account>) {
+    return await AccountModel.update(input, {
+      where: { id: input.id, ownerIdentifier: input.ownerIdentifier },
+    });
+  }
+
   async createAccount(
     account: Pick<Account, 'accountName' | 'type' | 'isDefault' | 'ownerIdentifier'>,
   ): Promise<AccountModel> {

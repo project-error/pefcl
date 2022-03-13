@@ -3,6 +3,7 @@ import { MenuItem, MenuList, Popover } from '@mui/material';
 import React, { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import LayoutHeader from './LayoutHeader';
+import { Heading2 } from './ui/Typography/Headings';
 
 const Container = styled.div`
   position: relative;
@@ -14,7 +15,7 @@ const Content = styled.div`
   height: 100%;
 `;
 
-const Layout: React.FC = ({ children }) => {
+const Layout: React.FC<{ title?: string }> = ({ children, title }) => {
   const { t } = useTranslation();
   const menuRef = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(false);
@@ -37,7 +38,10 @@ const Layout: React.FC = ({ children }) => {
         </MenuList>
       </Popover>
 
-      <Content>{children}</Content>
+      <Content>
+        <Heading2>{title}</Heading2>
+        {children}
+      </Content>
     </Container>
   );
 };

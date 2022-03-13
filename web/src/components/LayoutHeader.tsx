@@ -37,7 +37,9 @@ const LayoutHeader = () => {
         fullWidth
         hideBackdrop
       >
-        <TransferFundsModal onClose={() => setIsTransferOpen(false)} />
+        <React.Suspense fallback="Fetching stuff in header">
+          <TransferFundsModal onClose={() => setIsTransferOpen(false)} />
+        </React.Suspense>
       </Dialog>
     </div>
   );

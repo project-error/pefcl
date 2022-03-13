@@ -10,6 +10,11 @@ export type PreDBAccount = {
   isShared?: boolean;
 };
 
+export type RenameAccountInput = {
+  accountId: number;
+  name: string;
+};
+
 export interface Account {
   id: number;
   balance: number;
@@ -35,6 +40,7 @@ export enum GeneralEvents {
 export enum AccountEvents {
   GetAccounts = 'pefcl:getAccounts',
   CreateAccount = 'pefcl:createAccount',
+  RenameAccount = 'pefcl:renameAccount',
   CreateAccountResponse = 'pefcl:createAccountResponse',
   SetDefaultAccount = 'pefcl:setDefaultAccount',
   DeleteAccount = 'pefcl:deleteAccount',

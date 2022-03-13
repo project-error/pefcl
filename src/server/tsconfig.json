@@ -11,7 +11,13 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "resolveJsonModule": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "baseUrl": ".",
+    "paths": {
+      "@utils/*": ["utils/*"],
+      "@locales/*": ["../../locales/*"],
+      "@typings/*": ["../../typings/*"]
+    }
   },
   "include": ["./**/*"],
   "exclude": ["**/node_modules", "**/__tests__/*"]

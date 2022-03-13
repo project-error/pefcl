@@ -12,6 +12,7 @@ import Transactions from './views/transactions/Transactions';
 import Accounts from './views/accounts/Accounts';
 import { useNuiEvent } from 'react-fivem-hooks';
 import { useExitListener } from '@hooks/useExitListener';
+import Invoices from './views/Invoices/Invoices';
 
 const Container = styled.div`
   padding: 4rem;
@@ -64,6 +65,7 @@ const App: React.FC = () => {
             <Route path="/" exact component={Dashboard} />
             <Route path="/accounts" component={Accounts} />
             <Route path="/transactions" component={Transactions} />
+            <Route path="/invoices" component={Invoices} />
           </Content>
         </Container>
       )}

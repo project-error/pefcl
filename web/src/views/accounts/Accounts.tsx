@@ -1,8 +1,9 @@
+import TextField from '@components/ui/Fields/TextField';
 import styled from '@emotion/styled';
-import { Stack, Tooltip } from '@mui/material';
+import { Dialog, DialogActions, DialogContent, DialogTitle, Stack, Tooltip } from '@mui/material';
 import { Box } from '@mui/system';
 import { useAtom } from 'jotai';
-import React, { useState } from 'react';
+import React, { FormEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AccountEvents } from '../../../../typings/accounts';
 import { Card } from '../../components/Card';
@@ -47,6 +48,9 @@ const Accounts = () => {
   const [accounts, updateAccounts] = useAtom(accountsAtom);
   const [defaultAccount] = useAtom(defaultAccountAtom);
   const [selectedAccountId, setSelectedAccountId] = useState<number>(defaultAccount?.id ?? 0);
+  const selectedAccount = accounts.find((account) => account.id === selectedAccountId);
+  const [isRenameOpen, setIsRenameOpen] = useState(false);
+  const [renameInput, setRenameInput] = useState(selectedAccount?.accountName ?? '');
 
   const handleSetDefault = () => {
     fetchNui(AccountEvents.SetDefaultAccount, { accountId: selectedAccountId })
@@ -64,10 +68,46 @@ const Accounts = () => {
       });
   };
 
+  const handleRename = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    console.log('Renaming.');
+    fetchNui(AccountEvents.RenameAccount, { accountId: selectedAccountId, name: renameInput }).then(
+      updateAccounts,
+    );
+    setIsRenameOpen(false);
+  };
+
   const isDefaultAccountSelected = defaultAccount?.id === selectedAccountId;
 
   return (
     <Layout>
+      <Dialog
+        fullWidth
+        maxWidth="xs"
+        open={isRenameOpen}
+        onClose={() => setIsRenameOpen(false)}
+        hideBackdrop
+      >
+        <DialogTitle>{t('Rename account')}</DialogTitle>
+        <form onSubmit={handleRename}>
+          <DialogContent>
+            <Stack spacing={2}>
+              <TextField
+                autoFocus
+                placeholder={t('New account name')}
+                value={renameInput}
+                onChange={(event) => setRenameInput(event.target.value)}
+              />
+
+              <DialogActions>
+                <Button color="error">{t('Cancel')}</Button>
+                <Button type="submit">{t('Rename')}</Button>
+              </DialogActions>
+            </Stack>
+          </DialogContent>
+        </form>
+      </Dialog>
+
       <Stack>
         <PreHeading>{t('Total balance')}</PreHeading>
         <Heading1>{formatMoney(totalBalance, config)}</Heading1>
@@ -88,9 +128,13 @@ const Accounts = () => {
       <Stack spacing={5} marginTop={5}>
         <Stack spacing={1.5} alignItems="flex-start">
           <Heading5>{t('General')}</Heading5>
-          <Button onClick={handleSetDefault} disabled={isDefaultAccountSelected}>
-            {t('Set account to default')}
-          </Button>
+          <Stack direction="row" spacing={4}>
+            <Button onClick={handleSetDefault} disabled={isDefaultAccountSelected}>
+              {t('Set account to default')}
+            </Button>
+
+            <Button onClick={() => setIsRenameOpen(true)}>{t('Rename account')}</Button>
+          </Stack>
         </Stack>
 
         <Stack spacing={1.5} alignItems="flex-start">

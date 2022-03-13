@@ -3,6 +3,7 @@ import './globals.server';
 import { ServerPromiseResp } from '@project-error/pe-utils';
 import 'reflect-metadata';
 import './server-config';
+import './utils/i18n';
 import './db/pool';
 import './services/controllers';
 
@@ -14,6 +15,7 @@ import bodyParser from 'body-parser';
 
 /* Create associations after the models etc */
 import './services/associations';
+import i18n, { load } from './utils/i18n';
 
 new Bank().bootstrap();
 
@@ -55,6 +57,7 @@ if (isMocking) {
   app.post(...createEndpoint(AccountEvents.DeleteAccount));
   app.post(...createEndpoint(AccountEvents.SetDefaultAccount));
   app.post(...createEndpoint(AccountEvents.CreateAccount));
+  app.post(...createEndpoint(AccountEvents.RenameAccount));
   app.post(...createEndpoint(TransactionEvents.Get));
   app.post(...createEndpoint(TransactionEvents.CreateTransfer));
   app.post(...createEndpoint(InvoiceEvents.Get));
@@ -67,6 +70,7 @@ if (isMocking) {
 }
 
 const test = async () => {
+  await load();
   emit('onServerResourceStart', 'pe-financial');
 
   await new Promise((resolve) => {
@@ -82,21 +86,21 @@ const test = async () => {
   /* */
   /* */
 
-  emitNet(AccountEvents.WithdrawMoney, 'returnEvent', {
-    amount: 2000,
-    message: 'ATM Withdrawal',
-  });
+  // emitNet(AccountEvents.WithdrawMoney, 'returnEvent', {
+  //   amount: 2000,
+  //   message: 'ATM Withdrawal',
+  // });
 
   // emitNet(AccountEvents.DepositMoney, 'returnEvent', {
   //   amount: 2000,
   //   message: 'ATM Deposition',
   // });
 
-  // const payload: InvoiceInput = {
+  // const payload = {
   //   to: 'license:1',
   //   from: 'Karl-Jan',
-  //   message: 'I need the money',
-  //   amount: 500,
+  //   message: i18n.t('Payment'),
+  //   amount: 50,
   // };
 
   // emitNet(InvoiceEvents.CreateInvoice, AccountEvents.CreateAccountResponse, payload);

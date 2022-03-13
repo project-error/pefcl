@@ -5,6 +5,7 @@ import { AnimatePresence, Reorder } from 'framer-motion';
 import { useAtom } from 'jotai';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { totalNumberOfTransaction } from 'src/data/transactions';
 import { Account } from '../../../../typings/accounts';
 import Layout from '../../components/Layout';
 import CreateAccountModal from '../../components/Modals/CreateAccount';
@@ -12,12 +13,11 @@ import { PreHeading } from '../../components/ui/Typography/BodyText';
 import { Heading1 } from '../../components/ui/Typography/Headings';
 import { orderedAccountsAtom, totalBalanceAtom } from '../../data/accounts';
 import { totalPendingInvoices } from '../../data/invoices';
-import { totalNumberOfTransaction } from '../../data/transactions';
 import { useConfig } from '../../hooks/useConfig';
 import { formatMoney } from '../../utils/currency';
 import theme from '../../utils/theme';
 import { Card } from './../../components/Card';
-import DashboardContainer from './components/DashboardContainer';
+import DashboardContainer, { DashboardContainerFallback } from './components/DashboardContainer';
 import PendingInvoices from './components/PendingInvoices';
 import Transactions from './components/Transactions';
 
@@ -72,10 +72,7 @@ const Dashboard = () => {
   const { t } = useTranslation();
 
   const [isCreateAccountOpen, setIsCreateAccountOpen] = useState(false);
-
   const [totalBalance] = useAtom(totalBalanceAtom);
-  const [totalTransactions] = useAtom(totalNumberOfTransaction);
-  const [totalInvoices] = useAtom(totalPendingInvoices);
 
   const [, setRefreshOrder] = useState({});
   const [orderedAccounts, setOrderedAccounts] = useAtom(orderedAccountsAtom);
@@ -122,20 +119,25 @@ const Dashboard = () => {
       </Stack>
 
       <Lists>
-        <DashboardContainer
-          title={t('Transactions')}
-          total={totalTransactions}
-          viewAllRoute="/transactions"
-        >
-          <Transactions />
-        </DashboardContainer>
-        <DashboardContainer
-          title={t('Invoices')}
-          total={totalInvoices}
-          viewAllRoute="/transactions"
-        >
-          <PendingInvoices />
-        </DashboardContainer>
+        <React.Suspense fallback={<DashboardContainerFallback title={t('Loading transactions')} />}>
+          <DashboardContainer
+            title={t('Transactions')}
+            viewAllRoute="/transactions"
+            totalAtom={totalNumberOfTransaction}
+          >
+            <Transactions />
+          </DashboardContainer>
+        </React.Suspense>
+
+        <React.Suspense fallback={<DashboardContainerFallback title={t('Loading invoices')} />}>
+          <DashboardContainer
+            title={t('Unpaid invoices')}
+            viewAllRoute="/invoices"
+            totalAtom={totalPendingInvoices}
+          >
+            <PendingInvoices />
+          </DashboardContainer>
+        </React.Suspense>
 
         {/* <DashboardContainer title={t('Fines')} total={2} viewAllRoute="/transactions">
           <PendingInvoices />

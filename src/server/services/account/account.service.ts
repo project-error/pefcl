@@ -1,7 +1,13 @@
 import { AccountDB } from './account.db';
 import { singleton } from 'tsyringe';
 import { Request } from '../../../../typings/http';
-import { Account, AccountType, ATMInput, PreDBAccount } from '../../../../typings/accounts';
+import {
+  Account,
+  AccountType,
+  ATMInput,
+  PreDBAccount,
+  RenameAccountInput,
+} from '../../../../typings/accounts';
 import { UserService } from '../user/user.service';
 import { config } from '../../server-config';
 import { AccountServiceExports } from '../../../../typings/exports';
@@ -305,5 +311,15 @@ export class AccountService {
 
     logger.silly(`Successfully changed default account to ${req.data.accountId}`);
     logger.silly({ accountId: req.data.accountId, userId: user.identifier });
+  }
+
+  // TODO: Implement similar security for updating accounts etc.
+  async handleRenameAccount(req: Request<RenameAccountInput>) {
+    const user = this._userService.getUser(req.source);
+    return await this._accountDB.editAccount({
+      accountName: req.data.name,
+      id: req.data.accountId,
+      ownerIdentifier: user.identifier,
+    });
   }
 }

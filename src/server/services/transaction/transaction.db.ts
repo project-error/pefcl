@@ -24,6 +24,10 @@ export class TransactionDB {
       ...dbTransaction,
     });
 
+    const currentMessage = newTransaction.getDataValue('message');
+    const currentId = newTransaction.getDataValue('id');
+    await newTransaction.update({ message: `${currentMessage} #${currentId}` });
+
     // TODO: Get TS support for this shit.
     //@ts-ignore
     await newTransaction.setToAccount(toAccount?.id);

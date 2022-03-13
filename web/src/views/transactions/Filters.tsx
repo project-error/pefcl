@@ -1,20 +1,35 @@
 import { Chip, Stack } from '@mui/material';
 import { Transaction, TransactionType } from '@typings/transactions';
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { TranslateFunction } from 'src/translation/i18n';
 
-const filters: Record<string, CallableFunction> = {
-  [TransactionType.Incoming]: (transaction: Transaction) =>
-    transaction.type === TransactionType.Incoming,
-  [TransactionType.Outgoing]: (transaction: Transaction) =>
-    transaction.type === TransactionType.Outgoing,
-  [TransactionType.Transfer]: (transaction: Transaction) =>
-    transaction.type === TransactionType.Transfer,
-};
+export interface TransactionFilter {
+  label: ReturnType<TranslateFunction>;
+  sort(transaction: Transaction): boolean;
+}
+
+const getFilters = (t: TranslateFunction): Record<string, TransactionFilter> => ({
+  [TransactionType.Incoming]: {
+    label: t('TransactionType.Incoming'),
+    sort: (transaction: Transaction) => transaction.type === TransactionType.Incoming,
+  },
+  [TransactionType.Outgoing]: {
+    label: t('TransactionType.Outgoing'),
+    sort: (transaction: Transaction) => transaction.type === TransactionType.Outgoing,
+  },
+  [TransactionType.Transfer]: {
+    label: t('TransactionType.Transfer'),
+    sort: (transaction: Transaction) => transaction.type === TransactionType.Transfer,
+  },
+});
 
 interface TransactionFiltersProps {
-  updateActiveFilters(filters: CallableFunction[]): void;
+  updateActiveFilters(filters: TransactionFilter[]): void;
 }
 const TransactionFilters: React.FC<TransactionFiltersProps> = ({ updateActiveFilters }) => {
+  const { t } = useTranslation();
+  const filters = getFilters(t);
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
 
   const handleChipClick = (key: string) => {
@@ -28,14 +43,16 @@ const TransactionFilters: React.FC<TransactionFiltersProps> = ({ updateActiveFil
   };
 
   useEffect(() => {
-    updateActiveFilters(activeFilters.map((key) => filters[key]));
-  }, [activeFilters, updateActiveFilters]);
+    const updateFilters: TransactionFilter[] = activeFilters.map((key) => filters[key]);
+
+    updateActiveFilters(updateFilters);
+  }, [activeFilters, updateActiveFilters, filters]);
 
   return (
     <Stack direction="row" spacing={1}>
-      {Object.keys(filters).map((key) => (
+      {Object.entries(filters).map(([key, filter]) => (
         <Chip
-          label={key}
+          label={filter.label}
           key={key}
           clickable
           onClick={() => handleChipClick(key)}

@@ -7,7 +7,7 @@ import { UserService } from '../user/user.service';
 import { AccountDB } from '../account/account.db';
 import { TransactionDB } from '../transaction/transaction.db';
 import { InvoiceDB } from './invoice.db';
-import i18next from 'i18next';
+import i18n from '@utils/i18n';
 
 const logger = mainLogger.child({ module: 'invoice-service' });
 
@@ -63,8 +63,9 @@ export class InvoiceService {
       await this._transactionDB.create({
         amount: invoiceAmount,
         fromAccount: account.toJSON(),
-        message: i18next.t('Paid invoice'),
+        message: i18n.t('Paid invoice'),
       });
+
       await account.decrement('balance', { by: invoiceAmount });
       await this._invoiceDB.payInvoice(req.data.invoiceId);
       t.commit();

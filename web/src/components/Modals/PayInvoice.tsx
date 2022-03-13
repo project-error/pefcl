@@ -58,13 +58,15 @@ const PayInvoiceModal: React.FC<PayInvoiceModalProps> = ({ onClose, invoice }) =
       .finally(onClose);
   };
 
+  console.log({ selectedAccountId });
+
   return (
     <Paper>
       <Stack p={8} direction="row" spacing={12} justifyContent="space-between">
         <Stack spacing={4} flex={1}>
           <Stack>
             <Stack direction="row" justifyContent="space-between">
-              <Heading2>Invoice</Heading2>
+              <Heading2>{t('Invoice')}</Heading2>
               <Amount>{formatMoney(invoice.amount, config)}</Amount>
             </Stack>
 
@@ -85,7 +87,11 @@ const PayInvoiceModal: React.FC<PayInvoiceModalProps> = ({ onClose, invoice }) =
         </Stack>
 
         <Stack spacing={4} flex={1}>
-          <AccountSelect accounts={accounts} onSelect={setSelectedAccountId} />
+          <AccountSelect
+            accounts={accounts}
+            onSelect={setSelectedAccountId}
+            selectedId={selectedAccountId}
+          />
 
           <Summary balance={selectedAccount?.balance ?? 0} payment={invoice.amount} />
 
@@ -93,7 +99,9 @@ const PayInvoiceModal: React.FC<PayInvoiceModalProps> = ({ onClose, invoice }) =
             <Button color="error" onClick={onClose}>
               {t('Cancel')}
             </Button>
-            <Button onClick={handlePayInvoice}>{t('Pay invoice')}</Button>
+            <Button onClick={handlePayInvoice} disabled={!selectedAccountId}>
+              {t('Pay invoice')}
+            </Button>
           </Stack>
         </Stack>
       </Stack>

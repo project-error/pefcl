@@ -20,7 +20,7 @@ const TransferFundsModal: React.FC<{ onClose(): void }> = ({ onClose }) => {
   const [, updateTransactions] = useAtom(transactionsAtom);
   const [defaultAccount] = useAtom(defaultAccountAtom);
   const [fromAccountId, setFromAccountId] = useState(defaultAccount?.id ?? 0);
-  const [toAccountId, setToAccountID] = useState(-1);
+  const [toAccountId, setToAccountID] = useState(0);
   const [isTransfering, setIsTransfering] = useState(false);
 
   const parsedAmount = Number(amount.replace(/\D/g, ''));

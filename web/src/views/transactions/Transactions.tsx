@@ -1,8 +1,7 @@
 import { Card } from '@components/Card';
 import TransactionItem from '@components/TransactionItem';
 import styled from '@emotion/styled';
-import { Chip, Stack } from '@mui/material';
-import { TransactionType } from '@typings/transactions';
+import { Stack } from '@mui/material';
 import theme from '@utils/theme';
 import { useAtom } from 'jotai';
 import React, { useState } from 'react';
@@ -11,7 +10,7 @@ import { accountsAtom } from 'src/data/accounts';
 import { transactionsAtom } from 'src/data/transactions';
 import Layout from '../../components/Layout';
 import { Heading2, Heading6 } from '../../components/ui/Typography/Headings';
-import TransactionFilters from './Filters';
+import TransactionFilters, { TransactionFilter } from './Filters';
 
 const Container = styled(Stack)`
   height: calc(100% - 5rem);
@@ -49,7 +48,7 @@ const Transactions = () => {
   const [selectedAccountId, setSelectedAccountId] = useState(0);
   const [accounts] = useAtom(accountsAtom);
   const [transactions] = useAtom(transactionsAtom);
-  const [activeFilters, setActiveFilters] = useState<CallableFunction[]>([]);
+  const [activeFilters, setActiveFilters] = useState<TransactionFilter[]>([]);
 
   const filteredTransactions = transactions.filter(
     ({ toAccount, fromAccount }) =>
@@ -62,7 +61,9 @@ const Transactions = () => {
     activeFilters.length === 0
       ? filteredTransactions
       : filteredTransactions.filter((transaction) => {
-          const anyPassed: boolean[] = activeFilters.map((filterFunc) => filterFunc(transaction));
+          const anyPassed: boolean[] = activeFilters.map((filterFunc) =>
+            filterFunc.sort(transaction),
+          );
           return anyPassed.some(Boolean);
         });
 

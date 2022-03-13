@@ -1,6 +1,12 @@
 import { Controller } from '../../decorators/Controller';
 import { NetPromise, PromiseEventListener } from '../../decorators/NetPromise';
-import { Account, AccountEvents, ATMInput, PreDBAccount } from '../../../../typings/accounts';
+import {
+  Account,
+  AccountEvents,
+  ATMInput,
+  PreDBAccount,
+  RenameAccountInput,
+} from '../../../../typings/accounts';
 import { Request, Response } from '../../../../typings/http';
 import { AccountService } from './account.service';
 import { Event, EventListener } from '../../decorators/Event';
@@ -64,6 +70,16 @@ export class AccountController {
   async setDefaultAccount(req: Request<{ accountId: number }>, res: Response<any>) {
     try {
       await this._accountService.handleSetDefaultAccount(req);
+      res({ status: 'ok', data: {} });
+    } catch (err) {
+      res({ status: 'error', errorMsg: err.message });
+    }
+  }
+
+  @NetPromise(AccountEvents.RenameAccount)
+  async renameAccount(req: Request<RenameAccountInput>, res: Response<any>) {
+    try {
+      await this._accountService.handleRenameAccount(req);
       res({ status: 'ok', data: {} });
     } catch (err) {
       res({ status: 'error', errorMsg: err.message });

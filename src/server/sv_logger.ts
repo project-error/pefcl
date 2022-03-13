@@ -17,7 +17,6 @@ const formatLogs = (log: any): string => {
 
 const findLogPath = () => `${path.join(GetResourcePath(GetCurrentResourceName()), 'sv_pefcl.log')}`;
 
-console.log('LEVEL:', config.debug.level);
 export const mainLogger: winston.Logger = createLogger({
   level: config.debug.level,
   transports: [

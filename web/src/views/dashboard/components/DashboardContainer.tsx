@@ -1,10 +1,11 @@
 import styled from '@emotion/styled';
-import { Stack } from '@mui/material';
+import { CircularProgress, LinearProgress, Stack } from '@mui/material';
+import { Atom, useAtom } from 'jotai';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import Button from '../../../components/ui/Button';
-import { Heading5 } from '../../../components/ui/Typography/Headings';
+import { Heading5, Heading6 } from '../../../components/ui/Typography/Headings';
 import theme from '../../../utils/theme';
 
 const Container = styled.div`
@@ -12,6 +13,8 @@ const Container = styled.div`
   border-radius: ${theme.spacing(2)};
   background-color: ${theme.palette.background.paper};
 `;
+
+const LoadingContainer = styled(Container)``;
 
 const Total = styled.div`
   display: flex;
@@ -49,16 +52,17 @@ const Content = styled.div`
 
 interface DashboardContainerProps {
   title: string;
-  total: number;
+  totalAtom: Atom<number>;
   viewAllRoute: string;
 }
 
 const DashboardContainer: React.FC<DashboardContainerProps> = ({
-  children,
-  total,
   title,
+  children,
+  totalAtom,
   viewAllRoute,
 }) => {
+  const total = useAtom(totalAtom);
   const { t } = useTranslation();
   const { push } = useHistory();
 
@@ -77,6 +81,21 @@ const DashboardContainer: React.FC<DashboardContainerProps> = ({
         </Stack>
       </Stack>
     </Container>
+  );
+};
+
+export const DashboardContainerFallback: React.FC<{ title: string }> = ({ title }) => {
+  return (
+    <LoadingContainer>
+      <Stack direction="row" justifyContent="space-between" alignItems="center">
+        <Heading5>{title}</Heading5>
+        <Total>0</Total>
+      </Stack>
+
+      <Stack p={8} alignItems="center">
+        <CircularProgress />
+      </Stack>
+    </LoadingContainer>
   );
 };
 

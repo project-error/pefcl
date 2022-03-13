@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import { ArrowDropDownRounded } from '@mui/icons-material';
 import { InputBase, MenuItem, Select, SelectChangeEvent, Stack } from '@mui/material';
+import { t } from 'i18next';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Account, AccountType } from '../../../typings/accounts';
@@ -76,8 +77,8 @@ interface AccountSelect {
 
 const AccountSelect: React.FC<AccountSelect> = ({ accounts: accounts, onSelect, selectedId }) => {
   const config = useConfig();
-  const initialValue = accounts.find((account) => account.isDefault)?.id ?? 0;
-  const [selected, setSelected] = useState<number>(initialValue);
+  // const initialValue = accounts.find((account) => account.isDefault)?.id ?? 0;
+  const [selected, setSelected] = useState<number>(0);
 
   const sharedAccounts = accounts.filter((account) => account.type === AccountType.Shared);
   const personalAccounts = accounts.filter((account) => account.type === AccountType.Personal);
@@ -105,12 +106,22 @@ const AccountSelect: React.FC<AccountSelect> = ({ accounts: accounts, onSelect, 
         value={selected}
         onChange={handleChange}
         variant="filled"
-        input={<StyledInput sx={{ border: 'none', outline: 'none' }} />}
+        input={<StyledInput sx={{ border: 'none', outline: 'none' }} placeholder="select" />}
         sx={{ width: '100%' }}
         IconComponent={(props) => {
           return <SelectIcon {...props} />;
         }}
       >
+        {selected === 0 && (
+          <StyledMenuItem value={0} disabled>
+            <ListItem>
+              <Stack p="0rem 0.5rem">
+                <Heading6>{t('Select account')}</Heading6>
+              </Stack>
+            </ListItem>
+          </StyledMenuItem>
+        )}
+
         {personalAccounts.map((account) => (
           <StyledMenuItem key={account.id} value={account.id} disabled={selectedId === account.id}>
             <Option account={account} config={config} />

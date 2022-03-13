@@ -10,7 +10,7 @@
     "shouldSync": false
   },
   "prices": {
-    "newAccount": 25
+    "newAccount": 200
   },
   "accounts": {
     "defaultName": "Initial",
@@ -19,8 +19,8 @@
   "cash": {
     "defaultAmount": 2000
   },
-  "language": "en",
-  "currency": "USD",
+  "language": "sv",
+  "currency": "SEK",
   "debug": {
     "level": "silly"
   }
