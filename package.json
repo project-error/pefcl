@@ -12,7 +12,8 @@
     "generate:locale": "yarn i18next",
     "build": "yarn build:src && yarn build:web",
     "build:src": "cd src && yarn build",
-    "build:web": "cd web && yarn build" 
+    "build:web": "cd web && yarn build",
+    "prerelease": "yarn generate:locale && yarn build && ./scripts/prerelease.sh"
   },
   "devDependencies": {
     "@commitlint/cli": "^16.0.2",
