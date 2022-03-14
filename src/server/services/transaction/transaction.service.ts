@@ -12,6 +12,14 @@ import { TransactionModel } from './transaction.model';
 
 const logger = mainLogger.child({ module: 'transactionService' });
 
+interface CreateTransactionInput {
+  amount: number;
+  message: string;
+  type?: TransactionType;
+  toAccount: Account;
+  fromAccount?: Account;
+}
+
 @singleton()
 export class TransactionService {
   _accountDB: AccountDB;
@@ -68,19 +76,9 @@ export class TransactionService {
     return true;
   }
 
-  async handleCreateTransaction(
-    amount: number,
-    message: string,
-    toAccount: Account,
-    fromAccount?: Account,
-  ): Promise<TransactionModel> {
+  async handleCreateTransaction(input: CreateTransactionInput): Promise<TransactionModel> {
     logger.silly(`Created transaction.`);
-    logger.silly({ amount, message });
-    return await this._transactionDB.create({
-      amount,
-      message,
-      toAccount,
-      fromAccount,
-    });
+    logger.silly(input);
+    return await this._transactionDB.create(input);
   }
 }

@@ -10,15 +10,14 @@ import {
 } from '../../../../typings/accounts';
 import { UserService } from '../user/user.service';
 import { config } from '../../server-config';
-import { AccountServiceExports } from '../../../../typings/exports';
 import { mainLogger } from '../../sv_logger';
 import { sequelize } from '../../db/pool';
 import { TransactionService } from '../transaction/transaction.service';
 import { CashService } from '../cash/cash.service';
-const exp: AccountServiceExports = global.exports[config.exports.resourceName];
+import i18next from '@utils/i18n';
+import { TransactionType } from '@typings/transactions';
 
 const logger = mainLogger.child({ module: 'accounts' });
-const useFrameworkIntegration = config.general.useFrameworkIntegration;
 
 @singleton()
 export class AccountService {
@@ -154,6 +153,16 @@ export class AccountService {
         throw new Error('The balance of the account is too low. It cannot be deleted!');
       }
 
+      await this._transactionService.handleCreateTransaction({
+        amount: deletingAccountBalance,
+        message: i18next.t('Remaining funds from "{{deletedAccount}}"', {
+          deletedAccount: deletingAccount.getDataValue('accountName'),
+        }),
+        type: TransactionType.Incoming,
+        fromAccount: deletingAccount.toJSON(),
+        toAccount: defaultAccount.toJSON(),
+      });
+
       await defaultAccount.increment('balance', { by: deletingAccountBalance });
       await deletingAccount.destroy();
 
@@ -222,11 +231,11 @@ export class AccountService {
       /* Check this part. - Deposition from. */
       await this._cashService.handleTakeCash(req.source, depositionAmount);
       await targetAccount.increment({ balance: depositionAmount });
-      await this._transactionService.handleCreateTransaction(
-        depositionAmount,
-        req.data.message,
-        targetAccount.toJSON(),
-      );
+      await this._transactionService.handleCreateTransaction({
+        amount: depositionAmount,
+        message: req.data.message,
+        toAccount: targetAccount.toJSON(),
+      });
 
       logger.silly(
         `Successfully deposited ${depositionAmount} into account ${targetAccount.getDataValue(
@@ -262,11 +271,11 @@ export class AccountService {
       await this._cashService.handleGiveCash(req.source, withdrawAmount);
       await targetAccount.decrement({ balance: withdrawAmount });
 
-      await this._transactionService.handleCreateTransaction(
-        withdrawAmount,
-        req.data.message,
-        targetAccount.toJSON(),
-      );
+      await this._transactionService.handleCreateTransaction({
+        amount: withdrawAmount,
+        message: req.data.message,
+        toAccount: targetAccount.toJSON(),
+      });
 
       logger.silly(`Withdrew ${withdrawAmount} from account ${accountId}`);
       logger.silly({ withdrawAmount, currentAccountBalance });
