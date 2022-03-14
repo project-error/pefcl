@@ -1,5 +1,8 @@
 name: Prerelease Publisher
-on: [push, pull_request, workflow_dispatch]
+on:
+  push:
+    branches:
+      - master
 
 jobs:
   pre-release-build:
