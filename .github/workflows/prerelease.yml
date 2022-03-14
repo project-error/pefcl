@@ -25,6 +25,9 @@ jobs:
           echo "::set-output name=SHORT_SHA::$(git rev-parse --short HEAD)"
           echo "::set-output name=DATE::$(date +'%D')"
 
+      - name: Install main deps
+        run: yarn --frozen-lockfile
+
       - name: Install src deps
         working-directory: src
         run: yarn --frozen-lockfile
