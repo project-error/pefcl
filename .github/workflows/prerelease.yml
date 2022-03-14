@@ -33,7 +33,7 @@ jobs:
         run: yarn --frozen-lockfile
 
       - name: Install web deps
-        working-directory: src
+        working-directory: web
         run: yarn --frozen-lockfile
 
       - name: Create release
