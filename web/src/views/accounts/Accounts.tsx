@@ -5,6 +5,7 @@ import { Box } from '@mui/system';
 import { useAtom } from 'jotai';
 import React, { FormEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { transactionsAtom } from 'src/data/transactions';
 import { AccountEvents } from '../../../../typings/accounts';
 import { Card } from '../../components/Card';
 import Layout from '../../components/Layout';
@@ -46,6 +47,7 @@ const Accounts = () => {
   const { t } = useTranslation();
   const [totalBalance] = useAtom(totalBalanceAtom);
   const [accounts, updateAccounts] = useAtom(accountsAtom);
+  const [, updateTransactions] = useAtom(transactionsAtom);
   const [defaultAccount] = useAtom(defaultAccountAtom);
   const [selectedAccountId, setSelectedAccountId] = useState<number>(defaultAccount?.id ?? 0);
   const selectedAccount = accounts.find((account) => account.id === selectedAccountId);
@@ -63,6 +65,7 @@ const Accounts = () => {
   const handleDeleteAccount = () => {
     fetchNui(AccountEvents.DeleteAccount, { accountId: selectedAccountId })
       .then(updateAccounts)
+      .then(updateTransactions)
       .catch((err) => {
         console.log({ err });
       });

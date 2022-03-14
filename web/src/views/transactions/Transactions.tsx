@@ -1,4 +1,5 @@
 import { Card } from '@components/Card';
+import Layout from '@components/Layout';
 import TransactionItem from '@components/TransactionItem';
 import styled from '@emotion/styled';
 import { Stack } from '@mui/material';
@@ -8,7 +9,6 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { accountsAtom } from 'src/data/accounts';
 import { transactionsAtom } from 'src/data/transactions';
-import Layout from '../../components/Layout';
 import { Heading2, Heading6 } from '../../components/ui/Typography/Headings';
 import TransactionFilters, { TransactionFilter } from './Filters';
 

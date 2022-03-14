@@ -21,8 +21,8 @@ const TransactionMessage = styled(BodyText)`
   font-weight: ${theme.typography.fontWeightBold};
   white-space: pre;
   text-overflow: ellipsis;
-  max-width: 14rem;
   overflow: hidden;
+  margin-right: 1rem;
 `;
 
 const TransactionItem: React.FC<{ transaction: Transaction }> = ({ transaction, ...rest }) => {

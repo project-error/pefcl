@@ -36,5 +36,5 @@ AccountModel.init(
       defaultValue: AccountType.Personal,
     },
   },
-  { sequelize: sequelize, tableName: 'accounts' },
+  { sequelize: sequelize, tableName: 'accounts', paranoid: true },
 );
