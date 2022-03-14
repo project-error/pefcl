@@ -1,6 +1,6 @@
-import { Controller } from '../../decorators/Controller';
-import { EventListener, Event } from '../../decorators/Event';
-import { config } from '../../server-config';
+import { Controller } from '@decorators/Controller';
+import { EventListener, Event } from '@decorators/Event';
+import { config } from '@utils/server-config';
 import { UserService } from './user.service';
 
 @Controller('User')

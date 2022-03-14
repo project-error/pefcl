@@ -1,4 +1,4 @@
-import { RegisterNuiCB, RegisterNuiProxy } from './client-utils';
+import { RegisterNuiProxy } from './client-utils';
 import { AccountEvents, InvoiceEvents, TransactionEvents } from '../../typings/accounts';
 
 RegisterNuiProxy(AccountEvents.GetAccounts);

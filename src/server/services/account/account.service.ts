@@ -9,7 +9,7 @@ import {
   RenameAccountInput,
 } from '../../../../typings/accounts';
 import { UserService } from '../user/user.service';
-import { config } from '../../server-config';
+import { config } from '@utils/server-config';
 import { mainLogger } from '../../sv_logger';
 import { sequelize } from '../../db/pool';
 import { TransactionService } from '../transaction/transaction.service';

@@ -1,8 +1,8 @@
 import { DATABASE_PREFIX } from '@utils/constants';
 import { DataTypes, Model } from 'sequelize';
-import { Cash } from '../../../../typings/Cash';
+import { Cash } from '@typings/Cash';
 import { sequelize } from '../../db/pool';
-import { config } from '../../server-config';
+import { config } from '@utils/server-config';
 
 export class CashModel extends Model<Cash> {}
 

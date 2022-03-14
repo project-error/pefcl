@@ -1,7 +1,7 @@
 import { singleton } from 'tsyringe';
 import { Cash } from '../../../../typings/Cash';
 import { AccountServiceExports } from '../../../../typings/exports';
-import { config } from '../../server-config';
+import { config } from '@utils/server-config';
 import { mainLogger } from '../../sv_logger';
 import { UserService } from '../user/user.service';
 import { CashDB } from './cash.db';

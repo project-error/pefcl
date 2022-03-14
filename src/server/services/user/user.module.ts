@@ -1,5 +1,5 @@
-import { User } from '../../../../typings/user';
-import { config } from '../../server-config';
+import { User } from '@typings/user';
+import { config } from '@utils/server-config';
 
 const exp = global.exports;
 

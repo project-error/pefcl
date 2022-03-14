@@ -2,7 +2,7 @@ import './globals.server';
 
 import { ServerPromiseResp } from '@project-error/pe-utils';
 import 'reflect-metadata';
-import './server-config';
+import './utils/server-config';
 import './utils/i18n';
 import './db/pool';
 import './services/controllers';

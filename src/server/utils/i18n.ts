@@ -2,7 +2,7 @@ import en from '@locales/en/translation.json';
 import sv from '@locales/sv/translation.json';
 import dayjs from 'dayjs';
 import i18next from 'i18next';
-import { config } from 'server-config';
+import { config } from '@utils/server-config';
 import { mainLogger } from 'sv_logger';
 
 const language = config.language;

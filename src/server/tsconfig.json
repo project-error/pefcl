@@ -15,6 +15,7 @@
     "baseUrl": ".",
     "paths": {
       "@utils/*": ["utils/*"],
+      "@decorators/*": ["decorators/*"],
       "@locales/*": ["../../locales/*"],
       "@typings/*": ["../../typings/*"]
     }

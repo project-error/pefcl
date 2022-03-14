@@ -6,10 +6,10 @@ import {
   ATMInput,
   PreDBAccount,
   RenameAccountInput,
-} from '../../../../typings/accounts';
-import { Request, Response } from '../../../../typings/http';
+} from '@typings/accounts';
+import { Request, Response } from '@typings/http';
 import { AccountService } from './account.service';
-import { Event, EventListener } from '../../decorators/Event';
+import { Event, EventListener } from '@decorators/Event';
 
 @Controller('Account')
 @PromiseEventListener()

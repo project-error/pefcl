@@ -1,8 +1,8 @@
 import { DATABASE_PREFIX } from '@utils/constants';
 import { DataTypes, Model } from 'sequelize';
+import { config } from '@utils/server-config';
 import { Account, AccountType } from '../../../../typings/accounts';
 import { sequelize } from '../../db/pool';
-import { config } from '../../server-config';
 
 export class AccountModel extends Model<Account> {}
 
