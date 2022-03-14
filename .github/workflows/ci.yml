@@ -1,5 +1,6 @@
 name: Main CI
 on: [push, pull_request]
+
 jobs:
   build:
     name: Build Test
@@ -28,6 +29,7 @@ jobs:
       - name: Install deps
         run: yarn --frozen-lockfile
       - name: Generate locale
+        working-directory: .
         run: yarn generate:locale # Should be pushed in the future, pulled on release.
       - name: Build
         run: yarn build
