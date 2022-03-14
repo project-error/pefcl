@@ -1,5 +1,5 @@
 name: Prerelease Publisher
-on: [push, pull_request]
+on: [push, pull_request, workflow_dispatch]
 
 jobs:
   pre-release-build:
@@ -22,6 +22,7 @@ jobs:
       - name: Get variables
         id: get_vars
         run: |
+          echo "GITHUB_SHA_SHORT=$(echo $GITHUB_SHA | cut -c 1-7)" >> $GITHUB_ENV
           echo "::set-output name=SHORT_SHA::$(git rev-parse --short HEAD)"
           echo "::set-output name=DATE::$(date +'%D')"
 
@@ -37,7 +38,9 @@ jobs:
         run: yarn --frozen-lockfile
 
       - name: Create release
-        run: yarn prerelease
+        run: |
+          chmod +x "./scripts/prerelease.sh"
+          yarn prerelease
 
       - name: Create Release & Changelog
         uses: 'marvinpinto/action-automatic-releases@v1.2.1'
