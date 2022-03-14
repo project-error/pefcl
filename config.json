@@ -14,7 +14,7 @@
   },
   "accounts": {
     "defaultName": "Initial",
-    "defaultAmount": 0
+    "defaultAmount": 25000
   },
   "cash": {
     "defaultAmount": 2000

@@ -1,3 +1,4 @@
+import { DATABASE_PREFIX } from '@utils/constants';
 import { DataTypes, Model } from 'sequelize';
 import { Account, AccountType } from '../../../../typings/accounts';
 import { sequelize } from '../../db/pool';
@@ -36,5 +37,5 @@ AccountModel.init(
       defaultValue: AccountType.Personal,
     },
   },
-  { sequelize: sequelize, tableName: 'accounts', paranoid: true },
+  { sequelize: sequelize, tableName: DATABASE_PREFIX + 'accounts', paranoid: true },
 );

@@ -21,7 +21,10 @@ RegisterCommand(
   false,
 );
 
+RegisterKeyMapping('bank', 'Toggle Bank', 'keyboard', 'b');
+
 RegisterNuiCB<void>(GeneralEvents.CloseBank, async () => {
+  SendNUIMessage({ type: 'setVisible', payload: false });
   bankOpen = false;
   SetNuiFocus(false, false);
 });

@@ -1,3 +1,4 @@
+import { DATABASE_PREFIX } from '@utils/constants';
 import { DataTypes, Model } from 'sequelize';
 import { singleton } from 'tsyringe';
 import { Transaction, TransactionType } from '../../../../typings/transactions';
@@ -35,5 +36,5 @@ TransactionModel.init(
       defaultValue: TransactionType.Outgoing, // Outgoing = Money leaves ur account, Incoming = Money goes into ur account
     },
   },
-  { sequelize: sequelize, tableName: 'transactions' },
+  { sequelize: sequelize, tableName: DATABASE_PREFIX + 'transactions' },
 );

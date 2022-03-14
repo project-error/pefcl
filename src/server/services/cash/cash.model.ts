@@ -1,3 +1,4 @@
+import { DATABASE_PREFIX } from '@utils/constants';
 import { DataTypes, Model } from 'sequelize';
 import { Cash } from '../../../../typings/Cash';
 import { sequelize } from '../../db/pool';
@@ -21,5 +22,5 @@ CashModel.init(
       unique: true,
     },
   },
-  { sequelize: sequelize, tableName: 'cash' },
+  { sequelize: sequelize, tableName: DATABASE_PREFIX + 'cash' },
 );

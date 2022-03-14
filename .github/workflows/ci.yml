@@ -27,5 +27,7 @@ jobs:
             ${{ runner.os }}-yarn-
       - name: Install deps
         run: yarn --frozen-lockfile
-      - name: Try build
+      - name: Generate locale
+        run: yarn generate:locale # Should be pushed in the future, pulled on release.
+      - name: Build
         run: yarn build

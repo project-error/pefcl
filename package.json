@@ -3,13 +3,16 @@
   "version": "1.0.0",
   "main": "index.js",
   "repository": "https://github.com/project-error/pe-financial",
-  "author": "itschip <onlygamernerd@gmail.com>",
+  "author": "projecterror <info@projecterror.dev>",
   "license": "MIT",
   "scripts": {
     "format": "prettier --write .",
     "prepare": "husky install",
     "postinstall": "husky install",
-    "generate:locale": "yarn i18next"
+    "generate:locale": "yarn i18next",
+    "build": "yarn build:src && yarn build:web",
+    "build:src": "cd src && yarn build",
+    "build:web": "cd web && yarn build" 
   },
   "devDependencies": {
     "@commitlint/cli": "^16.0.2",

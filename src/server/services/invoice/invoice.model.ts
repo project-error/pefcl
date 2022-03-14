@@ -1,3 +1,4 @@
+import { DATABASE_PREFIX } from '@utils/constants';
 import { DataTypes, Model } from 'sequelize';
 import { singleton } from 'tsyringe';
 import { Invoice, InvoiceStatus } from '../../../../typings/Invoice';
@@ -38,5 +39,5 @@ InvoiceModel.init(
       allowNull: false,
     },
   },
-  { sequelize: sequelize, tableName: 'invoices' },
+  { sequelize: sequelize, tableName: DATABASE_PREFIX + 'invoices' },
 );

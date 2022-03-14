@@ -29,7 +29,7 @@ export class AccountDB {
   async createAccount(
     account: Pick<Account, 'accountName' | 'type' | 'isDefault' | 'ownerIdentifier'>,
   ): Promise<AccountModel> {
-    return await AccountModel.create({ ...account, balance: 100000 });
+    return await AccountModel.create(account);
   }
 
   async deleteAccount(id: number) {
