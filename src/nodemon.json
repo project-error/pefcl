@@ -4,3 +4,4 @@
     "exec": "node ./dist/server.js",
     "legacyWatch": true
   }
+  
