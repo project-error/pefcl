@@ -1,6 +1,7 @@
+import { Account, SharedAccountInput } from '@typings/accounts';
 import { singleton } from 'tsyringe';
-import { Account } from '../../../../typings/accounts';
 import { AccountModel } from './account.model';
+import { SharedAccountModel } from './sharedAccount.model';
 
 @singleton()
 export class AccountDB {
@@ -30,6 +31,13 @@ export class AccountDB {
     account: Pick<Account, 'accountName' | 'type' | 'isDefault' | 'ownerIdentifier'>,
   ): Promise<AccountModel> {
     return await AccountModel.create(account);
+  }
+
+  async createSharedAccount(input: SharedAccountInput): Promise<SharedAccountModel> {
+    const account = await SharedAccountModel.create({ user: input.user });
+    //@ts-ignore
+    await account.setAccount(input.accountId);
+    return account;
   }
 
   async deleteAccount(id: number) {

@@ -25,6 +25,20 @@ export interface Account {
   type: AccountType;
 }
 
+export interface SharedAccount {
+  id: number;
+  user: string;
+  account?: Account;
+}
+export interface SharedAccountInput {
+  user: string;
+  accountId: number;
+}
+export interface AddToSharedAccountInput {
+  source: number;
+  accountId: number;
+}
+
 export type TransactionAccount = Pick<Account, 'id' | 'accountName'>;
 
 export interface ATMInput {
@@ -46,6 +60,7 @@ export enum AccountEvents {
   DeleteAccount = 'pefcl:deleteAccount',
   DepositMoney = 'pefcl:depositMoney',
   WithdrawMoney = 'pefcl:withdrawMoney',
+  AddUserToSharedAccount = 'pefcl:addUserToSharedAccount',
 }
 
 export enum TransactionEvents {

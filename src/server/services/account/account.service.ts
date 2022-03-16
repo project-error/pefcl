@@ -4,6 +4,7 @@ import { Request } from '../../../../typings/http';
 import {
   Account,
   AccountType,
+  AddToSharedAccountInput,
   ATMInput,
   PreDBAccount,
   RenameAccountInput,
@@ -59,6 +60,17 @@ export class AccountService {
     return accounts.map((account) => account.toJSON());
   }
 
+  async addUserToShared(req: Request<AddToSharedAccountInput>) {
+    logger.silly(`Adding user src: ${req.source} to shared account.`);
+    const user = this._userService.getUser(req.data.source);
+
+    // TODO: Add security
+    return this._accountDB.createSharedAccount({
+      user: user.identifier,
+      accountId: req.data.accountId,
+    });
+  }
+
   async createInitialAccount(source: number): Promise<Account> {
     logger.silly('Checking if default account exists ...');
     const user = this._userService.getUser(source);
@@ -88,7 +100,6 @@ export class AccountService {
     const userIdentifier = this._userService.getUser(req.source).getIdentifier();
 
     const t = await sequelize.transaction();
-    t.LOCK;
     try {
       if (req.data.isDefault) {
         const defaultAccount = await this._accountDB.getDefaultAccountByIdentifier(userIdentifier);
@@ -117,6 +128,13 @@ export class AccountService {
         isDefault: isDefault,
         ownerIdentifier: userIdentifier,
       });
+
+      if (isShared) {
+        await this._accountDB.createSharedAccount({
+          accountId: account.getDataValue('id'),
+          user: userIdentifier,
+        });
+      }
 
       t.commit();
       return account.toJSON();

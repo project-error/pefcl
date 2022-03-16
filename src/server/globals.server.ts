@@ -13,6 +13,10 @@ const players = {
     name: 'BingoBerra',
     license: 'license:1',
   },
+  '3': {
+    name: 'OtherGuy',
+    license: 'license:2',
+  },
 };
 
 if (isMocking) {

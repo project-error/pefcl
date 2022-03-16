@@ -106,13 +106,17 @@ const test = async () => {
   // emitNet(InvoiceEvents.CreateInvoice, AccountEvents.CreateAccountResponse, payload);
 
   /* Emit something */
-  // const createAccountPayload1: PreDBAccount = {
+  // const createSharedAccount: PreDBAccount = {
   //   accountName: 'Bennys AB',
   //   isShared: true,
   //   fromAccountId: 0,
   // };
 
-  // emitNet(AccountEvents.CreateAccount, AccountEvents.CreateAccountResponse, createAccountPayload1);
+  // emitNet(AccountEvents.CreateAccount, AccountEvents.CreateAccountResponse, createSharedAccount);
+
+  // const payload: AddToSharedAccountInput = { accountId: 3, source: 3 };
+  // emitNet(AccountEvents.AddUserToSharedAccount, AccountEvents.CreateAccountResponse, payload);
+
   // const createAccountPayload2: PreDBAccount = {
   //   accountName: 'Pension',
   //   isDefault: false,

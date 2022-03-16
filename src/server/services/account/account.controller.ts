@@ -3,6 +3,7 @@ import { NetPromise, PromiseEventListener } from '../../decorators/NetPromise';
 import {
   Account,
   AccountEvents,
+  AddToSharedAccountInput,
   ATMInput,
   PreDBAccount,
   RenameAccountInput,
@@ -57,6 +58,7 @@ export class AccountController {
       res({ status: 'error', errorMsg: err.message });
     }
   }
+
   @NetPromise(AccountEvents.WithdrawMoney)
   async withdrawMoney(req: Request<ATMInput>, res: Response<any>) {
     try {
@@ -80,6 +82,16 @@ export class AccountController {
   async renameAccount(req: Request<RenameAccountInput>, res: Response<any>) {
     try {
       await this._accountService.handleRenameAccount(req);
+      res({ status: 'ok', data: {} });
+    } catch (err) {
+      res({ status: 'error', errorMsg: err.message });
+    }
+  }
+
+  @NetPromise(AccountEvents.AddUserToSharedAccount)
+  async addSharedAccountUser(req: Request<AddToSharedAccountInput>, res: Response<any>) {
+    try {
+      await this._accountService.addUserToShared(req);
       res({ status: 'ok', data: {} });
     } catch (err) {
       res({ status: 'error', errorMsg: err.message });
