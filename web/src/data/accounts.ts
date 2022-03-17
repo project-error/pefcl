@@ -1,5 +1,6 @@
+import { Account } from '@typings/Account';
+import { AccountEvents } from '@typings/Events';
 import { atom } from 'jotai';
-import { Account, AccountEvents } from '@typings/Account';
 import { mockedAccounts } from '../utils/constants';
 import { fetchNui } from '../utils/fetchNui';
 import { isEnvBrowser } from '../utils/misc';

@@ -8,7 +8,7 @@ export class Bank {
   static container = container;
 
   bootstrap() {
-    Bank.container.beforeResolution(DIToken.Controller, (_t, result: unknown) => {
+    Bank.container.beforeResolution(DIToken.Controller, () => {
       baseLogger.debug('Initializing...');
     });
 

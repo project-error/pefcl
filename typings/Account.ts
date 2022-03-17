@@ -38,6 +38,7 @@ export interface SharedAccount {
   role: AccountRole;
   account?: Account;
   accountId?: number;
+  setAccount?(): void;
 }
 export type SharedAccountUser = Pick<SharedAccount, 'user' | 'role'>;
 export interface SharedAccountInput {
@@ -62,32 +63,4 @@ export interface ATMInput {
   amount: number;
   message: string;
   accountId?: number;
-}
-
-export enum AccountEvents {
-  GetAccounts = 'pefcl:getAccounts',
-  CreateAccount = 'pefcl:createAccount',
-  RenameAccount = 'pefcl:renameAccount',
-  CreateAccountResponse = 'pefcl:createAccountResponse',
-  SetDefaultAccount = 'pefcl:setDefaultAccount',
-  DeleteAccount = 'pefcl:deleteAccount',
-  DepositMoney = 'pefcl:depositMoney',
-  WithdrawMoney = 'pefcl:withdrawMoney',
-}
-
-export enum SharedAccountEvents {
-  GetUsers = 'pefcl:sharedAccountsGetUsers',
-  AddUser = 'pefcl:sharedAccountsAddUser',
-  RemoveUser = 'pefcl:sharedAccountsRemoveUser',
-}
-
-export enum TransactionEvents {
-  Get = 'pefcl:getTransactions',
-  CreateTransfer = 'pefcl:createTransfer',
-}
-
-export enum InvoiceEvents {
-  Get = 'pefcl:getInvoices',
-  CreateInvoice = 'pefcl:createInvoice',
-  PayInvoice = 'pefcl:payInvoice',
 }

@@ -33,7 +33,6 @@ export class AccountDB {
 
   async getSharedAccountsById(id: number): Promise<SharedAccountModel[]> {
     return await SharedAccountModel.findAll({
-      //@ts-ignore
       where: { accountId: id },
       include: [{ model: AccountModel, as: 'account' }],
     });
@@ -56,6 +55,7 @@ export class AccountDB {
   }
 
   async createSharedAccount(input: SharedAccountInput): Promise<SharedAccountModel> {
+    // TODO: Move logic into service
     const existingAccount = await SharedAccountModel.findOne({
       where: { user: input.user, accountId: input.accountId },
     });
@@ -65,6 +65,9 @@ export class AccountDB {
     }
 
     const account = await SharedAccountModel.create(input);
+
+    // TODO: How to extend the module to support this with ts? Other ORM might be a choice if this isn't fixable.
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-ignore
     await account.setAccount(input.accountId);
     return account;
@@ -78,7 +81,7 @@ export class AccountDB {
     return await AccountModel.destroy({ where: { identifier: id } });
   }
 
-  async updateAccountBalance(id: number, amount: number): Promise<void> {
+  async updateAccountBalance(): Promise<void> {
     throw new Error('Not implemented');
   }
 }

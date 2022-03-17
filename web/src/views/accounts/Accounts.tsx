@@ -4,12 +4,11 @@ import TextField from '@components/ui/Fields/TextField';
 import styled from '@emotion/styled';
 import { Dialog, DialogActions, DialogContent, DialogTitle, Stack } from '@mui/material';
 import {
-  AccountEvents,
   AccountType,
   AddToSharedAccountInput,
   RemoveFromSharedAccountInput,
-  SharedAccountEvents,
 } from '@typings/Account';
+import { AccountEvents, SharedAccountEvents } from '@typings/Events';
 import { getIsAdmin } from '@utils/account';
 import { useAtom } from 'jotai';
 import React, { FormEvent, useState } from 'react';

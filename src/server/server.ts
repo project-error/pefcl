@@ -1,27 +1,24 @@
-import './globals.server';
-
 import { ServerPromiseResp } from '@project-error/pe-utils';
-import 'reflect-metadata';
-import './utils/server-config';
-import './utils/i18n';
-import './utils/pool';
-import './services/controllers';
-
-import { Bank } from './services/Bank';
 import {
   AccountEvents,
   InvoiceEvents,
   SharedAccountEvents,
   TransactionEvents,
-} from '@typings/Account';
-import { UserEvents } from '@typings/Events';
-import express, { RequestHandler } from 'express';
-import cors from 'cors';
+  UserEvents,
+} from '@typings/Events';
 import bodyParser from 'body-parser';
-
+import cors from 'cors';
+import express, { RequestHandler } from 'express';
+import 'reflect-metadata';
+import './globals.server';
 /* Create associations after the models etc */
 import './services/associations';
+import { Bank } from './services/Bank';
+import './services/controllers';
+import './utils/i18n';
 import { load } from './utils/i18n';
+import './utils/pool';
+import './utils/server-config';
 
 new Bank().bootstrap();
 

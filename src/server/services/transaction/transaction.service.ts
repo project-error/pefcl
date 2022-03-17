@@ -6,7 +6,6 @@ import { sequelize } from '../../utils/pool';
 import { mainLogger } from '../../sv_logger';
 import { UserService } from '../user/user.service';
 import { AccountDB } from '../account/account.db';
-import { AccountModel } from '../account/account.model';
 import { TransactionDB } from './transaction.db';
 import { TransactionModel } from './transaction.model';
 
@@ -32,8 +31,9 @@ export class TransactionService {
     this._accountDB = accountDB;
   }
 
+  // TODO: Only return my transactions.
   private async getMyTransactions(source: number) {
-    const user = this._userService.getUser(source);
+    logger.silly('Getting my transactions' + source);
     const transactions = await this._transactionDB.getTransactions();
     return transactions;
   }

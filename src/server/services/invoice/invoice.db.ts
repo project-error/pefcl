@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { InvoiceInput, InvoiceStatus, PayInvoiceInput } from '../../../../typings/Invoice';
+import { InvoiceInput, InvoiceStatus } from '@typings/Invoice';
 import { InvoiceModel } from './invoice.model';
 
 const twoWeeks = 1000 * 60 * 60 * 24 * 7 * 2;

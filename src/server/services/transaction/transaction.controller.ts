@@ -1,6 +1,6 @@
-import { TransactionEvents } from '../../../../typings/Account';
-import { Request, Response } from '../../../../typings/http';
-import { Transaction, Transfer } from '../../../../typings/transactions';
+import { TransactionEvents } from '@typings/Events';
+import { Request, Response } from '@typings/http';
+import { Transaction, Transfer } from '@typings/transactions';
 import { Controller } from '../../decorators/Controller';
 import { NetPromise, PromiseEventListener } from '../../decorators/NetPromise';
 import { TransactionService } from './transaction.service';
@@ -21,7 +21,7 @@ export class TransactionController {
   }
 
   @NetPromise(TransactionEvents.CreateTransfer)
-  async transfer(req: Request<Transfer>, res: Response<{}>) {
+  async transfer(req: Request<Transfer>, res: Response<object>) {
     await this._transactionService.handleTransfer(req);
     res({ status: 'ok', data: {} });
   }

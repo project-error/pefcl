@@ -1,6 +1,8 @@
 import { config } from '@utils/server-config';
 import path from 'path';
 import winston from 'winston';
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const { createLogger, transports, format } = require('./logform');
 
 // Needed to manually apply a color to componenent property of log

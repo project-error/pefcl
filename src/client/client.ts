@@ -1,6 +1,6 @@
 import ClientUtils from './client-utils';
 import './client-accounts';
-import { GeneralEvents } from '@typings/Account';
+import { GeneralEvents } from '@typings/Events';
 import { RegisterNuiCB } from '@project-error/pe-utils';
 
 let bankOpen = false;
