@@ -1,5 +1,5 @@
 import { atom } from 'jotai';
-import { TransactionEvents } from '../../../typings/accounts';
+import { TransactionEvents } from '@typings/Account';
 import { Transaction } from '../../../typings/transactions';
 import { mockedTransactions } from '../utils/constants';
 import { fetchNui } from '../utils/fetchNui';

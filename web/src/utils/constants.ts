@@ -1,4 +1,4 @@
-import { Account, AccountType } from '../../../typings/accounts';
+import { Account, AccountType } from '@typings/Account';
 import { Transaction } from '../../../typings/transactions';
 import { Invoice, InvoiceStatus } from '../../../typings/Invoice';
 import dayjs from 'dayjs';

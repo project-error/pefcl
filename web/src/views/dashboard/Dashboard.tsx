@@ -6,7 +6,7 @@ import { useAtom } from 'jotai';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { totalNumberOfTransaction } from 'src/data/transactions';
-import { Account } from '../../../../typings/accounts';
+import { Account } from '@typings/Account';
 import Layout from '../../components/Layout';
 import CreateAccountModal from '../../components/Modals/CreateAccount';
 import { PreHeading } from '../../components/ui/Typography/BodyText';

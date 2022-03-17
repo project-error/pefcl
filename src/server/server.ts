@@ -4,18 +4,24 @@ import { ServerPromiseResp } from '@project-error/pe-utils';
 import 'reflect-metadata';
 import './utils/server-config';
 import './utils/i18n';
-import './db/pool';
+import './utils/pool';
 import './services/controllers';
 
-import { Bank } from './base/Bank';
-import { AccountEvents, InvoiceEvents, TransactionEvents } from '../../typings/accounts';
+import { Bank } from './services/Bank';
+import {
+  AccountEvents,
+  InvoiceEvents,
+  SharedAccountEvents,
+  TransactionEvents,
+} from '@typings/Account';
+import { UserEvents } from '@typings/Events';
 import express, { RequestHandler } from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 
 /* Create associations after the models etc */
 import './services/associations';
-import i18n, { load } from './utils/i18n';
+import { load } from './utils/i18n';
 
 new Bank().bootstrap();
 
@@ -53,6 +59,7 @@ if (isMocking) {
     res.send('This is a mocked version of the Fivem Server. Available endpoints are unknown :p');
   });
 
+  app.post(...createEndpoint(UserEvents.GetUsers));
   app.post(...createEndpoint(AccountEvents.GetAccounts));
   app.post(...createEndpoint(AccountEvents.DeleteAccount));
   app.post(...createEndpoint(AccountEvents.SetDefaultAccount));
@@ -63,6 +70,9 @@ if (isMocking) {
   app.post(...createEndpoint(InvoiceEvents.Get));
   app.post(...createEndpoint(InvoiceEvents.CreateInvoice));
   app.post(...createEndpoint(InvoiceEvents.PayInvoice));
+  app.post(...createEndpoint(SharedAccountEvents.AddUser));
+  app.post(...createEndpoint(SharedAccountEvents.RemoveUser));
+  app.post(...createEndpoint(SharedAccountEvents.GetUsers));
 
   app.listen(port, () => {
     console.log(`[MOCKSERVER]: listening on port: ${port}`);

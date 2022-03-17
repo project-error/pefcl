@@ -1,4 +1,4 @@
-import { sequelize } from '../db/pool';
+import { sequelize } from '../utils/pool';
 import { config } from '@utils/server-config';
 import { AccountModel } from './account/account.model';
 import { TransactionModel } from './transaction/transaction.model';

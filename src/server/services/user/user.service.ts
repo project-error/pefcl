@@ -10,6 +10,10 @@ export class UserService {
     this.usersBySource = new Map<number, UserModule>();
   }
 
+  getAllUsers() {
+    return this.usersBySource;
+  }
+
   getUser(source: number) {
     return this.usersBySource.get(source);
   }

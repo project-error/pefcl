@@ -11,7 +11,7 @@ const logger = mainLogger.child({ module: 'i18n' });
 dayjs.locale(language ?? 'en');
 
 export const load = async () => {
-  logger.debug('Loading language from config:', language);
+  logger.debug('Loading language from config: ' + language);
 
   await i18next
     .init({

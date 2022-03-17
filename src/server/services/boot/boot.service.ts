@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { sequelize } from '../../db/pool';
+import { sequelize } from '../../utils/pool';
 import { mainLogger } from '../../sv_logger';
 import { UserService } from '../user/user.service';
 

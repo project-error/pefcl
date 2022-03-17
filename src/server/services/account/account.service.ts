@@ -1,6 +1,6 @@
 import { AccountDB } from './account.db';
 import { singleton } from 'tsyringe';
-import { Request } from '../../../../typings/http';
+import { Request } from '@typings/http';
 import {
   Account,
   AccountType,
@@ -8,15 +8,19 @@ import {
   ATMInput,
   PreDBAccount,
   RenameAccountInput,
-} from '../../../../typings/accounts';
+  AccountRole,
+  RemoveFromSharedAccountInput,
+  SharedAccountUser,
+} from '@typings/Account';
 import { UserService } from '../user/user.service';
 import { config } from '@utils/server-config';
 import { mainLogger } from '../../sv_logger';
-import { sequelize } from '../../db/pool';
+import { sequelize } from '../../utils/pool';
 import { TransactionService } from '../transaction/transaction.service';
 import { CashService } from '../cash/cash.service';
 import i18next from '@utils/i18n';
 import { TransactionType } from '@typings/transactions';
+import { AccountModel } from './account.model';
 
 const logger = mainLogger.child({ module: 'accounts' });
 
@@ -39,10 +43,27 @@ export class AccountService {
     this._transactionService = transactionService;
   }
 
-  private getMyAccounts(source: number) {
+  private async getMyAccounts(source: number) {
     const user = this._userService.getUser(source);
-    const accounts = this._accountDB.getAccountsByIdentifier(user.identifier);
+    const accounts = await this._accountDB.getAccountsByIdentifier(user.identifier);
     return accounts;
+  }
+
+  private async getMySharedAccounts(source: number): Promise<Account[]> {
+    const user = this._userService.getUser(source);
+    const accounts = await this._accountDB.getSharedAccountsByIdentifier(user.identifier);
+    const mappedAccounts = accounts.map((sharedAccount) => {
+      const acc = sharedAccount.getDataValue('account') as unknown as AccountModel;
+      const sharedAcc = sharedAccount.toJSON();
+
+      /* Override role by the shared one. */
+      return {
+        ...acc.toJSON(),
+        role: sharedAcc.role,
+      };
+    });
+
+    return mappedAccounts;
   }
 
   async handleGetDefaultAccount(source: number) {
@@ -55,20 +76,35 @@ export class AccountService {
     return accounts.map((account) => account.toJSON());
   }
 
-  async handleGetMyAccounts(source: number) {
-    const accounts = await this.getMyAccounts(source);
-    return accounts.map((account) => account.toJSON());
+  async handleGetMyAccounts(source: number): Promise<Account[]> {
+    logger.debug('Retrieving accounts');
+    const accountModels = await this.getMyAccounts(source);
+    const accounts = accountModels.map((account) => account.toJSON());
+    const filteredAccounts = accounts.filter((account) => account.type !== AccountType.Shared);
+    const sharedAccounts = await this.getMySharedAccounts(source);
+
+    return [...filteredAccounts, ...sharedAccounts];
   }
 
   async addUserToShared(req: Request<AddToSharedAccountInput>) {
     logger.silly(`Adding user src: ${req.source} to shared account.`);
-    const user = this._userService.getUser(req.data.source);
 
     // TODO: Add security
     return this._accountDB.createSharedAccount({
-      user: user.identifier,
+      user: req.data.identifier,
       accountId: req.data.accountId,
     });
+  }
+
+  async removeUserFromShared(req: Request<RemoveFromSharedAccountInput>) {
+    logger.silly(`Removing user. identifier: ${req.data.identifier} to shared account.`);
+    const { identifier, accountId } = req.data;
+    const mySharedAccounts = await this._accountDB.getSharedAccountsByIdentifier(identifier);
+    const deletingAccount = mySharedAccounts.find(
+      (account) => account.getDataValue('account').id === accountId,
+    );
+
+    return await deletingAccount.destroy();
   }
 
   async createInitialAccount(source: number): Promise<Account> {
@@ -83,10 +119,11 @@ export class AccountService {
 
     logger.debug('Creating initial account ...');
     const initialAccount = await this._accountDB.createAccount({
-      accountName: config.accounts?.defaultName ?? 'Default',
+      accountName: i18next.t('Personal account'),
       isDefault: true,
       ownerIdentifier: user.identifier,
       type: AccountType.Personal,
+      role: AccountRole.Owner,
     });
 
     logger.debug('Successfully created initial account.');
@@ -121,18 +158,24 @@ export class AccountService {
         await fromAccount?.decrement('balance', { by: config.prices.newAccount });
       }
 
+      const defaultAccountName = isShared
+        ? i18next.t('Shared account')
+        : i18next.t('Personal account');
+
       const account = await this._accountDB.createAccount({
         ...req.data,
-        accountName: req.data.accountName ?? 'Pension',
+        accountName: req.data.accountName ?? defaultAccountName,
         type: isShared ? AccountType.Shared : AccountType.Personal,
-        isDefault: isDefault,
+        isDefault: isShared ? false : isDefault,
         ownerIdentifier: userIdentifier,
+        role: AccountRole.Owner,
       });
 
       if (isShared) {
         await this._accountDB.createSharedAccount({
           accountId: account.getDataValue('id'),
           user: userIdentifier,
+          role: AccountRole.Owner,
         });
       }
 
@@ -315,13 +358,18 @@ export class AccountService {
     try {
       const defaultAccount = await this._accountDB.getDefaultAccountByIdentifier(user.identifier);
       const newDefaultAccount = await this._accountDB.getAccount(req.data.accountId);
+      const newAccount = newDefaultAccount.toJSON();
+
+      if (!newAccount?.id) {
+        throw new Error('No such account exist with specified ID.');
+      }
+
+      if (newAccount.type === AccountType.Shared) {
+        throw new Error('Cannot set shared account as default');
+      }
 
       if (defaultAccount?.getDataValue('id') === req.data.accountId) {
         throw new Error('This is already the default account');
-      }
-
-      if (!newDefaultAccount.getDataValue('id')) {
-        throw new Error('No such account exist with specified ID.');
       }
 
       await defaultAccount?.update({ isDefault: false });
@@ -348,5 +396,14 @@ export class AccountService {
       id: req.data.accountId,
       ownerIdentifier: user.identifier,
     });
+  }
+
+  async getUsersFromShared(req: Request<{ accountId: number }>): Promise<SharedAccountUser[]> {
+    const sharedAccounts = await this._accountDB.getSharedAccountsById(req.data.accountId);
+    console.log('Looking for all shared accounts w id:', req.data.accountId);
+    return sharedAccounts.map((account) => ({
+      user: account.getDataValue('user'),
+      role: account.getDataValue('role'),
+    }));
   }
 }

@@ -9,9 +9,9 @@ import Button from '../ui/Button';
 import { useTranslation } from 'react-i18next';
 import PriceField from '../ui/Fields/PriceField';
 import { fetchNui } from '../../utils/fetchNui';
-import { TransactionEvents } from '../../../../typings/accounts';
-import { Transfer } from '../../../../typings/transactions';
 import { transactionsAtom } from 'src/data/transactions';
+import { TransactionEvents } from '@typings/Account';
+import { Transfer } from '@typings/transactions';
 
 const TransferFundsModal: React.FC<{ onClose(): void }> = ({ onClose }) => {
   const { t } = useTranslation();

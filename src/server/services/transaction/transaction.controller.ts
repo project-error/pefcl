@@ -1,4 +1,4 @@
-import { TransactionEvents } from '../../../../typings/accounts';
+import { TransactionEvents } from '../../../../typings/Account';
 import { Request, Response } from '../../../../typings/http';
 import { Transaction, Transfer } from '../../../../typings/transactions';
 import { Controller } from '../../decorators/Controller';
@@ -8,21 +8,21 @@ import { TransactionService } from './transaction.service';
 @Controller('Transaction')
 @PromiseEventListener()
 export class TransactionController {
-  private readonly _TransactionService: TransactionService;
+  private readonly _transactionService: TransactionService;
 
   constructor(transactionService: TransactionService) {
-    this._TransactionService = transactionService;
+    this._transactionService = transactionService;
   }
 
   @NetPromise(TransactionEvents.Get)
   async getTransactions(req: Request<void>, res: Response<Transaction[]>) {
-    const transactions = await this._TransactionService.handleGetMyTransactions(req.source);
+    const transactions = await this._transactionService.handleGetMyTransactions(req.source);
     res({ status: 'ok', data: transactions });
   }
 
   @NetPromise(TransactionEvents.CreateTransfer)
   async transfer(req: Request<Transfer>, res: Response<{}>) {
-    await this._TransactionService.handleTransfer(req);
+    await this._transactionService.handleTransfer(req);
     res({ status: 'ok', data: {} });
   }
 }

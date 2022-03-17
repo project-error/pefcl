@@ -3,7 +3,7 @@ import { useAtom } from 'jotai';
 import React from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { AccountEvents } from '../../../../typings/accounts';
+import { AccountEvents } from '@typings/Account';
 import { accountsAtom, defaultAccountAtom } from '../../data/accounts';
 import { useConfig } from '../../hooks/useConfig';
 import { fetchNui } from '../../utils/fetchNui';

@@ -6,8 +6,11 @@ import {
   AddToSharedAccountInput,
   ATMInput,
   PreDBAccount,
+  RemoveFromSharedAccountInput,
   RenameAccountInput,
-} from '@typings/accounts';
+  SharedAccountEvents,
+  SharedAccountUser,
+} from '@typings/Account';
 import { Request, Response } from '@typings/http';
 import { AccountService } from './account.service';
 import { Event, EventListener } from '@decorators/Event';
@@ -88,11 +91,35 @@ export class AccountController {
     }
   }
 
-  @NetPromise(AccountEvents.AddUserToSharedAccount)
+  @NetPromise(SharedAccountEvents.AddUser)
   async addSharedAccountUser(req: Request<AddToSharedAccountInput>, res: Response<any>) {
     try {
       await this._accountService.addUserToShared(req);
       res({ status: 'ok', data: {} });
+    } catch (err) {
+      res({ status: 'error', errorMsg: err.message });
+    }
+  }
+
+  @NetPromise(SharedAccountEvents.RemoveUser)
+  async removeSharedAccountUser(req: Request<RemoveFromSharedAccountInput>, res: Response<any>) {
+    try {
+      await this._accountService.removeUserFromShared(req);
+      res({ status: 'ok', data: {} });
+    } catch (err) {
+      res({ status: 'error', errorMsg: err.message });
+    }
+  }
+
+  @NetPromise(SharedAccountEvents.GetUsers)
+  async getUsersFromSharedAccount(
+    req: Request<{ accountId: number }>,
+    res: Response<SharedAccountUser[]>,
+  ) {
+    try {
+      console.log('GETTING FROM SHARED', req);
+      const data = await this._accountService.getUsersFromShared(req);
+      res({ status: 'ok', data: data });
     } catch (err) {
       res({ status: 'error', errorMsg: err.message });
     }

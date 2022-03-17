@@ -2,7 +2,7 @@ import { DATABASE_PREFIX } from '@utils/constants';
 import { DataTypes, Model } from 'sequelize';
 import { singleton } from 'tsyringe';
 import { Transaction, TransactionType } from '../../../../typings/transactions';
-import { sequelize } from '../../db/pool';
+import { sequelize } from '../../utils/pool';
 
 interface TransactionDB extends Omit<Transaction, 'toAccount' | 'fromAccount'> {
   toAccount?: number;

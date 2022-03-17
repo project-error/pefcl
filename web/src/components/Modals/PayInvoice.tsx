@@ -5,7 +5,7 @@ import calendar from 'dayjs/plugin/calendar';
 import { useAtom } from 'jotai';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { InvoiceEvents } from '../../../../typings/accounts';
+import { InvoiceEvents } from '@typings/Account';
 import { Invoice, PayInvoiceInput } from '../../../../typings/Invoice';
 import { accountsAtom, defaultAccountAtom } from '../../data/accounts';
 import { invoicesAtom } from '../../data/invoices';

@@ -1,6 +1,6 @@
 import { atom } from 'jotai';
 import { mockedInvoices } from '@utils/constants';
-import { InvoiceEvents } from '../../../typings/accounts';
+import { InvoiceEvents } from '@typings/Account';
 import { Invoice, InvoiceStatus } from '../../../typings/Invoice';
 import { fetchNui } from '../utils/fetchNui';
 import { isEnvBrowser } from '../utils/misc';

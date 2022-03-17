@@ -1,5 +1,5 @@
 import { Sequelize } from 'sequelize';
-import { CONNECTION_STRING } from '../utils/dbUtils';
+import { CONNECTION_STRING } from './dbUtils';
 import { mainLogger } from '../sv_logger';
 
 const logger = mainLogger.child({ module: 'db' });

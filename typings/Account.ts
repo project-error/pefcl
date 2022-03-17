@@ -3,6 +3,12 @@ export enum AccountType {
   Shared = 'shared',
 }
 
+export enum AccountRole {
+  Owner = 'owner',
+  Admin = 'admin',
+  Contributor = 'contributor',
+}
+
 export type PreDBAccount = {
   fromAccountId: number;
   accountName: string;
@@ -22,21 +28,32 @@ export interface Account {
   isDefault: boolean;
   accountName: string;
   ownerIdentifier: string;
+  role: AccountRole;
   type: AccountType;
 }
 
 export interface SharedAccount {
   id: number;
   user: string;
+  role: AccountRole;
   account?: Account;
+  accountId?: number;
 }
+export type SharedAccountUser = Pick<SharedAccount, 'user' | 'role'>;
 export interface SharedAccountInput {
   user: string;
   accountId: number;
+  role?: AccountRole;
 }
 export interface AddToSharedAccountInput {
-  source: number;
+  identifier: string;
   accountId: number;
+  role?: AccountRole;
+}
+
+export interface RemoveFromSharedAccountInput {
+  accountId: number;
+  identifier: string;
 }
 
 export type TransactionAccount = Pick<Account, 'id' | 'accountName'>;
@@ -45,10 +62,6 @@ export interface ATMInput {
   amount: number;
   message: string;
   accountId?: number;
-}
-
-export enum GeneralEvents {
-  CloseBank = 'pefcl:closeNui',
 }
 
 export enum AccountEvents {
@@ -60,7 +73,12 @@ export enum AccountEvents {
   DeleteAccount = 'pefcl:deleteAccount',
   DepositMoney = 'pefcl:depositMoney',
   WithdrawMoney = 'pefcl:withdrawMoney',
-  AddUserToSharedAccount = 'pefcl:addUserToSharedAccount',
+}
+
+export enum SharedAccountEvents {
+  GetUsers = 'pefcl:sharedAccountsGetUsers',
+  AddUser = 'pefcl:sharedAccountsAddUser',
+  RemoveUser = 'pefcl:sharedAccountsRemoveUser',
 }
 
 export enum TransactionEvents {

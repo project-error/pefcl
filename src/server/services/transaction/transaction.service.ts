@@ -1,8 +1,8 @@
 import { singleton } from 'tsyringe';
-import { Account } from '../../../../typings/accounts';
-import { Request } from '../../../../typings/http';
-import { Transaction, TransactionType, Transfer } from '../../../../typings/transactions';
-import { sequelize } from '../../db/pool';
+import { Account } from '@typings/Account';
+import { Request } from '@typings/http';
+import { Transaction, TransactionType, Transfer } from '@typings/transactions';
+import { sequelize } from '../../utils/pool';
 import { mainLogger } from '../../sv_logger';
 import { UserService } from '../user/user.service';
 import { AccountDB } from '../account/account.db';

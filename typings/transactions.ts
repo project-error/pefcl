@@ -1,4 +1,4 @@
-import { Account } from './accounts';
+import { Account } from './Account';
 
 export enum TransactionType {
   Outgoing = 'Outgoing',

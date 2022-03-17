@@ -33,7 +33,7 @@ const LayoutHeader = () => {
       <Dialog
         open={isTransferOpen}
         onClose={() => setIsTransferOpen(false)}
-        maxWidth={'sm'}
+        maxWidth={'md'}
         fullWidth
         hideBackdrop
       >

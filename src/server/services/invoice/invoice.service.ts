@@ -1,7 +1,7 @@
 import { singleton } from 'tsyringe';
 import { Request } from '../../../../typings/http';
 import { InvoiceInput, PayInvoiceInput } from '../../../../typings/Invoice';
-import { sequelize } from '../../db/pool';
+import { sequelize } from '../../utils/pool';
 import { mainLogger } from '../../sv_logger';
 import { UserService } from '../user/user.service';
 import { AccountDB } from '../account/account.db';

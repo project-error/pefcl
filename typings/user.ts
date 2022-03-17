@@ -4,6 +4,6 @@ export type UserDTO = {
 };
 
 export interface User {
-  source: number;
+  source?: number;
   identifier: string;
 }

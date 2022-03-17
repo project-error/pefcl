@@ -59,7 +59,6 @@ if (isMocking) {
       pefclDepositMoney: () => {
         console.log('Depositing money ..');
         console.log('Depositing money ..');
-        console.log('Depositing money ..');
         throw new Error('no funds');
       },
       getCurrentBalance: () => {

@@ -16,7 +16,6 @@ export interface ResourceConfig {
     newAccount: number;
   };
   accounts: {
-    defaultName: string;
     defaultAmount: number;
   };
   cash: {

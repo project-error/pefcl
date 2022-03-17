@@ -1,7 +1,7 @@
+import { AccountRole, SharedAccount } from '@typings/Account';
 import { DATABASE_PREFIX } from '@utils/constants';
 import { DataTypes, Model } from 'sequelize';
-import { SharedAccount } from '../../../../typings/accounts';
-import { sequelize } from '../../db/pool';
+import { sequelize } from '../../utils/pool';
 
 export class SharedAccountModel extends Model<SharedAccount> {}
 
@@ -14,6 +14,10 @@ SharedAccountModel.init(
     },
     user: {
       type: DataTypes.STRING,
+    },
+    role: {
+      type: DataTypes.STRING,
+      defaultValue: AccountRole.Contributor,
     },
   },
   { sequelize: sequelize, tableName: DATABASE_PREFIX + 'shared_accounts', paranoid: true },

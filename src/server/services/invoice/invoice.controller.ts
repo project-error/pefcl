@@ -1,6 +1,6 @@
-import { InvoiceEvents } from '../../../../typings/accounts';
-import { Request, Response } from '../../../../typings/http';
-import { Invoice, InvoiceInput, PayInvoiceInput } from '../../../../typings/Invoice';
+import { InvoiceEvents } from '@typings/Account';
+import { Request, Response } from '@typings/http';
+import { Invoice, InvoiceInput, PayInvoiceInput } from '@typings/Invoice';
 import { Controller } from '../../decorators/Controller';
 import { NetPromise, PromiseEventListener } from '../../decorators/NetPromise';
 import { InvoiceService } from './invoice.service';

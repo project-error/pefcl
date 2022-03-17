@@ -1,8 +1,8 @@
 import { DATABASE_PREFIX } from '@utils/constants';
 import { DataTypes, Model } from 'sequelize';
 import { config } from '@utils/server-config';
-import { Account, AccountType } from '../../../../typings/accounts';
-import { sequelize } from '../../db/pool';
+import { Account, AccountRole, AccountType } from '@typings/Account';
+import { sequelize } from '../../utils/pool';
 
 export class AccountModel extends Model<Account> {}
 
@@ -27,6 +27,10 @@ AccountModel.init(
     },
     ownerIdentifier: {
       type: DataTypes.STRING,
+    },
+    role: {
+      type: DataTypes.STRING,
+      defaultValue: AccountRole.Owner,
     },
     balance: {
       type: DataTypes.INTEGER,

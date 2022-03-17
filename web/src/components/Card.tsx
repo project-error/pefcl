@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
-import React, { MouseEvent } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Account, AccountType } from '../../../typings/accounts';
+import { Account, AccountType } from '@typings/Account';
 import { useConfig } from '../hooks/useConfig';
 import { MasterCardIcon } from '../icons/MasterCardIcon';
 import { formatMoney } from '../utils/currency';

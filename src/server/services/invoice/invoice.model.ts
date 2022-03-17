@@ -2,7 +2,7 @@ import { DATABASE_PREFIX } from '@utils/constants';
 import { DataTypes, Model } from 'sequelize';
 import { singleton } from 'tsyringe';
 import { Invoice, InvoiceStatus } from '../../../../typings/Invoice';
-import { sequelize } from '../../db/pool';
+import { sequelize } from '../../utils/pool';
 
 @singleton()
 export class InvoiceModel extends Model<Invoice> {}

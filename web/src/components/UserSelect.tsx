@@ -1,20 +1,12 @@
 import styled from '@emotion/styled';
 import { ArrowDropDownRounded } from '@mui/icons-material';
 import { InputBase, MenuItem, Select, SelectChangeEvent, Stack } from '@mui/material';
+import { User } from '@typings/user';
 import { t } from 'i18next';
-import React, { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Account, AccountType } from '@typings/Account';
-import { ResourceConfig } from '../../../typings/config';
-import { useConfig } from '../hooks/useConfig';
-import { formatMoney } from '../utils/currency';
+import React, { useState } from 'react';
 import theme from '../utils/theme';
 import { BodyText } from './ui/Typography/BodyText';
 import { Heading6 } from './ui/Typography/Headings';
-
-const BalanceText = styled(Heading6)`
-  color: ${theme.palette.primary.main};
-`;
 
 const StyledInput = styled(InputBase)`
   border-radius: ${theme.spacing(1)};
@@ -31,6 +23,17 @@ const StyledMenuItem = styled(MenuItem)`
     background: ${theme.palette.background.dark12};
   }
 
+  &.Mui-selected,
+  &.Mui-selected:disabled,
+  &:disabled {
+    color: #fff;
+    span {
+      color: #fff;
+    }
+    background: ${theme.palette.background.dark12};
+  }
+
+  &.Mui-selected:disabled,
   &.Mui-selected:focus-visible,
   &.Mui-selected:focus,
   &.Mui-selected:hover {
@@ -56,43 +59,33 @@ const ListItem = styled.div`
   padding-right: 0.75rem;
 `;
 
-const Option: React.FC<{ account: Account; config: ResourceConfig }> = ({ account, config }) => {
-  const { t } = useTranslation();
+const Option: React.FC<{ user: SelectableUser }> = ({ user }) => {
   return (
     <ListItem>
       <Stack p="0rem 0.5rem">
-        <BodyText>{account.accountName}</BodyText>
-        <BalanceText>{formatMoney(account.balance, config)}</BalanceText>
+        <BodyText>{user.identifier}</BodyText>
       </Stack>
-      <Heading6>{account.type === AccountType.Personal ? t('Personal') : t('Shared')}</Heading6>
     </ListItem>
   );
 };
 
-interface AccountSelect {
-  accounts: Account[];
-  selectedId?: number;
-  onSelect(accountId: number): void;
+interface SelectableUser extends User {
+  isDisabled?: boolean;
+}
+interface UserSelect {
+  users: SelectableUser[];
+  isDisabled?: boolean;
+  selectedId?: string;
+  onSelect(user?: SelectableUser): void;
 }
 
-const AccountSelect: React.FC<AccountSelect> = ({ accounts, onSelect, selectedId }) => {
-  const config = useConfig();
-  const [selected, setSelected] = useState<number>(0);
+const UserSelect: React.FC<UserSelect> = ({ users, onSelect, selectedId, isDisabled }) => {
+  const [selected, setSelected] = useState<string>('0');
 
-  useEffect(() => {
-    if (selectedId) {
-      setSelected(selectedId);
-    }
-  }, [selectedId]);
-
-  const handleChange = (event: SelectChangeEvent<number>) => {
-    const value = Number(event.target.value);
-    if (isNaN(value)) {
-      return;
-    }
-
+  const handleChange = (event: SelectChangeEvent<string>) => {
+    const value = event.target.value;
     setSelected(value);
-    onSelect(value);
+    onSelect(users.find((user) => user.identifier === value));
   };
 
   return (
@@ -108,19 +101,24 @@ const AccountSelect: React.FC<AccountSelect> = ({ accounts, onSelect, selectedId
           return <SelectIcon {...props} />;
         }}
       >
-        {selected === 0 && (
-          <StyledMenuItem value={0} disabled>
+        {selected === '0' && (
+          <StyledMenuItem value={'0'} disabled>
             <ListItem>
               <Stack p="0rem 0.5rem">
-                <Heading6>{t('Select account')}</Heading6>
+                {users.length > 0 && <Heading6>{t('Select a user')}</Heading6>}
+                {users.length === 0 && <Heading6>{t('No users found')}</Heading6>}
               </Stack>
             </ListItem>
           </StyledMenuItem>
         )}
 
-        {accounts.map((account) => (
-          <StyledMenuItem key={account.id} value={account.id} disabled={selectedId === account.id}>
-            <Option account={account} config={config} />
+        {users.map((user) => (
+          <StyledMenuItem
+            key={user.identifier}
+            value={user.identifier}
+            disabled={selectedId === user.identifier || isDisabled}
+          >
+            <Option user={user} />
           </StyledMenuItem>
         ))}
       </Select>
@@ -128,4 +126,4 @@ const AccountSelect: React.FC<AccountSelect> = ({ accounts, onSelect, selectedId
   );
 };
 
-export default AccountSelect;
+export default UserSelect;
