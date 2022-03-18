@@ -12,7 +12,7 @@ export function onNetPromise<T = any, P = any>(eventName: string, cb: CBSignatur
 
     if (!respEventName) {
       return netEventLogger.warn(
-        `Promise event (${eventName}) was called with wrong struct by ${src} (maybe originator wasn't a promiseEvent`,
+        `Promise event (${eventName}) was called with wrong struct by ${src} (maybe originator wasn't a promiseEvent)`,
       );
     }
 

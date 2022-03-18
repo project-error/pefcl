@@ -1,7 +1,28 @@
+import { Account } from './Account';
+
+export enum TransactionType {
+  Outgoing = 'Outgoing',
+  Incoming = 'Incoming',
+  Transfer = 'Transfer',
+}
 export interface Transaction {
   id: number;
-  amount: string;
-  type: string;
-  date: string;
-  target: string;
+  identifier: string;
+
+  toAccount?: Account;
+  fromAccount?: Account;
+  type: TransactionType;
+
+  amount: number;
+  message: string;
+
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface Transfer {
+  toAccountId: number;
+  fromAccountId: number;
+  message: string;
+  amount: number;
 }

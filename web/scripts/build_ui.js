@@ -12,6 +12,6 @@ esbuild
       '.js': 'js',
       '.jsx': 'jsx',
     },
-    outdir: 'public',
+    outdir: 'build',
   })
   .catch(() => process.exit(1));

@@ -7,9 +7,20 @@ export interface ResourceConfig {
   };
   database: {
     profileQueries: boolean;
+    shouldSync: boolean;
   };
   debug: {
     level: string;
   };
-  locale: string;
+  prices: {
+    newAccount: number;
+  };
+  accounts: {
+    defaultAmount: number;
+  };
+  cash: {
+    defaultAmount: number;
+  };
+  language: string;
+  currency: string;
 }

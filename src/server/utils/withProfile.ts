@@ -7,7 +7,7 @@ const RESOURCE_NAME = GetCurrentResourceName();
 // Simple higher order function profiler
 // currently targeted towards ms as unit and db queries
 // but can be altered to be generic in future
-export const withProfile = async (fn: Function, ...args: any[]) => {
+export const withProfile = async (fn: CallableFunction, ...args: any[]) => {
   const startTime = process.hrtime.bigint();
 
   // https://forum.cfx.re/t/node-mysql2-question-about-performance-process-nexttick/4550064/2?u=taso

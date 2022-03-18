@@ -1,8 +1,14 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600&display=swap');
 
 * {
   box-sizing: border-box;
   font-family: 'Montserrat', sans-serif;
+}
+
+
+/* TODO: Remove the need for this, by not using shit craco. This is to hide the annoying invisible error overlay(?) when developing. */
+iframe {
+  display: none;
 }
 
 body {

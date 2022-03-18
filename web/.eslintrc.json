@@ -21,7 +21,10 @@
         "@typescript-eslint",
         "react-hooks"
     ],
+    "ignorePatterns": "webpack.config.js",
     "rules": {
+        "no-unused-vars": "off",
+        "no-undef": "off",
         "react-hooks/rules-of-hooks": "error",
         "react-hooks/exhaustive-deps": "warn",
         "react/prop-types": "off",

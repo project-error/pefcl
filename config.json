@@ -6,10 +6,22 @@
     "useFrameworkIntegration": false
   },
   "database": {
-    "profileQueries": true
+    "profileQueries": true,
+    "shouldSync": false
   },
+  "prices": {
+    "newAccount": 200
+  },
+  "accounts": {
+    "defaultName": "Initial",
+    "defaultAmount": 25000
+  },
+  "cash": {
+    "defaultAmount": 2000
+  },
+  "language": "sv",
+  "currency": "SEK",
   "debug": {
     "level": "silly"
-  },
-  "locale": "en"
+  }
 }

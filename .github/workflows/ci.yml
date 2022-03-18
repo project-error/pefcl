@@ -1,5 +1,6 @@
 name: Main CI
 on: [push, pull_request]
+
 jobs:
   build:
     name: Build Test
@@ -25,7 +26,13 @@ jobs:
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
+      - name: Install deps (locale)
+        working-directory: .
+        run: yarn --frozen-lockfile
+      - name: Generate locale
+        working-directory: .
+        run: yarn generate:locale # Should be pushed in the future, pulled on release.
       - name: Install deps
         run: yarn --frozen-lockfile
-      - name: Try build
+      - name: Build
         run: yarn build

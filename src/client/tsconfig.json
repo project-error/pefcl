@@ -8,8 +8,11 @@
     "allowJs": true,
     "types": ["@citizenfx/client", "@types/node"],
     "esModuleInterop": true,
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "paths": {
+      "@typings/*": ["../../typings/*"]
+    }
   },
-  "include": ["./**/*"],
+  "include": ["./**/*", "../../typings/*"],
   "exclude": ["**/node_modules", "**/__tests__/*"]
 }
