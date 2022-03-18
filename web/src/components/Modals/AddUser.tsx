@@ -3,7 +3,7 @@ import { Heading6 } from '@components/ui/Typography/Headings';
 import UserSelect from '@components/UserSelect';
 import { Dialog, DialogActions, DialogContent, DialogTitle, Stack } from '@mui/material';
 import { UserEvents } from '@typings/Events';
-import { User } from '@typings/user';
+import { OnlineUser } from '@typings/user';
 import { fetchNui } from '@utils/fetchNui';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -15,14 +15,14 @@ interface SelectUserModalProps {
 }
 const AddUserModal = ({ isOpen, onSelect, onClose }: SelectUserModalProps) => {
   const { t } = useTranslation();
-  const [users, setUsers] = useState<string[]>([]);
+  const [users, setUsers] = useState<OnlineUser[]>([]);
   const [selectedUserId, setSelectedUserId] = useState('');
 
   useEffect(() => {
-    fetchNui<string[]>(UserEvents.GetUsers).then((data) => data && setUsers(data));
+    fetchNui<OnlineUser[]>(UserEvents.GetUsers).then((data) => data && setUsers(data));
   }, []);
 
-  const handleUserSelect = (user: User) => {
+  const handleUserSelect = (user: OnlineUser) => {
     setSelectedUserId(user.identifier);
   };
 
@@ -39,10 +39,7 @@ const AddUserModal = ({ isOpen, onSelect, onClose }: SelectUserModalProps) => {
       <DialogContent>
         <Stack spacing={1}>
           <Heading6>{t('Select a user')}</Heading6>
-          <UserSelect
-            onSelect={handleUserSelect}
-            users={users.map((identifier) => ({ identifier }))}
-          />
+          <UserSelect onSelect={handleUserSelect} users={users} />
         </Stack>
       </DialogContent>
 

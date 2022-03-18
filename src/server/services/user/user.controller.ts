@@ -3,6 +3,7 @@ import { EventListener, Event } from '@decorators/Event';
 import { NetPromise, PromiseEventListener } from '@decorators/NetPromise';
 import { UserEvents } from '@typings/Events';
 import { Request, Response } from '@typings/http';
+import { OnlineUser } from '@typings/user';
 // import { NetPromise, PromiseEventListener } from '@decorators/NetPromise';
 // import { GeneralEvents, UserEvents } from '@typings/Events';
 // import { Request, Response } from '@typings/http';
@@ -25,14 +26,18 @@ export class UserController {
   }
 
   @NetPromise(UserEvents.GetUsers)
-  async getUsers(req: Request<void>, res: Response<string[]>) {
-    // TODO: Make this return good user shzz
+  async getUsers(req: Request<void>, res: Response<OnlineUser[]>) {
+    // TODO: Make this return good users
     await new Promise((resolve) => {
       setImmediate(resolve);
     });
 
     const users = this._userService.getAllUsers();
-    const list = Array.from(users.values()).map((user) => user.identifier);
+    const list: OnlineUser[] = Array.from(users.values()).map((user) => ({
+      name: user.name,
+      source: user.getSource(),
+      identifier: user.identifier,
+    }));
 
     res({ status: 'ok', data: list });
   }
@@ -49,6 +54,7 @@ export class UserController {
 
   @Event('onServerResourceStart')
   async onServerResourceStart(resource: string) {
+    if (config.general.useFrameworkIntegration) return;
     if (resource === GetCurrentResourceName()) {
       const players = getPlayers();
 

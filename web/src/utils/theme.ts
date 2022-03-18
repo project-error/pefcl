@@ -21,9 +21,6 @@ const theme = createTheme({
       contrastText: '#fff',
     },
     divider: '#2c3036',
-    action: {
-      selectedOpacity: 1,
-    },
     common: {
       white: '#2c3036',
     },

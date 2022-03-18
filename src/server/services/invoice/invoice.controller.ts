@@ -1,4 +1,4 @@
-import { InvoiceEvents } from '@typings/Account';
+import { InvoiceEvents } from '@typings/Events';
 import { Request, Response } from '@typings/http';
 import { Invoice, InvoiceInput, PayInvoiceInput } from '@typings/Invoice';
 import { Controller } from '../../decorators/Controller';

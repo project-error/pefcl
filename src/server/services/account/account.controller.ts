@@ -2,15 +2,14 @@ import { Controller } from '../../decorators/Controller';
 import { NetPromise, PromiseEventListener } from '../../decorators/NetPromise';
 import {
   Account,
-  AccountEvents,
   AddToSharedAccountInput,
   ATMInput,
   PreDBAccount,
   RemoveFromSharedAccountInput,
   RenameAccountInput,
-  SharedAccountEvents,
   SharedAccountUser,
 } from '@typings/Account';
+import { AccountEvents, SharedAccountEvents } from '@typings/Events';
 import { Request, Response } from '@typings/http';
 import { AccountService } from './account.service';
 import { Event, EventListener } from '@decorators/Event';

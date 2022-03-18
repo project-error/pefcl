@@ -4,7 +4,7 @@ import UserSelect from '@components/UserSelect';
 import { Dialog, DialogActions, DialogContent, DialogTitle, Stack } from '@mui/material';
 import { SharedAccountEvents } from '@typings/Events';
 import { AccountRole, SharedAccountUser } from '@typings/Account';
-import { User } from '@typings/user';
+import { OnlineUser } from '@typings/user';
 import { fetchNui } from '@utils/fetchNui';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -19,7 +19,7 @@ const RemoveUserModal = ({ isOpen, onSelect, onClose, accountId }: SelectUserMod
   const { t } = useTranslation();
   const [selectedUserIdentifier, setSelectedUserIdentifier] = useState('');
   const [users, setUsers] = useState<SharedAccountUser[]>([]);
-  const handleUserSelect = (user: User) => {
+  const handleUserSelect = (user: OnlineUser) => {
     setSelectedUserIdentifier(user.identifier);
   };
 

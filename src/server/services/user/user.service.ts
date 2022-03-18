@@ -31,7 +31,15 @@ export class UserService {
       userDTO.identifier = getGameLicense(userDTO.source);
     }
 
-    const user = new UserModule({ source: userDTO.source, identifier: userDTO.identifier });
+    if (!userDTO.name) {
+      userDTO.name = GetPlayerName(userDTO.source.toString());
+    }
+
+    const user = new UserModule({
+      source: userDTO.source,
+      identifier: userDTO.identifier,
+      name: userDTO.name,
+    });
     console.log('New user loaded for pe-fcl', user);
 
     this.usersBySource.set(userDTO.source, user);

@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { ArrowDropDownRounded } from '@mui/icons-material';
 import { InputBase, MenuItem, Select, SelectChangeEvent, Stack } from '@mui/material';
-import { User } from '@typings/user';
+import { OnlineUser } from '@typings/user';
 import { t } from 'i18next';
 import React, { useState } from 'react';
 import theme from '../utils/theme';
@@ -63,23 +63,23 @@ const Option: React.FC<{ user: SelectableUser }> = ({ user }) => {
   return (
     <ListItem>
       <Stack p="0rem 0.5rem">
-        <BodyText>{user.identifier}</BodyText>
+        <BodyText>{user.name}</BodyText>
       </Stack>
     </ListItem>
   );
 };
 
-interface SelectableUser extends User {
+interface SelectableUser extends OnlineUser {
   isDisabled?: boolean;
 }
-interface UserSelect {
+interface UserSelectProps {
   users: SelectableUser[];
   isDisabled?: boolean;
   selectedId?: string;
   onSelect(user?: SelectableUser): void;
 }
 
-const UserSelect: React.FC<UserSelect> = ({ users, onSelect, selectedId, isDisabled }) => {
+const UserSelect = ({ users, onSelect, selectedId, isDisabled }: UserSelectProps) => {
   const [selected, setSelected] = useState<string>('0');
 
   const handleChange = (event: SelectChangeEvent<string>) => {
@@ -102,14 +102,14 @@ const UserSelect: React.FC<UserSelect> = ({ users, onSelect, selectedId, isDisab
         }}
       >
         {selected === '0' && (
-          <StyledMenuItem value={'0'} disabled>
+          <MenuItem value={'0'} disabled>
             <ListItem>
               <Stack p="0rem 0.5rem">
                 {users.length > 0 && <Heading6>{t('Select a user')}</Heading6>}
                 {users.length === 0 && <Heading6>{t('No users found')}</Heading6>}
               </Stack>
             </ListItem>
-          </StyledMenuItem>
+          </MenuItem>
         )}
 
         {users.map((user) => (
