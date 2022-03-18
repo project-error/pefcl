@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { ArrowDropDownRounded } from '@mui/icons-material';
-import { InputBase, MenuItem, Select, SelectChangeEvent, Stack } from '@mui/material';
+import { InputBase, MenuItem, SelectChangeEvent, Stack } from '@mui/material';
 import { t } from 'i18next';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -11,6 +11,7 @@ import { formatMoney } from '../utils/currency';
 import theme from '../utils/theme';
 import { BodyText } from './ui/Typography/BodyText';
 import { Heading6 } from './ui/Typography/Headings';
+import Select from './ui/Select';
 
 const BalanceText = styled(Heading6)`
   color: ${theme.palette.primary.main};
@@ -85,7 +86,7 @@ const AccountSelect: React.FC<AccountSelect> = ({ accounts, onSelect, selectedId
     }
   }, [selectedId]);
 
-  const handleChange = (event: SelectChangeEvent<number>) => {
+  const handleChange = (event: SelectChangeEvent<string | number>) => {
     const value = Number(event.target.value);
     if (isNaN(value)) {
       return;
@@ -97,17 +98,7 @@ const AccountSelect: React.FC<AccountSelect> = ({ accounts, onSelect, selectedId
 
   return (
     <div>
-      <Select
-        id="account-select"
-        value={selected}
-        onChange={handleChange}
-        variant="filled"
-        input={<StyledInput sx={{ border: 'none', outline: 'none' }} placeholder="select" />}
-        sx={{ width: '100%' }}
-        IconComponent={(props) => {
-          return <SelectIcon {...props} />;
-        }}
-      >
+      <Select value={selected} onChange={handleChange} variant="filled" sx={{ width: '100%' }}>
         {selected === 0 && (
           <StyledMenuItem value={0} disabled>
             <ListItem>

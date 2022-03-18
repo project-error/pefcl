@@ -93,6 +93,7 @@ export class AccountService {
     return this._accountDB.createSharedAccount({
       name: req.data.name,
       user: req.data.identifier,
+      role: req.data.role,
       accountId: req.data.accountId,
     });
   }

@@ -1,15 +1,8 @@
-import AddUserModal from '@components/Modals/AddUser';
-import RemoveUserModal from '@components/Modals/RemoveUser';
 import TextField from '@components/ui/Fields/TextField';
 import styled from '@emotion/styled';
 import { Dialog, DialogActions, DialogContent, DialogTitle, Stack } from '@mui/material';
-import {
-  AccountType,
-  AddToSharedAccountInput,
-  RemoveFromSharedAccountInput,
-} from '@typings/Account';
-import { AccountEvents, SharedAccountEvents } from '@typings/Events';
-import { OnlineUser } from '@typings/user';
+import { AccountType } from '@typings/Account';
+import { AccountEvents } from '@typings/Events';
 import { getIsAdmin } from '@utils/account';
 import { useAtom } from 'jotai';
 import React, { FormEvent, useState } from 'react';
@@ -25,6 +18,7 @@ import { useConfig } from '../../hooks/useConfig';
 import { formatMoney } from '../../utils/currency';
 import { fetchNui } from '../../utils/fetchNui';
 import theme from '../../utils/theme';
+import SharedSettings from './SharedSettings';
 
 const Cards = styled.div`
   padding: 0;
@@ -63,8 +57,6 @@ const Accounts = () => {
   const selectedAccount = accounts.find((account) => account.id === selectedAccountId);
   const [isRenameOpen, setIsRenameOpen] = useState(false);
   const [renameInput, setRenameInput] = useState(selectedAccount?.accountName ?? '');
-  const [isAddUserOpen, setIsAddUserOpen] = useState(false);
-  const [isRemoveUserOpen, setIsRemoveUserOpen] = useState(false);
 
   const handleSetDefault = () => {
     fetchNui(AccountEvents.SetDefaultAccount, { accountId: selectedAccountId })
@@ -91,48 +83,12 @@ const Accounts = () => {
     setIsRenameOpen(false);
   };
 
-  const handleAddUserToAccount = (user: OnlineUser) => {
-    const payload: AddToSharedAccountInput = {
-      name: user.name,
-      identifier: user.identifier,
-      accountId: selectedAccountId,
-    };
-
-    fetchNui(SharedAccountEvents.AddUser, payload)
-      .then(updateAccounts)
-      .finally(() => setIsAddUserOpen(false));
-  };
-
-  const handleRemoveUserFromAccount = (identifier: string) => {
-    const payload: RemoveFromSharedAccountInput = {
-      identifier,
-      accountId: selectedAccountId,
-    };
-
-    fetchNui(SharedAccountEvents.RemoveUser, payload)
-      .then(updateAccounts)
-      .finally(() => setIsRemoveUserOpen(false));
-  };
-
-  const isAdmin = selectedAccount && getIsAdmin(selectedAccount);
+  const isAdmin = Boolean(selectedAccount && getIsAdmin(selectedAccount));
   const isShared = selectedAccount?.type === AccountType.Shared;
   const isDefaultAccountSelected = defaultAccount?.id === selectedAccountId;
 
   return (
     <Layout>
-      <AddUserModal
-        isOpen={isAddUserOpen}
-        onClose={() => setIsAddUserOpen(false)}
-        onSelect={handleAddUserToAccount}
-      />
-
-      <RemoveUserModal
-        accountId={selectedAccountId}
-        isOpen={isRemoveUserOpen}
-        onClose={() => setIsRemoveUserOpen(false)}
-        onSelect={handleRemoveUserFromAccount}
-      />
-
       <Dialog
         fullWidth
         maxWidth="xs"
@@ -179,72 +135,63 @@ const Accounts = () => {
         ))}
       </Cards>
 
-      <Column spacing={5} marginTop={5}>
-        <Stack spacing={1.5} alignItems="flex-start">
-          <Heading5>{t('General')}</Heading5>
-          <Stack direction="row" spacing={4} alignItems="flex-start">
-            <Stack spacing={0.75}>
-              <Button
-                onClick={handleSetDefault}
-                disabled={isDefaultAccountSelected || !isAdmin || isShared}
-              >
-                {t('Set account to default')}
-              </Button>
-              {!isAdmin && <HelperText>{t('Admin role required')}</HelperText>}
-              {isAdmin && isShared && (
-                <HelperText>{t('Shared account cannot be default account')}</HelperText>
-              )}
-            </Stack>
-
-            <Stack spacing={0.75}>
-              <Button onClick={() => setIsRenameOpen(true)} disabled={!isAdmin}>
-                {t('Rename account')}
-              </Button>
-              {!isAdmin && <HelperText>{t('Admin role required')}</HelperText>}
-            </Stack>
-          </Stack>
-        </Stack>
-
-        {isShared && isAdmin && (
+      <Stack direction="row" spacing={5} marginTop={5}>
+        <Column spacing={5}>
           <Stack spacing={1.5} alignItems="flex-start">
-            <Heading5>{t('Shared settings')}</Heading5>
+            <Heading5>{t('General')}</Heading5>
             <Stack direction="row" spacing={4} alignItems="flex-start">
-              <Button onClick={() => setIsAddUserOpen(true)} disabled={!isAdmin}>
-                {t('Add user to account')}
-              </Button>
+              <Stack spacing={0.75}>
+                <Button
+                  onClick={handleSetDefault}
+                  disabled={isDefaultAccountSelected || !isAdmin || isShared}
+                >
+                  {t('Set account to default')}
+                </Button>
+                {!isAdmin && <HelperText>{t('Admin role required')}</HelperText>}
+                {isAdmin && isShared && (
+                  <HelperText>{t('Shared account cannot be default account')}</HelperText>
+                )}
+              </Stack>
 
-              <Button onClick={() => setIsRemoveUserOpen(true)} disabled={!isAdmin} color="error">
-                {t('Remove user from account')}
-              </Button>
+              <Stack spacing={0.75}>
+                <Button onClick={() => setIsRenameOpen(true)} disabled={!isAdmin}>
+                  {t('Rename account')}
+                </Button>
+                {!isAdmin && <HelperText>{t('Admin role required')}</HelperText>}
+              </Stack>
             </Stack>
           </Stack>
-        )}
 
-        {isAdmin && (
-          <Stack spacing={1.5} alignItems="flex-start">
-            <Heading5>{t('Danger zone')}</Heading5>
-            <Dangerzone>
-              <Stack spacing={1.5}>
-                <span>
-                  <Button
-                    color="error"
-                    onClick={handleDeleteAccount}
-                    disabled={isDefaultAccountSelected}
-                  >
-                    {t('Delete account')}
-                  </Button>
-                </span>
+          {isAdmin && (
+            <Stack spacing={1.5} alignItems="flex-start">
+              <Heading5>{t('Danger zone')}</Heading5>
+              <Dangerzone>
+                <Stack spacing={1.5}>
+                  <span>
+                    <Button
+                      color="error"
+                      onClick={handleDeleteAccount}
+                      disabled={isDefaultAccountSelected}
+                    >
+                      {t('Delete account')}
+                    </Button>
+                  </span>
 
-                <HelperText>
-                  {isDefaultAccountSelected
-                    ? t('You cannot delete the default account')
-                    : t('Funds will be transfered to default account.')}
-                </HelperText>
-              </Stack>
-            </Dangerzone>
-          </Stack>
-        )}
-      </Column>
+                  <HelperText>
+                    {isDefaultAccountSelected
+                      ? t('You cannot delete the default account')
+                      : t('Funds will be transfered to default account.')}
+                  </HelperText>
+                </Stack>
+              </Dangerzone>
+            </Stack>
+          )}
+        </Column>
+
+        <Column>
+          {isShared && <SharedSettings accountId={selectedAccountId} isAdmin={isAdmin} />}
+        </Column>
+      </Stack>
     </Layout>
   );
 };

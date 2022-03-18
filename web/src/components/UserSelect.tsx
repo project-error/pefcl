@@ -1,7 +1,7 @@
-import { Autocomplete } from '@mui/material';
+import { Autocomplete, FormHelperText, Stack } from '@mui/material';
 import { User } from '@typings/user';
-import { t } from 'i18next';
 import React, { SyntheticEvent, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import TextField from './ui/Fields/TextField';
 
 interface SelectableUser extends User {
@@ -15,9 +15,10 @@ interface UserSelectProps {
 }
 
 const UserSelect = ({ users, onSelect }: UserSelectProps) => {
+  const { t } = useTranslation();
   const [value, setValue] = useState<string>('');
 
-  const handleChange = (event: SyntheticEvent<Element, Event>, value: string | null) => {
+  const handleChange = (_event: SyntheticEvent<Element, Event>, value: string | null) => {
     const selectedUser = users.find((user) => user.name === value);
     if (!selectedUser || !value) {
       return;
@@ -27,18 +28,18 @@ const UserSelect = ({ users, onSelect }: UserSelectProps) => {
   };
 
   return (
-    <div>
+    <Stack spacing={1.5}>
       <Autocomplete
-        id="account-select"
+        freeSolo
         value={value}
         onChange={handleChange}
-        freeSolo
         renderInput={(params) => <TextField {...params} placeholder={t('Search for a user')} />}
         disableClearable
         sx={{ width: '100%' }}
         options={users.map((user) => user.name)}
       />
-    </div>
+      {users.length === 0 && <FormHelperText color="red">{t('No users found.')}</FormHelperText>}
+    </Stack>
   );
 };
 

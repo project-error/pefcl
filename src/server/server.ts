@@ -84,7 +84,7 @@ const test = async () => {
     setTimeout(resolve, 500);
   });
 
-  global.source = 2;
+  global.source = 3;
   // emit('playerJoining', {});
 
   /* */
