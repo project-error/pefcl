@@ -1,3 +1,4 @@
+import { Op } from 'sequelize';
 import { singleton } from 'tsyringe';
 import { Transaction } from '../../../../typings/transactions';
 import { AccountModel } from '../account/account.model';
@@ -7,6 +8,29 @@ import { TransactionModel } from './transaction.model';
 export class TransactionDB {
   async getTransactions(): Promise<TransactionModel[]> {
     return await TransactionModel.findAll({
+      include: [
+        { model: AccountModel, as: 'toAccount' },
+        { model: AccountModel, as: 'fromAccount' },
+      ],
+    });
+  }
+
+  async getTransactionFromAccounts(accountIds: number[]): Promise<TransactionModel[]> {
+    return await TransactionModel.findAll({
+      where: {
+        [Op.or]: [
+          {
+            fromAccountId: {
+              [Op.in]: accountIds,
+            },
+          },
+          {
+            toAccountId: {
+              [Op.in]: accountIds,
+            },
+          },
+        ],
+      },
       include: [
         { model: AccountModel, as: 'toAccount' },
         { model: AccountModel, as: 'fromAccount' },

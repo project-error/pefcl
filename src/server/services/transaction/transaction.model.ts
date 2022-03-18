@@ -6,7 +6,9 @@ import { sequelize } from '../../utils/pool';
 
 interface TransactionDB extends Omit<Transaction, 'toAccount' | 'fromAccount'> {
   toAccount?: number;
+  toAccountId?: number;
   fromAccount?: number;
+  fromAccountId?: number;
 }
 
 @singleton()

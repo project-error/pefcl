@@ -44,7 +44,8 @@
     "start": "yarn webpack",
     "start:game": "cross-env IN_GAME_DEV=1 yarn dev",
     "build:esbuild": "node scripts/build_ui.js",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "test": "jest"
   },
   "eslintConfig": {
     "extends": [

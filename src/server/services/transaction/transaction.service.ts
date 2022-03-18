@@ -31,10 +31,13 @@ export class TransactionService {
     this._accountDB = accountDB;
   }
 
-  // TODO: Only return my transactions.
   private async getMyTransactions(source: number) {
-    logger.silly('Getting my transactions' + source);
-    const transactions = await this._transactionDB.getTransactions();
+    const user = this._userService.getUser(source);
+    const accounts = await this._accountDB.getAccountsByIdentifier(user.getIdentifier());
+
+    const accountIds = accounts.map((account) => account.getDataValue('id'));
+    const transactions = await this._transactionDB.getTransactionFromAccounts(accountIds);
+
     return transactions;
   }
 
