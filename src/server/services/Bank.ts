@@ -1,5 +1,5 @@
 import { container } from 'tsyringe';
-import { DIToken, IController } from '@typings/Common';
+import { DIToken, IController } from '@typings/common';
 import { mainLogger } from '../sv_logger';
 
 const baseLogger = mainLogger.child({ module: 'base' });
