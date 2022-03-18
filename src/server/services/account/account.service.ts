@@ -156,10 +156,6 @@ export class AccountService {
         throw new Error('Insufficent funds available on account');
       }
 
-      if (!isFirstSetup) {
-        await fromAccount?.decrement('balance', { by: config.prices.newAccount });
-      }
-
       const defaultAccountName = isShared
         ? i18next.t('Shared account')
         : i18next.t('Personal account');
@@ -178,6 +174,17 @@ export class AccountService {
           accountId: account.getDataValue('id'),
           user: userIdentifier,
           role: AccountRole.Owner,
+        });
+      }
+
+      if (!isFirstSetup) {
+        await fromAccount?.decrement('balance', { by: config.prices.newAccount });
+        await this._transactionService.handleCreateTransaction({
+          amount: config.prices.newAccount,
+          message: i18next.t('Opened a new account'),
+          toAccount: null,
+          fromAccount: fromAccount.toJSON(),
+          type: TransactionType.Outgoing,
         });
       }
 
