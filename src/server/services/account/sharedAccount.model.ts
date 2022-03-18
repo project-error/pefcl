@@ -15,6 +15,9 @@ SharedAccountModel.init(
     user: {
       type: DataTypes.STRING,
     },
+    name: {
+      type: DataTypes.STRING,
+    },
     role: {
       type: DataTypes.STRING,
       defaultValue: AccountRole.Contributor,

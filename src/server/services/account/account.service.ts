@@ -91,6 +91,7 @@ export class AccountService {
 
     // TODO: Add security
     return this._accountDB.createSharedAccount({
+      name: req.data.name,
       user: req.data.identifier,
       accountId: req.data.accountId,
     });
@@ -402,6 +403,7 @@ export class AccountService {
     const sharedAccounts = await this._accountDB.getSharedAccountsById(req.data.accountId);
     console.log('Looking for all shared accounts w id:', req.data.accountId);
     return sharedAccounts.map((account) => ({
+      name: account.getDataValue('name'),
       user: account.getDataValue('user'),
       role: account.getDataValue('role'),
     }));

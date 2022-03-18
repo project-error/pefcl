@@ -9,6 +9,7 @@ import {
   RemoveFromSharedAccountInput,
 } from '@typings/Account';
 import { AccountEvents, SharedAccountEvents } from '@typings/Events';
+import { OnlineUser } from '@typings/user';
 import { getIsAdmin } from '@utils/account';
 import { useAtom } from 'jotai';
 import React, { FormEvent, useState } from 'react';
@@ -90,9 +91,10 @@ const Accounts = () => {
     setIsRenameOpen(false);
   };
 
-  const handleAddUserToAccount = (id: string) => {
+  const handleAddUserToAccount = (user: OnlineUser) => {
     const payload: AddToSharedAccountInput = {
-      identifier: id,
+      name: user.name,
+      identifier: user.identifier,
       accountId: selectedAccountId,
     };
 

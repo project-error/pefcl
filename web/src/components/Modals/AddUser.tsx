@@ -11,7 +11,7 @@ import { useTranslation } from 'react-i18next';
 interface SelectUserModalProps {
   isOpen: boolean;
   onClose(): void;
-  onSelect(id: string): void;
+  onSelect(user: OnlineUser): void;
 }
 const AddUserModal = ({ isOpen, onSelect, onClose }: SelectUserModalProps) => {
   const { t } = useTranslation();
@@ -27,7 +27,8 @@ const AddUserModal = ({ isOpen, onSelect, onClose }: SelectUserModalProps) => {
   };
 
   const handleSubmit = () => {
-    onSelect(selectedUserId);
+    const user = users.find((user) => user.identifier === selectedUserId);
+    user && onSelect(user);
   };
 
   return (

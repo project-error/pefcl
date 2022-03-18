@@ -36,17 +36,20 @@ export interface SharedAccount {
   id: number;
   user: string;
   role: AccountRole;
+  name?: string;
   account?: Account;
   accountId?: number;
   setAccount?(): void;
 }
-export type SharedAccountUser = Pick<SharedAccount, 'user' | 'role'>;
+export type SharedAccountUser = Pick<SharedAccount, 'user' | 'role' | 'name'>;
 export interface SharedAccountInput {
   user: string;
+  name?: string;
   accountId: number;
   role?: AccountRole;
 }
 export interface AddToSharedAccountInput {
+  name: string;
   identifier: string;
   accountId: number;
   role?: AccountRole;
