@@ -30,6 +30,7 @@ export interface Account {
   ownerIdentifier: string;
   role: AccountRole;
   type: AccountType;
+  createdAt?: string;
 }
 
 export interface SharedAccount {

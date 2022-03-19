@@ -83,7 +83,14 @@ export class AccountService {
     const filteredAccounts = accounts.filter((account) => account.type !== AccountType.Shared);
     const sharedAccounts = await this.getMySharedAccounts(source);
 
-    return [...filteredAccounts, ...sharedAccounts];
+    const accs = [...filteredAccounts, ...sharedAccounts];
+    return accs.map((account) => {
+      const date = new Date(account.createdAt);
+      return {
+        ...account,
+        createdAt: date.toLocaleString(),
+      };
+    });
   }
 
   async addUserToShared(req: Request<AddToSharedAccountInput>) {

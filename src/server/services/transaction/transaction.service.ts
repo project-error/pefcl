@@ -31,14 +31,18 @@ export class TransactionService {
     this._accountDB = accountDB;
   }
 
-  private async getMyTransactions(source: number) {
+  private async getMyTransactions(source: number): Promise<TransactionModel[]> {
     const user = this._userService.getUser(source);
     const accounts = await this._accountDB.getAccountsByIdentifier(user.getIdentifier());
 
     const accountIds = accounts.map((account) => account.getDataValue('id'));
     const transactions = await this._transactionDB.getTransactionFromAccounts(accountIds);
 
-    return transactions;
+    return transactions.map((transaction) => {
+      const date = new Date(transaction.getDataValue('createdAt'));
+      transaction.setDataValue('createdAt', date.toLocaleString());
+      return transaction;
+    });
   }
 
   async handleGetMyTransactions(source: number): Promise<Transaction[]> {

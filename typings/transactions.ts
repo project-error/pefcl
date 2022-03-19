@@ -16,8 +16,8 @@ export interface Transaction {
   amount: number;
   message: string;
 
-  createdAt?: string;
-  updatedAt?: string;
+  updatedAt?: string | number | Date;
+  createdAt?: string | number | Date;
 }
 
 export interface Transfer {
