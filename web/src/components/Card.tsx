@@ -58,6 +58,7 @@ const StyledIcon = styled(MasterCardIcon)`
 `;
 
 const DefaultText = styled(Heading6)`
+  text-transform: uppercase;
   font-weight: ${theme.typography.fontWeightLight};
 `;
 
@@ -76,7 +77,7 @@ export const Card: React.FC<CardProps> = ({ account, ...props }) => {
         <Heading3>{formatMoney(balance, config)}</Heading3>
         <Type>
           <Heading6>{type === AccountType.Shared ? t('SHARED') : t('PERSONAL')}</Heading6>
-          {isDefault && <DefaultText>DEFAULT</DefaultText>}
+          {isDefault && <DefaultText>{t('Default')}</DefaultText>}
         </Type>
       </Row>
 

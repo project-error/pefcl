@@ -33,7 +33,8 @@ const Column = styled(Stack)``;
 const SelectedContainer = styled.div<{ isSelected: boolean }>`
   overflow: hidden;
   border-radius: ${theme.spacing(2)};
-  ${({ isSelected }) => isSelected && `outline: 1px solid ${theme.palette.primary.main};`}
+  opacity: 0.6;
+  ${({ isSelected }) => isSelected && `opacity: 1;`}
 `;
 
 const Dangerzone = styled.div`
