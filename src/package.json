@@ -4,8 +4,9 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "dev": "concurrently 'nodemon' 'node scripts/watch_server.js'",
-    "build": "node scripts/build_server.js && node scripts/build_client.js",
+    "dev": "yarn concurrently \"yarn nodemon\" \"node ./scripts/watch_server.js\"",
+    "dev:ingame": "node ./scripts/watch_server.js --mode=ingame",
+    "build": "node ./scripts/build_server.js && node ./scripts/build_client.js",
     "lint": "eslint server && eslint client",
     "watch:client": "esbuild client/client.ts --bundle --target=es6 --watch --outfile=dist/client.js",
     "watch:server": "node scripts/watch_server.js",

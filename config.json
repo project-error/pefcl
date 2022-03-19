@@ -10,7 +10,7 @@
     "shouldSync": false
   },
   "prices": {
-    "newAccount": 200
+    "newAccount": 5000
   },
   "accounts": {
     "defaultName": "Initial",

@@ -4,8 +4,9 @@ import path from 'path';
 
 const isMocking = process.env.NODE_ENV === 'mocking';
 
+// TODO: Move this into package
 const convars = {
-  mysql_connection_string: 'mysql://root:bruv@localhost/dev',
+  mysql_connection_string: 'mysql://root:root@localhost/dev',
 };
 
 const players = {
