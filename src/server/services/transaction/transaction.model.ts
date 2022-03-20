@@ -12,9 +12,12 @@ interface TransactionDB extends Omit<Transaction, 'toAccount' | 'fromAccount'> {
 }
 
 @singleton()
-export class TransactionModel extends Model<TransactionDB> {}
+export class TransactionModel extends Model<
+  TransactionDB,
+  Omit<Transaction, 'id' | 'createdAt' | 'updatedAt'>
+> {}
 
-TransactionModel.init(
+TransactionModel.init<typeof TransactionModel, TransactionModel>(
   {
     id: {
       type: DataTypes.INTEGER,

@@ -5,8 +5,11 @@ export enum GenericErrors {
 }
 
 export enum ExternalAccountErrors {
-  AccountAlreadyExists = 'AccountAlreadyExists',
   AccountIsYours = 'AccountIsYours',
+}
+
+export enum AccountErrors {
+  AlreadyExists = 'AccountAlreadyExists',
 }
 
 export enum BalanceErrors {

@@ -9,6 +9,6 @@ export class CashDB {
 
   async createInitial(ownerIdentifier: string): Promise<CashModel> {
     const existing = await CashModel.findOne({ where: { ownerIdentifier } });
-    return existing ?? (await CashModel.create({ ownerIdentifier, amount: 0 }));
+    return existing ?? (await CashModel.create({ ownerIdentifier }));
   }
 }

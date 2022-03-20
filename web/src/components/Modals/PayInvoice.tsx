@@ -31,7 +31,7 @@ interface PayInvoiceModalProps {
   onClose(): void;
 }
 
-const PayInvoiceModal: React.FC<PayInvoiceModalProps> = ({ onClose, invoice }) => {
+const PayInvoiceModal = ({ onClose, invoice }: PayInvoiceModalProps) => {
   const [accounts, updateAccounts] = useAtom(accountsAtom);
   const [defaultAccount] = useAtom(defaultAccountAtom);
   const [, updateInvoices] = useAtom(invoicesAtom);

@@ -11,13 +11,13 @@ export enum TransferType {
   External = 'External',
 }
 export interface Transaction {
-  id?: number;
+  id: number;
   toAccount?: Account;
   fromAccount?: Account;
-  type?: TransactionType;
 
   amount: number;
   message: string;
+  type: TransactionType;
 
   createdAt?: string;
   updatedAt?: string;

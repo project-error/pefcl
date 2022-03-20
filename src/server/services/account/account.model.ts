@@ -5,7 +5,10 @@ import { Account, AccountRole, AccountType } from '@typings/Account';
 import { sequelize } from '@utils/pool';
 import { generateAccountNumber } from '@utils/misc';
 
-export class AccountModel extends Model<Account> {}
+export class AccountModel extends Model<
+  Account,
+  Omit<Account, 'id' | 'number' | 'balance' | 'role'>
+> {}
 
 AccountModel.init(
   {
@@ -17,9 +20,7 @@ AccountModel.init(
     number: {
       type: DataTypes.STRING,
       unique: true,
-      defaultValue: () => {
-        return generateAccountNumber();
-      },
+      defaultValue: generateAccountNumber,
     },
     accountName: {
       type: DataTypes.STRING,

@@ -10,7 +10,6 @@ const now = dayjs();
 export const mockedAccounts: Account[] = [
   {
     id: 1,
-    identifier: '',
     accountName: 'Savings',
     number: '920, 1000-2000-3000',
     balance: 20000,
@@ -21,7 +20,6 @@ export const mockedAccounts: Account[] = [
   },
   {
     id: 2,
-    identifier: '',
     accountName: 'Pension',
     number: '920, 1000-2000-3002',
     balance: 20000,
@@ -32,7 +30,6 @@ export const mockedAccounts: Account[] = [
   },
   {
     id: 3,
-    identifier: '',
     accountName: 'Bennys AB',
     number: '920, 1000-2000-3004',
     balance: 1800000,
@@ -46,7 +43,6 @@ export const mockedAccounts: Account[] = [
 export const mockedTransactions: Transaction[] = [
   {
     id: 1,
-    identifier: '',
     amount: 280,
     type: TransactionType.Transfer,
     message: 'For the last time, give me the money',
@@ -56,7 +52,6 @@ export const mockedTransactions: Transaction[] = [
   },
   {
     id: 1,
-    identifier: '',
     amount: 8000000,
     message: 'For the last time, give me the money',
     createdAt: '1642276186',

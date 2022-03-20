@@ -1,5 +1,6 @@
 import { Account, AccountRole, CreateAccountInput, SharedAccountInput } from '@typings/Account';
-import { generateAccountNumber } from '@utils/misc';
+import { AccountErrors } from '@typings/Errors';
+import { ServerError } from '@utils/errors';
 import { singleton } from 'tsyringe';
 import { AccountModel } from './account.model';
 import { SharedAccountModel } from './sharedAccount.model';
@@ -58,12 +59,7 @@ export class AccountDB {
   }
 
   async createAccount(account: CreateAccountInput): Promise<AccountModel> {
-    return await AccountModel.create({
-      ...account,
-      balance: 0,
-      role: AccountRole.Owner,
-      number: generateAccountNumber(),
-    });
+    return await AccountModel.create(account);
   }
 
   async createSharedAccount(input: SharedAccountInput): Promise<SharedAccountModel> {
@@ -73,7 +69,7 @@ export class AccountDB {
     });
 
     if (existingAccount) {
-      throw new Error('Shared account for player already exists!');
+      throw new ServerError(AccountErrors.AlreadyExists);
     }
 
     const account = await SharedAccountModel.create({

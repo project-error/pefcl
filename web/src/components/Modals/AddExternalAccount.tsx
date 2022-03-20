@@ -2,7 +2,7 @@ import Button from '@components/ui/Button';
 import TextField from '@components/ui/Fields/TextField';
 import { Box, Dialog, DialogContent, DialogTitle, FormHelperText, Stack } from '@mui/material';
 import { ExternalAccountEvents } from '@typings/Events';
-import { ExternalAccountErrors, GenericErrors } from '@typings/Errors';
+import { AccountErrors, ExternalAccountErrors, GenericErrors } from '@typings/Errors';
 import { fetchNui } from '@utils/fetchNui';
 import React, { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
@@ -52,7 +52,7 @@ const AddExternalAccountModal = ({ isOpen, onClose }: AddExternalAccountModalPro
         return;
       }
 
-      if (error.message === ExternalAccountErrors.AccountAlreadyExists) {
+      if (error.message === AccountErrors.AlreadyExists) {
         setError(t('An account for the specified number already exists'));
         return;
       }

@@ -3,7 +3,7 @@ import { DATABASE_PREFIX } from '@utils/constants';
 import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '../../utils/pool';
 
-export class ExternalAccountModel extends Model<ExternalAccount> {}
+export class ExternalAccountModel extends Model<ExternalAccount, Omit<ExternalAccount, 'id'>> {}
 
 ExternalAccountModel.init(
   {

@@ -4,7 +4,7 @@ import { ExternalAccount } from '@typings/Account';
 import { UserService } from '../user/user.service';
 import { mainLogger } from '../../sv_logger';
 import { ExternalAccountDB } from './externalAccount.db';
-import { ExternalAccountErrors, GenericErrors } from '@typings/Errors';
+import { AccountErrors, ExternalAccountErrors, GenericErrors } from '@typings/Errors';
 import { ServerError } from '@utils/errors';
 import { AccountDB } from 'services/account/account.db';
 
@@ -47,7 +47,7 @@ export class ExternalAccountService {
     if (alreadyExists) {
       logger.silly('Account with number & userId already exists.');
       logger.silly(req.data);
-      throw new ServerError(ExternalAccountErrors.AccountAlreadyExists);
+      throw new ServerError(AccountErrors.AlreadyExists);
     }
 
     const myAccounts = await this._accountDB.getAccountsByIdentifier(user.identifier);

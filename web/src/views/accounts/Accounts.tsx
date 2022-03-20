@@ -128,7 +128,7 @@ const Accounts = () => {
           <SelectedContainer
             key={account.id}
             isSelected={selectedAccountId === account.id}
-            onClick={() => setSelectedAccountId(account.id)}
+            onClick={() => setSelectedAccountId(account.id ?? 0)}
           >
             <AccountCard account={account} />
           </SelectedContainer>
