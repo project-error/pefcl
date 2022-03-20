@@ -1,6 +1,6 @@
 import { Op } from 'sequelize';
 import { singleton } from 'tsyringe';
-import { Transaction } from '../../../../typings/transactions';
+import { TransactionInput } from '@typings/transactions';
 import { AccountModel } from '../account/account.model';
 import { TransactionModel } from './transaction.model';
 
@@ -38,11 +38,11 @@ export class TransactionDB {
     });
   }
 
-  async getTransaction(id: number): Promise<TransactionModel> {
+  async getTransaction(id: number): Promise<TransactionModel | null> {
     return await TransactionModel.findOne({ where: { id } });
   }
 
-  async create(transaction: Partial<Transaction>): Promise<TransactionModel> {
+  async create(transaction: TransactionInput): Promise<TransactionModel> {
     const { toAccount, fromAccount, ...dbTransaction } = transaction;
     const newTransaction = await TransactionModel.create({
       ...dbTransaction,

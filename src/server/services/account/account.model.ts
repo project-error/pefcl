@@ -14,11 +14,6 @@ AccountModel.init(
       autoIncrement: true,
       primaryKey: true,
     },
-    identifier: {
-      type: DataTypes.UUID,
-      unique: true,
-      defaultValue: DataTypes.UUIDV4,
-    },
     number: {
       type: DataTypes.STRING,
       unique: true,
@@ -42,7 +37,7 @@ AccountModel.init(
     },
     balance: {
       type: DataTypes.INTEGER,
-      defaultValue: config.accounts.defaultAmount ?? 0,
+      defaultValue: config?.accounts?.defaultAmount ?? 0,
     },
     type: {
       type: DataTypes.STRING,

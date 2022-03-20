@@ -21,11 +21,6 @@ TransactionModel.init(
       autoIncrement: true,
       primaryKey: true,
     },
-    identifier: {
-      type: DataTypes.UUID,
-      unique: true,
-      defaultValue: DataTypes.UUIDV4,
-    },
     message: {
       type: DataTypes.STRING,
     },

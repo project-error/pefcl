@@ -14,7 +14,7 @@ export class InvoiceDB {
     return await InvoiceModel.findAll({ where: { to: identifier } });
   }
 
-  async getInvoiceById(id: number): Promise<InvoiceModel> {
+  async getInvoiceById(id: number): Promise<InvoiceModel | null> {
     return await InvoiceModel.findOne({ where: { id } });
   }
 
@@ -23,7 +23,7 @@ export class InvoiceDB {
       ? input.expiresAt
       : new Date(Date.now() + twoWeeks).toString();
 
-    return await InvoiceModel.create({ ...input, expiresAt });
+    return await InvoiceModel.create({ ...input, expiresAt, status: InvoiceStatus.PENDING });
   }
 
   async payInvoice(invoiceId: number): Promise<number> {

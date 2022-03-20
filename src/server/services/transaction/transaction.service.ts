@@ -1,7 +1,12 @@
 import { singleton } from 'tsyringe';
-import { Account } from '@typings/Account';
 import { Request } from '@typings/http';
-import { Transaction, TransactionType, Transfer, TransferType } from '@typings/transactions';
+import {
+  Transaction,
+  TransactionInput,
+  TransactionType,
+  Transfer,
+  TransferType,
+} from '@typings/transactions';
 import { sequelize } from '../../utils/pool';
 import { mainLogger } from '../../sv_logger';
 import { UserService } from '../user/user.service';
@@ -13,14 +18,6 @@ import { ServerError } from '@utils/errors';
 import { GenericErrors } from '@typings/Errors';
 
 const logger = mainLogger.child({ module: 'transactionService' });
-
-interface CreateTransactionInput {
-  amount: number;
-  message: string;
-  type?: TransactionType;
-  toAccount: Account;
-  fromAccount?: Account;
-}
 
 @singleton()
 export class TransactionService {
@@ -45,7 +42,7 @@ export class TransactionService {
     const user = this._userService.getUser(source);
     const accounts = await this._accountDB.getAccountsByIdentifier(user?.getIdentifier() ?? '');
 
-    const accountIds = accounts.map((account) => account.getDataValue('id'));
+    const accountIds = accounts.map((account) => account.getDataValue('id') ?? 0);
     const transactions = await this._transactionDB.getTransactionFromAccounts(accountIds);
 
     return transactions;
@@ -61,6 +58,10 @@ export class TransactionService {
     try {
       const fromAccount = await this._accountDB.getAccount(req.data.fromAccountId);
       const toAccount = await this._accountDB.getAccount(req.data.toAccountId);
+
+      if (!toAccount || !fromAccount) {
+        throw new ServerError(GenericErrors.NotFound);
+      }
 
       await fromAccount.decrement('balance', { by: req.data.amount });
       await toAccount.increment('balance', { by: req.data.amount });
@@ -89,7 +90,7 @@ export class TransactionService {
         req.data.toAccountId,
       );
 
-      if (!toAccount) {
+      if (!toAccount || !myAccount) {
         throw new ServerError(GenericErrors.NotFound);
       }
 
@@ -138,7 +139,7 @@ export class TransactionService {
     return await this.handleInternalTransfer(req);
   }
 
-  async handleCreateTransaction(input: CreateTransactionInput): Promise<TransactionModel> {
+  async handleCreateTransaction(input: TransactionInput): Promise<TransactionModel> {
     logger.silly(`Created transaction.`);
     logger.silly(input);
     return await this._transactionDB.create(input);

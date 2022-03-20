@@ -8,6 +8,9 @@ import { AccountDB } from '../account/account.db';
 import { TransactionDB } from '../transaction/transaction.db';
 import { InvoiceDB } from './invoice.db';
 import i18n from '@utils/i18n';
+import { TransactionType } from '@typings/transactions';
+import { ServerError } from '@utils/errors';
+import { GenericErrors } from '@typings/Errors';
 
 const logger = mainLogger.child({ module: 'invoice-service' });
 
@@ -53,9 +56,13 @@ export class InvoiceService {
     try {
       const account = await this._accountDB.getAccount(req.data.fromAccountId);
       const invoice = await this._invoiceDB.getInvoiceById(req.data.invoiceId);
+
+      if (!invoice || !account) {
+        throw new ServerError(GenericErrors.NotFound);
+      }
+
       const accountBalance = account.getDataValue('balance');
       const invoiceAmount = invoice.getDataValue('amount');
-
       if (accountBalance < invoiceAmount) {
         throw new Error('Insufficent funds');
       }
@@ -64,6 +71,7 @@ export class InvoiceService {
         amount: invoiceAmount,
         fromAccount: account.toJSON(),
         message: i18n.t('Paid invoice'),
+        type: TransactionType.Outgoing,
       });
 
       await account.decrement('balance', { by: invoiceAmount });

@@ -1,4 +1,5 @@
-import { Account, SharedAccountInput } from '@typings/Account';
+import { Account, AccountRole, CreateAccountInput, SharedAccountInput } from '@typings/Account';
+import { generateAccountNumber } from '@utils/misc';
 import { singleton } from 'tsyringe';
 import { AccountModel } from './account.model';
 import { SharedAccountModel } from './sharedAccount.model';
@@ -14,7 +15,7 @@ export class AccountDB {
     return await AccountModel.findAll();
   }
 
-  async getDefaultAccountByIdentifier(identifier: string): Promise<AccountModel> {
+  async getDefaultAccountByIdentifier(identifier: string): Promise<AccountModel | null> {
     return await AccountModel.findOne({
       where: { isDefault: true, ownerIdentifier: identifier },
     });
@@ -38,11 +39,15 @@ export class AccountDB {
     });
   }
 
-  async getAccount(id: number): Promise<AccountModel> {
+  async getAccount(id: number): Promise<AccountModel | null> {
     return await AccountModel.findOne({ where: { id } });
   }
 
-  async getAccountByNumber(number: string): Promise<AccountModel> {
+  async getMyAccountById(id: number, identifier: string): Promise<AccountModel | null> {
+    return await AccountModel.findOne({ where: { id, ownerIdentifier: identifier } });
+  }
+
+  async getAccountByNumber(number: string): Promise<AccountModel | null> {
     return await AccountModel.findOne({ where: { number } });
   }
 
@@ -52,10 +57,13 @@ export class AccountDB {
     });
   }
 
-  async createAccount(
-    account: Pick<Account, 'accountName' | 'type' | 'isDefault' | 'ownerIdentifier' | 'role'>,
-  ): Promise<AccountModel> {
-    return await AccountModel.create(account);
+  async createAccount(account: CreateAccountInput): Promise<AccountModel> {
+    return await AccountModel.create({
+      ...account,
+      balance: 0,
+      role: AccountRole.Owner,
+      number: generateAccountNumber(),
+    });
   }
 
   async createSharedAccount(input: SharedAccountInput): Promise<SharedAccountModel> {
@@ -68,7 +76,10 @@ export class AccountDB {
       throw new Error('Shared account for player already exists!');
     }
 
-    const account = await SharedAccountModel.create(input);
+    const account = await SharedAccountModel.create({
+      ...input,
+      role: input.role ?? AccountRole.Contributor,
+    });
 
     // TODO: How to extend the module to support this with ts? Other ORM might be a choice if this isn't fixable.
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -82,7 +93,7 @@ export class AccountDB {
   }
 
   async deleteAccount(id: number) {
-    return await AccountModel.destroy({ where: { identifier: id } });
+    return await AccountModel.destroy({ where: { id } });
   }
 
   async updateAccountBalance(): Promise<void> {

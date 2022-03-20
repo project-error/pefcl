@@ -71,7 +71,7 @@ export class ExternalAccountService {
   async getAccountFromExternalAccount(accountId: number) {
     const externalAccount = await this._externalAccountDB.getAccountById(accountId);
     const account = await this._accountDB.getAccountByNumber(
-      externalAccount.getDataValue('number'),
+      externalAccount?.getDataValue('number') ?? '',
     );
     return account;
   }

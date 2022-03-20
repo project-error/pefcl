@@ -30,7 +30,7 @@ export const getClearingNumber = (initialConfig = config): string => {
 export const generateAccountNumber = (clearingNumber = getClearingNumber()): string => {
   const initialNumber = clearingNumber;
 
-  let uuid = `${initialNumber}, `;
+  let uuid = `${initialNumber},`;
   for (let i = 0; i < 12; i++) {
     switch (i) {
       case 8:

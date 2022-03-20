@@ -11,7 +11,7 @@ export interface InvoiceInput {
   expiresAt?: string;
 }
 export interface Invoice {
-  id: number;
+  id?: number;
   amount: number;
   from: string;
   to: string;

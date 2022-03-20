@@ -6,6 +6,7 @@
     "resolveJsonModule": true,
     "lib": ["ES2017"],
     "allowJs": true,
+    "noEmit": true,
     "types": ["@citizenfx/client", "@types/node"],
     "esModuleInterop": true,
     "moduleResolution": "node",

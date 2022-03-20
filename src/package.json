@@ -7,11 +7,14 @@
     "dev": "concurrently 'nodemon' 'node scripts/watch_server.js'",
     "build": "node scripts/build_server.js && node scripts/build_client.js",
     "lint": "eslint server && eslint client",
+    "watch": "concurrently \"yarn watch:server\" \"yarn watch:client\"",
     "watch:client": "esbuild client/client.ts --bundle --target=es6 --watch --outfile=dist/client.js",
     "watch:server": "node scripts/watch_server.js",
-    "watch": "concurrently \"yarn watch:server\" \"yarn watch:client\"",
     "test": "NODE_ENV=test yarn jest --silent",
-    "test:watch": "NODE_ENV=test yarn jest --watch"
+    "test:watch": "NODE_ENV=test yarn jest --watch",
+    "tsc": "yarn tsc:client && yarn tsc:server",
+    "tsc:client": "tsc --project client/tsconfig.json",
+    "tsc:server": "tsc --project server/tsconfig.json"
   },
   "devDependencies": {
     "@anatine/esbuild-decorators": "^0.2.18",
