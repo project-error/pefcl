@@ -29,7 +29,9 @@ const RemoveUserModal = ({ isOpen, onSelect, onClose, accountId }: SelectUserMod
 
   useEffect(() => {
     if (isOpen) {
-      fetchNui(SharedAccountEvents.GetUsers, { accountId }).then(setUsers);
+      fetchNui<SharedAccountUser[]>(SharedAccountEvents.GetUsers, { accountId }).then((users) =>
+        setUsers(users ?? []),
+      );
     }
   }, [accountId, isOpen]);
 

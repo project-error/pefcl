@@ -46,7 +46,7 @@
     "build:esbuild": "node scripts/build_ui.js",
     "eject": "react-scripts eject",
     "test": "jest",
-    "lint": "eslint"
+    "lint": "tsc && eslint src"
   },
   "eslintConfig": {
     "extends": [
