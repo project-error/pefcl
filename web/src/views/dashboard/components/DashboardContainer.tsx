@@ -50,6 +50,10 @@ const Content = styled.div`
   overflow: auto;
 `;
 
+const Title = styled(Heading5)`
+  color: ${theme.palette.primary.dark};
+`;
+
 interface DashboardContainerProps {
   title: string;
   totalAtom: Atom<number>;
@@ -70,7 +74,7 @@ const DashboardContainer: React.FC<DashboardContainerProps> = ({
     <Container>
       <Stack spacing={3}>
         <Stack direction="row" justifyContent="space-between" alignItems="center">
-          <Heading5>{title}</Heading5>
+          <Title>{title}</Title>
           <Total>{total}</Total>
         </Stack>
 

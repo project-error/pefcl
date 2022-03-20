@@ -30,6 +30,8 @@ export class ExternalAccountService {
     logger.silly('Creating external account');
 
     const user = this._userService.getUser(req.source);
+    // 920,3083-1373-0226;
+
     const targetAccount = await this._accountDB.getAccountByNumber(req.data.number);
     const alreadyExists = await this._externalAccountDB.getExistingAccount(
       user.getIdentifier(),
@@ -46,6 +48,12 @@ export class ExternalAccountService {
       logger.silly('Account with number & userId already exists.');
       logger.silly(req.data);
       throw new ServerError(ExternalAccountErrors.AccountAlreadyExists);
+    }
+
+    const myAccounts = await this._accountDB.getAccountsByIdentifier(user.identifier);
+    const ids = myAccounts.map((account) => account.getDataValue('id'));
+    if (ids.includes(targetAccount.getDataValue('id'))) {
+      throw new ServerError(ExternalAccountErrors.AccountIsYours);
     }
 
     return this._externalAccountDB.create({

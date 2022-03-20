@@ -21,8 +21,7 @@ export class UserController {
   }
 
   @NetPromise(UserEvents.GetUsers)
-  async getUsers(req: Request<void>, res: Response<OnlineUser[]>) {
-    // TODO: Make this return good users
+  async getUsers(_req: Request<void>, res: Response<OnlineUser[]>) {
     await new Promise((resolve) => {
       setImmediate(resolve);
     });

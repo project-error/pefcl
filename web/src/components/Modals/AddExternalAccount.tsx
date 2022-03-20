@@ -62,6 +62,11 @@ const AddExternalAccountModal = ({ isOpen, onClose }: AddExternalAccountModalPro
         return;
       }
 
+      if (error.message === ExternalAccountErrors.AccountIsYours) {
+        setError(t('You already have access to this account. Use internal transfer instead'));
+        return;
+      }
+
       setError(t('Something went wrong, please try again later.'));
     }
   };

@@ -23,6 +23,7 @@ const TransactionMessage = styled(BodyText)`
   text-overflow: ellipsis;
   overflow: hidden;
   margin-right: 1rem;
+  max-width: 12rem;
 `;
 
 const TransactionItem: React.FC<{ transaction: Transaction }> = ({ transaction, ...rest }) => {

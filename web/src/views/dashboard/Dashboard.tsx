@@ -45,10 +45,12 @@ const CreateCard = styled.div`
   justify-content: center;
   align-items: center;
   border-radius: ${theme.spacing(2)};
-  height: auto;
-  border: 1px dashed #fff;
-  font-size: 2rem;
+  border: 1px dashed ${theme.palette.grey[500]};
+  font-size: 1.5rem;
   transition: 300ms;
+
+  width: 5.5rem;
+  height: 5.5rem;
 
   :hover {
     color: ${theme.palette.primary.main};
@@ -62,7 +64,7 @@ const CreateCard = styled.div`
 
 const Lists = styled.section`
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1.25fr;
   margin-top: ${theme.spacing(4)};
   grid-column-gap: ${theme.spacing(4)};
 `;
@@ -119,6 +121,16 @@ const Dashboard = () => {
       </Stack>
 
       <Lists>
+        <React.Suspense fallback={<DashboardContainerFallback title={t('Loading transactions')} />}>
+          <DashboardContainer
+            title={t('Transactions')}
+            viewAllRoute="/transactions"
+            totalAtom={totalNumberOfTransaction}
+          >
+            <Transactions />
+          </DashboardContainer>
+        </React.Suspense>
+
         <React.Suspense fallback={<DashboardContainerFallback title={t('Loading transactions')} />}>
           <DashboardContainer
             title={t('Transactions')}

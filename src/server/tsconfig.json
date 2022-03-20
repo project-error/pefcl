@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "outDir": "./",
     "noImplicitAny": true,
     "module": "commonjs",
     "target": "es2018",

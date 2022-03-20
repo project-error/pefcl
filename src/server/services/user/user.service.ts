@@ -1,7 +1,12 @@
+import { GenericErrors } from '@typings/Errors';
+import { ServerError } from '@utils/errors';
+import { mainLogger } from 'sv_logger';
 import { singleton } from 'tsyringe';
 import { UserDTO } from '../../../../typings/user';
 import { getGameLicense } from '../../utils/misc';
 import { UserModule } from './user.module';
+
+const logger = mainLogger.child({ module: 'user' });
 
 @singleton()
 export class UserService {
@@ -14,8 +19,14 @@ export class UserService {
     return this.usersBySource;
   }
 
-  getUser(source: number) {
-    return this.usersBySource.get(source);
+  getUser(source: number): UserModule {
+    const user = this.usersBySource.get(source);
+
+    if (!user) {
+      throw new ServerError(GenericErrors.UserNotFound);
+    }
+
+    return user;
   }
 
   /**
@@ -35,12 +46,19 @@ export class UserService {
       userDTO.name = GetPlayerName(userDTO.source.toString());
     }
 
+    if (!userDTO.identifier) {
+      logger.error('User could not be saved. Missing identifier.');
+      logger.error(userDTO);
+      return;
+    }
+
     const user = new UserModule({
       source: userDTO.source,
       identifier: userDTO.identifier,
       name: userDTO.name,
     });
-    console.log('New user loaded for pe-fcl', user);
+
+    logger.debug('New user loaded for pe-fcl', user);
 
     this.usersBySource.set(userDTO.source, user);
   }
