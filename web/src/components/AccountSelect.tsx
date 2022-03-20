@@ -82,7 +82,6 @@ const AccountSelect = ({
   }, [selectedId]);
 
   const handleChange = (event: SelectChangeEvent<string | number>) => {
-    console.log('change to:', event.target.value);
     const value = Number(event.target.value);
     if (isNaN(value)) {
       return;

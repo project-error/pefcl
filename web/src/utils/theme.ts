@@ -3,6 +3,7 @@ import { createTheme } from '@mui/material';
 const theme = createTheme({
   palette: {
     background: {
+      light2: 'rgba(255, 255, 255, 0.02)',
       light4: 'rgba(255, 255, 255, 0.04)',
       light8: 'rgba(255, 255, 255, 0.08)',
       dark4: 'rgba(0, 0, 0, 0.04)',
@@ -47,6 +48,7 @@ const theme = createTheme({
 
 declare module '@mui/material/styles' {
   interface TypeBackground {
+    light2: string;
     light4: string;
     light8: string;
     dark4: string;

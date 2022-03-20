@@ -1,37 +1,51 @@
 import { atom } from 'jotai';
 import { TransactionEvents } from '@typings/Events';
-import { Transaction } from '../../../typings/transactions';
+import { GetTransactionsInput, GetTransactionsResponse } from '@typings/transactions';
 import { mockedTransactions } from '../utils/constants';
 import { fetchNui } from '../utils/fetchNui';
 import { isEnvBrowser } from '../utils/misc';
 
-const getTransactions = async (): Promise<Transaction[]> => {
+const initialState: GetTransactionsResponse = {
+  total: 0,
+  offset: 0,
+  limit: 10,
+  transactions: [],
+};
+
+const getTransactions = async (input: GetTransactionsInput): Promise<GetTransactionsResponse> => {
   try {
-    const res = await fetchNui<Transaction[]>(TransactionEvents.Get);
-    return res ?? [];
+    const res = await fetchNui<GetTransactionsResponse>(TransactionEvents.Get, input);
+    return res ?? initialState;
   } catch (e) {
     if (isEnvBrowser()) {
       return mockedTransactions;
     }
     console.error(e);
-    return [];
+    return initialState;
   }
 };
 
-export const rawTransactionsAtom = atom<Transaction[]>([]);
-export const transactionsAtom = atom(
-  async (get) => {
-    const transactions =
-      get(rawTransactionsAtom).length === 0 ? await getTransactions() : get(rawTransactionsAtom);
-    const sorted = transactions.sort((a, b) =>
-      (a?.createdAt ?? '') > (b?.createdAt ?? '') ? -1 : 1,
-    );
+export const rawTransactionsAtom = atom<GetTransactionsResponse>(initialState);
 
-    return sorted;
+export const transactionBaseAtom = atom(
+  async (get) => {
+    const hasTransactions = get(rawTransactionsAtom).transactions.length > 0;
+    return hasTransactions ? get(rawTransactionsAtom) : await getTransactions({ ...initialState });
   },
-  async (_get, set) => {
-    return set(rawTransactionsAtom, await getTransactions());
+  async (get, set, by: Partial<GetTransactionsInput> | undefined) => {
+    const currentSettings = get(rawTransactionsAtom);
+    return set(rawTransactionsAtom, await getTransactions({ ...currentSettings, ...by }));
   },
 );
 
-export const totalNumberOfTransaction = atom((get) => get(transactionsAtom).length);
+export const transactionSortedAtom = atom(async (get) => {
+  const transactions = get(transactionBaseAtom).transactions;
+  const sorted = transactions.sort((a, b) =>
+    (a?.createdAt ?? '') > (b?.createdAt ?? '') ? -1 : 1,
+  );
+  return sorted;
+});
+
+export const transactionTotalAtom = atom((get) => get(transactionBaseAtom).total);
+export const transactionsLimitAtom = atom((get) => get(transactionBaseAtom).limit);
+export const transactionsOffsetAtom = atom((get) => get(transactionBaseAtom).offset);

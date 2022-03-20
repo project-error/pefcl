@@ -16,6 +16,9 @@
     "defaultAmount": 25000,
     "clearingNumber": 920
   },
+  "transactions": {
+    "defaultLimit": 10
+  },
   "cash": {
     "defaultAmount": 2000
   },

@@ -431,7 +431,6 @@ export class AccountService {
 
   async getUsersFromShared(req: Request<{ accountId: number }>): Promise<SharedAccountUser[]> {
     const sharedAccounts = await this._accountDB.getSharedAccountsById(req.data.accountId);
-    console.log('Looking for all shared accounts w id:', req.data.accountId);
     return sharedAccounts.map((account) => ({
       name: account.getDataValue('name'),
       user: account.getDataValue('user'),

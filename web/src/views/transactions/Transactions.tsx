@@ -1,6 +1,8 @@
 import { AccountCard } from '@components/Card';
 import Layout from '@components/Layout';
+import Pagination from '@components/Pagination';
 import TransactionItem from '@components/TransactionItem';
+import Count from '@components/ui/Count';
 import styled from '@emotion/styled';
 import { Stack } from '@mui/material';
 import theme from '@utils/theme';
@@ -8,8 +10,14 @@ import { useAtom } from 'jotai';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { accountsAtom } from 'src/data/accounts';
-import { transactionsAtom } from 'src/data/transactions';
-import { Heading2, Heading6 } from '../../components/ui/Typography/Headings';
+import {
+  transactionBaseAtom,
+  transactionsLimitAtom,
+  transactionsOffsetAtom,
+  transactionSortedAtom,
+  transactionTotalAtom,
+} from 'src/data/transactions';
+import { Heading2, Heading5, Heading6 } from '../../components/ui/Typography/Headings';
 import TransactionFilters, { TransactionFilter } from './Filters';
 
 const Container = styled(Stack)`
@@ -47,7 +55,11 @@ const Transactions = () => {
   const { t } = useTranslation();
   const [selectedAccountId, setSelectedAccountId] = useState(0);
   const [accounts] = useAtom(accountsAtom);
-  const [transactions] = useAtom(transactionsAtom);
+  const [, updateTransactions] = useAtom(transactionBaseAtom);
+  const [transactions] = useAtom(transactionSortedAtom);
+  const [total] = useAtom(transactionTotalAtom);
+  const [limit] = useAtom(transactionsLimitAtom);
+  const [offset] = useAtom(transactionsOffsetAtom);
   const [activeFilters, setActiveFilters] = useState<TransactionFilter[]>([]);
 
   const filteredTransactions = transactions.filter(
@@ -67,6 +79,10 @@ const Transactions = () => {
           return anyPassed.some(Boolean);
         });
 
+  const handlePagination = (offset: number) => {
+    updateTransactions({ offset });
+  };
+
   return (
     <Layout>
       <Heading2>{t('Transactions')}</Heading2>
@@ -85,16 +101,26 @@ const Transactions = () => {
         </Stack>
 
         <Stack spacing={2} flex="4">
-          <Heading6>{t('Filters')}</Heading6>
+          <Stack direction="row" justifyContent="space-between">
+            <Heading5>{t('Filters')}</Heading5>
+            <Stack direction="row" spacing={2} alignItems="center">
+              <Heading6>{t('Total')}</Heading6>
+              <Count amount={total} />
+            </Stack>
+          </Stack>
 
           <TransactionFilters updateActiveFilters={setActiveFilters} />
 
-          <Heading6>{t('Transactions')}</Heading6>
+          <Stack direction="row" spacing={2} alignItems="center" justifyContent="space-between">
+            <Heading5>{t('Transactions')}</Heading5>
+          </Stack>
           <TransactionsContainer spacing={2}>
             {chipFilteredTransactions.map((transaction) => (
               <TransactionItem transaction={transaction} key={transaction.id} />
             ))}
           </TransactionsContainer>
+
+          <Pagination limit={limit} offset={offset} total={total} onChange={handlePagination} />
         </Stack>
       </Container>
     </Layout>

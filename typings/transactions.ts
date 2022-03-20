@@ -23,6 +23,16 @@ export interface Transaction {
   updatedAt?: string;
 }
 
+export interface GetTransactionsInput {
+  limit: number;
+  offset: number;
+}
+
+export interface GetTransactionsResponse extends GetTransactionsInput {
+  total: number;
+  transactions: Transaction[];
+}
+
 export interface TransactionInput {
   type: Transaction['type'];
   amount: Transaction['amount'];

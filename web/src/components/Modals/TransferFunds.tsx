@@ -8,7 +8,7 @@ import Button from '../ui/Button';
 import { useTranslation } from 'react-i18next';
 import PriceField from '../ui/Fields/PriceField';
 import { fetchNui } from '../../utils/fetchNui';
-import { transactionsAtom } from 'src/data/transactions';
+import { transactionBaseAtom } from 'src/data/transactions';
 import { TransactionEvents } from '@typings/Events';
 import { Transfer, TransferType } from '@typings/transactions';
 import { externalAccountsAtom } from '@data/externalAccounts';
@@ -18,7 +18,7 @@ const TransferFundsModal: React.FC<{ onClose(): void }> = ({ onClose }) => {
   const { t } = useTranslation();
   const [amount, setAmount] = useState('');
   const [accounts, updateAccounts] = useAtom(accountsAtom);
-  const [, updateTransactions] = useAtom(transactionsAtom);
+  const [, updateTransactions] = useAtom(transactionBaseAtom);
   const [defaultAccount] = useAtom(defaultAccountAtom);
   const [externalAccounts] = useAtom(externalAccountsAtom);
   const [fromAccountId, setFromAccountId] = useState(defaultAccount?.id ?? 0);

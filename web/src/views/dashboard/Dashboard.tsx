@@ -5,7 +5,7 @@ import { AnimatePresence, Reorder } from 'framer-motion';
 import { useAtom } from 'jotai';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { totalNumberOfTransaction } from 'src/data/transactions';
+import { transactionTotalAtom } from 'src/data/transactions';
 import { Account } from '@typings/Account';
 import Layout from '../../components/Layout';
 import CreateAccountModal from '../../components/Modals/CreateAccount';
@@ -125,7 +125,7 @@ const Dashboard = () => {
           <DashboardContainer
             title={t('Transactions')}
             viewAllRoute="/transactions"
-            totalAtom={totalNumberOfTransaction}
+            totalAtom={transactionTotalAtom}
           >
             <Transactions />
           </DashboardContainer>
@@ -135,7 +135,7 @@ const Dashboard = () => {
           <DashboardContainer
             title={t('Transactions')}
             viewAllRoute="/transactions"
-            totalAtom={totalNumberOfTransaction}
+            totalAtom={transactionTotalAtom}
           >
             <Transactions />
           </DashboardContainer>

@@ -1,5 +1,9 @@
 import { Account, AccountRole, AccountType } from '@typings/Account';
-import { Transaction, TransactionType } from '../../../typings/transactions';
+import {
+  GetTransactionsResponse,
+  Transaction,
+  TransactionType,
+} from '../../../typings/transactions';
 import { Invoice, InvoiceStatus } from '../../../typings/Invoice';
 import dayjs from 'dayjs';
 
@@ -40,26 +44,31 @@ export const mockedAccounts: Account[] = [
   },
 ];
 
-export const mockedTransactions: Transaction[] = [
-  {
-    id: 1,
-    amount: 280,
-    type: TransactionType.Transfer,
-    message: 'For the last time, give me the money',
-    createdAt: '1642276186',
-    fromAccount: mockedAccounts[0],
-    toAccount: mockedAccounts[1],
-  },
-  {
-    id: 1,
-    amount: 8000000,
-    message: 'For the last time, give me the money',
-    createdAt: '1642276186',
-    type: TransactionType.Transfer,
-    fromAccount: mockedAccounts[0],
-    toAccount: mockedAccounts[1],
-  },
-];
+export const mockedTransactions: GetTransactionsResponse = {
+  limit: 25,
+  offset: 0,
+  total: 2,
+  transactions: [
+    {
+      id: 1,
+      amount: 280,
+      type: TransactionType.Transfer,
+      message: 'For the last time, give me the money',
+      createdAt: '1642276186',
+      fromAccount: mockedAccounts[0],
+      toAccount: mockedAccounts[1],
+    },
+    {
+      id: 1,
+      amount: 8000000,
+      message: 'For the last time, give me the money',
+      createdAt: '1642276186',
+      type: TransactionType.Transfer,
+      fromAccount: mockedAccounts[0],
+      toAccount: mockedAccounts[1],
+    },
+  ],
+};
 
 export const mockedInvoices: Invoice[] = [
   {

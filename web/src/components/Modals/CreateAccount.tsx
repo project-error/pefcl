@@ -4,7 +4,7 @@ import { useAtom } from 'jotai';
 import React from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { transactionsAtom } from 'src/data/transactions';
+import { transactionBaseAtom } from 'src/data/transactions';
 import { accountsAtom, defaultAccountAtom } from '../../data/accounts';
 import { useConfig } from '../../hooks/useConfig';
 import { fetchNui } from '../../utils/fetchNui';
@@ -26,7 +26,7 @@ const CreateAccountModal: React.FC<{ onClose(): void }> = ({ onClose }) => {
   const { t } = useTranslation();
   const config = useConfig();
   const [accounts, updateAccounts] = useAtom(accountsAtom);
-  const [, updateTransactions] = useAtom(transactionsAtom);
+  const [, updateTransactions] = useAtom(transactionBaseAtom);
   const [defaultAccount] = useAtom(defaultAccountAtom);
   const { control, handleSubmit, watch } = useForm<CreateAccountForm>({
     defaultValues: {
@@ -40,11 +40,11 @@ const CreateAccountModal: React.FC<{ onClose(): void }> = ({ onClose }) => {
   const isFirstSetup = accounts.length === 0;
   const isDisabled = (selectedAccount?.balance ?? 0) < config?.prices?.newAccount && !isFirstSetup;
 
-  const onSubmit = (values: CreateAccountForm) => {
-    fetchNui(AccountEvents.CreateAccount, values)
-      .then(updateAccounts)
-      .then(updateTransactions)
-      .finally(onClose);
+  const onSubmit = async (values: CreateAccountForm) => {
+    await fetchNui(AccountEvents.CreateAccount, values);
+    await updateAccounts();
+    await updateTransactions();
+    onClose();
   };
 
   return (

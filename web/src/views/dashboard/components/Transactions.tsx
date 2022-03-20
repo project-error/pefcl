@@ -1,13 +1,11 @@
 import TransactionItem from '@components/TransactionItem';
 import { Stack } from '@mui/material';
-
 import { useAtom } from 'jotai';
 import React from 'react';
+import { transactionSortedAtom } from '../../../data/transactions';
 
-import { transactionsAtom } from '../../../data/transactions';
-
-const Transactions: React.FC = () => {
-  const [transactions] = useAtom(transactionsAtom);
+const Transactions = () => {
+  const [transactions] = useAtom(transactionSortedAtom);
 
   return (
     <Stack spacing={2}>

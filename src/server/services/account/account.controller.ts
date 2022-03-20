@@ -120,7 +120,6 @@ export class AccountController {
       const data = await this._externalAccountService.getAccounts(req);
       res({ status: 'ok', data });
     } catch (err) {
-      console.log('caught error:', err);
       res({ status: 'error', errorMsg: err.message, errorName: err.name });
     }
   }
@@ -141,7 +140,6 @@ export class AccountController {
     res: Response<SharedAccountUser[]>,
   ) {
     try {
-      console.log('GETTING FROM SHARED', req);
       const data = await this._accountService.getUsersFromShared(req);
       res({ status: 'ok', data: data });
     } catch (err) {

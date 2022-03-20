@@ -24,6 +24,9 @@ export interface ResourceConfig {
     defaultAmount: number;
     clearingNumber: string | number;
   };
+  transactions: {
+    defaultLimit: number;
+  };
   cash: {
     defaultAmount: number;
   };

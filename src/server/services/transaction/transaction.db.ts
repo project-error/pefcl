@@ -1,9 +1,13 @@
 import { Op } from 'sequelize';
 import { singleton } from 'tsyringe';
-import { TransactionInput } from '@typings/transactions';
+import { GetTransactionsInput, TransactionInput } from '@typings/transactions';
 import { AccountModel } from '../account/account.model';
 import { TransactionModel } from './transaction.model';
+import { config } from '@utils/server-config';
 
+interface GetTransactionFromAccounts extends GetTransactionsInput {
+  accountIds: number[];
+}
 @singleton()
 export class TransactionDB {
   async getTransactions(): Promise<TransactionModel[]> {
@@ -15,8 +19,8 @@ export class TransactionDB {
     });
   }
 
-  async getTransactionFromAccounts(accountIds: number[]): Promise<TransactionModel[]> {
-    return await TransactionModel.findAll({
+  async getTotalTransactionsFromAccounts(accountIds: number[]): Promise<number> {
+    return await TransactionModel.count({
       where: {
         [Op.or]: [
           {
@@ -31,6 +35,27 @@ export class TransactionDB {
           },
         ],
       },
+    });
+  }
+
+  async getTransactionFromAccounts(input: GetTransactionFromAccounts): Promise<TransactionModel[]> {
+    return await TransactionModel.findAll({
+      where: {
+        [Op.or]: [
+          {
+            fromAccountId: {
+              [Op.in]: input.accountIds,
+            },
+          },
+          {
+            toAccountId: {
+              [Op.in]: input.accountIds,
+            },
+          },
+        ],
+      },
+      limit: input.limit ?? config?.transactions?.defaultLimit ?? 10,
+      offset: input.offset,
       include: [
         { model: AccountModel, as: 'toAccount' },
         { model: AccountModel, as: 'fromAccount' },

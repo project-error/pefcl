@@ -7,7 +7,7 @@ import { getIsAdmin } from '@utils/account';
 import { useAtom } from 'jotai';
 import React, { FormEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { transactionsAtom } from 'src/data/transactions';
+import { transactionBaseAtom } from 'src/data/transactions';
 import { AccountCard } from '../../components/Card';
 import Layout from '../../components/Layout';
 import Button from '../../components/ui/Button';
@@ -51,7 +51,7 @@ const Accounts = () => {
   const { t } = useTranslation();
   const [totalBalance] = useAtom(totalBalanceAtom);
   const [accounts, updateAccounts] = useAtom(accountsAtom);
-  const [, updateTransactions] = useAtom(transactionsAtom);
+  const [, updateTransactions] = useAtom(transactionBaseAtom);
   const [defaultAccount] = useAtom(defaultAccountAtom);
   const [selectedAccountId, setSelectedAccountId] = useState<number>(defaultAccount?.id ?? 0);
   const selectedAccount = accounts.find((account) => account.id === selectedAccountId);
@@ -66,13 +66,10 @@ const Accounts = () => {
       });
   };
 
-  const handleDeleteAccount = () => {
-    fetchNui(AccountEvents.DeleteAccount, { accountId: selectedAccountId })
-      .then(updateAccounts)
-      .then(updateTransactions)
-      .catch((err) => {
-        console.log({ err });
-      });
+  const handleDeleteAccount = async () => {
+    await fetchNui(AccountEvents.DeleteAccount, { accountId: selectedAccountId });
+    await updateAccounts();
+    await updateTransactions();
   };
 
   const handleRename = (event: FormEvent<HTMLFormElement>) => {

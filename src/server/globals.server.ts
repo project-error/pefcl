@@ -21,8 +21,8 @@ const players = {
 
 if (isMocking) {
   const baseDir = path.resolve(__dirname + '/../../');
-  const ServerEmitter = new EventEmitter();
-  const NetEmitter = new EventEmitter();
+  const ServerEmitter = new EventEmitter().setMaxListeners(25);
+  const NetEmitter = new EventEmitter().setMaxListeners(25);
 
   global.LoadResourceFile = (_resourceName: string, fileName: string) => {
     const file = readFileSync(`${baseDir}/${fileName}`, 'utf-8');
@@ -57,12 +57,11 @@ if (isMocking) {
   global.exports = {
     'my-resource': {
       pefclDepositMoney: () => {
-        console.log('Depositing money ..');
-        console.log('Depositing money ..');
+        console.log('global.server.ts: Depositing money ..');
         throw new Error('no funds');
       },
       getCurrentBalance: () => {
-        console.log('Getting balance ..');
+        console.log('global.server.ts: Getting balance ..');
         return 2500;
       },
     },

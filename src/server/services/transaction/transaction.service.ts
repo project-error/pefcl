@@ -1,6 +1,8 @@
 import { singleton } from 'tsyringe';
 import { Request } from '@typings/http';
 import {
+  GetTransactionsInput,
+  GetTransactionsResponse,
   Transaction,
   TransactionInput,
   TransactionType,
@@ -38,19 +40,35 @@ export class TransactionService {
     this._externalAccountService = externalAccountService;
   }
 
-  private async getMyTransactions(source: number) {
-    const user = this._userService.getUser(source);
-    const accounts = await this._accountDB.getAccountsByIdentifier(user?.getIdentifier() ?? '');
+  private async getMyTransactions(req: Request<GetTransactionsInput>) {
+    const user = this._userService.getUser(req.source);
+    const accounts = await this._accountDB.getAccountsByIdentifier(user.getIdentifier());
 
     const accountIds = accounts.map((account) => account.getDataValue('id') ?? 0);
-    const transactions = await this._transactionDB.getTransactionFromAccounts(accountIds);
+    const transactions = await this._transactionDB.getTransactionFromAccounts({
+      ...req.data,
+      accountIds,
+    });
+    const total = await this._transactionDB.getTotalTransactionsFromAccounts(accountIds);
 
-    return transactions;
+    return {
+      transactions,
+      total: total,
+      offset: req.data.offset,
+      limit: req.data.limit,
+    };
   }
 
-  async handleGetMyTransactions(source: number): Promise<Transaction[]> {
-    const transactions = await this.getMyTransactions(source);
-    return transactions.map((transaction) => transaction.toJSON()) as unknown as Transaction[];
+  async handleGetMyTransactions(
+    req: Request<GetTransactionsInput>,
+  ): Promise<GetTransactionsResponse> {
+    const data = await this.getMyTransactions(req);
+    return {
+      ...data,
+      transactions: data.transactions.map((transaction) =>
+        transaction.toJSON(),
+      ) as unknown as Transaction[],
+    };
   }
 
   private async handleInternalTransfer(req: Request<Transfer>) {
