@@ -1,3 +1,8 @@
+export type DeepPartial<T> = T extends object
+  ? {
+      [P in keyof T]?: DeepPartial<T[P]>;
+    }
+  : T;
 export interface ResourceConfig {
   exports: {
     resourceName: string;
@@ -17,6 +22,7 @@ export interface ResourceConfig {
   };
   accounts: {
     defaultAmount: number;
+    clearingNumber: string | number;
   };
   cash: {
     defaultAmount: number;

@@ -16,7 +16,7 @@ import { totalPendingInvoices } from '../../data/invoices';
 import { useConfig } from '../../hooks/useConfig';
 import { formatMoney } from '../../utils/currency';
 import theme from '../../utils/theme';
-import { Card } from './../../components/Card';
+import { AccountCard } from './../../components/Card';
 import DashboardContainer, { DashboardContainerFallback } from './components/DashboardContainer';
 import PendingInvoices from './components/PendingInvoices';
 import Transactions from './components/Transactions';
@@ -105,7 +105,7 @@ const Dashboard = () => {
           <AnimatePresence initial={false}>
             {orderedAccounts.map((account) => (
               <CardContainer key={account.id} value={account}>
-                <Card account={account} />
+                <AccountCard account={account} />
               </CardContainer>
             ))}
           </AnimatePresence>

@@ -1,12 +1,7 @@
 import { InputAdornment, InputBase, InputBaseProps } from '@mui/material';
 import React, { ChangeEventHandler } from 'react';
-import { useConfig } from '../../../hooks/useConfig';
-import {
-  formatMoney,
-  formatMoneyWithoutCurrency,
-  getCurrencySign,
-  getSignLocation,
-} from '../../../utils/currency';
+import { useConfig } from '@hooks/useConfig';
+import { formatMoneyWithoutCurrency, getCurrencySign, getSignLocation } from '@utils/currency';
 import BaseFieldStyles from './BaseField.styles';
 
 const Input: React.FC<InputBaseProps> = (props) => {

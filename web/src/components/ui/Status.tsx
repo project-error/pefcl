@@ -1,22 +1,22 @@
+import { SerializedStyles } from '@emotion/react';
 import styled from '@emotion/styled';
 import { ChipProps, css } from '@mui/material';
-import { green, grey } from '@mui/material/colors';
 import theme from '@utils/theme';
 import React from 'react';
 import { BodyText } from './Typography/BodyText';
 
 type Color = Exclude<ChipProps['color'], undefined>;
 
-const colors: Record<Color, any> = {
+const colors: Record<Color, SerializedStyles> = {
   default: css`
     color: red;
   `,
-  primary: undefined,
-  secondary: undefined,
-  error: undefined,
-  info: undefined,
-  success: undefined,
-  warning: undefined,
+  primary: css``,
+  secondary: css``,
+  error: css``,
+  info: css``,
+  success: css``,
+  warning: css``,
 };
 
 const Container = styled.div<{ color: Color }>`

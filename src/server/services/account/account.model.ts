@@ -2,7 +2,8 @@ import { DATABASE_PREFIX } from '@utils/constants';
 import { DataTypes, Model } from 'sequelize';
 import { config } from '@utils/server-config';
 import { Account, AccountRole, AccountType } from '@typings/Account';
-import { sequelize } from '../../utils/pool';
+import { sequelize } from '@utils/pool';
+import { generateAccountNumber } from '@utils/misc';
 
 export class AccountModel extends Model<Account> {}
 
@@ -17,6 +18,13 @@ AccountModel.init(
       type: DataTypes.UUID,
       unique: true,
       defaultValue: DataTypes.UUIDV4,
+    },
+    number: {
+      type: DataTypes.STRING,
+      unique: true,
+      defaultValue: () => {
+        return generateAccountNumber();
+      },
     },
     accountName: {
       type: DataTypes.STRING,

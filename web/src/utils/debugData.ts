@@ -1,6 +1,6 @@
 import { isEnvBrowser } from './misc';
 
-interface DebugEvent<T = any> {
+interface DebugEvent<T = object> {
   action: string;
   data: T;
 }

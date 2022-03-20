@@ -4,24 +4,28 @@ import {
   Account,
   AddToSharedAccountInput,
   ATMInput,
+  ExternalAccount,
   PreDBAccount,
   RemoveFromSharedAccountInput,
   RenameAccountInput,
   SharedAccountUser,
 } from '@typings/Account';
-import { AccountEvents, SharedAccountEvents } from '@typings/Events';
+import { AccountEvents, ExternalAccountEvents, SharedAccountEvents } from '@typings/Events';
 import { Request, Response } from '@typings/http';
 import { AccountService } from './account.service';
 import { Event, EventListener } from '@decorators/Event';
+import { ExternalAccountService } from 'services/accountExternal/externalAccount.service';
 
 @Controller('Account')
 @PromiseEventListener()
 @EventListener()
 export class AccountController {
   private readonly _accountService: AccountService;
+  private readonly _externalAccountService: ExternalAccountService;
 
-  constructor(accountService: AccountService) {
+  constructor(accountService: AccountService, externalAccountService: ExternalAccountService) {
     this._accountService = accountService;
+    this._externalAccountService = externalAccountService;
   }
 
   @NetPromise(AccountEvents.GetAccounts)
@@ -97,6 +101,27 @@ export class AccountController {
       res({ status: 'ok', data: {} });
     } catch (err) {
       res({ status: 'error', errorMsg: err.message });
+    }
+  }
+
+  @NetPromise(ExternalAccountEvents.Add)
+  async addExternalAccount(req: Request<ExternalAccount>, res: Response<any>) {
+    try {
+      await this._externalAccountService.addAddAccount(req);
+      res({ status: 'ok', data: {} });
+    } catch (err) {
+      res({ status: 'error', errorMsg: err.message });
+    }
+  }
+
+  @NetPromise(ExternalAccountEvents.Get)
+  async getExternalAccounts(req: Request<void>, res: Response<any>) {
+    try {
+      const data = await this._externalAccountService.getAccounts(req);
+      res({ status: 'ok', data });
+    } catch (err) {
+      console.log('caught error:', err);
+      res({ status: 'error', errorMsg: err.message, errorName: err.name });
     }
   }
 

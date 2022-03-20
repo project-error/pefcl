@@ -1,6 +1,6 @@
 import { singleton } from 'tsyringe';
 import { UserDTO } from '../../../../typings/user';
-import { getGameLicense } from '../../utils/miscUtils';
+import { getGameLicense } from '../../utils/misc';
 import { UserModule } from './user.module';
 
 @singleton()

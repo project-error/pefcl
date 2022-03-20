@@ -23,6 +23,7 @@ export type RenameAccountInput = {
 
 export interface Account {
   id: number;
+  number: string;
   balance: number;
   identifier: string;
   isDefault: boolean;
@@ -66,4 +67,17 @@ export interface ATMInput {
   amount: number;
   message: string;
   accountId?: number;
+}
+
+export interface ExternalAccount {
+  id: number;
+  name: string;
+  number: string;
+  userId?: string;
+}
+
+export interface ExternalAccountInput {
+  name: string;
+  number: string;
+  userId: string;
 }

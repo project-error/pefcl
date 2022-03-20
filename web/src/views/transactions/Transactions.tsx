@@ -1,4 +1,4 @@
-import { Card } from '@components/Card';
+import { AccountCard } from '@components/Card';
 import Layout from '@components/Layout';
 import TransactionItem from '@components/TransactionItem';
 import styled from '@emotion/styled';
@@ -79,7 +79,7 @@ const Transactions = () => {
               isSelected={account.id === selectedAccountId}
               onClick={() => setSelectedAccountId(account.id)}
             >
-              <Card account={account} />
+              <AccountCard account={account} />
             </SelectedContainer>
           ))}
         </Stack>

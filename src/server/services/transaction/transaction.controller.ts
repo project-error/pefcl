@@ -22,7 +22,11 @@ export class TransactionController {
 
   @NetPromise(TransactionEvents.CreateTransfer)
   async transfer(req: Request<Transfer>, res: Response<object>) {
-    await this._transactionService.handleTransfer(req);
-    res({ status: 'ok', data: {} });
+    try {
+      await this._transactionService.handleTransfer(req);
+      res({ status: 'ok', data: {} });
+    } catch (err) {
+      res({ status: 'error', errorMsg: err.message });
+    }
   }
 }

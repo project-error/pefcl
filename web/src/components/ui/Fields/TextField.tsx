@@ -13,6 +13,16 @@ const Container = styled.div`
   & > div {
     flex: 1;
   }
+
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active {
+    color: white !important;
+    -webkit-text-fill-color: white !important;
+    box-shadow: 0 0 0 30px rgb(16 26 37) inset !important;
+    -webkit-box-shadow: 0 0 0 30px rgb(16 26 37) inset !important;
+  }
 `;
 
 const LabelWrapper = styled.div`

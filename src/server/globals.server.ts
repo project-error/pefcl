@@ -2,7 +2,7 @@ import EventEmitter from 'events';
 import { readFileSync } from 'fs';
 import path from 'path';
 
-const isMocking = process.env.NODE_ENV === 'mocking';
+const isMocking = process.env.NODE_ENV === 'mocking' || process.env.NODE_ENV === 'test';
 
 const convars = {
   mysql_connection_string: 'mysql://root:bruv@localhost/dev',

@@ -42,6 +42,10 @@ export class AccountDB {
     return await AccountModel.findOne({ where: { id } });
   }
 
+  async getAccountByNumber(number: string): Promise<AccountModel> {
+    return await AccountModel.findOne({ where: { number } });
+  }
+
   async editAccount(input: Partial<Account>) {
     return await AccountModel.update(input, {
       where: { id: input.id, ownerIdentifier: input.ownerIdentifier },

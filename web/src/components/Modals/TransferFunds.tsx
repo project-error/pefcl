@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { CompareArrows } from '@mui/icons-material';
-import { Box, IconButton, LinearProgress, Stack } from '@mui/material';
+import { Box, FormHelperText, LinearProgress, Stack } from '@mui/material';
 import { useAtom } from 'jotai';
 import { accountsAtom, defaultAccountAtom } from '../../data/accounts';
 import { Heading2, Heading5 } from '../ui/Typography/Headings';
@@ -11,7 +10,9 @@ import PriceField from '../ui/Fields/PriceField';
 import { fetchNui } from '../../utils/fetchNui';
 import { transactionsAtom } from 'src/data/transactions';
 import { TransactionEvents } from '@typings/Events';
-import { Transfer } from '@typings/transactions';
+import { Transfer, TransferType } from '@typings/transactions';
+import { externalAccountsAtom } from '@data/externalAccounts';
+import { GenericErrors } from '@typings/Errors';
 
 const TransferFundsModal: React.FC<{ onClose(): void }> = ({ onClose }) => {
   const { t } = useTranslation();
@@ -19,34 +20,45 @@ const TransferFundsModal: React.FC<{ onClose(): void }> = ({ onClose }) => {
   const [accounts, updateAccounts] = useAtom(accountsAtom);
   const [, updateTransactions] = useAtom(transactionsAtom);
   const [defaultAccount] = useAtom(defaultAccountAtom);
+  const [externalAccounts] = useAtom(externalAccountsAtom);
   const [fromAccountId, setFromAccountId] = useState(defaultAccount?.id ?? 0);
   const [toAccountId, setToAccountID] = useState(0);
   const [isTransfering, setIsTransfering] = useState(false);
+  const [error, setError] = useState('');
 
   const parsedAmount = Number(amount.replace(/\D/g, ''));
   const fromAccount = accounts.find((account) => account.id === fromAccountId);
 
-  const switchAccounts = () => {
-    setFromAccountId(toAccountId);
-    setToAccountID(fromAccountId);
-  };
+  const isExternalTransfer = Boolean(toAccountId && toAccountId < 1);
+  const message = isExternalTransfer ? t('External transfer') : t('Internal transfer');
+  const type = isExternalTransfer ? TransferType.External : TransferType.Internal;
 
-  const handleStartTransfer = async () => {
+  const handleTransfer = async () => {
     setIsTransfering(true);
+    setError('');
 
     const payload: Transfer = {
+      type,
+      message,
       amount: parsedAmount,
-      message: t('Internal transfer'),
       fromAccountId,
-      toAccountId,
+      toAccountId: isExternalTransfer ? toAccountId * 10 : toAccountId,
     };
 
-    await fetchNui(TransactionEvents.CreateTransfer, payload).finally(() => {});
-    await updateAccounts();
-    await updateTransactions();
+    try {
+      await fetchNui(TransactionEvents.CreateTransfer, payload);
+      await updateAccounts();
+      await updateTransactions();
+      onClose();
+    } catch (error: Error | unknown) {
+      if (error instanceof Error && error.message === GenericErrors.NotFound) {
+        setError(t('No account found to receive transfer.'));
+      } else {
+        setError(t('Something went wrong, please try again later.'));
+      }
+    }
 
     setIsTransfering(false);
-    onClose();
   };
 
   const isAmountTooHigh = fromAccount && fromAccount.balance < parsedAmount;
@@ -64,7 +76,7 @@ const TransferFundsModal: React.FC<{ onClose(): void }> = ({ onClose }) => {
 
           <Stack direction="row" spacing={4}>
             <Stack flex={1} spacing={1}>
-              <Heading5>From account</Heading5>
+              <Heading5>{t('From account')}</Heading5>
               <AccountSelect
                 onSelect={setFromAccountId}
                 accounts={accounts}
@@ -72,22 +84,20 @@ const TransferFundsModal: React.FC<{ onClose(): void }> = ({ onClose }) => {
               />
             </Stack>
 
-            <IconButton onClick={switchAccounts} color="inherit" sx={{ alignSelf: 'center' }}>
-              <CompareArrows />
-            </IconButton>
-
             <Stack flex={1} spacing={1}>
-              <Heading5>To account</Heading5>
+              <Heading5>{t('To account')}</Heading5>
               <AccountSelect
+                isExternalAvailable
                 onSelect={setToAccountID}
                 accounts={accounts}
                 selectedId={toAccountId}
+                externalAccounts={externalAccounts}
               />
             </Stack>
           </Stack>
 
           <Stack spacing={1}>
-            <Heading5>Amount</Heading5>
+            <Heading5>{t('Amount')}</Heading5>
             <PriceField
               placeholder="amount"
               value={amount}
@@ -95,11 +105,13 @@ const TransferFundsModal: React.FC<{ onClose(): void }> = ({ onClose }) => {
             />
           </Stack>
 
+          <FormHelperText>{error}</FormHelperText>
+
           <Stack alignSelf="flex-end" direction="row" spacing={4}>
             <Button color="error" onClick={onClose}>
               {t('Cancel')}
             </Button>
-            <Button disabled={isDisabled} onClick={handleStartTransfer}>
+            <Button disabled={isDisabled} onClick={handleTransfer}>
               {t('Transfer')}
             </Button>
           </Stack>

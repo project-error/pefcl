@@ -7,7 +7,7 @@ import { MasterCardIcon } from '../icons/MasterCardIcon';
 import { formatMoney } from '../utils/currency';
 import theme from '../utils/theme';
 import { BodyText } from './ui/Typography/BodyText';
-import { Heading3, Heading6 } from './ui/Typography/Headings';
+import { Heading3, Heading5, Heading6 } from './ui/Typography/Headings';
 
 const Container = styled.div<{ accountType: AccountType }>`
   user-select: none;
@@ -20,8 +20,8 @@ const Container = styled.div<{ accountType: AccountType }>`
 
   border-radius: 1rem;
   display: grid;
-  grid-template-rows: 1fr 1fr;
-  grid-row-gap: 1.5rem;
+  grid-template-rows: 1fr 1fr 1fr;
+  grid-row-gap: 0.5rem;
 
   cursor: pointer;
   transition: 250ms;
@@ -61,11 +61,11 @@ const DefaultText = styled(Heading6)`
   font-weight: ${theme.typography.fontWeightLight};
 `;
 
-type CardProps = {
+type AccountCardProps = {
   account: Account;
 };
 
-export const Card: React.FC<CardProps> = ({ account, ...props }) => {
+export const AccountCard: React.FC<AccountCardProps> = ({ account, ...props }) => {
   const { type, id, balance, isDefault, accountName } = account;
   const { t } = useTranslation();
   const config = useConfig();
@@ -79,6 +79,8 @@ export const Card: React.FC<CardProps> = ({ account, ...props }) => {
           {isDefault && <DefaultText>DEFAULT</DefaultText>}
         </Type>
       </Row>
+
+      <Heading5>{account.number}</Heading5>
 
       <RowEnd>
         <Col>

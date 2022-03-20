@@ -1,11 +1,11 @@
 import styled from '@emotion/styled';
-import { CircularProgress, LinearProgress, Stack } from '@mui/material';
+import { CircularProgress, Stack } from '@mui/material';
 import { Atom, useAtom } from 'jotai';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
-import Button from '../../../components/ui/Button';
-import { Heading5, Heading6 } from '../../../components/ui/Typography/Headings';
+import Button from '@ui/Button';
+import { Heading5 } from '@ui/Typography/Headings';
 import theme from '../../../utils/theme';
 
 const Container = styled.div`
@@ -62,7 +62,7 @@ const DashboardContainer: React.FC<DashboardContainerProps> = ({
   totalAtom,
   viewAllRoute,
 }) => {
-  const total = useAtom(totalAtom);
+  const [total] = useAtom(totalAtom);
   const { t } = useTranslation();
   const { push } = useHistory();
 

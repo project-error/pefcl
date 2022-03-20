@@ -365,7 +365,9 @@ export class AccountService {
 
     const t = await sequelize.transaction();
     try {
-      const defaultAccount = await this._accountDB.getDefaultAccountByIdentifier(user.identifier);
+      const defaultAccount = await this._accountDB.getDefaultAccountByIdentifier(
+        user?.getIdentifier() ?? '',
+      );
       const newDefaultAccount = await this._accountDB.getAccount(req.data.accountId);
       const newAccount = newDefaultAccount.toJSON();
 
@@ -387,14 +389,14 @@ export class AccountService {
       t.commit();
       return newDefaultAccount;
     } catch (err) {
-      logger.error(`Failed to change default account for ${user.identifier}`);
+      logger.error(`Failed to change default account for ${user?.getIdentifier()}`);
       logger.error(err);
 
       t.rollback();
     }
 
     logger.silly(`Successfully changed default account to ${req.data.accountId}`);
-    logger.silly({ accountId: req.data.accountId, userId: user.identifier });
+    logger.silly({ accountId: req.data.accountId, userId: user?.getIdentifier() });
   }
 
   // TODO: Implement similar security for updating accounts etc.
@@ -403,7 +405,7 @@ export class AccountService {
     return await this._accountDB.editAccount({
       accountName: req.data.name,
       id: req.data.accountId,
-      ownerIdentifier: user.identifier,
+      ownerIdentifier: user?.getIdentifier(),
     });
   }
 

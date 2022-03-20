@@ -58,6 +58,12 @@ const CreateAccountModal: React.FC<{ onClose(): void }> = ({ onClose }) => {
               <Controller
                 name="accountName"
                 control={control}
+                rules={{
+                  required: {
+                    value: true,
+                    message: t('Account name is required'),
+                  },
+                }}
                 render={({ field }) => (
                   <TextField
                     placeholder={t('Account name')}
@@ -101,7 +107,11 @@ const CreateAccountModal: React.FC<{ onClose(): void }> = ({ onClose }) => {
               name="fromAccountId"
               control={control}
               render={({ field }) => (
-                <AccountSelect accounts={accounts} onSelect={field.onChange} />
+                <AccountSelect
+                  accounts={accounts}
+                  onSelect={field.onChange}
+                  selectedId={defaultAccount?.id}
+                />
               )}
             />
 

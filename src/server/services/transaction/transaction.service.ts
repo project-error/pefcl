@@ -1,13 +1,16 @@
 import { singleton } from 'tsyringe';
 import { Account } from '@typings/Account';
 import { Request } from '@typings/http';
-import { Transaction, TransactionType, Transfer } from '@typings/transactions';
+import { Transaction, TransactionType, Transfer, TransferType } from '@typings/transactions';
 import { sequelize } from '../../utils/pool';
 import { mainLogger } from '../../sv_logger';
 import { UserService } from '../user/user.service';
 import { AccountDB } from '../account/account.db';
 import { TransactionDB } from './transaction.db';
 import { TransactionModel } from './transaction.model';
+import { ExternalAccountService } from 'services/accountExternal/externalAccount.service';
+import { ServerError } from '@utils/errors';
+import { GenericErrors } from '@typings/Errors';
 
 const logger = mainLogger.child({ module: 'transactionService' });
 
@@ -24,16 +27,23 @@ export class TransactionService {
   _accountDB: AccountDB;
   _transactionDB: TransactionDB;
   _userService: UserService;
+  _externalAccountService: ExternalAccountService;
 
-  constructor(transactionDB: TransactionDB, userService: UserService, accountDB: AccountDB) {
+  constructor(
+    transactionDB: TransactionDB,
+    userService: UserService,
+    accountDB: AccountDB,
+    externalAccountService: ExternalAccountService,
+  ) {
     this._transactionDB = transactionDB;
     this._userService = userService;
     this._accountDB = accountDB;
+    this._externalAccountService = externalAccountService;
   }
 
   private async getMyTransactions(source: number) {
     const user = this._userService.getUser(source);
-    const accounts = await this._accountDB.getAccountsByIdentifier(user.getIdentifier());
+    const accounts = await this._accountDB.getAccountsByIdentifier(user?.getIdentifier() ?? '');
 
     const accountIds = accounts.map((account) => account.getDataValue('id'));
     const transactions = await this._transactionDB.getTransactionFromAccounts(accountIds);
@@ -46,11 +56,7 @@ export class TransactionService {
     return transactions.map((transaction) => transaction.toJSON()) as unknown as Transaction[];
   }
 
-  async handleTransfer(req: Request<Transfer>) {
-    logger.silly(
-      `Transfering ${req.data.amount} from account ${req.data.fromAccountId} to ${req.data.toAccountId} ...`,
-    );
-
+  private async handleInternalTransfer(req: Request<Transfer>) {
     const t = await sequelize.transaction();
     try {
       const fromAccount = await this._accountDB.getAccount(req.data.fromAccountId);
@@ -58,7 +64,6 @@ export class TransactionService {
 
       await fromAccount.decrement('balance', { by: req.data.amount });
       await toAccount.increment('balance', { by: req.data.amount });
-
       await this._transactionDB.create({
         amount: req.data.amount,
         message: req.data.message,
@@ -70,13 +75,67 @@ export class TransactionService {
       t.commit();
     } catch (e) {
       t.rollback();
-      logger.silly(
-        `Failed to transfer ${req.data.amount} from account ${req.data.fromAccountId} to ${req.data.toAccountId}.`,
-      );
+      logger.silly('Failed to create internal transfer');
       logger.silly(e);
+      throw e;
     }
+  }
 
-    return true;
+  private async handleExternalTransfer(req: Request<Transfer>) {
+    const t = await sequelize.transaction();
+    try {
+      const myAccount = await this._accountDB.getAccount(req.data.fromAccountId);
+      const toAccount = await this._externalAccountService.getAccountFromExternalAccount(
+        req.data.toAccountId,
+      );
+
+      if (!toAccount) {
+        throw new ServerError(GenericErrors.NotFound);
+      }
+
+      await myAccount.decrement('balance', { by: req.data.amount });
+      await toAccount.increment('balance', { by: req.data.amount });
+
+      /*  Since this is a external "transfer", it's not actually a TransactionType.Transfer.
+          But a seperate TransactionType.Incoming & TransactionType.Outgoing.
+          
+          For the person initializing the transfer, this is Outgoing.
+      */
+      const data = {
+        amount: req.data.amount,
+        message: req.data.message,
+        toAccount: toAccount.toJSON(),
+        fromAccount: myAccount.toJSON(),
+      };
+
+      await this._transactionDB.create({
+        ...data,
+        type: TransactionType.Outgoing,
+      });
+
+      await this._transactionDB.create({
+        ...data,
+        type: TransactionType.Incoming,
+      });
+
+      t.commit();
+    } catch (e) {
+      t.rollback();
+      logger.silly('Failed to create internal transfer');
+      logger.silly(e);
+      throw e;
+    }
+  }
+
+  async handleTransfer(req: Request<Transfer>) {
+    logger.silly(
+      `Transfering ${req.data.amount} from account ${req.data.fromAccountId} to ${req.data.toAccountId} ...`,
+    );
+    const isExternalTransfer = req.data.type === TransferType.External;
+    if (isExternalTransfer) {
+      return await this.handleExternalTransfer(req);
+    }
+    return await this.handleInternalTransfer(req);
   }
 
   async handleCreateTransaction(input: CreateTransactionInput): Promise<TransactionModel> {

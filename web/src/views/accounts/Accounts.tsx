@@ -8,7 +8,7 @@ import { useAtom } from 'jotai';
 import React, { FormEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { transactionsAtom } from 'src/data/transactions';
-import { Card } from '../../components/Card';
+import { AccountCard } from '../../components/Card';
 import Layout from '../../components/Layout';
 import Button from '../../components/ui/Button';
 import { PreHeading } from '../../components/ui/Typography/BodyText';
@@ -130,7 +130,7 @@ const Accounts = () => {
             isSelected={selectedAccountId === account.id}
             onClick={() => setSelectedAccountId(account.id)}
           >
-            <Card account={account} />
+            <AccountCard account={account} />
           </SelectedContainer>
         ))}
       </Cards>

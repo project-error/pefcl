@@ -13,8 +13,8 @@
     "newAccount": 200
   },
   "accounts": {
-    "defaultName": "Initial",
-    "defaultAmount": 25000
+    "defaultAmount": 25000,
+    "clearingNumber": 920
   },
   "cash": {
     "defaultAmount": 2000

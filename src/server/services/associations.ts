@@ -17,6 +17,6 @@ SharedAccountModel.belongsTo(AccountModel, {
   as: 'account',
 });
 
-if (config.database.shouldSync) {
+if (config?.database?.shouldSync) {
   sequelize.sync();
 }

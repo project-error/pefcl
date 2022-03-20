@@ -6,7 +6,7 @@ import { mainLogger } from '../../sv_logger';
 import { UserService } from '../user/user.service';
 import { CashDB } from './cash.db';
 import { CashModel } from './cash.model';
-const exp: AccountServiceExports = global.exports[config.exports.resourceName];
+const exp: AccountServiceExports = global.exports[config?.exports?.resourceName ?? 'no-use'];
 
 const logger = mainLogger.child({ module: 'cash' });
 
@@ -22,13 +22,13 @@ export class CashService {
 
   private async getCashModel(source: number): Promise<CashModel> {
     const user = this._userService.getUser(source);
-    return await this._cashDB.getCashByIdentifier(user.identifier);
+    return await this._cashDB.getCashByIdentifier(user?.getIdentifier() ?? '');
   }
 
   async getMyCash(source: number): Promise<number> {
     const user = this._userService.getUser(source);
-    if (config.general.useFrameworkIntegration) {
-      return user.getBalance();
+    if (config?.general?.useFrameworkIntegration) {
+      return user?.getBalance() ?? 0;
     }
 
     const cash = await this.getCashModel(source);
@@ -37,8 +37,8 @@ export class CashService {
 
   async createInitialCash(source: number): Promise<Cash> {
     const user = this._userService.getUser(source);
-    logger.debug(`Creating initial cash row for ${user.identifier}`);
-    const cash = await this._cashDB.createInitial(user.identifier);
+    logger.debug(`Creating initial cash row for ${user?.getIdentifier() ?? ''}`);
+    const cash = await this._cashDB.createInitial(user?.getIdentifier() ?? '');
     return cash.toJSON();
   }
 
@@ -46,12 +46,12 @@ export class CashService {
     logger.debug(`Taking ${amount} from ${source}`);
     const user = this._userService.getUser(source);
 
-    if (config.general.useFrameworkIntegration) {
+    if (config?.general?.useFrameworkIntegration) {
       exp.pefclDepositMoney(source, amount);
       return;
     }
 
-    const cash = await this._cashDB.getCashByIdentifier(user.identifier);
+    const cash = await this._cashDB.getCashByIdentifier(user?.getIdentifier() ?? '');
     await cash.decrement({ amount });
 
     return cash;
@@ -61,12 +61,12 @@ export class CashService {
     logger.debug(`Giving ${amount} to ${source}`);
     const user = this._userService.getUser(source);
 
-    if (config.general.useFrameworkIntegration) {
+    if (config?.general?.useFrameworkIntegration) {
       exp.pefclWithdrawMoney(source, amount);
       return;
     }
 
-    const cash = await this._cashDB.getCashByIdentifier(user.identifier);
+    const cash = await this._cashDB.getCashByIdentifier(user?.getIdentifier() ?? '');
     await cash.increment({ amount });
 
     return cash;
