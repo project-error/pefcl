@@ -2,6 +2,7 @@ import { Controller } from '../../decorators/Controller';
 import { NetPromise, PromiseEventListener } from '../../decorators/NetPromise';
 import {
   Account,
+  AccountRole,
   AddToSharedAccountInput,
   ATMInput,
   ExternalAccount,
@@ -15,15 +16,22 @@ import { Request, Response } from '@typings/http';
 import { AccountService } from './account.service';
 import { Event, EventListener } from '@decorators/Event';
 import { ExternalAccountService } from 'services/accountExternal/externalAccount.service';
+import { AuthService } from 'services/auth/auth.service';
 
 @Controller('Account')
 @PromiseEventListener()
 @EventListener()
 export class AccountController {
+  _auth: AuthService;
   private readonly _accountService: AccountService;
   private readonly _externalAccountService: ExternalAccountService;
 
-  constructor(accountService: AccountService, externalAccountService: ExternalAccountService) {
+  constructor(
+    auth: AuthService,
+    accountService: AccountService,
+    externalAccountService: ExternalAccountService,
+  ) {
+    this._auth = auth;
     this._accountService = accountService;
     this._externalAccountService = externalAccountService;
   }
@@ -67,7 +75,10 @@ export class AccountController {
 
   @NetPromise(AccountEvents.WithdrawMoney)
   async withdrawMoney(req: Request<ATMInput>, res: Response<any>) {
+    const accountId = req.data.accountId;
     try {
+      accountId &&
+        (await this._auth.isAuthorizedAccount(accountId, req.source, [AccountRole.Admin]));
       await this._accountService.handleWithdrawMoney(req);
     } catch (err) {
       res({ status: 'error', errorMsg: err.message });
@@ -77,6 +88,7 @@ export class AccountController {
   @NetPromise(AccountEvents.SetDefaultAccount)
   async setDefaultAccount(req: Request<{ accountId: number }>, res: Response<any>) {
     try {
+      await this._auth.isAuthorizedAccount(req.data.accountId, req.source, [AccountRole.Admin]);
       await this._accountService.handleSetDefaultAccount(req);
       res({ status: 'ok', data: {} });
     } catch (err) {
@@ -87,6 +99,7 @@ export class AccountController {
   @NetPromise(AccountEvents.RenameAccount)
   async renameAccount(req: Request<RenameAccountInput>, res: Response<any>) {
     try {
+      await this._auth.isAuthorizedAccount(req.data.accountId, req.source, [AccountRole.Admin]);
       await this._accountService.handleRenameAccount(req);
       res({ status: 'ok', data: {} });
     } catch (err) {
@@ -97,6 +110,7 @@ export class AccountController {
   @NetPromise(SharedAccountEvents.AddUser)
   async addSharedAccountUser(req: Request<AddToSharedAccountInput>, res: Response<any>) {
     try {
+      await this._auth.isAuthorizedAccount(req.data.accountId, req.source, [AccountRole.Admin]);
       await this._accountService.addUserToShared(req);
       res({ status: 'ok', data: {} });
     } catch (err) {

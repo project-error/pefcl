@@ -91,7 +91,6 @@ export class AccountService {
   async addUserToShared(req: Request<AddToSharedAccountInput>) {
     logger.silly(`Adding user src: ${req.source} to shared account.`);
 
-    // TODO: Add security
     return this._accountDB.createSharedAccount({
       name: req.data.name,
       user: req.data.identifier,
@@ -419,14 +418,9 @@ export class AccountService {
     logger.silly({ accountId: req.data.accountId, userId: user?.getIdentifier() });
   }
 
-  // TODO: Implement similar security for updating accounts etc.
   async handleRenameAccount(req: Request<RenameAccountInput>) {
-    const user = this._userService.getUser(req.source);
-    return await this._accountDB.editAccount({
-      accountName: req.data.name,
-      id: req.data.accountId,
-      ownerIdentifier: user?.getIdentifier(),
-    });
+    logger.silly(`Updating name, accountID: ${req.data.accountId}, name: ${req.data.name}`);
+    return await this._accountDB.updateAccountName(req.data.accountId, req.data.name);
   }
 
   async getUsersFromShared(req: Request<{ accountId: number }>): Promise<SharedAccountUser[]> {

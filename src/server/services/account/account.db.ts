@@ -58,8 +58,8 @@ export class AccountDB {
       include: [{ model: AccountModel, as: 'account' }],
     });
 
-    const role = sharedAccount?.getDataValue('role') ?? AccountRole.Contributor;
-    if (!roles.includes(role)) {
+    const role = sharedAccount?.getDataValue('role');
+    if (role && !roles.includes(role)) {
       throw new ServerError(AuthorizationErrors.Forbidden);
     }
 
@@ -120,5 +120,14 @@ export class AccountDB {
 
   async updateAccountBalance(): Promise<void> {
     throw new Error('Not implemented');
+  }
+
+  async updateAccountName(id: number, accountName: string) {
+    return await AccountModel.update(
+      { accountName },
+      {
+        where: { id },
+      },
+    );
   }
 }
