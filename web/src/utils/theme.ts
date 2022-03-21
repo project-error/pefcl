@@ -8,6 +8,7 @@ const theme = createTheme({
       light8: 'rgba(255, 255, 255, 0.08)',
       dark4: 'rgba(0, 0, 0, 0.04)',
       dark12: 'rgba(0, 0, 0, 0.12)',
+      primary20: 'rgba(60, 142, 169, 0.2)',
       paper: '#131E2A',
       default: 'linear-gradient(179.77deg, #152333 0.2%, #17212C 99.8%);',
     },
@@ -53,6 +54,7 @@ declare module '@mui/material/styles' {
     light8: string;
     dark4: string;
     dark12: string;
+    primary20: string;
   }
 }
 

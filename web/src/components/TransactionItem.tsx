@@ -17,16 +17,20 @@ const TransactionDate = styled(Heading6)`
   font-weight: ${theme.typography.fontWeightLight};
 `;
 
-const TransactionMessage = styled(BodyText)`
+const TransactionMessage = styled(BodyText)<{ isLimitedSpace?: boolean }>`
   font-weight: ${theme.typography.fontWeightBold};
   white-space: pre;
   text-overflow: ellipsis;
   overflow: hidden;
   margin-right: 1rem;
-  max-width: 12rem;
+  ${({ isLimitedSpace }) => isLimitedSpace && `max-width: 12rem`};
 `;
 
-const TransactionItem: React.FC<{ transaction: Transaction }> = ({ transaction, ...rest }) => {
+const TransactionItem: React.FC<{ transaction: Transaction; isLimitedSpace: boolean }> = ({
+  isLimitedSpace,
+  transaction,
+  ...rest
+}) => {
   const { message, amount, id, createdAt, toAccount, fromAccount, type } = transaction;
   const config = useConfig();
   const date = dayjs(createdAt);
@@ -38,7 +42,7 @@ const TransactionItem: React.FC<{ transaction: Transaction }> = ({ transaction, 
     <div key={id} {...rest}>
       <Stack flexDirection="row" justifyContent="space-between">
         <Stack spacing={1}>
-          <TransactionMessage>{message}</TransactionMessage>
+          <TransactionMessage isLimitedSpace={isLimitedSpace}>{message}</TransactionMessage>
           <Stack direction="row" alignItems="center">
             {fromAccount && (
               <>

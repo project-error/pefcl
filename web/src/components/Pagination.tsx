@@ -31,7 +31,12 @@ const CharacterBox = styled.div<{ isDisabled?: boolean; isActive?: boolean }>`
     background-color: ${theme.palette.background.light2};
   }
 
-  ${({ isActive }) => isActive && `color: ${theme.palette.primary.main}`}
+  ${({ isActive }) =>
+    isActive &&
+    `
+    color: ${theme.palette.primary.main};
+    background-color: ${theme.palette.background.primary20};
+  `}
 
   ${({ isDisabled }) =>
     isDisabled &&

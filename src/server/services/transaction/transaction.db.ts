@@ -56,6 +56,7 @@ export class TransactionDB {
       },
       limit: input.limit ?? config?.transactions?.defaultLimit ?? 10,
       offset: input.offset,
+      order: [['createdAt', 'DESC']],
       include: [
         { model: AccountModel, as: 'toAccount' },
         { model: AccountModel, as: 'fromAccount' },

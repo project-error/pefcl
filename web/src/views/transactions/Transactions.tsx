@@ -14,8 +14,8 @@ import {
   transactionBaseAtom,
   transactionsLimitAtom,
   transactionsOffsetAtom,
-  transactionSortedAtom,
-  transactionTotalAtom,
+  transactionsAtom,
+  transactionsTotalAtom,
 } from 'src/data/transactions';
 import { Heading2, Heading5, Heading6 } from '../../components/ui/Typography/Headings';
 import TransactionFilters, { TransactionFilter } from './Filters';
@@ -56,8 +56,8 @@ const Transactions = () => {
   const [selectedAccountId, setSelectedAccountId] = useState(0);
   const [accounts] = useAtom(accountsAtom);
   const [, updateTransactions] = useAtom(transactionBaseAtom);
-  const [transactions] = useAtom(transactionSortedAtom);
-  const [total] = useAtom(transactionTotalAtom);
+  const [transactions] = useAtom(transactionsAtom);
+  const [total] = useAtom(transactionsTotalAtom);
   const [limit] = useAtom(transactionsLimitAtom);
   const [offset] = useAtom(transactionsOffsetAtom);
   const [activeFilters, setActiveFilters] = useState<TransactionFilter[]>([]);

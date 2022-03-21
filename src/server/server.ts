@@ -83,10 +83,6 @@ const test = async () => {
   await load();
   emit('onServerResourceStart', 'pe-financial');
 
-  await new Promise((resolve) => {
-    setTimeout(resolve, 500);
-  });
-
   global.source = 2;
   // emit('playerJoining', {});
 

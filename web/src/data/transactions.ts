@@ -38,14 +38,11 @@ export const transactionBaseAtom = atom(
   },
 );
 
-export const transactionSortedAtom = atom(async (get) => {
+export const transactionsAtom = atom(async (get) => {
   const transactions = get(transactionBaseAtom).transactions;
-  const sorted = transactions.sort((a, b) =>
-    (a?.createdAt ?? '') > (b?.createdAt ?? '') ? -1 : 1,
-  );
-  return sorted;
+  return transactions;
 });
 
-export const transactionTotalAtom = atom((get) => get(transactionBaseAtom).total);
+export const transactionsTotalAtom = atom((get) => get(transactionBaseAtom).total);
 export const transactionsLimitAtom = atom((get) => get(transactionBaseAtom).limit);
 export const transactionsOffsetAtom = atom((get) => get(transactionBaseAtom).offset);
