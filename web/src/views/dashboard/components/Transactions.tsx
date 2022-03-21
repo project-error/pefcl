@@ -9,7 +9,7 @@ const Transactions = () => {
 
   return (
     <Stack spacing={2}>
-      {transactions.map((transaction) => (
+      {transactions.slice(0, 3).map((transaction) => (
         <TransactionItem key={transaction.id} transaction={transaction} isLimitedSpace />
       ))}
     </Stack>

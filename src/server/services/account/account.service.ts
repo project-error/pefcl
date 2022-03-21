@@ -364,7 +364,7 @@ export class AccountService {
         amount: withdrawAmount,
         message: req.data.message,
         type: TransactionType.Outgoing,
-        toAccount: targetAccount.toJSON(),
+        fromAccount: targetAccount.toJSON(),
       });
 
       logger.silly(`Withdrew ${withdrawAmount} from account ${accountId}`);

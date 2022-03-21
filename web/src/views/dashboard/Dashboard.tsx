@@ -123,7 +123,7 @@ const Dashboard = () => {
       <Lists>
         <React.Suspense fallback={<DashboardContainerFallback title={t('Loading transactions')} />}>
           <DashboardContainer
-            title={t('Transactions')}
+            title={t('Latest transactions')}
             viewAllRoute="/transactions"
             totalAtom={transactionsTotalAtom}
           >
@@ -133,7 +133,7 @@ const Dashboard = () => {
 
         <React.Suspense fallback={<DashboardContainerFallback title={t('Loading transactions')} />}>
           <DashboardContainer
-            title={t('Transactions')}
+            title={t('Latest transactions')}
             viewAllRoute="/transactions"
             totalAtom={transactionsTotalAtom}
           >
