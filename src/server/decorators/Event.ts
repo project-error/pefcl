@@ -1,5 +1,5 @@
 export const Event = (eventName: string) => {
-  return function (target: unknown, key: string): void {
+  return function (target: object, key: string): void {
     if (!Reflect.hasMetadata('events', target)) {
       Reflect.defineMetadata('events', [], target);
     }

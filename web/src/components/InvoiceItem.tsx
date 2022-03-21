@@ -5,7 +5,7 @@ import styled from '@emotion/styled';
 import calendar from 'dayjs/plugin/calendar';
 import relative from 'dayjs/plugin/relativeTime';
 import dayjs from 'dayjs';
-import { Heading5, Heading6 } from './ui/Typography/Headings';
+import { Heading6 } from './ui/Typography/Headings';
 import theme from '@utils/theme';
 import { Invoice, InvoiceStatus } from '@typings/Invoice';
 import { useTranslation } from 'react-i18next';

@@ -1,6 +1,7 @@
 import { ServerPromiseResp } from '@project-error/pe-utils';
 import {
   AccountEvents,
+  ExternalAccountEvents,
   InvoiceEvents,
   SharedAccountEvents,
   TransactionEvents,
@@ -62,14 +63,19 @@ if (isMocking) {
   app.post(...createEndpoint(AccountEvents.SetDefaultAccount));
   app.post(...createEndpoint(AccountEvents.CreateAccount));
   app.post(...createEndpoint(AccountEvents.RenameAccount));
+  app.post(...createEndpoint(AccountEvents.WithdrawMoney));
+  app.post(...createEndpoint(AccountEvents.DepositMoney));
   app.post(...createEndpoint(TransactionEvents.Get));
   app.post(...createEndpoint(TransactionEvents.CreateTransfer));
+  app.post(...createEndpoint(TransactionEvents.GetHistory));
   app.post(...createEndpoint(InvoiceEvents.Get));
   app.post(...createEndpoint(InvoiceEvents.CreateInvoice));
   app.post(...createEndpoint(InvoiceEvents.PayInvoice));
   app.post(...createEndpoint(SharedAccountEvents.AddUser));
   app.post(...createEndpoint(SharedAccountEvents.RemoveUser));
   app.post(...createEndpoint(SharedAccountEvents.GetUsers));
+  app.post(...createEndpoint(ExternalAccountEvents.Add));
+  app.post(...createEndpoint(ExternalAccountEvents.Get));
 
   app.listen(port, () => {
     console.log(`[MOCKSERVER]: listening on port: ${port}`);
@@ -80,11 +86,7 @@ const test = async () => {
   await load();
   emit('onServerResourceStart', 'pe-financial');
 
-  await new Promise((resolve) => {
-    setTimeout(resolve, 500);
-  });
-
-  global.source = 2;
+  global.source = 3;
   // emit('playerJoining', {});
 
   /* */

@@ -3,7 +3,7 @@ import { CashModel } from './cash.model';
 
 @singleton()
 export class CashDB {
-  async getCashByIdentifier(ownerIdentifier: string): Promise<CashModel> {
+  async getCashByIdentifier(ownerIdentifier: string): Promise<CashModel | null> {
     return await CashModel.findOne({ where: { ownerIdentifier } });
   }
 

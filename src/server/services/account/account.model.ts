@@ -2,9 +2,13 @@ import { DATABASE_PREFIX } from '@utils/constants';
 import { DataTypes, Model } from 'sequelize';
 import { config } from '@utils/server-config';
 import { Account, AccountRole, AccountType } from '@typings/Account';
-import { sequelize } from '../../utils/pool';
+import { sequelize } from '@utils/pool';
+import { generateAccountNumber } from '@utils/misc';
 
-export class AccountModel extends Model<Account> {}
+export class AccountModel extends Model<
+  Account,
+  Omit<Account, 'id' | 'number' | 'balance' | 'role'>
+> {}
 
 AccountModel.init(
   {
@@ -13,10 +17,10 @@ AccountModel.init(
       autoIncrement: true,
       primaryKey: true,
     },
-    identifier: {
-      type: DataTypes.UUID,
+    number: {
+      type: DataTypes.STRING,
       unique: true,
-      defaultValue: DataTypes.UUIDV4,
+      defaultValue: generateAccountNumber,
     },
     accountName: {
       type: DataTypes.STRING,
@@ -34,7 +38,7 @@ AccountModel.init(
     },
     balance: {
       type: DataTypes.INTEGER,
-      defaultValue: config.accounts.defaultAmount ?? 0,
+      defaultValue: config?.accounts?.defaultAmount ?? 0,
     },
     type: {
       type: DataTypes.STRING,

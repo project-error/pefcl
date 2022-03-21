@@ -10,22 +10,38 @@ import { Transaction, TransactionType } from '@typings/transactions';
 import { Stack } from '@mui/material';
 import { Heading6 } from '@ui/Typography/Headings';
 import { formatMoney } from '@utils/currency';
+import { useTranslation } from 'react-i18next';
 
 dayjs.extend(calendar);
+
+const Container = styled.div`
+  padding-bottom: 1rem;
+  border-bottom: 1px solid ${theme.palette.background.light8};
+`;
 
 const TransactionDate = styled(Heading6)`
   font-weight: ${theme.typography.fontWeightLight};
 `;
 
-const TransactionMessage = styled(BodyText)`
+const AccountName = styled(Heading6)`
+  color: ${theme.palette.text.primary};
+`;
+
+const TransactionMessage = styled(BodyText)<{ isLimitedSpace?: boolean }>`
   font-weight: ${theme.typography.fontWeightBold};
   white-space: pre;
   text-overflow: ellipsis;
   overflow: hidden;
   margin-right: 1rem;
+  ${({ isLimitedSpace }) => isLimitedSpace && `max-width: 12rem`};
 `;
 
-const TransactionItem: React.FC<{ transaction: Transaction }> = ({ transaction, ...rest }) => {
+const TransactionItem: React.FC<{ transaction: Transaction; isLimitedSpace?: boolean }> = ({
+  isLimitedSpace,
+  transaction,
+  ...rest
+}) => {
+  const { t } = useTranslation();
   const { message, amount, id, createdAt, toAccount, fromAccount, type } = transaction;
   const config = useConfig();
   const date = dayjs(createdAt);
@@ -34,32 +50,49 @@ const TransactionItem: React.FC<{ transaction: Transaction }> = ({ transaction, 
   const isTransfer = type === TransactionType.Transfer;
 
   return (
-    <div key={id} {...rest}>
+    <Container key={id} {...rest}>
       <Stack flexDirection="row" justifyContent="space-between">
         <Stack spacing={1}>
-          <TransactionMessage>{message}</TransactionMessage>
-          <Stack direction="row" alignItems="center">
-            {fromAccount && (
-              <>
-                <Heading6>{fromAccount?.accountName}</Heading6>
-              </>
-            )}
-            {fromAccount && toAccount && <ArrowRightRounded color="primary" />}
+          <TransactionMessage isLimitedSpace={isLimitedSpace}>{message}</TransactionMessage>
 
-            <Heading6>{toAccount?.accountName}</Heading6>
-          </Stack>
-          <TransactionDate>{date.calendar()}</TransactionDate>
+          {!isLimitedSpace && (
+            <Stack direction="row" alignItems="center">
+              {fromAccount && (
+                <Stack>
+                  <TransactionDate>{t('From account')}</TransactionDate>
+                  <AccountName>{fromAccount?.accountName}</AccountName>
+                </Stack>
+              )}
+
+              {fromAccount && toAccount && (
+                <ArrowRightRounded sx={{ margin: '0 1rem' }} color="primary" />
+              )}
+
+              {toAccount && (
+                <Stack>
+                  <TransactionDate>{t('To account')}</TransactionDate>
+                  <AccountName>{toAccount?.accountName}</AccountName>
+                </Stack>
+              )}
+            </Stack>
+          )}
+
+          <TransactionDate>{date.fromNow()}</TransactionDate>
         </Stack>
 
-        <Stack direction="row" alignItems="flex-start" spacing={0.5}>
-          {isOutgoing && <ArrowDropDownRounded color="error" />}
-          {isIncoming && <ArrowDropUpRounded color="success" />}
-          {isTransfer && <ArrowRightRounded color="primary" />}
+        <Stack alignItems="flex-end">
+          <Stack direction="row" alignItems="flex-start" spacing={0.5}>
+            {isOutgoing && <ArrowDropDownRounded color="error" />}
+            {isIncoming && <ArrowDropUpRounded color="success" />}
+            {isTransfer && <ArrowRightRounded color="primary" />}
 
-          <BodyText>{formatMoney(amount, config)}</BodyText>
+            <BodyText>{formatMoney(amount, config)}</BodyText>
+          </Stack>
+
+          {!isLimitedSpace && <TransactionDate>{date.calendar()}</TransactionDate>}
         </Stack>
       </Stack>
-    </div>
+    </Container>
   );
 };
 

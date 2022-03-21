@@ -1,10 +1,9 @@
 import styled from '@emotion/styled';
-import { ArrowDropDownRounded } from '@mui/icons-material';
-import { InputBase, MenuItem, SelectChangeEvent, Stack } from '@mui/material';
+import { ListSubheader, MenuItem, SelectChangeEvent, Stack } from '@mui/material';
 import { t } from 'i18next';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Account, AccountType } from '@typings/Account';
+import { Account, AccountType, ExternalAccount } from '@typings/Account';
 import { ResourceConfig } from '../../../typings/config';
 import { useConfig } from '../hooks/useConfig';
 import { formatMoney } from '../utils/currency';
@@ -12,19 +11,12 @@ import theme from '../utils/theme';
 import { BodyText } from './ui/Typography/BodyText';
 import { Heading6 } from './ui/Typography/Headings';
 import Select from './ui/Select';
+import Button from './ui/Button';
+import { Box } from '@mui/system';
+import AddExternalAccountModal from './Modals/AddExternalAccount';
 
 const BalanceText = styled(Heading6)`
   color: ${theme.palette.primary.main};
-`;
-
-const StyledInput = styled(InputBase)`
-  border-radius: ${theme.spacing(1)};
-  color: ${theme.palette.text.primary};
-  background: ${theme.palette.background.dark12};
-
-  & > div {
-    padding: 0.75rem 1rem;
-  }
 `;
 
 const StyledMenuItem = styled(MenuItem)`
@@ -41,12 +33,6 @@ const StyledMenuItem = styled(MenuItem)`
   &.Mui-focusVisible {
     background: ${theme.palette.background.dark4};
   }
-`;
-
-const SelectIcon = styled(ArrowDropDownRounded)`
-  color: ${theme.palette.text.primary};
-  color: white !important;
-  margin-right: 0.5rem;
 `;
 
 const ListItem = styled.div`
@@ -70,14 +56,23 @@ const Option: React.FC<{ account: Account; config: ResourceConfig }> = ({ accoun
   );
 };
 
-interface AccountSelect {
+interface AccountSelectProps {
   accounts: Account[];
   selectedId?: number;
+  isExternalAvailable?: boolean;
+  externalAccounts?: ExternalAccount[];
   onSelect(accountId: number): void;
 }
 
-const AccountSelect: React.FC<AccountSelect> = ({ accounts, onSelect, selectedId }) => {
+const AccountSelect = ({
+  accounts,
+  onSelect,
+  selectedId,
+  isExternalAvailable = false,
+  externalAccounts = [],
+}: AccountSelectProps) => {
   const config = useConfig();
+  const [isExternalOpen, setIsExternalOpen] = useState(false);
   const [selected, setSelected] = useState<number>(0);
 
   useEffect(() => {
@@ -98,7 +93,24 @@ const AccountSelect: React.FC<AccountSelect> = ({ accounts, onSelect, selectedId
 
   return (
     <div>
-      <Select value={selected} onChange={handleChange} variant="filled" sx={{ width: '100%' }}>
+      <React.Suspense fallback={null}>
+        <AddExternalAccountModal isOpen={isExternalOpen} onClose={() => setIsExternalOpen(false)} />
+      </React.Suspense>
+      <Select
+        value={selected.toString()}
+        onChange={handleChange}
+        variant="filled"
+        sx={{ width: '100%' }}
+        MenuProps={{ sx: { maxHeight: '25rem', scrollbarColor: '#222', scrollbarWidth: '2px' } }}
+      >
+        {isExternalAvailable && (
+          <Box p={2} display="flex">
+            <Button fullWidth onClick={() => setIsExternalOpen(true)}>
+              {t('Add external account')}
+            </Button>
+          </Box>
+        )}
+
         {selected === 0 && (
           <StyledMenuItem value={0} disabled>
             <ListItem>
@@ -109,9 +121,26 @@ const AccountSelect: React.FC<AccountSelect> = ({ accounts, onSelect, selectedId
           </StyledMenuItem>
         )}
 
+        {externalAccounts.length > 0 && <ListSubheader>{t('Your accounts')}</ListSubheader>}
         {accounts.map((account) => (
-          <StyledMenuItem key={account.id} value={account.id} disabled={selectedId === account.id}>
+          <StyledMenuItem
+            key={account.id}
+            value={account.id.toString()}
+            disabled={selectedId === account.id}
+          >
             <Option account={account} config={config} />
+          </StyledMenuItem>
+        ))}
+
+        {externalAccounts.length > 0 && <ListSubheader>{t('External accounts')}</ListSubheader>}
+        {externalAccounts.map((account) => (
+          <StyledMenuItem key={account.id} value={`0.${account.id}`}>
+            <ListItem>
+              <Stack p="0rem 0.5rem">
+                <BodyText>{account.name}</BodyText>
+                <Heading6>{account.number}</Heading6>
+              </Stack>
+            </ListItem>
           </StyledMenuItem>
         ))}
       </Select>

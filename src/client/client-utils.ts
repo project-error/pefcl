@@ -1,4 +1,4 @@
-import { uuidv4 } from '../utils/fivem';
+import { uuidV4 } from '@project-error/pe-utils';
 import { ClUtils } from './client';
 
 interface ISettings {
@@ -37,7 +37,7 @@ export default class ClientUtils {
 
       // Have to use this as the regular uuid refused to work here for some
       // fun reason
-      const uniqId = uuidv4();
+      const uniqId = uuidV4();
 
       const listenEventName = `${eventName}:${uniqId}`;
 

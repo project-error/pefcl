@@ -1,8 +1,12 @@
 import { getResourceName } from './misc';
+import { ServerPromiseResp } from '@typings/http';
 
 const isDevelopment = process.env.NODE_ENV === 'development';
 
-export const fetchNui = async <T = any>(eventName: string, data?: any): Promise<T | undefined> => {
+export const fetchNui = async <T = object>(
+  eventName: string,
+  data?: object,
+): Promise<T | undefined> => {
   const resourceName = getResourceName();
   const url = isDevelopment
     ? `http://localhost:3005/${eventName.replace(':', '-')}`
@@ -17,7 +21,11 @@ export const fetchNui = async <T = any>(eventName: string, data?: any): Promise<
   };
 
   const res = await fetch(url, options);
-  const response = await res.json();
+  const response: ServerPromiseResp<T> = await res.json();
+
+  if (response.status === 'error') {
+    throw new Error(response.errorMsg);
+  }
 
   return response.data;
 };

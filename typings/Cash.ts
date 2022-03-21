@@ -1,5 +1,5 @@
 export interface Cash {
-  id?: number;
+  id: number;
   amount: number;
   ownerIdentifier: string;
 }

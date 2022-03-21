@@ -1,4 +1,4 @@
-import { getSource } from '../utils/miscUtils';
+import { getSource } from '../utils/misc';
 import { mainLogger } from '../sv_logger';
 import { CBSignature, PromiseEventResp, PromiseRequest } from './promise.types';
 import { ServerPromiseResp } from '../../../typings/http';

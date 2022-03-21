@@ -22,9 +22,14 @@ export enum SharedAccountEvents {
   AddUser = 'pefcl:sharedAccountsAddUser',
   RemoveUser = 'pefcl:sharedAccountsRemoveUser',
 }
+export enum ExternalAccountEvents {
+  Add = 'pefcl:addExternalAccount',
+  Get = 'pefcl:getExternalAccount',
+}
 
 export enum TransactionEvents {
   Get = 'pefcl:getTransactions',
+  GetHistory = 'pefcl:getTransactionsHistory',
   CreateTransfer = 'pefcl:createTransfer',
 }
 

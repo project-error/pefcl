@@ -1,7 +1,7 @@
 import { onNetPromise } from '../lib/onNetPromise';
 
 export const NetPromise = (eventName: string) => {
-  return function (target: unknown, key: string) {
+  return function (target: object, key: string) {
     if (!Reflect.hasMetadata('promiseEvents', target)) {
       Reflect.defineMetadata('promiseEvents', [], target);
     }

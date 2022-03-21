@@ -1,9 +1,13 @@
 import { Op } from 'sequelize';
 import { singleton } from 'tsyringe';
-import { Transaction } from '../../../../typings/transactions';
+import { GetTransactionsInput, TransactionInput } from '@typings/transactions';
 import { AccountModel } from '../account/account.model';
 import { TransactionModel } from './transaction.model';
+import { config } from '@utils/server-config';
 
+interface GetTransactionFromAccounts extends GetTransactionsInput {
+  accountIds: number[];
+}
 @singleton()
 export class TransactionDB {
   async getTransactions(): Promise<TransactionModel[]> {
@@ -15,9 +19,67 @@ export class TransactionDB {
     });
   }
 
-  async getTransactionFromAccounts(accountIds: number[]): Promise<TransactionModel[]> {
+  async getTotalTransactionsFromAccounts(accountIds: number[]): Promise<number> {
+    return await TransactionModel.count({
+      where: {
+        [Op.or]: [
+          {
+            fromAccountId: {
+              [Op.in]: accountIds,
+            },
+          },
+          {
+            toAccountId: {
+              [Op.in]: accountIds,
+            },
+          },
+        ],
+      },
+    });
+  }
+
+  async getTransactionFromAccounts(input: GetTransactionFromAccounts): Promise<TransactionModel[]> {
     return await TransactionModel.findAll({
       where: {
+        [Op.or]: [
+          {
+            fromAccountId: {
+              [Op.in]: input.accountIds,
+            },
+          },
+          {
+            toAccountId: {
+              [Op.in]: input.accountIds,
+            },
+          },
+        ],
+      },
+      limit: input.limit ?? config?.transactions?.defaultLimit ?? 10,
+      offset: input.offset,
+      order: [['createdAt', 'DESC']],
+      include: [
+        { model: AccountModel, as: 'toAccount' },
+        { model: AccountModel, as: 'fromAccount' },
+      ],
+    });
+  }
+
+  async getAllTransactionsFromAccounts(
+    accountIds: number[],
+    from?: Date,
+  ): Promise<TransactionModel[]> {
+    //TODO: clean this up
+    const createdAt = from
+      ? {
+          [Op.gte]: from,
+        }
+      : {
+          [Op.lte]: new Date(),
+        };
+
+    return await TransactionModel.findAll({
+      where: {
+        createdAt,
         [Op.or]: [
           {
             fromAccountId: {
@@ -38,11 +100,11 @@ export class TransactionDB {
     });
   }
 
-  async getTransaction(id: number): Promise<TransactionModel> {
+  async getTransaction(id: number): Promise<TransactionModel | null> {
     return await TransactionModel.findOne({ where: { id } });
   }
 
-  async create(transaction: Partial<Transaction>): Promise<TransactionModel> {
+  async create(transaction: TransactionInput): Promise<TransactionModel> {
     const { toAccount, fromAccount, ...dbTransaction } = transaction;
     const newTransaction = await TransactionModel.create({
       ...dbTransaction,

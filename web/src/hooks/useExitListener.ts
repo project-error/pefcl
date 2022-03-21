@@ -3,7 +3,7 @@ import { fetchNui } from '../utils/fetchNui';
 import { isEnvBrowser } from '@utils/misc';
 import { GeneralEvents } from '@typings/Events';
 
-const LISTENED_KEYS = ['Escape', 'Backspace'];
+const LISTENED_KEYS = ['Escape'];
 
 export const useExitListener = () => {
   useEffect(() => {

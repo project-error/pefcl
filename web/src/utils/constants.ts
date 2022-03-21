@@ -1,5 +1,9 @@
 import { Account, AccountRole, AccountType } from '@typings/Account';
-import { Transaction, TransactionType } from '../../../typings/transactions';
+import {
+  GetTransactionsResponse,
+  Transaction,
+  TransactionType,
+} from '../../../typings/transactions';
 import { Invoice, InvoiceStatus } from '../../../typings/Invoice';
 import dayjs from 'dayjs';
 
@@ -11,7 +15,7 @@ export const mockedAccounts: Account[] = [
   {
     id: 1,
     accountName: 'Savings',
-    identifier: '',
+    number: '920, 1000-2000-3000',
     balance: 20000,
     isDefault: true,
     ownerIdentifier: '',
@@ -20,8 +24,8 @@ export const mockedAccounts: Account[] = [
   },
   {
     id: 2,
-    identifier: '',
-    accountName: 'Savings',
+    accountName: 'Pension',
+    number: '920, 1000-2000-3002',
     balance: 20000,
     isDefault: false,
     ownerIdentifier: '',
@@ -30,8 +34,8 @@ export const mockedAccounts: Account[] = [
   },
   {
     id: 3,
-    accountName: 'Bennys',
-    identifier: '',
+    accountName: 'Bennys AB',
+    number: '920, 1000-2000-3004',
     balance: 1800000,
     isDefault: false,
     ownerIdentifier: '',
@@ -40,64 +44,31 @@ export const mockedAccounts: Account[] = [
   },
 ];
 
-export const mockedTransactions: Transaction[] = [
-  {
-    id: 1,
-    identifier: '',
-    amount: 280,
-    type: TransactionType.Transfer,
-    message: 'For the last time, give me the money',
-    createdAt: '1642276186',
-    fromAccount: {
+export const mockedTransactions: GetTransactionsResponse = {
+  limit: 25,
+  offset: 0,
+  total: 2,
+  transactions: [
+    {
       id: 1,
-      accountName: 'Bosse',
-      balance: 0,
-      identifier: '',
-      isDefault: false,
-      ownerIdentifier: '',
-      role: AccountRole.Owner,
-      type: AccountType.Personal,
+      amount: 280,
+      type: TransactionType.Transfer,
+      message: 'For the last time, give me the money',
+      createdAt: '1642276186',
+      fromAccount: mockedAccounts[0],
+      toAccount: mockedAccounts[1],
     },
-    toAccount: {
-      id: 2,
-      accountName: 'Savings',
-      balance: 0,
-      identifier: '',
-      isDefault: false,
-      ownerIdentifier: '',
-      role: AccountRole.Owner,
-      type: AccountType.Personal,
-    },
-  },
-  {
-    id: 1,
-    identifier: '',
-    amount: 8000000,
-    message: 'For the last time, give me the money',
-    createdAt: '1642276186',
-    type: TransactionType.Transfer,
-    fromAccount: {
+    {
       id: 1,
-      accountName: 'Bosse',
-      balance: 0,
-      identifier: '',
-      isDefault: false,
-      ownerIdentifier: '',
-      role: AccountRole.Owner,
-      type: AccountType.Personal,
+      amount: 8000000,
+      message: 'For the last time, give me the money',
+      createdAt: '1642276186',
+      type: TransactionType.Transfer,
+      fromAccount: mockedAccounts[0],
+      toAccount: mockedAccounts[1],
     },
-    toAccount: {
-      id: 2,
-      accountName: 'Savings',
-      balance: 0,
-      identifier: '',
-      isDefault: false,
-      ownerIdentifier: '',
-      role: AccountRole.Owner,
-      type: AccountType.Personal,
-    },
-  },
-];
+  ],
+};
 
 export const mockedInvoices: Invoice[] = [
   {

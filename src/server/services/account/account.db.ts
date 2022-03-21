@@ -1,4 +1,7 @@
-import { Account, SharedAccountInput } from '@typings/Account';
+import { Account, AccountRole, CreateAccountInput, SharedAccountInput } from '@typings/Account';
+import { AccountErrors, AuthorizationErrors } from '@typings/Errors';
+import { ServerError } from '@utils/errors';
+import { ExternalAccountDB } from 'services/accountExternal/externalAccount.db';
 import { singleton } from 'tsyringe';
 import { AccountModel } from './account.model';
 import { SharedAccountModel } from './sharedAccount.model';
@@ -10,11 +13,17 @@ export interface RemoveFromSharedAccountInput {
 
 @singleton()
 export class AccountDB {
+  _externalAccountDB: ExternalAccountDB;
+
+  constructor(externalAccountDB: ExternalAccountDB) {
+    this._externalAccountDB = externalAccountDB;
+  }
+
   async getAccounts(): Promise<AccountModel[]> {
     return await AccountModel.findAll();
   }
 
-  async getDefaultAccountByIdentifier(identifier: string): Promise<AccountModel> {
+  async getDefaultAccountByIdentifier(identifier: string): Promise<AccountModel | null> {
     return await AccountModel.findOne({
       where: { isDefault: true, ownerIdentifier: identifier },
     });
@@ -24,6 +33,7 @@ export class AccountDB {
     return await AccountModel.findAll({ where: { ownerIdentifier: identifier } });
   }
 
+  // TODO: Move into separate DB
   async getSharedAccountsByIdentifier(identifier: string): Promise<SharedAccountModel[]> {
     return await SharedAccountModel.findAll({
       where: { user: identifier },
@@ -38,8 +48,34 @@ export class AccountDB {
     });
   }
 
-  async getAccount(id: number): Promise<AccountModel> {
+  async getAuthorizedSharedAccountById(
+    id: number,
+    identifier: string,
+    roles: AccountRole[],
+  ): Promise<AccountModel | null> {
+    const sharedAccount = await SharedAccountModel.findOne({
+      where: { accountId: id, user: identifier },
+      include: [{ model: AccountModel, as: 'account' }],
+    });
+
+    const role = sharedAccount?.getDataValue('role');
+    if (role && !roles.includes(role)) {
+      throw new ServerError(AuthorizationErrors.Forbidden);
+    }
+
+    return sharedAccount?.getDataValue('account') as unknown as AccountModel;
+  }
+
+  async getAccount(id: number): Promise<AccountModel | null> {
     return await AccountModel.findOne({ where: { id } });
+  }
+
+  async getAuthorizedAccountById(id: number, identifier: string): Promise<AccountModel | null> {
+    return await AccountModel.findOne({ where: { id, ownerIdentifier: identifier } });
+  }
+
+  async getAccountByNumber(number: string): Promise<AccountModel | null> {
+    return await AccountModel.findOne({ where: { number } });
   }
 
   async editAccount(input: Partial<Account>) {
@@ -48,9 +84,7 @@ export class AccountDB {
     });
   }
 
-  async createAccount(
-    account: Pick<Account, 'accountName' | 'type' | 'isDefault' | 'ownerIdentifier' | 'role'>,
-  ): Promise<AccountModel> {
+  async createAccount(account: CreateAccountInput): Promise<AccountModel> {
     return await AccountModel.create(account);
   }
 
@@ -61,10 +95,13 @@ export class AccountDB {
     });
 
     if (existingAccount) {
-      throw new Error('Shared account for player already exists!');
+      throw new ServerError(AccountErrors.AlreadyExists);
     }
 
-    const account = await SharedAccountModel.create(input);
+    const account = await SharedAccountModel.create({
+      ...input,
+      role: input.role ?? AccountRole.Contributor,
+    });
 
     // TODO: How to extend the module to support this with ts? Other ORM might be a choice if this isn't fixable.
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -78,10 +115,19 @@ export class AccountDB {
   }
 
   async deleteAccount(id: number) {
-    return await AccountModel.destroy({ where: { identifier: id } });
+    return await AccountModel.destroy({ where: { id } });
   }
 
   async updateAccountBalance(): Promise<void> {
     throw new Error('Not implemented');
+  }
+
+  async updateAccountName(id: number, accountName: string) {
+    return await AccountModel.update(
+      { accountName },
+      {
+        where: { id },
+      },
+    );
   }
 }

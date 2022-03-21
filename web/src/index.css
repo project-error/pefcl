@@ -5,12 +5,6 @@
   font-family: 'Montserrat', sans-serif;
 }
 
-
-/* TODO: Remove the need for this, by not using shit craco. This is to hide the annoying invisible error overlay(?) when developing. */
-iframe {
-  display: none;
-}
-
 body {
   margin: 0;
   height: 100vh;

@@ -26,13 +26,16 @@
       "@components/*": ["src/components/*"],
       "@ui/*": ["src/components/ui/*"],
       "@hooks/*": ["src/hooks/*"],
+      "@data/*": ["src/data/*"],
       "@utils/*": ["src/utils/*"],
       "@locales/*": ["../locales/*"],
       "@typings/*": ["../typings/*"],
+      "@shared/*": ["../shared/*"],
     }
   },
   "include": [
     "./src/**/*",
+    "../shared/**/*",
     "src/setupTests.ts"
   ]
 }

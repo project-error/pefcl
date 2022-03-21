@@ -3,12 +3,12 @@ import styled from '@emotion/styled';
 import { Dialog, DialogActions, DialogContent, DialogTitle, Stack } from '@mui/material';
 import { AccountType } from '@typings/Account';
 import { AccountEvents } from '@typings/Events';
-import { getIsAdmin } from '@utils/account';
+import { getIsAdmin, getIsOwner } from '@utils/account';
 import { useAtom } from 'jotai';
 import React, { FormEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { transactionsAtom } from 'src/data/transactions';
-import { Card } from '../../components/Card';
+import { transactionBaseAtom } from 'src/data/transactions';
+import { AccountCard } from '../../components/Card';
 import Layout from '../../components/Layout';
 import Button from '../../components/ui/Button';
 import { PreHeading } from '../../components/ui/Typography/BodyText';
@@ -52,7 +52,7 @@ const Accounts = () => {
   const { t } = useTranslation();
   const [totalBalance] = useAtom(totalBalanceAtom);
   const [accounts, updateAccounts] = useAtom(accountsAtom);
-  const [, updateTransactions] = useAtom(transactionsAtom);
+  const [, updateTransactions] = useAtom(transactionBaseAtom);
   const [defaultAccount] = useAtom(defaultAccountAtom);
   const [selectedAccountId, setSelectedAccountId] = useState<number>(defaultAccount?.id ?? 0);
   const selectedAccount = accounts.find((account) => account.id === selectedAccountId);
@@ -67,13 +67,10 @@ const Accounts = () => {
       });
   };
 
-  const handleDeleteAccount = () => {
-    fetchNui(AccountEvents.DeleteAccount, { accountId: selectedAccountId })
-      .then(updateAccounts)
-      .then(updateTransactions)
-      .catch((err) => {
-        console.log({ err });
-      });
+  const handleDeleteAccount = async () => {
+    await fetchNui(AccountEvents.DeleteAccount, { accountId: selectedAccountId });
+    await updateAccounts();
+    await updateTransactions();
   };
 
   const handleRename = (event: FormEvent<HTMLFormElement>) => {
@@ -85,6 +82,7 @@ const Accounts = () => {
   };
 
   const isAdmin = Boolean(selectedAccount && getIsAdmin(selectedAccount));
+  const isOwner = Boolean(selectedAccount && getIsOwner(selectedAccount));
   const isShared = selectedAccount?.type === AccountType.Shared;
   const isDefaultAccountSelected = defaultAccount?.id === selectedAccountId;
 
@@ -129,9 +127,9 @@ const Accounts = () => {
           <SelectedContainer
             key={account.id}
             isSelected={selectedAccountId === account.id}
-            onClick={() => setSelectedAccountId(account.id)}
+            onClick={() => setSelectedAccountId(account.id ?? 0)}
           >
-            <Card account={account} />
+            <AccountCard account={account} />
           </SelectedContainer>
         ))}
       </Cards>
@@ -163,7 +161,7 @@ const Accounts = () => {
             </Stack>
           </Stack>
 
-          {isAdmin && (
+          {isOwner && (
             <Stack spacing={1.5} alignItems="flex-start">
               <Heading5>{t('Danger zone')}</Heading5>
               <Dangerzone>

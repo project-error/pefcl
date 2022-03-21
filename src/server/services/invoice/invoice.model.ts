@@ -1,11 +1,11 @@
-import { DATABASE_PREFIX } from '@utils/constants';
+import { DATABASE_PREFIX, MS_TWO_WEEKS } from '@utils/constants';
 import { DataTypes, Model } from 'sequelize';
 import { singleton } from 'tsyringe';
 import { Invoice, InvoiceStatus } from '../../../../typings/Invoice';
 import { sequelize } from '../../utils/pool';
 
 @singleton()
-export class InvoiceModel extends Model<Invoice> {}
+export class InvoiceModel extends Model<Invoice, Omit<Invoice, 'id' | 'status'>> {}
 
 InvoiceModel.init(
   {
@@ -37,6 +37,7 @@ InvoiceModel.init(
     expiresAt: {
       type: DataTypes.DATE,
       allowNull: false,
+      defaultValue: () => new Date(Date.now() + MS_TWO_WEEKS).toString(),
     },
   },
   { sequelize: sequelize, tableName: DATABASE_PREFIX + 'invoices' },

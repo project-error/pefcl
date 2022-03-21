@@ -5,7 +5,7 @@ import { AnimatePresence, Reorder } from 'framer-motion';
 import { useAtom } from 'jotai';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { totalNumberOfTransaction } from 'src/data/transactions';
+import { transactionsTotalAtom } from 'src/data/transactions';
 import { Account } from '@typings/Account';
 import Layout from '../../components/Layout';
 import CreateAccountModal from '../../components/Modals/CreateAccount';
@@ -16,10 +16,11 @@ import { totalPendingInvoices } from '../../data/invoices';
 import { useConfig } from '../../hooks/useConfig';
 import { formatMoney } from '../../utils/currency';
 import theme from '../../utils/theme';
-import { Card } from './../../components/Card';
+import { AccountCard } from './../../components/Card';
 import DashboardContainer, { DashboardContainerFallback } from './components/DashboardContainer';
 import PendingInvoices from './components/PendingInvoices';
 import Transactions from './components/Transactions';
+import DashboardSummary from './components/Summary';
 
 const CardContainer = styled(Reorder.Item)`
   display: flex;
@@ -45,10 +46,12 @@ const CreateCard = styled.div`
   justify-content: center;
   align-items: center;
   border-radius: ${theme.spacing(2)};
-  height: auto;
-  border: 1px dashed #fff;
-  font-size: 2rem;
+  border: 1px dashed ${theme.palette.grey[500]};
+  font-size: 1.5rem;
   transition: 300ms;
+
+  width: 5.5rem;
+  height: 5.5rem;
 
   :hover {
     color: ${theme.palette.primary.main};
@@ -62,7 +65,7 @@ const CreateCard = styled.div`
 
 const Lists = styled.section`
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1.25fr;
   margin-top: ${theme.spacing(4)};
   grid-column-gap: ${theme.spacing(4)};
 `;
@@ -78,7 +81,7 @@ const Dashboard = () => {
   const [orderedAccounts, setOrderedAccounts] = useAtom(orderedAccountsAtom);
 
   const handleReOrder = (accounts: Account[]) => {
-    const order = accounts?.reduce((prev, curr, index) => ({ ...prev, [curr.id]: index }), {});
+    const order = accounts?.reduce((prev, curr, index) => ({ ...prev, [curr.id ?? 0]: index }), {});
     setOrderedAccounts(order);
     setRefreshOrder(order); // TODO: This would not be needed if the 'orderedAccounts' was updated. Not sure why it doesn't.
   };
@@ -105,7 +108,7 @@ const Dashboard = () => {
           <AnimatePresence initial={false}>
             {orderedAccounts.map((account) => (
               <CardContainer key={account.id} value={account}>
-                <Card account={account} />
+                <AccountCard account={account} />
               </CardContainer>
             ))}
           </AnimatePresence>
@@ -120,10 +123,14 @@ const Dashboard = () => {
 
       <Lists>
         <React.Suspense fallback={<DashboardContainerFallback title={t('Loading transactions')} />}>
+          <DashboardSummary />
+        </React.Suspense>
+
+        <React.Suspense fallback={<DashboardContainerFallback title={t('Loading transactions')} />}>
           <DashboardContainer
-            title={t('Transactions')}
+            title={t('Latest transactions')}
             viewAllRoute="/transactions"
-            totalAtom={totalNumberOfTransaction}
+            totalAtom={transactionsTotalAtom}
           >
             <Transactions />
           </DashboardContainer>
@@ -138,10 +145,6 @@ const Dashboard = () => {
             <PendingInvoices />
           </DashboardContainer>
         </React.Suspense>
-
-        {/* <DashboardContainer title={t('Fines')} total={2} viewAllRoute="/transactions">
-          <PendingInvoices />
-        </DashboardContainer> */}
       </Lists>
     </Layout>
   );

@@ -9,7 +9,7 @@ import { InvoiceEvents } from '@typings/Events';
 import { Invoice, PayInvoiceInput } from '@typings/Invoice';
 import { accountsAtom, defaultAccountAtom } from '../../data/accounts';
 import { invoicesAtom } from '../../data/invoices';
-import { transactionsAtom } from '../../data/transactions';
+import { transactionBaseAtom } from '../../data/transactions';
 import { useConfig } from '../../hooks/useConfig';
 import { formatMoney } from '../../utils/currency';
 import { fetchNui } from '../../utils/fetchNui';
@@ -31,11 +31,11 @@ interface PayInvoiceModalProps {
   onClose(): void;
 }
 
-const PayInvoiceModal: React.FC<PayInvoiceModalProps> = ({ onClose, invoice }) => {
+const PayInvoiceModal = ({ onClose, invoice }: PayInvoiceModalProps) => {
   const [accounts, updateAccounts] = useAtom(accountsAtom);
   const [defaultAccount] = useAtom(defaultAccountAtom);
   const [, updateInvoices] = useAtom(invoicesAtom);
-  const [, updateTransactions] = useAtom(transactionsAtom);
+  const [, updateTransactions] = useAtom(transactionBaseAtom);
   const [selectedAccountId, setSelectedAccountId] = useState(defaultAccount?.id ?? 0);
   const config = useConfig();
   const { t } = useTranslation();
@@ -57,8 +57,6 @@ const PayInvoiceModal: React.FC<PayInvoiceModalProps> = ({ onClose, invoice }) =
       })
       .finally(onClose);
   };
-
-  console.log({ selectedAccountId });
 
   return (
     <Paper>

@@ -1,8 +1,8 @@
 import { Chip, Stack } from '@mui/material';
 import { Transaction, TransactionType } from '@typings/transactions';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { TranslateFunction } from 'src/translation/i18n';
+import { TranslateFunction } from '@utils/i18n';
 
 export interface TransactionFilter {
   label: ReturnType<TranslateFunction>;
@@ -34,19 +34,14 @@ const TransactionFilters: React.FC<TransactionFiltersProps> = ({ updateActiveFil
 
   const handleChipClick = (key: string) => {
     const isActive = activeFilters.includes(key);
+    const newFilters = isActive
+      ? activeFilters.filter((filter) => filter !== key)
+      : [...activeFilters, key];
 
-    if (isActive) {
-      setActiveFilters((prev) => prev.filter((filter) => filter !== key));
-    } else {
-      setActiveFilters((prev) => [...prev, key]);
-    }
-  };
-
-  useEffect(() => {
-    const updateFilters: TransactionFilter[] = activeFilters.map((key) => filters[key]);
-
+    const updateFilters: TransactionFilter[] = newFilters.map((key) => filters[key]);
+    setActiveFilters(newFilters);
     updateActiveFilters(updateFilters);
-  }, [activeFilters, updateActiveFilters, filters]);
+  };
 
   return (
     <Stack direction="row" spacing={1}>

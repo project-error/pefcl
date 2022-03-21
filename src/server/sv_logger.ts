@@ -19,7 +19,7 @@ const formatLogs = (log: any): string => {
 const findLogPath = () => `${path.join(GetResourcePath(GetCurrentResourceName()), 'sv_pefcl.log')}`;
 
 export const mainLogger: winston.Logger = createLogger({
-  level: config.debug.level,
+  level: config?.debug?.level,
   transports: [
     new transports.File({
       filename: findLogPath(),

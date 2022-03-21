@@ -1,8 +1,7 @@
 import { singleton } from 'tsyringe';
 import { InvoiceInput, InvoiceStatus } from '@typings/Invoice';
 import { InvoiceModel } from './invoice.model';
-
-const twoWeeks = 1000 * 60 * 60 * 24 * 7 * 2;
+import { MS_TWO_WEEKS } from '@utils/constants';
 
 @singleton()
 export class InvoiceDB {
@@ -14,14 +13,14 @@ export class InvoiceDB {
     return await InvoiceModel.findAll({ where: { to: identifier } });
   }
 
-  async getInvoiceById(id: number): Promise<InvoiceModel> {
+  async getInvoiceById(id: number): Promise<InvoiceModel | null> {
     return await InvoiceModel.findOne({ where: { id } });
   }
 
   async createInvoice(input: InvoiceInput): Promise<InvoiceModel> {
     const expiresAt = input.expiresAt
       ? input.expiresAt
-      : new Date(Date.now() + twoWeeks).toString();
+      : new Date(Date.now() + MS_TWO_WEEKS).toString();
 
     return await InvoiceModel.create({ ...input, expiresAt });
   }

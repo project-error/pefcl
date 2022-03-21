@@ -4,7 +4,7 @@ import { Cash } from '@typings/Cash';
 import { sequelize } from '../../utils/pool';
 import { config } from '@utils/server-config';
 
-export class CashModel extends Model<Cash> {}
+export class CashModel extends Model<Cash, Omit<Cash, 'id' | 'amount'>> {}
 
 CashModel.init(
   {
@@ -15,7 +15,7 @@ CashModel.init(
     },
     amount: {
       type: DataTypes.INTEGER,
-      defaultValue: config.cash.defaultAmount ?? 0,
+      defaultValue: config?.cash?.defaultAmount ?? 0,
     },
     ownerIdentifier: {
       type: DataTypes.STRING,
