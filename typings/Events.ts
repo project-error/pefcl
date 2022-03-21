@@ -29,6 +29,7 @@ export enum ExternalAccountEvents {
 
 export enum TransactionEvents {
   Get = 'pefcl:getTransactions',
+  GetHistory = 'pefcl:getTransactionsHistory',
   CreateTransfer = 'pefcl:createTransfer',
 }
 

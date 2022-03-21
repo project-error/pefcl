@@ -49,3 +49,10 @@ export interface Transfer {
   amount: number;
   type: TransferType;
 }
+
+export type IncomeExpense = { income: number; expenses: number };
+export interface GetTransactionHistoryResponse {
+  income: number;
+  expenses: number;
+  lastWeek: Record<string, IncomeExpense>;
+}

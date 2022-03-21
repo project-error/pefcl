@@ -16,12 +16,12 @@ const Total = styled.div`
   background-color: ${theme.palette.background.light4};
 `;
 
-interface CountProps {
+interface CountProps extends React.HTMLAttributes<HTMLDivElement> {
   amount: string | number;
 }
-const Count = ({ amount }: CountProps) => {
+const Count = ({ amount, ...props }: CountProps) => {
   return (
-    <div>
+    <div {...props}>
       <Total>{amount}</Total>
     </div>
   );

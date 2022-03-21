@@ -20,6 +20,7 @@ import { AccountCard } from './../../components/Card';
 import DashboardContainer, { DashboardContainerFallback } from './components/DashboardContainer';
 import PendingInvoices from './components/PendingInvoices';
 import Transactions from './components/Transactions';
+import DashboardSummary from './components/Summary';
 
 const CardContainer = styled(Reorder.Item)`
   display: flex;
@@ -122,13 +123,7 @@ const Dashboard = () => {
 
       <Lists>
         <React.Suspense fallback={<DashboardContainerFallback title={t('Loading transactions')} />}>
-          <DashboardContainer
-            title={t('Latest transactions')}
-            viewAllRoute="/transactions"
-            totalAtom={transactionsTotalAtom}
-          >
-            <Transactions />
-          </DashboardContainer>
+          <DashboardSummary />
         </React.Suspense>
 
         <React.Suspense fallback={<DashboardContainerFallback title={t('Loading transactions')} />}>
@@ -150,10 +145,6 @@ const Dashboard = () => {
             <PendingInvoices />
           </DashboardContainer>
         </React.Suspense>
-
-        {/* <DashboardContainer title={t('Fines')} total={2} viewAllRoute="/transactions">
-          <PendingInvoices />
-        </DashboardContainer> */}
       </Lists>
     </Layout>
   );

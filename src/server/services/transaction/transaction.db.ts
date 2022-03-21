@@ -64,6 +64,42 @@ export class TransactionDB {
     });
   }
 
+  async getAllTransactionsFromAccounts(
+    accountIds: number[],
+    from?: Date,
+  ): Promise<TransactionModel[]> {
+    //TODO: clean this up
+    const createdAt = from
+      ? {
+          [Op.gte]: from,
+        }
+      : {
+          [Op.lte]: new Date(),
+        };
+
+    return await TransactionModel.findAll({
+      where: {
+        createdAt,
+        [Op.or]: [
+          {
+            fromAccountId: {
+              [Op.in]: accountIds,
+            },
+          },
+          {
+            toAccountId: {
+              [Op.in]: accountIds,
+            },
+          },
+        ],
+      },
+      include: [
+        { model: AccountModel, as: 'toAccount' },
+        { model: AccountModel, as: 'fromAccount' },
+      ],
+    });
+  }
+
   async getTransaction(id: number): Promise<TransactionModel | null> {
     return await TransactionModel.findOne({ where: { id } });
   }
