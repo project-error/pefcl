@@ -2,7 +2,7 @@ import { Chip, Stack } from '@mui/material';
 import { Transaction, TransactionType } from '@typings/transactions';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { TranslateFunction } from 'src/translation/i18n';
+import { TranslateFunction } from '@utils/i18n';
 
 export interface TransactionFilter {
   label: ReturnType<TranslateFunction>;

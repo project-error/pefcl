@@ -1,18 +1,22 @@
-import React, { useEffect } from 'react';
-import './App.css';
-import { debugData } from './utils/debugData';
-import { useTranslation } from 'react-i18next';
 import styled from '@emotion/styled';
-import { useConfig } from './hooks/useConfig';
-import { Route } from 'react-router-dom';
-import Dashboard from './views/dashboard/Dashboard';
-import theme from './utils/theme';
-import dayjs from 'dayjs';
-import Transactions from './views/transactions/Transactions';
-import Accounts from './views/accounts/Accounts';
-import { useNuiEvent } from 'react-fivem-hooks';
 import { useExitListener } from '@hooks/useExitListener';
+import dayjs from 'dayjs';
+import updateLocale from 'dayjs/plugin/updateLocale';
+import 'dayjs/locale/sv';
+import React, { useEffect } from 'react';
+import { useNuiEvent } from 'react-fivem-hooks';
+import { useTranslation } from 'react-i18next';
+import { Route } from 'react-router-dom';
+import './App.css';
+import { useConfig } from './hooks/useConfig';
+import { debugData } from './utils/debugData';
+import theme from './utils/theme';
+import Accounts from './views/accounts/Accounts';
+import Dashboard from './views/dashboard/Dashboard';
 import Invoices from './views/Invoices/Invoices';
+import Transactions from './views/transactions/Transactions';
+
+dayjs.extend(updateLocale);
 
 const Container = styled.div`
   padding: 4rem;
@@ -50,11 +54,11 @@ const App: React.FC = () => {
   useExitListener();
 
   useEffect(() => {
-    i18n.changeLanguage(config.language).catch((e) => console.error(e));
+    i18n.changeLanguage(config?.language).catch((e) => console.error(e));
   }, [i18n, config]);
 
   useEffect(() => {
-    dayjs.locale(config.language);
+    dayjs.locale(config?.language ?? 'en');
   }, [i18n, config]);
 
   return (
