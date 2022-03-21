@@ -56,6 +56,7 @@ export class AccountController {
   @NetPromise(AccountEvents.DeleteAccount)
   async deleteAccount(req: Request<{ accountId: number }>, res: Response<any>) {
     try {
+      await this._auth.isAuthorizedAccount(req.data.accountId, req.source, [AccountRole.Owner]);
       await this._accountService.handleDeleteAccount(req);
       res({ status: 'ok', data: {} });
     } catch (err) {

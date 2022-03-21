@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 import { Dialog, DialogActions, DialogContent, DialogTitle, Stack } from '@mui/material';
 import { AccountType } from '@typings/Account';
 import { AccountEvents } from '@typings/Events';
-import { getIsAdmin } from '@utils/account';
+import { getIsAdmin, getIsOwner } from '@utils/account';
 import { useAtom } from 'jotai';
 import React, { FormEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -81,6 +81,7 @@ const Accounts = () => {
   };
 
   const isAdmin = Boolean(selectedAccount && getIsAdmin(selectedAccount));
+  const isOwner = Boolean(selectedAccount && getIsOwner(selectedAccount));
   const isShared = selectedAccount?.type === AccountType.Shared;
   const isDefaultAccountSelected = defaultAccount?.id === selectedAccountId;
 
@@ -159,7 +160,7 @@ const Accounts = () => {
             </Stack>
           </Stack>
 
-          {isAdmin && (
+          {isOwner && (
             <Stack spacing={1.5} alignItems="flex-start">
               <Heading5>{t('Danger zone')}</Heading5>
               <Dangerzone>
