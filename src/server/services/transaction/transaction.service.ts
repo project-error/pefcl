@@ -18,6 +18,7 @@ import { TransactionModel } from './transaction.model';
 import { ExternalAccountService } from 'services/accountExternal/externalAccount.service';
 import { ServerError } from '@utils/errors';
 import { GenericErrors } from '@typings/Errors';
+import { AccountRole } from '@typings/Account';
 
 const logger = mainLogger.child({ module: 'transactionService' });
 
@@ -72,20 +73,34 @@ export class TransactionService {
   }
 
   private async handleInternalTransfer(req: Request<Transfer>) {
+    logger.silly('Creating internal transfer');
+    logger.silly(req);
+
     const t = await sequelize.transaction();
+    const user = this._userService.getUser(req.source);
+    const identifier = user.getIdentifier();
+    const { fromAccountId, toAccountId, amount, message } = req.data;
+
     try {
-      const fromAccount = await this._accountDB.getAccount(req.data.fromAccountId);
-      const toAccount = await this._accountDB.getAccount(req.data.toAccountId);
+      const myAccount = await this._accountDB.getAuthorizedAccountById(fromAccountId, identifier);
+      const sharedAccount = await this._accountDB.getAuthorizedSharedAccountById(
+        fromAccountId,
+        identifier,
+        [AccountRole.Admin, AccountRole.Owner],
+      );
+
+      const fromAccount = myAccount ?? sharedAccount;
+      const toAccount = await this._accountDB.getAccount(toAccountId);
 
       if (!toAccount || !fromAccount) {
         throw new ServerError(GenericErrors.NotFound);
       }
 
-      await fromAccount.decrement('balance', { by: req.data.amount });
-      await toAccount.increment('balance', { by: req.data.amount });
+      await toAccount.increment('balance', { by: amount });
+      await fromAccount.decrement('balance', { by: amount });
       await this._transactionDB.create({
-        amount: req.data.amount,
-        message: req.data.message,
+        amount: amount,
+        message: message,
         toAccount: toAccount.toJSON(),
         type: TransactionType.Transfer,
         fromAccount: fromAccount.toJSON(),

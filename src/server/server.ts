@@ -83,7 +83,7 @@ const test = async () => {
   await load();
   emit('onServerResourceStart', 'pe-financial');
 
-  global.source = 2;
+  global.source = 3;
   // emit('playerJoining', {});
 
   /* */

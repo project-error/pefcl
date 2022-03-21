@@ -22,7 +22,7 @@ import i18next from '@utils/i18n';
 import { TransactionType } from '@typings/transactions';
 import { AccountModel } from './account.model';
 import { ServerError } from '@utils/errors';
-import { BalanceErrors, GenericErrors } from '@typings/Errors';
+import { AuthorizationErrors, BalanceErrors, GenericErrors } from '@typings/Errors';
 
 const logger = mainLogger.child({ module: 'accounts' });
 
@@ -212,7 +212,7 @@ export class AccountService {
       const defaultAccount = await this.handleGetDefaultAccount(req.source);
 
       // TODO #2: Is this the best we can do?
-      const deletingAccount = await this._accountDB.getMyAccountById(
+      const deletingAccount = await this._accountDB.getAuthorizedAccountById(
         req.data.accountId,
         user.identifier,
       );
@@ -263,7 +263,7 @@ export class AccountService {
 
     const t = await sequelize.transaction();
     try {
-      const fromAccount = await this._accountDB.getMyAccountById(fromId, user.identifier);
+      const fromAccount = await this._accountDB.getAuthorizedAccountById(fromId, user.identifier);
       const toAccount = await this._accountDB.getAccount(toId);
 
       if (!fromAccount || !toAccount) {
@@ -436,5 +436,16 @@ export class AccountService {
       user: account.getDataValue('user'),
       role: account.getDataValue('role'),
     }));
+  }
+
+  async getAuthorizedAccount(source: number, accountId: number): Promise<AccountModel | null> {
+    const user = this._userService.getUser(source);
+    const account = await this._accountDB.getAuthorizedAccountById(accountId, user.getIdentifier());
+
+    if (!account) {
+      throw new ServerError(AuthorizationErrors.Forbidden);
+    }
+
+    return account;
   }
 }

@@ -1,6 +1,7 @@
 import { Account, AccountRole, CreateAccountInput, SharedAccountInput } from '@typings/Account';
-import { AccountErrors } from '@typings/Errors';
+import { AccountErrors, AuthorizationErrors } from '@typings/Errors';
 import { ServerError } from '@utils/errors';
+import { ExternalAccountDB } from 'services/accountExternal/externalAccount.db';
 import { singleton } from 'tsyringe';
 import { AccountModel } from './account.model';
 import { SharedAccountModel } from './sharedAccount.model';
@@ -12,6 +13,12 @@ export interface RemoveFromSharedAccountInput {
 
 @singleton()
 export class AccountDB {
+  _externalAccountDB: ExternalAccountDB;
+
+  constructor(externalAccountDB: ExternalAccountDB) {
+    this._externalAccountDB = externalAccountDB;
+  }
+
   async getAccounts(): Promise<AccountModel[]> {
     return await AccountModel.findAll();
   }
@@ -26,6 +33,7 @@ export class AccountDB {
     return await AccountModel.findAll({ where: { ownerIdentifier: identifier } });
   }
 
+  // TODO: Move into separate DB
   async getSharedAccountsByIdentifier(identifier: string): Promise<SharedAccountModel[]> {
     return await SharedAccountModel.findAll({
       where: { user: identifier },
@@ -40,11 +48,29 @@ export class AccountDB {
     });
   }
 
+  async getAuthorizedSharedAccountById(
+    id: number,
+    identifier: string,
+    roles: AccountRole[],
+  ): Promise<AccountModel | null> {
+    const sharedAccount = await SharedAccountModel.findOne({
+      where: { accountId: id, user: identifier },
+      include: [{ model: AccountModel, as: 'account' }],
+    });
+
+    const role = sharedAccount?.getDataValue('role') ?? AccountRole.Contributor;
+    if (!roles.includes(role)) {
+      throw new ServerError(AuthorizationErrors.Forbidden);
+    }
+
+    return sharedAccount?.getDataValue('account') as unknown as AccountModel;
+  }
+
   async getAccount(id: number): Promise<AccountModel | null> {
     return await AccountModel.findOne({ where: { id } });
   }
 
-  async getMyAccountById(id: number, identifier: string): Promise<AccountModel | null> {
+  async getAuthorizedAccountById(id: number, identifier: string): Promise<AccountModel | null> {
     return await AccountModel.findOne({ where: { id, ownerIdentifier: identifier } });
   }
 

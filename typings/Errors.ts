@@ -15,3 +15,7 @@ export enum AccountErrors {
 export enum BalanceErrors {
   InsufficentFunds = 'InsufficentFunds',
 }
+
+export enum AuthorizationErrors {
+  Forbidden = 'Forbidden',
+}
