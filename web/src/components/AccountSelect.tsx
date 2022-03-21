@@ -93,7 +93,9 @@ const AccountSelect = ({
 
   return (
     <div>
-      <AddExternalAccountModal isOpen={isExternalOpen} onClose={() => setIsExternalOpen(false)} />
+      <React.Suspense fallback={null}>
+        <AddExternalAccountModal isOpen={isExternalOpen} onClose={() => setIsExternalOpen(false)} />
+      </React.Suspense>
       <Select
         value={selected.toString()}
         onChange={handleChange}
