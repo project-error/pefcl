@@ -68,6 +68,7 @@ export class AccountController {
   async depositMoney(req: Request<ATMInput>, res: Response<any>) {
     try {
       await this._accountService.handleDepositMoney(req);
+      res({ status: 'ok', data: {} });
     } catch (err) {
       res({ status: 'error', errorMsg: err.message });
     }
@@ -80,6 +81,7 @@ export class AccountController {
       accountId &&
         (await this._auth.isAuthorizedAccount(accountId, req.source, [AccountRole.Admin]));
       await this._accountService.handleWithdrawMoney(req);
+      res({ status: 'ok', data: {} });
     } catch (err) {
       res({ status: 'error', errorMsg: err.message });
     }

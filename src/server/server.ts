@@ -63,6 +63,8 @@ if (isMocking) {
   app.post(...createEndpoint(AccountEvents.SetDefaultAccount));
   app.post(...createEndpoint(AccountEvents.CreateAccount));
   app.post(...createEndpoint(AccountEvents.RenameAccount));
+  app.post(...createEndpoint(AccountEvents.WithdrawMoney));
+  app.post(...createEndpoint(AccountEvents.DepositMoney));
   app.post(...createEndpoint(TransactionEvents.Get));
   app.post(...createEndpoint(TransactionEvents.CreateTransfer));
   app.post(...createEndpoint(InvoiceEvents.Get));
