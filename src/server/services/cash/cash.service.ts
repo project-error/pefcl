@@ -1,11 +1,14 @@
 import { singleton } from 'tsyringe';
-import { Cash } from '../../../../typings/Cash';
-import { AccountServiceExports } from '../../../../typings/exports';
+import { Cash, GiveCashInput } from '@typings/Cash';
+import { AccountServiceExports } from '@typings/exports';
 import { config } from '@utils/server-config';
 import { mainLogger } from '../../sv_logger';
 import { UserService } from '../user/user.service';
 import { CashDB } from './cash.db';
 import { CashModel } from './cash.model';
+import { Request } from '@typings/http';
+import { ServerError } from '@utils/errors';
+import { AccountErrors, BalanceErrors } from '@typings/Errors';
 
 const exp: AccountServiceExports = global.exports[config?.exports?.resourceName ?? 'no-use'];
 const logger = mainLogger.child({ module: 'cash' });
@@ -40,6 +43,21 @@ export class CashService {
     logger.debug(`Creating initial cash row for ${user?.getIdentifier() ?? ''}`);
     const cash = await this._cashDB.createInitial(user?.getIdentifier() ?? '');
     return cash.toJSON();
+  }
+
+  async giveCash(req: Request<GiveCashInput>) {
+    logger.debug(`source ${req.source}: Giving ${req.data.amount} to ${req.data.source}.`);
+    const myCashAmount = await this.getMyCash(req.source);
+
+    if (myCashAmount < req.data.amount) {
+      throw new ServerError(BalanceErrors.InsufficentFunds);
+    }
+
+    // TODO: Transaction this b
+    await this.handleGiveCash(req.data.source, req.data.amount);
+    await this.handleTakeCash(req.source, req.data.amount);
+
+    return true;
   }
 
   async handleTakeCash(source: number, amount: number): Promise<CashModel | null> {

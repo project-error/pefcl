@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "yarn concurrently \"yarn nodemon\" \"node ./scripts/watch_server.js\"",
-    "dev:ingame": "node ./scripts/watch_server.js --mode=ingame",
+    "dev:ingame": "yarn concurrently \"node ./scripts/watch_client.js\" \"node ./scripts/watch_server.js --mode=ingame\"",
     "build": "node ./scripts/build_server.js && node ./scripts/build_client.js",
     "lint": "eslint server && eslint client",
     "watch": "concurrently \"yarn watch:server\" \"yarn watch:client\"",

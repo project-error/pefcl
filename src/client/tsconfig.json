@@ -7,6 +7,7 @@
     "lib": ["ES2017"],
     "allowJs": true,
     "noEmit": true,
+    "strictNullChecks": true,
     "types": ["@citizenfx/client", "@types/node"],
     "esModuleInterop": true,
     "moduleResolution": "node",

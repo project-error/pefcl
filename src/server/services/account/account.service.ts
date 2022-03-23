@@ -87,7 +87,7 @@ export class AccountService {
 
     const accs = [...filteredAccounts, ...sharedAccounts];
     return accs.map((account) => {
-      const date = new Date(account.createdAt);
+      const date = new Date(account.createdAt ?? '');
       return {
         ...account,
         createdAt: date.toLocaleString(),

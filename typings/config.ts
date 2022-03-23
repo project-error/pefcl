@@ -14,9 +14,7 @@ export interface ResourceConfig {
     profileQueries: boolean;
     shouldSync: boolean;
   };
-  debug: {
-    level: string;
-  };
+
   prices: {
     newAccount: number;
   };
@@ -32,4 +30,8 @@ export interface ResourceConfig {
   };
   language: string;
   currency: string;
+  debug: {
+    level: string;
+    mockLicenses: boolean;
+  };
 }

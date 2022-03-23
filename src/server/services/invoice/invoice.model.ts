@@ -40,5 +40,14 @@ InvoiceModel.init(
       defaultValue: () => new Date(Date.now() + MS_TWO_WEEKS).toString(),
     },
   },
-  { sequelize: sequelize, tableName: DATABASE_PREFIX + 'invoices' },
+  {
+    sequelize: sequelize,
+    tableName: DATABASE_PREFIX + 'invoices',
+    getterMethods: {
+      getDate() {
+        const date = new Date(this.getDataValue('createdAt') ?? '');
+        return date.toDateString();
+      },
+    },
+  },
 );

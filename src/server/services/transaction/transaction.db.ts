@@ -1,6 +1,6 @@
 import { Op } from 'sequelize';
 import { singleton } from 'tsyringe';
-import { GetTransactionsInput, TransactionInput } from '@typings/transactions';
+import { GetTransactionsInput, TransactionInput, TransactionType } from '@typings/transactions';
 import { AccountModel } from '../account/account.model';
 import { TransactionModel } from './transaction.model';
 import { config } from '@utils/server-config';
@@ -43,13 +43,32 @@ export class TransactionDB {
       where: {
         [Op.or]: [
           {
-            fromAccountId: {
-              [Op.in]: input.accountIds,
+            [Op.and]: {
+              fromAccountId: {
+                [Op.in]: input.accountIds,
+              },
+              type: TransactionType.Outgoing,
             },
           },
           {
-            toAccountId: {
-              [Op.in]: input.accountIds,
+            [Op.and]: {
+              toAccountId: {
+                [Op.in]: input.accountIds,
+              },
+              type: TransactionType.Incoming,
+            },
+          },
+          {
+            [Op.and]: {
+              [Op.or]: {
+                toAccountId: {
+                  [Op.in]: input.accountIds,
+                },
+                fromAccountId: {
+                  [Op.in]: input.accountIds,
+                },
+              },
+              type: TransactionType.Transfer,
             },
           },
         ],
@@ -82,13 +101,19 @@ export class TransactionDB {
         createdAt,
         [Op.or]: [
           {
-            fromAccountId: {
-              [Op.in]: accountIds,
+            [Op.and]: {
+              fromAccountId: {
+                [Op.in]: accountIds,
+              },
+              type: TransactionType.Outgoing,
             },
           },
           {
-            toAccountId: {
-              [Op.in]: accountIds,
+            [Op.and]: {
+              toAccountId: {
+                [Op.in]: accountIds,
+              },
+              type: TransactionType.Incoming,
             },
           },
         ],

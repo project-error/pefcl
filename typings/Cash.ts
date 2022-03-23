@@ -3,3 +3,8 @@ export interface Cash {
   amount: number;
   ownerIdentifier: string;
 }
+
+export interface GiveCashInput {
+  source: number;
+  amount: number;
+}

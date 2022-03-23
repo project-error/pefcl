@@ -30,7 +30,6 @@ export class ExternalAccountService {
     logger.silly('Creating external account');
 
     const user = this._userService.getUser(req.source);
-    // 920,3083-1373-0226;
 
     const targetAccount = await this._accountDB.getAccountByNumber(req.data.number);
     const alreadyExists = await this._externalAccountDB.getExistingAccount(
@@ -65,7 +64,8 @@ export class ExternalAccountService {
 
   async getAccounts(req: Request<void>) {
     const user = this._userService.getUser(req.source);
-    return this._externalAccountDB.getAccountsByUserId(user.getIdentifier());
+    const accounts = await this._externalAccountDB.getAccountsByUserId(user.getIdentifier());
+    return accounts.map((account) => account.toJSON());
   }
 
   async getAccountFromExternalAccount(accountId: number) {

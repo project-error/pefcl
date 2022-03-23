@@ -3,6 +3,7 @@ import { OnlineUser } from '@typings/user';
 import { config } from '@utils/server-config';
 
 const exp = global.exports;
+const resource = exp[config?.exports?.resourceName ?? 'none'];
 
 export class UserModule {
   private readonly _source: number;
@@ -14,7 +15,6 @@ export class UserModule {
     this._source = user.source;
     this.identifier = user.identifier;
     this.name = user.name;
-    this._resource = exp[config?.exports?.resourceName ?? 'none'];
   }
 
   getSource() {
@@ -26,10 +26,10 @@ export class UserModule {
   }
 
   getBalance() {
-    return this._resource.getCurrentBalance(this._source);
+    return resource.getCurrentBalance(this._source);
   }
 
   getBankBalance(): number {
-    return this._resource.getCurrentBankBalance(this._source);
+    return resource.getCurrentBankBalance(this._source);
   }
 }

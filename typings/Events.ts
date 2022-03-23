@@ -1,5 +1,6 @@
 export enum GeneralEvents {
   CloseBank = 'pefcl:closeNui',
+  ResourceStarted = 'pefcl:resourceStarted',
 }
 
 export enum UserEvents {
@@ -36,5 +37,11 @@ export enum TransactionEvents {
 export enum InvoiceEvents {
   Get = 'pefcl:getInvoices',
   CreateInvoice = 'pefcl:createInvoice',
+  CreateOnlineInvoice = 'pefcl:createOnlineInvoice',
   PayInvoice = 'pefcl:payInvoice',
+}
+
+export enum CashEvents {
+  GetMyCash = 'pefcl:getMyCash',
+  Give = 'pefcl:giveCash',
 }

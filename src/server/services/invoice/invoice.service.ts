@@ -34,17 +34,22 @@ export class InvoiceService {
   }
 
   async getAllInvoicesBySource(source: number) {
-    logger.silly('Fetching user invoices.');
+    logger.silly('Fetching user invoices!');
     const user = this._userService.getUser(source);
-    const invoices = await this._invoiceDB.getAllReceivingInvoices(user.identifier);
-    return invoices.map((invoice) => invoice.toJSON());
+    const invoices = await this._invoiceDB.getAllReceivingInvoices(user.getIdentifier());
+    return invoices.map((invoice) => ({
+      ...invoice.toJSON(),
+      // TODO: Use Timestamps as saving type instead for dates. Dates currently get fucked on events SERVER > CLIENT.
+      expiresAt: new Date(invoice.getDataValue('expiresAt') ?? '').toDateString(),
+      createdAt: new Date(invoice.getDataValue('createdAt') ?? '').toDateString(),
+    }));
   }
 
-  async createInvoice(req: Request<InvoiceInput>) {
+  async createInvoice(data: InvoiceInput) {
     logger.silly('Creating invoice.');
-    logger.silly(req);
+    logger.silly(data);
 
-    const invoice = await this._invoiceDB.createInvoice(req.data);
+    const invoice = await this._invoiceDB.createInvoice(data);
     return invoice;
   }
 

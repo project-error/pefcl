@@ -21,6 +21,15 @@ import { load } from './utils/i18n';
 import './utils/pool';
 import './utils/server-config';
 
+const hotReloadConfig = {
+  resourceName: GetCurrentResourceName(),
+  files: ['/src/dist/server.js', '/src/dist/client.js', '/src/dist/html/index.js'],
+};
+
+if (GetResourceState('hotreload') === 'started') {
+  exports['hotreload']?.add?.(hotReloadConfig);
+}
+
 new Bank().bootstrap();
 
 const isMocking = process.env.NODE_ENV === 'mocking';
@@ -79,14 +88,15 @@ if (isMocking) {
 
   app.listen(port, () => {
     console.log(`[MOCKSERVER]: listening on port: ${port}`);
+
+    emit('onServerResourceStart', 'pe-financial');
+    global.source = 2;
   });
 }
 
 const test = async () => {
   await load();
-  emit('onServerResourceStart', 'pe-financial');
 
-  global.source = 3;
   // emit('playerJoining', {});
 
   /* */

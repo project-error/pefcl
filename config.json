@@ -1,6 +1,6 @@
 {
   "exports": {
-    "resourceName": "my-resource"
+    "resourceName": "your-resource"
   },
   "general": {
     "useFrameworkIntegration": false
@@ -22,9 +22,10 @@
   "cash": {
     "defaultAmount": 2000
   },
-  "language": "sv",
-  "currency": "SEK",
+  "language": "en",
+  "currency": "USD",
   "debug": {
-    "level": "silly"
+    "level": "silly",
+    "mockLicenses": true
   }
 }

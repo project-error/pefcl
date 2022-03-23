@@ -10,6 +10,13 @@ export interface InvoiceInput {
   message: string;
   expiresAt?: string;
 }
+
+export interface InvoiceOnlineInput {
+  source: number;
+  amount: number;
+  message: string;
+}
+
 export interface Invoice {
   id: number;
   amount: number;

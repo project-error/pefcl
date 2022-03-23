@@ -1,5 +1,6 @@
 import { GenericErrors } from '@typings/Errors';
 import { ServerError } from '@utils/errors';
+import { config } from '@utils/server-config';
 import { mainLogger } from 'sv_logger';
 import { singleton } from 'tsyringe';
 import { UserDTO } from '../../../../typings/user';
@@ -37,9 +38,13 @@ export class UserService {
     this.usersBySource.delete(source);
   }
 
-  savePlayer(userDTO: UserDTO) {
+  async savePlayer(userDTO: UserDTO) {
     if (!userDTO.identifier) {
-      userDTO.identifier = getGameLicense(userDTO.source);
+      getGameLicense(userDTO.source);
+    }
+
+    if (config.debug?.mockLicenses) {
+      userDTO.identifier = `license:${userDTO.source}`;
     }
 
     if (!userDTO.name) {
@@ -58,7 +63,8 @@ export class UserService {
       name: userDTO.name,
     });
 
-    logger.debug('New user loaded for pe-fcl', user);
+    logger.debug('New user loaded for pe-fcl');
+    logger.debug(user);
 
     this.usersBySource.set(userDTO.source, user);
   }
