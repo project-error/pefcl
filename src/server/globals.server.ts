@@ -6,7 +6,7 @@ const isMocking = process.env.NODE_ENV === 'mocking' || process.env.NODE_ENV ===
 
 // TODO: Move this into package
 const convars = {
-  mysql_connection_string: 'mysql://root:root@localhost/dev',
+  mysql_connection_string: 'mysql://root:bruv@localhost/dev',
 };
 
 const players = {
@@ -28,6 +28,10 @@ if (isMocking) {
   global.LoadResourceFile = (_resourceName: string, fileName: string) => {
     const file = readFileSync(`${baseDir}/${fileName}`, 'utf-8');
     return file;
+  };
+
+  global.GetResourceState = () => {
+    return 'Mocked';
   };
 
   global.GetCurrentResourceName = () => {

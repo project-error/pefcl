@@ -14,7 +14,7 @@ dayjs.extend(localizedFormat);
 
 const load = async () => {
   const config = await getConfig();
-  const language = config.language ?? 'en';
+  const language = config.general.language ?? 'en';
 
   console.log('Setting initial language to: ', language);
 
@@ -29,7 +29,7 @@ const load = async () => {
           translation: sv,
         },
       },
-      lng: config.language,
+      lng: config.general.language,
       fallbackLng: 'en',
     })
     .then(() => {})

@@ -66,7 +66,7 @@ export class AccountDB {
     return sharedAccount?.getDataValue('account') as unknown as AccountModel;
   }
 
-  async getAccount(id: number): Promise<AccountModel | null> {
+  async getAccountById(id: number): Promise<AccountModel | null> {
     return await AccountModel.findOne({ where: { id } });
   }
 

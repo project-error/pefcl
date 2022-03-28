@@ -49,7 +49,7 @@ const Option: React.FC<{ account: Account; config: ResourceConfig }> = ({ accoun
     <ListItem>
       <Stack p="0rem 0.5rem">
         <BodyText>{account.accountName}</BodyText>
-        <BalanceText>{formatMoney(account.balance, config)}</BalanceText>
+        <BalanceText>{formatMoney(account.balance, config.general)}</BalanceText>
       </Stack>
       <Heading6>{account.type === AccountType.Personal ? t('Personal') : t('Shared')}</Heading6>
     </ListItem>

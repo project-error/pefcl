@@ -15,6 +15,7 @@ import Accounts from './views/accounts/Accounts';
 import Dashboard from './views/dashboard/Dashboard';
 import Invoices from './views/Invoices/Invoices';
 import Transactions from './views/transactions/Transactions';
+import ATM from './views/ATM/ATM';
 
 dayjs.extend(updateLocale);
 
@@ -48,22 +49,27 @@ const App: React.FC = () => {
   const config = useConfig();
   const { data: isVisible } = useNuiEvent<boolean>({
     event: 'setVisible',
+    defaultValue: false,
+  });
+  const { data: isAtmVisible } = useNuiEvent<boolean>({
+    event: 'setVisibleATM',
     defaultValue: process.env.NODE_ENV === 'development',
   });
+
   const { i18n } = useTranslation();
   useExitListener();
 
   useEffect(() => {
-    i18n.changeLanguage(config?.language).catch((e) => console.error(e));
+    i18n.changeLanguage(config?.general?.language).catch((e) => console.error(e));
   }, [i18n, config]);
 
   useEffect(() => {
-    dayjs.locale(config?.language ?? 'en');
+    dayjs.locale(config?.general?.language ?? 'en');
   }, [i18n, config]);
 
   return (
     <>
-      {isVisible && (
+      {!isAtmVisible && isVisible && (
         <Container>
           <Content>
             <Route path="/" exact component={Dashboard} />
@@ -73,6 +79,8 @@ const App: React.FC = () => {
           </Content>
         </Container>
       )}
+
+      {isAtmVisible && <ATM />}
     </>
   );
 };

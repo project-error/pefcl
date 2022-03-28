@@ -153,7 +153,7 @@ export class AccountService {
       }
 
       const userAccounts = await this._accountDB.getAccountsByIdentifier(userIdentifier);
-      const fromAccount = await this._accountDB.getAccount(req.data.fromAccountId);
+      const fromAccount = await this._accountDB.getAccountById(req.data.fromAccountId);
 
       const isFirstSetup = userAccounts.length === 0;
       const isShared = req.data.isShared && !isFirstSetup;
@@ -270,7 +270,7 @@ export class AccountService {
     const t = await sequelize.transaction();
     try {
       const fromAccount = await this._accountDB.getAuthorizedAccountById(fromId, user.identifier);
-      const toAccount = await this._accountDB.getAccount(toId);
+      const toAccount = await this._accountDB.getAccountById(toId);
 
       if (!fromAccount || !toAccount) {
         throw new ServerError(GenericErrors.NotFound);
@@ -300,7 +300,7 @@ export class AccountService {
     );
     const depositionAmount = req.data.amount;
     const targetAccount = req.data.accountId
-      ? await this._accountDB.getAccount(req.data.accountId)
+      ? await this._accountDB.getAccountById(req.data.accountId)
       : await this.handleGetDefaultAccount(req.source);
 
     if (!targetAccount) {
@@ -345,7 +345,7 @@ export class AccountService {
   async handleWithdrawMoney(req: Request<ATMInput>) {
     logger.silly(`"${req.source}" withdrawing "${req.data.amount}"`);
     const targetAccount = req.data.accountId
-      ? await this._accountDB.getAccount(req.data.accountId)
+      ? await this._accountDB.getAccountById(req.data.accountId)
       : await this.handleGetDefaultAccount(req.source);
     const withdrawAmount = req.data.amount;
 
@@ -395,7 +395,7 @@ export class AccountService {
       const defaultAccount = await this._accountDB.getDefaultAccountByIdentifier(
         user?.getIdentifier() ?? '',
       );
-      const newDefaultAccount = await this._accountDB.getAccount(req.data.accountId);
+      const newDefaultAccount = await this._accountDB.getAccountById(req.data.accountId);
 
       if (!newDefaultAccount) {
         throw new ServerError(GenericErrors.NotFound);

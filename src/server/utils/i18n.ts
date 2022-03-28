@@ -6,7 +6,7 @@ import i18next from 'i18next';
 import { config } from '@utils/server-config';
 import { mainLogger } from 'sv_logger';
 
-const language = config.language ?? 'en';
+const language = config?.general?.language ?? 'en';
 const logger = mainLogger.child({ module: 'i18n' });
 
 dayjs.locale(language);

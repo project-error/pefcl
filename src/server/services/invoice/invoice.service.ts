@@ -59,7 +59,7 @@ export class InvoiceService {
 
     const t = await sequelize.transaction();
     try {
-      const account = await this._accountDB.getAccount(req.data.fromAccountId);
+      const account = await this._accountDB.getAccountById(req.data.fromAccountId);
       const invoice = await this._invoiceDB.getInvoiceById(req.data.invoiceId);
 
       if (!invoice || !account) {

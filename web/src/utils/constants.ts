@@ -1,9 +1,5 @@
 import { Account, AccountRole, AccountType } from '@typings/Account';
-import {
-  GetTransactionsResponse,
-  Transaction,
-  TransactionType,
-} from '../../../typings/transactions';
+import { GetTransactionsResponse, TransactionType } from '../../../typings/transactions';
 import { Invoice, InvoiceStatus } from '../../../typings/Invoice';
 import dayjs from 'dayjs';
 
@@ -16,7 +12,7 @@ export const mockedAccounts: Account[] = [
     id: 1,
     accountName: 'Savings',
     number: '920, 1000-2000-3000',
-    balance: 20000,
+    balance: 4500,
     isDefault: true,
     ownerIdentifier: '',
     type: AccountType.Personal,

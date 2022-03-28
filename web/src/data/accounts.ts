@@ -44,6 +44,8 @@ export const defaultAccountAtom = atom((get) =>
   get(accountsAtom).find((account) => account.isDefault),
 );
 
+export const defaultAccountBalance = atom((get) => get(defaultAccountAtom)?.balance);
+
 /* Saved order for cards */
 type OrderedAccounts = Record<number, number>;
 const accountOrderAtom = atom<string>(localStorage.getItem('order') ?? '');

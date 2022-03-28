@@ -22,9 +22,9 @@ export const formatMoneyWithoutCurrency = (amount: number, language: string) => 
 };
 
 export const getSignLocation = (config: ResourceConfig): 'before' | 'after' => {
-  const formatter = new Intl.NumberFormat(config.language, {
+  const formatter = new Intl.NumberFormat(config?.general?.language, {
     style: 'currency',
-    currency: config.currency,
+    currency: config.general.currency,
   });
 
   const result = formatter.format(0);
@@ -34,9 +34,9 @@ export const getSignLocation = (config: ResourceConfig): 'before' | 'after' => {
 };
 
 export const getCurrencySign = (config: ResourceConfig): string => {
-  const formatter = new Intl.NumberFormat(config.language, {
+  const formatter = new Intl.NumberFormat(config.general.language, {
     style: 'currency',
-    currency: config.currency,
+    currency: config.general.currency,
   });
 
   const [result] = formatter.formatToParts(0).filter((part) => part.type === 'currency');

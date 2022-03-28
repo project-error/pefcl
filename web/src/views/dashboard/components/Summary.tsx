@@ -55,14 +55,14 @@ const DashboardSummary = () => {
       <ExpensesIncomeContainer p={3}>
         <Stack spacing={0.5}>
           <Heading6>{t('Income')}</Heading6>
-          <Income>{formatMoney(data?.income ?? 0, config)}</Income>
+          <Income>{formatMoney(data?.income ?? 0, config.general)}</Income>
         </Stack>
 
         <Divider orientation="horizontal" sx={{ margin: '1rem 0' }} />
 
         <Stack spacing={0.5}>
           <Heading6>{t('Expenses')}</Heading6>
-          <Expense>{formatMoney(data?.expenses ?? 0, config)}</Expense>
+          <Expense>{formatMoney(data?.expenses ?? 0, config.general)}</Expense>
         </Stack>
       </ExpensesIncomeContainer>
 

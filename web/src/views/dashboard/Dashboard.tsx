@@ -101,7 +101,7 @@ const Dashboard = () => {
       <Stack spacing={4}>
         <Stack>
           <PreHeading>{t('Total balance')}</PreHeading>
-          <Heading1>{formatMoney(totalBalance, config)}</Heading1>
+          <Heading1>{formatMoney(totalBalance, config.general)}</Heading1>
         </Stack>
 
         <Cards values={orderedAccounts} onReorder={handleReOrder} axis="x">
