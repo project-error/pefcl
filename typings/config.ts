@@ -29,6 +29,10 @@ export interface ResourceConfig {
   cash: {
     defaultAmount: number;
   };
+  atms: {
+    distance: number;
+    props: number[];
+  };
   debug: {
     level: string;
     mockLicenses: boolean;
