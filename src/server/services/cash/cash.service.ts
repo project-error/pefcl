@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { Cash, GiveCashInput } from '@typings/Cash';
+import { Cash, ChangeCashInput } from '@typings/Cash';
 import { AccountServiceExports } from '@typings/exports';
 import { config } from '@utils/server-config';
 import { mainLogger } from '../../sv_logger';
@@ -45,7 +45,7 @@ export class CashService {
     return cash.toJSON();
   }
 
-  async giveCash(req: Request<GiveCashInput>) {
+  async giveCash(req: Request<ChangeCashInput>) {
     logger.debug(`source ${req.source}: Giving ${req.data.amount} to ${req.data.source}.`);
     const myCashAmount = await this.getMyCash(req.source);
 
@@ -53,14 +53,13 @@ export class CashService {
       throw new ServerError(BalanceErrors.InsufficentFunds);
     }
 
-    // TODO: Transaction this b
-    await this.handleGiveCash(req.data.source, req.data.amount);
-    await this.handleTakeCash(req.source, req.data.amount);
+    await this.handleAddCash(req.data.source, req.data.amount);
+    await this.handleRemoveCash(req.source, req.data.amount);
 
     return true;
   }
 
-  async handleTakeCash(source: number, amount: number): Promise<CashModel | null> {
+  async handleRemoveCash(source: number, amount: number): Promise<CashModel | null> {
     logger.debug(`Taking ${amount} from ${source}`);
     const user = this._userService.getUser(source);
     const identifier = user.getIdentifier();
@@ -76,7 +75,7 @@ export class CashService {
     return cash;
   }
 
-  async handleGiveCash(source: number, amount: number): Promise<CashModel | null> {
+  async handleAddCash(source: number, amount: number): Promise<CashModel | null> {
     logger.debug(`Giving ${amount} to ${source}`);
     const user = this._userService.getUser(source);
     const identifier = user.getIdentifier();

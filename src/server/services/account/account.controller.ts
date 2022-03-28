@@ -13,14 +13,17 @@ import {
 } from '@typings/Account';
 import { AccountEvents, ExternalAccountEvents, SharedAccountEvents } from '@typings/Events';
 import { Request, Response } from '@typings/http';
+import { ServerExports } from '@typings/exports/server';
 import { AccountService } from './account.service';
 import { Event, EventListener } from '@decorators/Event';
 import { ExternalAccountService } from 'services/accountExternal/externalAccount.service';
 import { AuthService } from 'services/auth/auth.service';
+import { Export, ExportListener } from '@decorators/Export';
 
 @Controller('Account')
 @PromiseEventListener()
 @EventListener()
+@ExportListener()
 export class AccountController {
   _auth: AuthService;
   private readonly _accountService: AccountService;
@@ -64,7 +67,7 @@ export class AccountController {
     }
   }
 
-  // type these later when we have specs
+  @Export(ServerExports.DepositMoney)
   @NetPromise(AccountEvents.DepositMoney)
   async depositMoney(req: Request<ATMInput>, res: Response<any>) {
     try {
@@ -75,15 +78,18 @@ export class AccountController {
     }
   }
 
+  @Export(ServerExports.WithdrawMoney)
   @NetPromise(AccountEvents.WithdrawMoney)
   async withdrawMoney(req: Request<ATMInput>, res: Response<any>) {
     const accountId = req.data.accountId;
+
     try {
       accountId &&
         (await this._auth.isAuthorizedAccount(accountId, req.source, [AccountRole.Admin]));
       await this._accountService.handleWithdrawMoney(req);
       res({ status: 'ok', data: {} });
     } catch (err) {
+      console.error(err);
       res({ status: 'error', errorMsg: err.message });
     }
   }
@@ -159,6 +165,29 @@ export class AccountController {
     try {
       const data = await this._accountService.getUsersFromShared(req);
       res({ status: 'ok', data: data });
+    } catch (err) {
+      res({ status: 'error', errorMsg: err.message });
+    }
+  }
+
+  @Export(ServerExports.AddBankBalance)
+  async addBankBalance(req: Request<{ amount: number; message: string }>, res: Response<object>) {
+    try {
+      await this._accountService.addMoney(req);
+      res({ status: 'ok', data: {} });
+    } catch (err) {
+      res({ status: 'error', errorMsg: err.message });
+    }
+  }
+
+  @Export(ServerExports.RemoveBankBalance)
+  async removeBankBalance(
+    req: Request<{ amount: number; message: string }>,
+    res: Response<object>,
+  ) {
+    try {
+      await this._accountService.removeMoney(req);
+      res({ status: 'ok', data: {} });
     } catch (err) {
       res({ status: 'error', errorMsg: err.message });
     }

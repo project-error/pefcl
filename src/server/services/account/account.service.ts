@@ -319,7 +319,7 @@ export class AccountService {
       }
 
       /* Check this part. - Deposition from. */
-      await this._cashService.handleTakeCash(req.source, depositionAmount);
+      await this._cashService.handleRemoveCash(req.source, depositionAmount);
       await targetAccount.increment({ balance: depositionAmount });
       await this._transactionService.handleCreateTransaction({
         amount: depositionAmount,
@@ -364,7 +364,7 @@ export class AccountService {
         throw new Error('Insufficent funds.');
       }
 
-      await this._cashService.handleGiveCash(req.source, withdrawAmount);
+      await this._cashService.handleAddCash(req.source, withdrawAmount);
       await targetAccount.decrement({ balance: withdrawAmount });
 
       await this._transactionService.handleCreateTransaction({
@@ -448,5 +448,31 @@ export class AccountService {
     }
 
     return account;
+  }
+
+  async addMoney(req: Request<{ amount: number; message: string }>) {
+    logger.silly(`Adding money to ${req.source}...`);
+    const user = this._userService.getUser(req.source);
+    const account = await this._accountDB.getDefaultAccountByIdentifier(user.getIdentifier());
+    await account?.increment({ balance: req.data.amount });
+    await this._transactionService.handleCreateTransaction({
+      amount: req.data.amount,
+      message: req.data.message,
+      fromAccount: account?.toJSON(),
+      type: TransactionType.Incoming,
+    });
+  }
+
+  async removeMoney(req: Request<{ amount: number; message: string }>) {
+    logger.silly(`Removing ${req.data.amount} money from ${req.source}...`);
+    const user = this._userService.getUser(req.source);
+    const account = await this._accountDB.getDefaultAccountByIdentifier(user.getIdentifier());
+    await account?.decrement({ balance: req.data.amount });
+    await this._transactionService.handleCreateTransaction({
+      amount: req.data.amount,
+      message: req.data.message,
+      fromAccount: account?.toJSON(),
+      type: TransactionType.Outgoing,
+    });
   }
 }

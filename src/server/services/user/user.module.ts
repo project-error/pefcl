@@ -3,11 +3,10 @@ import { OnlineUser } from '@typings/user';
 import { config } from '@utils/server-config';
 
 const exp = global.exports;
-const resource = exp[config?.exports?.resourceName ?? 'none'];
+const resource: AccountServiceExports = exp[config?.exports?.resourceName ?? 'none'];
 
 export class UserModule {
   private readonly _source: number;
-  private readonly _resource: AccountServiceExports;
   public readonly identifier: string;
   public readonly name: string;
 

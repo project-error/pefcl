@@ -4,7 +4,7 @@ export interface Cash {
   ownerIdentifier: string;
 }
 
-export interface GiveCashInput {
+export interface ChangeCashInput {
   source: number;
   amount: number;
 }
