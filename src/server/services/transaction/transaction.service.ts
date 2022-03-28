@@ -21,6 +21,7 @@ import { ServerError } from '@utils/errors';
 import { GenericErrors } from '@typings/Errors';
 import { AccountRole } from '@typings/Account';
 import { MS_ONE_WEEK } from '@utils/constants';
+import { TransactionEvents } from '@typings/Events';
 
 const logger = mainLogger.child({ module: 'transactionService' });
 
@@ -98,7 +99,7 @@ export class TransactionService {
       );
 
       const fromAccount = myAccount ?? sharedAccount;
-      const toAccount = await this._accountDB.getAccount(toAccountId);
+      const toAccount = await this._accountDB.getAccountById(toAccountId);
 
       if (!toAccount || !fromAccount) {
         throw new ServerError(GenericErrors.NotFound);
@@ -106,7 +107,7 @@ export class TransactionService {
 
       await toAccount.increment('balance', { by: amount });
       await fromAccount.decrement('balance', { by: amount });
-      await this._transactionDB.create({
+      await this.handleCreateTransaction({
         amount: amount,
         message: message,
         toAccount: toAccount.toJSON(),
@@ -126,7 +127,7 @@ export class TransactionService {
   private async handleExternalTransfer(req: Request<Transfer>) {
     const t = await sequelize.transaction();
     try {
-      const myAccount = await this._accountDB.getAccount(req.data.fromAccountId);
+      const myAccount = await this._accountDB.getAccountById(req.data.fromAccountId);
       const toAccount = await this._externalAccountService.getAccountFromExternalAccount(
         req.data.toAccountId,
       );
@@ -143,22 +144,15 @@ export class TransactionService {
           
           For the person initializing the transfer, this is Outgoing.
       */
+
       const data = {
         amount: req.data.amount,
         message: req.data.message,
         toAccount: toAccount.toJSON(),
         fromAccount: myAccount.toJSON(),
       };
-
-      await this._transactionDB.create({
-        ...data,
-        type: TransactionType.Outgoing,
-      });
-
-      await this._transactionDB.create({
-        ...data,
-        type: TransactionType.Incoming,
-      });
+      await this.handleCreateTransaction({ ...data, type: TransactionType.Outgoing });
+      await this.handleCreateTransaction({ ...data, type: TransactionType.Incoming });
 
       t.commit();
     } catch (e) {
@@ -183,7 +177,21 @@ export class TransactionService {
   async handleCreateTransaction(input: TransactionInput): Promise<TransactionModel> {
     logger.silly(`Created transaction.`);
     logger.silly(input);
-    return await this._transactionDB.create(input);
+
+    const transaction = await this._transactionDB.create(input);
+    await this.broadcastTransaction({ ...input, ...transaction.toJSON() });
+    return transaction;
+  }
+
+  async broadcastTransaction(transaction: Transaction) {
+    const { ownerIdentifier } = transaction.toAccount ?? {};
+    const user = this._userService.getUserByIdentifier(ownerIdentifier ?? '');
+
+    if (!user) {
+      return;
+    }
+
+    emitNet(TransactionEvents.NewTransactionBroadcast, transaction);
   }
 
   async handleGetHistory(req: Request<void>): Promise<GetTransactionHistoryResponse> {

@@ -7,6 +7,7 @@ import {
   TransactionEvents,
   UserEvents,
 } from '@typings/Events';
+import { Transfer, TransferType } from '@typings/transactions';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import express, { RequestHandler } from 'express';
@@ -94,7 +95,7 @@ if (isMocking) {
   });
 }
 
-const test = async () => {
+const init = async () => {
   await load();
 
   // emit('playerJoining', {});
@@ -141,28 +142,6 @@ const test = async () => {
   //   isDefault: false,
   //   fromAccountId: 0,
   // };
-
-  // emitNet(AccountEvents.CreateAccount, AccountEvents.CreateAccountResponse, createAccountPayload2);
-
-  // await new Promise((resolve) => {
-  //   setTimeout(resolve, 800);
-  // });
-
-  // const payload: DepositDTO = {
-  //   amount: 800,
-  //   message: 'ATM Deposition',
-  //   accountId: 1,
-  // };
-
-  // emitNet(AccountEvents.DepositMoney, AccountEvents.CreateAccountResponse, payload);
-
-  // const transaction: Transfer = {
-  //   amount: 25000,
-  //   message: 'Internal transfer',
-  //   toAccountId: 1,
-  //   fromAccountId: 2,
-  // };
-  // emitNet(TransactionEvents.CreateTransfer, AccountEvents.CreateAccountResponse, transaction);
 };
 
-test();
+init();

@@ -30,6 +30,16 @@ export class UserService {
     return user;
   }
 
+  getUserByIdentifier(identifier: string): UserModule | undefined {
+    let user: UserModule | undefined;
+
+    this.getAllUsers().forEach((onlineUser) => {
+      user = onlineUser.identifier === identifier ? onlineUser : user;
+    });
+
+    return user;
+  }
+
   /**
    * Used when the player is unloaded or dropped.
    * @param source

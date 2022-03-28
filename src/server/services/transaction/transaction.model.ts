@@ -4,16 +4,9 @@ import { singleton } from 'tsyringe';
 import { Transaction, TransactionType } from '../../../../typings/transactions';
 import { sequelize } from '../../utils/pool';
 
-interface TransactionDB extends Omit<Transaction, 'toAccount' | 'fromAccount'> {
-  toAccount?: number;
-  toAccountId?: number;
-  fromAccount?: number;
-  fromAccountId?: number;
-}
-
 @singleton()
 export class TransactionModel extends Model<
-  TransactionDB,
+  Transaction,
   Omit<Transaction, 'id' | 'createdAt' | 'updatedAt'>
 > {}
 
@@ -33,7 +26,7 @@ TransactionModel.init<typeof TransactionModel, TransactionModel>(
     },
     type: {
       type: DataTypes.STRING,
-      defaultValue: TransactionType.Outgoing, // Outgoing = Money leaves ur account, Incoming = Money goes into ur account
+      defaultValue: TransactionType.Outgoing,
     },
   },
   { sequelize: sequelize, tableName: DATABASE_PREFIX + 'transactions' },
