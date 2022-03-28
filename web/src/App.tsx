@@ -3,7 +3,7 @@ import { useExitListener } from '@hooks/useExitListener';
 import dayjs from 'dayjs';
 import updateLocale from 'dayjs/plugin/updateLocale';
 import 'dayjs/locale/sv';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNuiEvent } from 'react-fivem-hooks';
 import { useTranslation } from 'react-i18next';
 import { Route } from 'react-router-dom';
@@ -16,6 +16,7 @@ import Dashboard from './views/dashboard/Dashboard';
 import Invoices from './views/Invoices/Invoices';
 import Transactions from './views/transactions/Transactions';
 import ATM from './views/ATM/ATM';
+import { UpdatesWrapper } from '@hooks/useUpdates';
 
 dayjs.extend(updateLocale);
 
@@ -47,6 +48,8 @@ debugData([
 
 const App: React.FC = () => {
   const config = useConfig();
+  const [hasLoaded, setHasLoaded] = useState(false);
+
   const { data: isVisible } = useNuiEvent<boolean>({
     event: 'setVisible',
     defaultValue: false,
@@ -67,6 +70,16 @@ const App: React.FC = () => {
     dayjs.locale(config?.general?.language ?? 'en');
   }, [i18n, config]);
 
+  useEffect(() => {
+    /* Create LOADED state for entire app. 
+      The use of this is to only subscribe to updates from broadcasts once the app has been opened. */
+
+    if (!hasLoaded && (isVisible || isAtmVisible)) {
+      console.log('App has been loaded!');
+      setHasLoaded(true);
+    }
+  }, [hasLoaded, isVisible, isAtmVisible]);
+
   return (
     <>
       {!isAtmVisible && isVisible && (
@@ -81,6 +94,8 @@ const App: React.FC = () => {
       )}
 
       {isAtmVisible && <ATM />}
+
+      {hasLoaded && <UpdatesWrapper />}
     </>
   );
 };

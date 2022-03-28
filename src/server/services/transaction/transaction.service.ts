@@ -191,7 +191,7 @@ export class TransactionService {
       return;
     }
 
-    emitNet(TransactionEvents.NewTransactionBroadcast, transaction);
+    emitNet(TransactionEvents.NewTransactionBroadcast, user.getSource(), transaction);
   }
 
   async handleGetHistory(req: Request<void>): Promise<GetTransactionHistoryResponse> {
@@ -202,7 +202,6 @@ export class TransactionService {
     const accountIds = accounts.map((account) => account.getDataValue('id') ?? 0);
     const transactions = await this._transactionDB.getAllTransactionsFromAccounts(accountIds, from);
 
-    console.log({ transactions });
     const expenses = transactions.reduce((prev, curr) => {
       const type = curr.getDataValue('type');
       const amount = curr.getDataValue('amount');

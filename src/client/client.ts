@@ -1,5 +1,6 @@
 import ClientUtils from './client-utils';
 import './client-accounts';
+import './events';
 import { GeneralEvents } from '@typings/Events';
 import { RegisterNuiCB } from '@project-error/pe-utils';
 import { createInvoice, depositMoney, getCash, giveCash, withdrawMoney } from './commands';

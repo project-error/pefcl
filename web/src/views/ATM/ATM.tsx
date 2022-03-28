@@ -1,6 +1,6 @@
 import Button from '@components/ui/Button';
 import { Heading2, Heading6 } from '@components/ui/Typography/Headings';
-import { accountsAtom, defaultAccountBalance, totalBalanceAtom } from '@data/accounts';
+import { accountsAtom, defaultAccountBalance } from '@data/accounts';
 import styled from '@emotion/styled';
 import { useConfig } from '@hooks/useConfig';
 import { Paper, Stack } from '@mui/material';
@@ -14,9 +14,10 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 const Container = styled(Paper)`
-  // TODO: Update this
-  margin-left: 50%;
-  transform: translate(-50%, 100%);
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-15%, -80%);
 
   display: inline-block;
   margin: 2rem;
