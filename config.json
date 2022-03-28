@@ -24,6 +24,14 @@
   "cash": {
     "defaultAmount": 2000
   },
+  "atms": {
+    "distance": 5.0,
+    "props": [
+      -870868698,
+      -1126237515,
+      506770882
+    ]
+  },
   "debug": {
     "level": "silly",
     "mockLicenses": true
