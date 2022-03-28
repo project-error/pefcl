@@ -86,7 +86,7 @@ const TransactionItem: React.FC<{ transaction: Transaction; isLimitedSpace?: boo
             {isIncoming && <ArrowDropUpRounded color="success" />}
             {isTransfer && <ArrowRightRounded color="primary" />}
 
-            <BodyText>{formatMoney(amount, config)}</BodyText>
+            <BodyText>{formatMoney(amount, config.general)}</BodyText>
           </Stack>
 
           {!isLimitedSpace && <TransactionDate>{date.calendar()}</TransactionDate>}

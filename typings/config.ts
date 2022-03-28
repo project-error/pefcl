@@ -9,12 +9,13 @@ export interface ResourceConfig {
   };
   general: {
     useFrameworkIntegration: boolean;
+    language: string;
+    currency: string;
   };
   database: {
     profileQueries: boolean;
     shouldSync: boolean;
   };
-
   prices: {
     newAccount: number;
   };
@@ -28,8 +29,6 @@ export interface ResourceConfig {
   cash: {
     defaultAmount: number;
   };
-  language: string;
-  currency: string;
   debug: {
     level: string;
     mockLicenses: boolean;

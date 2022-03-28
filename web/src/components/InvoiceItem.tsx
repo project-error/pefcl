@@ -67,7 +67,7 @@ const InvoiceItem: React.FC<{ invoice: Invoice }> = ({ invoice, ...props }) => {
       <Stack spacing={0}>
         <Stack flexDirection="row" justifyContent="space-between">
           <From>{from}</From>
-          <BodyText>{formatMoney(amount, config)}</BodyText>
+          <BodyText>{formatMoney(amount, config.general)}</BodyText>
         </Stack>
 
         <Stack flexDirection="row" justifyContent="space-between">

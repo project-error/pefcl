@@ -1,5 +1,5 @@
 export enum GeneralEvents {
-  CloseBank = 'pefcl:closeNui',
+  CloseUI = 'pefcl:closeNui',
   ResourceStarted = 'pefcl:resourceStarted',
 }
 

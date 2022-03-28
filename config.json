@@ -3,7 +3,9 @@
     "resourceName": "your-resource"
   },
   "general": {
-    "useFrameworkIntegration": false
+    "useFrameworkIntegration": false,
+    "language": "en",
+    "currency": "USD"
   },
   "database": {
     "profileQueries": true,
@@ -22,8 +24,6 @@
   "cash": {
     "defaultAmount": 2000
   },
-  "language": "en",
-  "currency": "USD",
   "debug": {
     "level": "silly",
     "mockLicenses": true

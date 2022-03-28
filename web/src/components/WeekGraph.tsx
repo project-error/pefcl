@@ -68,12 +68,12 @@ const Column = ({ date, income, expenses, maxHeight }: ColumnProps) => {
             <Stack spacing={1}>
               <Stack spacing={0.5}>
                 <Heading6>{t('Income')}</Heading6>
-                <IncomeText>{formatMoney(income, config)}</IncomeText>
+                <IncomeText>{formatMoney(income, config.general)}</IncomeText>
               </Stack>
               <Divider />
               <Stack spacing={0.5}>
                 <Heading6>{t('Expense')}</Heading6>
-                <ExpenseText>{formatMoney(expenses, config)}</ExpenseText>
+                <ExpenseText>{formatMoney(expenses, config.general)}</ExpenseText>
               </Stack>
             </Stack>
           </Box>

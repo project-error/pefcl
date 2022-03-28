@@ -65,7 +65,7 @@ const PayInvoiceModal = ({ onClose, invoice }: PayInvoiceModalProps) => {
           <Stack>
             <Stack direction="row" justifyContent="space-between">
               <Heading2>{t('Invoice')}</Heading2>
-              <Amount>{formatMoney(invoice.amount, config)}</Amount>
+              <Amount>{formatMoney(invoice.amount, config.general)}</Amount>
             </Stack>
 
             <Heading5>{invoice.from}</Heading5>

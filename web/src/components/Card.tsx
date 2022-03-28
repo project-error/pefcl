@@ -74,7 +74,7 @@ export const AccountCard: React.FC<AccountCardProps> = ({ account, ...props }) =
   return (
     <Container {...props} key={id} accountType={type}>
       <Row>
-        <Heading3>{formatMoney(balance, config)}</Heading3>
+        <Heading3>{formatMoney(balance, config.general)}</Heading3>
         <Type>
           <Heading6>{type === AccountType.Shared ? t('SHARED') : t('PERSONAL')}</Heading6>
           {isDefault && <DefaultText>{t('Default')}</DefaultText>}

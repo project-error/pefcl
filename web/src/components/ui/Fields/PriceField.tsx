@@ -12,7 +12,7 @@ const Input: React.FC<InputBaseProps> = (props) => {
 
   const handleChange: ChangeEventHandler<HTMLInputElement> = (event) => {
     const value = event.target.value.replace(/\D/g, '');
-    const formattedValue = formatMoneyWithoutCurrency(Number(value), config.language);
+    const formattedValue = formatMoneyWithoutCurrency(Number(value), config.general.language);
 
     if (!value) {
       props.onChange?.(event);

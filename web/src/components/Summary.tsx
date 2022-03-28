@@ -28,7 +28,7 @@ const SummaryRow: React.FC<SummaryRowProps> = ({ label, amount }) => {
   return (
     <Row>
       <Label>{label}</Label>
-      <Amount>{formatMoney(amount, config)}</Amount>
+      <Amount>{formatMoney(amount, config.general)}</Amount>
     </Row>
   );
 };

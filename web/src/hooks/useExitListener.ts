@@ -9,7 +9,7 @@ export const useExitListener = () => {
   useEffect(() => {
     const keyHandler = (e: KeyboardEvent) => {
       if (LISTENED_KEYS.includes(e.code) && !isEnvBrowser()) {
-        fetchNui(GeneralEvents.CloseBank);
+        fetchNui(GeneralEvents.CloseUI);
       }
     };
 
