@@ -1,31 +1,44 @@
 import ClientUtils from './client-utils';
-import './client-accounts';
 import './events';
+import './exports';
 import { GeneralEvents } from '@typings/Events';
 import { RegisterNuiCB } from '@project-error/pe-utils';
-import { createInvoice, depositMoney, getCash, giveCash, withdrawMoney } from './commands';
+import { createInvoice, getCash, giveCash } from './functions';
 import Config from './client-config';
 
-let atmOpen = false;
-let bankOpen = false;
+let isAtmOpen = false;
+let isBankOpen = false;
+
+export const setBankIsOpen = (bool: boolean) => {
+  if (isBankOpen === bool) {
+    return;
+  }
+
+  isBankOpen = bool;
+  SendNUIMessage({ type: 'setVisible', payload: bool });
+  SetNuiFocus(bool, bool);
+};
+
+export const setAtmIsOpen = (bool: boolean) => {
+  if (isAtmOpen === bool) {
+    return;
+  }
+
+  isAtmOpen = bool;
+  SendNUIMessage({ type: 'setVisibleATM', payload: bool });
+  SetNuiFocus(bool, bool);
+};
 
 RegisterCommand(
   'bank',
   () => {
-    bankOpen = !bankOpen;
-    SendNUIMessage({ type: 'setVisible', payload: bankOpen });
-
-    if (bankOpen) {
-      SetNuiFocus(true, true);
-    } else {
-      SetNuiFocus(false, false);
-    }
+    setBankIsOpen(!isBankOpen);
   },
   false,
 );
 
 RegisterCommand(
-  'bank-atm',
+  'atm',
   () => {
     // Get position x amount units forward of the player or default to 5.0
     const plyPed = PlayerPedId();
@@ -45,10 +58,10 @@ RegisterCommand(
     const model = GetEntityModel(entityHit);
     if (!Config.atms?.props?.includes(model)) return console.log('not atm');
 
-    atmOpen = !atmOpen;
-    SendNUIMessage({ type: 'setVisibleATM', payload: atmOpen });
+    isAtmOpen = !isAtmOpen;
+    SendNUIMessage({ type: 'setVisibleATM', payload: isAtmOpen });
 
-    if (atmOpen) {
+    if (isAtmOpen) {
       SetNuiFocus(true, true);
     } else {
       SetNuiFocus(false, false);
@@ -57,18 +70,13 @@ RegisterCommand(
   false,
 );
 
+RegisterNuiCB<void>(GeneralEvents.CloseUI, async () => {
+  setBankIsOpen(false);
+  setAtmIsOpen(false);
+});
+
 RegisterCommand('cash', getCash, false);
 RegisterCommand('giveCash', giveCash, false);
-RegisterCommand('depositMoney', depositMoney, false);
-RegisterCommand('withdrawMoney', withdrawMoney, false);
 RegisterCommand('createInvoice', createInvoice, false);
-
-RegisterNuiCB<void>(GeneralEvents.CloseUI, async () => {
-  SendNUIMessage({ type: 'setVisible', payload: false });
-  SendNUIMessage({ type: 'setVisibleATM', payload: false });
-  bankOpen = false;
-  atmOpen = false;
-  SetNuiFocus(false, false);
-});
 
 export const ClUtils = new ClientUtils({ promiseTimeout: 2000 });

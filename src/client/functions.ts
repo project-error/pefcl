@@ -4,10 +4,8 @@ import { getNearestPlayer, validateAmount } from 'client-utils';
 
 const api = new Api();
 
-export const giveCash = async (source: number, args: string[]) => {
+export const giveCash = async (_source: number, args: string[]) => {
   const [amount] = args;
-
-  console.log({ amount });
 
   const isValid = validateAmount(amount);
   if (!isValid) {
@@ -21,11 +19,9 @@ export const giveCash = async (source: number, args: string[]) => {
     return;
   }
 
-  console.log(`Giving ${amount} to ${nearestPlayer.source}`);
-
   await api.giveCash(nearestPlayer.source, Number(amount)).catch((error: Error) => {
     if (error.message === BalanceErrors.InsufficentFunds) {
-      console.log('You too poor');
+      console.log('You are too poor');
       return;
     }
 
@@ -38,9 +34,8 @@ export const getCash = async () => {
   console.log('Your cash is:', result);
 };
 
-export const createInvoice = async (source: number, args: string[]) => {
+export const createInvoice = async (_source: number, args: string[]) => {
   const [amount, message] = args;
-  console.log({ message, amount });
   const isValid = validateAmount(amount);
 
   if (!isValid) {
@@ -54,17 +49,14 @@ export const createInvoice = async (source: number, args: string[]) => {
     return;
   }
 
-  const result = await api.createInvoice({
+  await api.createInvoice({
     amount: Number(amount),
     message,
     source: nearestPlayer.source,
   });
-
-  console.log({ result });
 };
 
-export const depositMoney = async (source: number, args: string[]) => {
-  const [amount] = args;
+export const depositMoney = async (amount: number) => {
   const isValid = validateAmount(amount);
 
   if (!isValid) {
@@ -72,12 +64,10 @@ export const depositMoney = async (source: number, args: string[]) => {
     return;
   }
 
-  const result = await api.depositMoney(Number(amount));
-  console.log({ result });
+  return await api.depositMoney(Number(amount));
 };
 
-export const withdrawMoney = async (source: number, args: string[]) => {
-  const [amount] = args;
+export const withdrawMoney = async (amount: number) => {
   const isValid = validateAmount(amount);
 
   if (!isValid) {
@@ -85,6 +75,5 @@ export const withdrawMoney = async (source: number, args: string[]) => {
     return;
   }
 
-  const result = await api.withdrawMoney(Number(amount));
-  console.log({ result });
+  return await api.withdrawMoney(Number(amount));
 };

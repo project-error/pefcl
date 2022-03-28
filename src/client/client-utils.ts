@@ -184,14 +184,11 @@ export const getNearestPlayer = (maxDistance?: number): GetNearestPlayerResult |
     const otherPlayerPosition = getVector(otherPlayerCoords);
     const currentDistance = getDistance(otherPlayerPosition, playerPosition);
 
-    console.log('currentDistance:', currentDistance);
     if (!distance || currentDistance < distance) {
       distance = currentDistance;
       closestPlayer = GetPlayerServerId(otherPlayerId);
     }
   });
-
-  console.log(`Found "${closestPlayer}"`);
 
   if (!closestPlayer) {
     return null;
