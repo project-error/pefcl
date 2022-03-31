@@ -8,6 +8,7 @@ import { formatMoney } from '../utils/currency';
 import theme from '../utils/theme';
 import { BodyText } from './ui/Typography/BodyText';
 import { Heading3, Heading5, Heading6 } from './ui/Typography/Headings';
+import { Skeleton } from '@mui/material';
 
 const Container = styled.div<{ accountType: AccountType }>`
   user-select: none;
@@ -87,6 +88,43 @@ export const AccountCard: React.FC<AccountCardProps> = ({ account, ...props }) =
         <Col>
           <Heading6>{t('Account name')}</Heading6>
           <BodyText>{accountName}</BodyText>
+        </Col>
+
+        <StyledIcon />
+      </RowEnd>
+    </Container>
+  );
+};
+
+export const LoadingAccountCard = () => {
+  return (
+    <Container accountType={AccountType.Personal}>
+      <Row>
+        <Heading3>
+          <Skeleton variant="text" width={120} />
+        </Heading3>
+        <Type>
+          <Heading6>
+            <Skeleton variant="text" width={70} />
+          </Heading6>
+          <DefaultText>
+            <Skeleton variant="text" width={40} />
+          </DefaultText>
+        </Type>
+      </Row>
+
+      <Heading5>
+        <Skeleton variant="text" width="65%" />
+      </Heading5>
+
+      <RowEnd>
+        <Col>
+          <Heading6>
+            <Skeleton variant="text" width={80} />
+          </Heading6>
+          <BodyText>
+            <Skeleton variant="text" width={60} />
+          </BodyText>
         </Col>
 
         <StyledIcon />

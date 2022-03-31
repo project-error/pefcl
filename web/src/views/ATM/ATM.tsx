@@ -6,6 +6,7 @@ import { useConfig } from '@hooks/useConfig';
 import { Paper, Stack } from '@mui/material';
 import { ATMInput } from '@typings/Account';
 import { AccountEvents } from '@typings/Events';
+import { defaultWithdrawOptions } from '@utils/constants';
 import { formatMoney } from '@utils/currency';
 import { fetchNui } from '@utils/fetchNui';
 import theme from '@utils/theme';
@@ -17,7 +18,7 @@ const Container = styled(Paper)`
   position: absolute;
   left: 50%;
   top: 50%;
-  transform: translate(-15%, -80%);
+  transform: translate(-50%, -80%);
 
   display: inline-block;
   margin: 2rem;
@@ -47,11 +48,10 @@ const WithdrawContainer = styled.div`
   grid-column-gap: ${theme.spacing(1.5)};
 `;
 
-const withdrawOptions = [500, 1000, 1500, 3000, 5000, 7500];
-
 const ATM = () => {
   const { t } = useTranslation();
   const config = useConfig();
+  const withdrawOptions = config?.atms?.withdrawOptions ?? defaultWithdrawOptions;
   const [isLoading, setIsLoading] = useState(false);
   const [accountBalance] = useAtom(defaultAccountBalance);
   const [, updateAccounts] = useAtom(accountsAtom);

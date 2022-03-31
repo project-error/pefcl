@@ -18,11 +18,11 @@ ReactDOM.render(
         <HashRouter>
           <RecoilRoot>
             <ThemeProvider theme={theme}>
-              <React.Suspense fallback={null}>
-                <SnackbarProvider maxSnack={2}>
+              <SnackbarProvider maxSnack={2}>
+                <React.Suspense fallback={<div>LOADING</div>}>
                   <App />
-                </SnackbarProvider>
-              </React.Suspense>
+                </React.Suspense>
+              </SnackbarProvider>
             </ThemeProvider>
           </RecoilRoot>
         </HashRouter>

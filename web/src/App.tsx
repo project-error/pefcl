@@ -9,7 +9,6 @@ import { useTranslation } from 'react-i18next';
 import { Route } from 'react-router-dom';
 import './App.css';
 import { useConfig } from './hooks/useConfig';
-import { debugData } from './utils/debugData';
 import theme from './utils/theme';
 import Accounts from './views/accounts/Accounts';
 import Dashboard from './views/dashboard/Dashboard';
@@ -39,24 +38,18 @@ const Content = styled.div`
   background: ${theme.palette.background.default};
 `;
 
-debugData([
-  {
-    action: 'setVisible',
-    data: true,
-  },
-]);
-
 const App: React.FC = () => {
   const config = useConfig();
   const [hasLoaded, setHasLoaded] = useState(false);
 
   const { data: isVisible } = useNuiEvent<boolean>({
     event: 'setVisible',
-    defaultValue: false,
+    defaultValue: process.env.NODE_ENV === 'development',
   });
+
   const { data: isAtmVisible } = useNuiEvent<boolean>({
     event: 'setVisibleATM',
-    defaultValue: process.env.NODE_ENV === 'development',
+    defaultValue: false,
   });
 
   const { i18n } = useTranslation();
@@ -75,7 +68,6 @@ const App: React.FC = () => {
       The use of this is to only subscribe to updates from broadcasts once the app has been opened. */
 
     if (!hasLoaded && (isVisible || isAtmVisible)) {
-      console.log('App has been loaded!');
       setHasLoaded(true);
     }
   }, [hasLoaded, isVisible, isAtmVisible]);
@@ -85,7 +77,10 @@ const App: React.FC = () => {
       {!isAtmVisible && isVisible && (
         <Container>
           <Content>
-            <Route path="/" exact component={Dashboard} />
+            <React.Suspense fallback={<span>LOADING (This is not good.)</span>}>
+              <Route path="/" exact component={Dashboard} />
+            </React.Suspense>
+
             <Route path="/accounts" component={Accounts} />
             <Route path="/transactions" component={Transactions} />
             <Route path="/invoices" component={Invoices} />
@@ -95,7 +90,8 @@ const App: React.FC = () => {
 
       {isAtmVisible && <ATM />}
 
-      {hasLoaded && <UpdatesWrapper />}
+      {/* We don't need to show any fallback for the update component since it doesn't render anything anyway. */}
+      <React.Suspense fallback={null}>{hasLoaded && <UpdatesWrapper />}</React.Suspense>
     </>
   );
 };

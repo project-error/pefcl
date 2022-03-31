@@ -7,6 +7,8 @@ export const resourceDefaultName = 'pe-financial';
 
 const now = dayjs();
 
+export const defaultWithdrawOptions = [500, 1000, 1500, 3000, 5000, 7500];
+
 export const mockedAccounts: Account[] = [
   {
     id: 1,
