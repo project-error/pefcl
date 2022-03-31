@@ -1,9 +1,12 @@
 import { AccountRole, SharedAccount } from '@typings/Account';
 import { DATABASE_PREFIX } from '@utils/constants';
-import { DataTypes, Model } from 'sequelize';
+import { DataTypes, Model, Optional } from 'sequelize';
 import { sequelize } from '../../utils/pool';
 
-export class SharedAccountModel extends Model<SharedAccount> {}
+export class SharedAccountModel extends Model<
+  SharedAccount,
+  Optional<SharedAccount, 'id' | 'role'>
+> {}
 
 SharedAccountModel.init(
   {

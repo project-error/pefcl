@@ -1,11 +1,11 @@
 import { DATABASE_PREFIX, MS_TWO_WEEKS } from '@utils/constants';
-import { DataTypes, Model } from 'sequelize';
+import { DataTypes, Model, Optional } from 'sequelize';
 import { singleton } from 'tsyringe';
 import { Invoice, InvoiceStatus } from '../../../../typings/Invoice';
 import { sequelize } from '../../utils/pool';
 
 @singleton()
-export class InvoiceModel extends Model<Invoice, Omit<Invoice, 'id' | 'status'>> {}
+export class InvoiceModel extends Model<Invoice, Optional<Invoice, 'id' | 'status'>> {}
 
 InvoiceModel.init(
   {

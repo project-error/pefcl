@@ -23,23 +23,27 @@ import { TransactionType } from '@typings/transactions';
 import { AccountModel } from './account.model';
 import { ServerError } from '@utils/errors';
 import { AuthorizationErrors, BalanceErrors, GenericErrors } from '@typings/Errors';
+import { SharedAccountDB } from 'services/accountShared/sharedAccount.db';
 
 const logger = mainLogger.child({ module: 'accounts' });
 
 @singleton()
 export class AccountService {
   _accountDB: AccountDB;
+  _sharedAccountDB: SharedAccountDB;
   _cashService: CashService;
   _userService: UserService;
   _transactionService: TransactionService;
 
   constructor(
     accountDB: AccountDB,
+    sharedAccountDB: SharedAccountDB,
     userService: UserService,
     cashService: CashService,
     transactionService: TransactionService,
   ) {
     this._accountDB = accountDB;
+    this._sharedAccountDB = sharedAccountDB;
     this._cashService = cashService;
     this._userService = userService;
     this._transactionService = transactionService;
@@ -53,7 +57,7 @@ export class AccountService {
 
   private async getMySharedAccounts(source: number): Promise<Account[]> {
     const user = this._userService.getUser(source);
-    const accounts = await this._accountDB.getSharedAccountsByIdentifier(user.identifier);
+    const accounts = await this._sharedAccountDB.getSharedAccountsByIdentifier(user.identifier);
     const mappedAccounts = accounts.map((sharedAccount) => {
       const acc = sharedAccount.getDataValue('account') as unknown as AccountModel;
       const sharedAcc = sharedAccount.toJSON();
@@ -68,14 +72,9 @@ export class AccountService {
     return mappedAccounts;
   }
 
-  async handleGetDefaultAccount(source: number) {
+  async getDefaultAccountBySource(source: number) {
     const user = this._userService.getUser(source);
     return await this._accountDB.getDefaultAccountByIdentifier(user.identifier);
-  }
-
-  async handleGetAccounts() {
-    const accounts = await this._accountDB.getAccounts();
-    return accounts.map((account) => account.toJSON());
   }
 
   async handleGetMyAccounts(source: number): Promise<Account[]> {
@@ -98,7 +97,15 @@ export class AccountService {
   async addUserToShared(req: Request<AddToSharedAccountInput>) {
     logger.silly(`Adding user src: ${req.source} to shared account.`);
 
-    return this._accountDB.createSharedAccount({
+    // const existingAccount = await SharedAccountModel.findOne({
+    //   where: { user: req.data.identifier, accountId: req.data.accountId },
+    // });
+
+    // if (existingAccount) {
+    //   throw new ServerError(AccountErrors.AlreadyExists);
+    // }
+
+    return this._sharedAccountDB.createSharedAccount({
       name: req.data.name,
       user: req.data.identifier,
       role: req.data.role,
@@ -109,7 +116,7 @@ export class AccountService {
   async removeUserFromShared(req: Request<RemoveFromSharedAccountInput>) {
     logger.silly(`Removing user. identifier: ${req.data.identifier} to shared account.`);
     const { identifier, accountId } = req.data;
-    const mySharedAccounts = await this._accountDB.getSharedAccountsByIdentifier(identifier);
+    const mySharedAccounts = await this._sharedAccountDB.getSharedAccountsByIdentifier(identifier);
     const deletingAccount = mySharedAccounts.find(
       (account) => account?.getDataValue('account')?.id === accountId,
     );
@@ -181,7 +188,7 @@ export class AccountService {
       });
 
       if (isShared) {
-        await this._accountDB.createSharedAccount({
+        await this._sharedAccountDB.createSharedAccount({
           accountId: account.getDataValue('id') ?? 0,
           user: userIdentifier,
           role: AccountRole.Owner,
@@ -215,7 +222,7 @@ export class AccountService {
     const t = await sequelize.transaction();
     try {
       const user = this._userService.getUser(req.source);
-      const defaultAccount = await this.handleGetDefaultAccount(req.source);
+      const defaultAccount = await this.getDefaultAccountBySource(req.source);
 
       // TODO #2: Is this the best we can do?
       const deletingAccount = await this._accountDB.getAuthorizedAccountById(
@@ -301,7 +308,7 @@ export class AccountService {
     const depositionAmount = req.data.amount;
     const targetAccount = req.data.accountId
       ? await this._accountDB.getAccountById(req.data.accountId)
-      : await this.handleGetDefaultAccount(req.source);
+      : await this.getDefaultAccountBySource(req.source);
 
     if (!targetAccount) {
       throw new ServerError(GenericErrors.NotFound);
@@ -346,7 +353,7 @@ export class AccountService {
     logger.silly(`"${req.source}" withdrawing "${req.data.amount}"`);
     const targetAccount = req.data.accountId
       ? await this._accountDB.getAccountById(req.data.accountId)
-      : await this.handleGetDefaultAccount(req.source);
+      : await this.getDefaultAccountBySource(req.source);
     const withdrawAmount = req.data.amount;
 
     if (!targetAccount) {
@@ -427,11 +434,13 @@ export class AccountService {
 
   async handleRenameAccount(req: Request<RenameAccountInput>) {
     logger.silly(`Updating name, accountID: ${req.data.accountId}, name: ${req.data.name}`);
-    return await this._accountDB.updateAccountName(req.data.accountId, req.data.name);
+    const account = await this._accountDB.getAccountById(req.data.accountId);
+    await account?.update({ accountName: req.data.name });
+    return await account?.save();
   }
 
   async getUsersFromShared(req: Request<{ accountId: number }>): Promise<SharedAccountUser[]> {
-    const sharedAccounts = await this._accountDB.getSharedAccountsById(req.data.accountId);
+    const sharedAccounts = await this._sharedAccountDB.getSharedAccountsById(req.data.accountId);
     return sharedAccounts.map((account) => ({
       name: account.getDataValue('name'),
       user: account.getDataValue('user'),

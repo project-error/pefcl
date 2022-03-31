@@ -5,6 +5,7 @@ import { AccountDB } from 'services/account/account.db';
 import { AccountRole } from '@typings/Account';
 import { ServerError } from '@utils/errors';
 import { GenericErrors } from '@typings/Errors';
+import { SharedAccountDB } from 'services/accountShared/sharedAccount.db';
 
 const logger = mainLogger.child({ module: 'auth' });
 
@@ -12,10 +13,12 @@ const logger = mainLogger.child({ module: 'auth' });
 export class AuthService {
   _accountDB: AccountDB;
   _userService: UserService;
+  _sharedAccountDB: SharedAccountDB;
 
-  constructor(userService: UserService, accountDB: AccountDB) {
-    this._userService = userService;
+  constructor(accountDB: AccountDB, userService: UserService, sharedAccountDB: SharedAccountDB) {
     this._accountDB = accountDB;
+    this._userService = userService;
+    this._sharedAccountDB = sharedAccountDB;
   }
 
   async isAuthorizedAccount(
@@ -30,7 +33,7 @@ export class AuthService {
 
     const account =
       (await this._accountDB.getAuthorizedAccountById(accountId, identifier)) ??
-      (await this._accountDB.getAuthorizedSharedAccountById(accountId, identifier, roles));
+      (await this._sharedAccountDB.getAuthorizedSharedAccountById(accountId, identifier, roles));
 
     if (!account) {
       throw new ServerError(GenericErrors.NotFound);

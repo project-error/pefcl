@@ -41,7 +41,7 @@ export interface CreateAccountInput {
 }
 
 export interface SharedAccount {
-  id?: number;
+  id: number;
   user: string;
   role: AccountRole;
   name?: string;

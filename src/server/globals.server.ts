@@ -59,7 +59,7 @@ if (isMocking) {
     return convars[convar] ?? fallback;
   };
 
-  global.exports = {
+  global.exports = () => ({
     'my-resource': {
       pefclDepositMoney: () => {
         console.log('global.server.ts: Depositing money ..');
@@ -70,7 +70,7 @@ if (isMocking) {
         return 2500;
       },
     },
-  };
+  });
 
   global.on = (event: string, listeners: (...args: any[]) => void) => {
     ServerEmitter.on(event, listeners);

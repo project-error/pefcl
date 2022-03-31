@@ -1,10 +1,10 @@
 import { DATABASE_PREFIX } from '@utils/constants';
-import { DataTypes, Model } from 'sequelize';
+import { DataTypes, Model, Optional } from 'sequelize';
 import { Cash } from '@typings/Cash';
 import { sequelize } from '../../utils/pool';
 import { config } from '@utils/server-config';
 
-export class CashModel extends Model<Cash, Omit<Cash, 'id' | 'amount'>> {}
+export class CashModel extends Model<Cash, Optional<Cash, 'id' | 'amount'>> {}
 
 CashModel.init(
   {

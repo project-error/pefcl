@@ -7,12 +7,13 @@ import {
   TransactionEvents,
   UserEvents,
 } from '@typings/Events';
-import { Transfer, TransferType } from '@typings/transactions';
+import './globals.server';
+
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import express, { RequestHandler } from 'express';
 import 'reflect-metadata';
-import './globals.server';
+
 /* Create associations after the models etc */
 import './services/associations';
 import { Bank } from './services/Bank';

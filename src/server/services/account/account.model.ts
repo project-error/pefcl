@@ -1,5 +1,5 @@
 import { DATABASE_PREFIX } from '@utils/constants';
-import { DataTypes, Model } from 'sequelize';
+import { DataTypes, Model, Optional } from 'sequelize';
 import { config } from '@utils/server-config';
 import { Account, AccountRole, AccountType } from '@typings/Account';
 import { sequelize } from '@utils/pool';
@@ -7,7 +7,7 @@ import { generateAccountNumber } from '@utils/misc';
 
 export class AccountModel extends Model<
   Account,
-  Omit<Account, 'id' | 'number' | 'balance' | 'role'>
+  Optional<Account, 'id' | 'number' | 'balance' | 'role'>
 > {}
 
 AccountModel.init(

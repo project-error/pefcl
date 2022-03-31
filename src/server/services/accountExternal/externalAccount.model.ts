@@ -1,9 +1,9 @@
 import { ExternalAccount } from '@typings/Account';
 import { DATABASE_PREFIX } from '@utils/constants';
-import { DataTypes, Model } from 'sequelize';
+import { DataTypes, Model, Optional } from 'sequelize';
 import { sequelize } from '../../utils/pool';
 
-export class ExternalAccountModel extends Model<ExternalAccount, Omit<ExternalAccount, 'id'>> {}
+export class ExternalAccountModel extends Model<ExternalAccount, Optional<ExternalAccount, 'id'>> {}
 
 ExternalAccountModel.init(
   {

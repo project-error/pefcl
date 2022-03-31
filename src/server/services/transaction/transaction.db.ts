@@ -138,12 +138,7 @@ export class TransactionDB {
     const currentId = newTransaction.getDataValue('id');
     await newTransaction.update({ message: `${currentMessage} #${currentId}` });
 
-    // TODO: Get TS support for this shit.
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    //@ts-ignore
     await newTransaction.setToAccount(toAccount?.id);
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    //@ts-ignore
     await newTransaction.setFromAccount(fromAccount?.id);
 
     return await newTransaction.save();
