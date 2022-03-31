@@ -14,15 +14,12 @@
   "prices": {
     "newAccount": 5000
   },
-  "accounts": {
-    "defaultAmount": 25000,
-    "clearingNumber": 920
-  },
-  "transactions": {
-    "defaultLimit": 10
-  },
   "cash": {
-    "defaultAmount": 2000
+    "startAmount": 2000
+  },
+  "accounts": {
+    "startAmount": 25000,
+    "clearingNumber": 920
   },
   "atms": {
     "distance": 5.0,
@@ -30,6 +27,9 @@
       -870868698,
       -1126237515,
       506770882
+    ],
+    "withdrawOptions": [
+      500, 1000, 1500, 3000, 5000, 7500
     ]
   },
   "debug": {

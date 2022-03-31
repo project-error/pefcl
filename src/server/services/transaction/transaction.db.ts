@@ -3,7 +3,6 @@ import { singleton } from 'tsyringe';
 import { GetTransactionsInput, TransactionInput, TransactionType } from '@typings/transactions';
 import { AccountModel } from '../account/account.model';
 import { TransactionModel } from './transaction.model';
-import { config } from '@utils/server-config';
 
 interface GetTransactionFromAccounts extends GetTransactionsInput {
   accountIds: number[];
@@ -73,7 +72,7 @@ export class TransactionDB {
           },
         ],
       },
-      limit: input.limit ?? config?.transactions?.defaultLimit ?? 10,
+      limit: input.limit ?? 10,
       offset: input.offset,
       order: [['createdAt', 'DESC']],
       include: [

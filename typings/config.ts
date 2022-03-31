@@ -20,18 +20,16 @@ export interface ResourceConfig {
     newAccount: number;
   };
   accounts: {
-    defaultAmount: number;
+    startAmount: number;
     clearingNumber: string | number;
   };
-  transactions: {
-    defaultLimit: number;
-  };
   cash: {
-    defaultAmount: number;
+    startAmount: number;
   };
   atms: {
     distance: number;
     props: number[];
+    withdrawOptions: number[];
   };
   debug: {
     level: string;

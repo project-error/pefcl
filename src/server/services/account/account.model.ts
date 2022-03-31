@@ -38,7 +38,7 @@ AccountModel.init(
     },
     balance: {
       type: DataTypes.INTEGER,
-      defaultValue: config?.accounts?.defaultAmount ?? 0,
+      defaultValue: config?.accounts?.startAmount ?? 0,
     },
     type: {
       type: DataTypes.STRING,

@@ -15,7 +15,7 @@ CashModel.init(
     },
     amount: {
       type: DataTypes.INTEGER,
-      defaultValue: config?.cash?.defaultAmount ?? 0,
+      defaultValue: config?.cash?.startAmount ?? 0,
     },
     ownerIdentifier: {
       type: DataTypes.STRING,
