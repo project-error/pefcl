@@ -4,6 +4,10 @@ import AccountCards from '../AccountCards';
 import { renderWithProviders } from '@utils/test';
 import { mockedAccounts } from '@utils/constants';
 
+jest.mock('@utils/fetchNui', () => ({
+  fetchNui: () => mockedAccounts,
+}));
+
 const Loading = () => {
   return <div data-testid="loading" />;
 };

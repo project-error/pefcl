@@ -5,7 +5,7 @@ import { mockedAccounts } from '../utils/constants';
 import { fetchNui } from '../utils/fetchNui';
 import { isEnvBrowser } from '../utils/misc';
 
-const getDefaultAccounts = async (): Promise<Account[]> => {
+const getAccounts = async (): Promise<Account[]> => {
   try {
     const res = await fetchNui<Account[]>(AccountEvents.GetAccounts);
     return res ?? [];
@@ -21,12 +21,11 @@ const getDefaultAccounts = async (): Promise<Account[]> => {
 const rawAccountAtom = atom<Account[]>([]);
 export const accountsAtom = atom(
   async (get) => {
-    const accounts =
-      get(rawAccountAtom).length === 0 ? await getDefaultAccounts() : get(rawAccountAtom);
+    const accounts = get(rawAccountAtom).length === 0 ? await getAccounts() : get(rawAccountAtom);
     return accounts;
   },
   async (_get, set) => {
-    return set(rawAccountAtom, await getDefaultAccounts());
+    return set(rawAccountAtom, await getAccounts());
   },
 );
 
