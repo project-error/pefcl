@@ -26,7 +26,7 @@ export class ExternalAccountService {
     this._accountDB = accountDB;
   }
 
-  async addAddAccount(req: Request<ExternalAccount>) {
+  async handleAddAccount(req: Request<ExternalAccount>) {
     logger.silly('Creating external account');
 
     const user = this._userService.getUser(req.source);

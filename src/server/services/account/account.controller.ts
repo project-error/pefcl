@@ -127,29 +127,10 @@ export class AccountController {
     }
   }
 
-  @NetPromise(ExternalAccountEvents.Add)
-  async addExternalAccount(req: Request<ExternalAccount>, res: Response<any>) {
-    try {
-      await this._externalAccountService.addAddAccount(req);
-      res({ status: 'ok', data: {} });
-    } catch (err) {
-      res({ status: 'error', errorMsg: err.message });
-    }
-  }
-
-  @NetPromise(ExternalAccountEvents.Get)
-  async getExternalAccounts(req: Request<void>, res: Response<any>) {
-    try {
-      const data = await this._externalAccountService.getAccounts(req);
-      res({ status: 'ok', data });
-    } catch (err) {
-      res({ status: 'error', errorMsg: err.message, errorName: err.name });
-    }
-  }
-
   @NetPromise(SharedAccountEvents.RemoveUser)
   async removeSharedAccountUser(req: Request<RemoveFromSharedAccountInput>, res: Response<any>) {
     try {
+      await this._auth.isAuthorizedAccount(req.data.accountId, req.source, [AccountRole.Admin]);
       await this._accountService.removeUserFromShared(req);
       res({ status: 'ok', data: {} });
     } catch (err) {
@@ -163,10 +144,34 @@ export class AccountController {
     res: Response<SharedAccountUser[]>,
   ) {
     try {
+      await this._auth.isAuthorizedAccount(req.data.accountId, req.source, [
+        AccountRole.Admin,
+        AccountRole.Contributor,
+      ]);
       const data = await this._accountService.getUsersFromShared(req);
       res({ status: 'ok', data: data });
     } catch (err) {
       res({ status: 'error', errorMsg: err.message });
+    }
+  }
+
+  @NetPromise(ExternalAccountEvents.Add)
+  async addExternalAccount(req: Request<ExternalAccount>, res: Response<any>) {
+    try {
+      await this._externalAccountService.handleAddAccount(req);
+      res({ status: 'ok', data: {} });
+    } catch (err) {
+      res({ status: 'error', errorMsg: err.message });
+    }
+  }
+
+  @NetPromise(ExternalAccountEvents.Get)
+  async getExternalAccounts(req: Request<void>, res: Response<any>) {
+    try {
+      const data = await this._externalAccountService.getAccounts(req);
+      res({ status: 'ok', data });
+    } catch (err) {
+      res({ status: 'error', errorMsg: err.message, errorName: err.name });
     }
   }
 

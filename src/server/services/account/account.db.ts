@@ -17,6 +17,7 @@ export class AccountDB {
   }
 
   async getAccounts(): Promise<AccountModel[]> {
+    console.log('getting accounts :monkaS:');
     return await AccountModel.findAll();
   }
 
