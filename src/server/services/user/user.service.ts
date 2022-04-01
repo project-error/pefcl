@@ -1,7 +1,7 @@
 import { GenericErrors } from '@typings/Errors';
 import { ServerError } from '@utils/errors';
 import { config } from '@utils/server-config';
-import { mainLogger } from 'sv_logger';
+import { mainLogger } from '@server/sv_logger';
 import { singleton } from 'tsyringe';
 import { UserDTO } from '../../../../typings/user';
 import { getGameLicense } from '../../utils/misc';

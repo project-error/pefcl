@@ -15,7 +15,9 @@
     "noEmit": true,
     "baseUrl": ".",
     "paths": {
+      "@server/*": ["./*"],
       "@utils/*": ["utils/*"],
+      "@services/*": ["services/*"],
       "@decorators/*": ["decorators/*"],
       "@locales/*": ["../../locales/*"],
       "@typings/*": ["../../typings/*"],

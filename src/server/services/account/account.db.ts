@@ -1,5 +1,5 @@
-import { Account, CreateAccountInput } from '@typings/Account';
-import { ExternalAccountDB } from 'services/accountExternal/externalAccount.db';
+import { CreateAccountInput } from '@typings/Account';
+import { ExternalAccountDB } from '@services/accountExternal/externalAccount.db';
 import { singleton } from 'tsyringe';
 import { AccountModel } from './account.model';
 

@@ -23,7 +23,7 @@ import { TransactionType } from '@typings/transactions';
 import { AccountModel } from './account.model';
 import { ServerError } from '@utils/errors';
 import { AuthorizationErrors, BalanceErrors, GenericErrors } from '@typings/Errors';
-import { SharedAccountDB } from 'services/accountShared/sharedAccount.db';
+import { SharedAccountDB } from '@services/accountShared/sharedAccount.db';
 
 const logger = mainLogger.child({ module: 'accounts' });
 

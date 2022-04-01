@@ -10,24 +10,26 @@ import {
   Transfer,
   TransferType,
 } from '@typings/transactions';
-import { sequelize } from '../../utils/pool';
-import { mainLogger } from '../../sv_logger';
+import { sequelize } from '@server/utils/pool';
+import { mainLogger } from '@server/sv_logger';
 import { UserService } from '../user/user.service';
 import { AccountDB } from '../account/account.db';
 import { TransactionDB } from './transaction.db';
 import { TransactionModel } from './transaction.model';
-import { ExternalAccountService } from 'services/accountExternal/externalAccount.service';
+import { ExternalAccountService } from '@services/accountExternal/externalAccount.service';
 import { ServerError } from '@utils/errors';
 import { GenericErrors } from '@typings/Errors';
 import { AccountRole } from '@typings/Account';
 import { MS_ONE_WEEK } from '@utils/constants';
 import { TransactionEvents } from '@typings/Events';
+import { SharedAccountDB } from '../accountShared/sharedAccount.db';
 
 const logger = mainLogger.child({ module: 'transactionService' });
 
 @singleton()
 export class TransactionService {
   _accountDB: AccountDB;
+  _sharedAccountDB: SharedAccountDB;
   _transactionDB: TransactionDB;
   _userService: UserService;
   _externalAccountService: ExternalAccountService;
@@ -36,11 +38,13 @@ export class TransactionService {
     transactionDB: TransactionDB,
     userService: UserService,
     accountDB: AccountDB,
+    sharedAccountDB: SharedAccountDB,
     externalAccountService: ExternalAccountService,
   ) {
     this._transactionDB = transactionDB;
     this._userService = userService;
     this._accountDB = accountDB;
+    this._sharedAccountDB = sharedAccountDB;
     this._externalAccountService = externalAccountService;
   }
 
@@ -92,7 +96,7 @@ export class TransactionService {
 
     try {
       const myAccount = await this._accountDB.getAuthorizedAccountById(fromAccountId, identifier);
-      const sharedAccount = await this._accountDB.getAuthorizedSharedAccountById(
+      const sharedAccount = await this._sharedAccountDB.getAuthorizedSharedAccountById(
         fromAccountId,
         identifier,
         [AccountRole.Admin, AccountRole.Owner],

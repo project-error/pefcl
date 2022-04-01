@@ -7,6 +7,8 @@ module.exports = {
   testEnvironment: 'node',
   rootDir: 'server',
   moduleNameMapper,
+  testMatch: ['**/**/*.test.ts'],
   testPathIgnorePatterns: ['<rootDir>/utils/test.ts'],
   setupFiles: ['<rootDir>/../jest.setup.js'],
+  watchPlugins: ['jest-watch-typeahead/filename', 'jest-watch-typeahead/testname'],
 };

@@ -16,8 +16,8 @@ import { Request, Response } from '@typings/http';
 import { ServerExports } from '@typings/exports/server';
 import { AccountService } from './account.service';
 import { Event, EventListener } from '@decorators/Event';
-import { ExternalAccountService } from 'services/accountExternal/externalAccount.service';
-import { AuthService } from 'services/auth/auth.service';
+import { ExternalAccountService } from '@services/accountExternal/externalAccount.service';
+import { AuthService } from '@services/auth/auth.service';
 import { Export, ExportListener } from '@decorators/Export';
 
 @Controller('Account')
@@ -26,8 +26,8 @@ import { Export, ExportListener } from '@decorators/Export';
 @ExportListener()
 export class AccountController {
   _auth: AuthService;
-  private readonly _accountService: AccountService;
-  private readonly _externalAccountService: ExternalAccountService;
+  _accountService: AccountService;
+  _externalAccountService: ExternalAccountService;
 
   constructor(
     auth: AuthService,

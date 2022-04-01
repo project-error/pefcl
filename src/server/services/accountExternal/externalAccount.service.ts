@@ -2,11 +2,11 @@ import { singleton } from 'tsyringe';
 import { Request } from '@typings/http';
 import { ExternalAccount } from '@typings/Account';
 import { UserService } from '../user/user.service';
-import { mainLogger } from '../../sv_logger';
+import { mainLogger } from '@server/sv_logger';
 import { ExternalAccountDB } from './externalAccount.db';
 import { AccountErrors, ExternalAccountErrors, GenericErrors } from '@typings/Errors';
 import { ServerError } from '@utils/errors';
-import { AccountDB } from 'services/account/account.db';
+import { AccountDB } from '@services/account/account.db';
 
 const logger = mainLogger.child({ module: 'externalAccounts' });
 

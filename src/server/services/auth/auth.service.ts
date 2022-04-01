@@ -1,11 +1,11 @@
 import { singleton } from 'tsyringe';
 import { UserService } from '../user/user.service';
 import { mainLogger } from '../../sv_logger';
-import { AccountDB } from 'services/account/account.db';
+import { AccountDB } from '@services/account/account.db';
 import { AccountRole } from '@typings/Account';
 import { ServerError } from '@utils/errors';
 import { GenericErrors } from '@typings/Errors';
-import { SharedAccountDB } from 'services/accountShared/sharedAccount.db';
+import { SharedAccountDB } from '@services/accountShared/sharedAccount.db';
 
 const logger = mainLogger.child({ module: 'auth' });
 

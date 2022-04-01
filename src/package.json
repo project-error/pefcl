@@ -33,6 +33,7 @@
     "esbuild-node-tsc": "^1.8.3",
     "express": "^4.17.3",
     "jest": "^27.5.1",
+    "jest-watch-typeahead": "^1.0.0",
     "nodemon": "^2.0.15",
     "remove-files-webpack-plugin": "^1.5.0",
     "ts-jest": "^27.1.3",
