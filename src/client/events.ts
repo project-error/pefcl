@@ -5,11 +5,18 @@ import {
   SharedAccountEvents,
   TransactionEvents,
   UserEvents,
+  BalanceEvents,
 } from '@typings/Events';
 import { Transaction } from '@typings/transactions';
 
 onNet(TransactionEvents.NewTransactionBroadcast, (result: Transaction) => {
   SendNUIMessage({ type: TransactionEvents.NewTransactionBroadcast, payload: result });
+});
+
+const CASH_BAL_STAT = GetHashKey('MP0_WALLET_BALANCE');
+
+onNet(BalanceEvents.UpdateCashBalance, (newBalance: number) => {
+  StatSetInt(CASH_BAL_STAT, newBalance, true);
 });
 
 import { RegisterNuiProxy } from './client-utils';

@@ -1,4 +1,3 @@
-import ClientUtils from './client-utils';
 import './events';
 import './exports';
 import { GeneralEvents } from '@typings/Events';
@@ -75,8 +74,17 @@ RegisterNuiCB<void>(GeneralEvents.CloseUI, async () => {
   setAtmIsOpen(false);
 });
 
+RegisterCommand(
+  'showcash',
+  async () => {
+    if (Config.general?.useFrameworkIntegration) return;
+
+    SetMultiplayerWalletCash();
+    setTimeout(RemoveMultiplayerWalletCash, 5000);
+  },
+  false,
+);
+
 RegisterCommand('cash', getCash, false);
 RegisterCommand('giveCash', giveCash, false);
 RegisterCommand('createInvoice', createInvoice, false);
-
-export const ClUtils = new ClientUtils({ promiseTimeout: 2000 });

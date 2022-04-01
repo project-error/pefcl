@@ -47,3 +47,7 @@ export enum CashEvents {
   GetMyCash = 'pefcl:getMyCash',
   Give = 'pefcl:giveCash',
 }
+
+export enum BalanceEvents {
+  UpdateCashBalance = 'pefcl:updateCashBalance',
+}

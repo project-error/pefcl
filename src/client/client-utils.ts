@@ -1,5 +1,4 @@
 import { uuidV4 } from '@project-error/pe-utils';
-import { ClUtils } from './client';
 
 interface ISettings {
   promiseTimeout: number;
@@ -52,6 +51,8 @@ export default class ClientUtils {
     });
   }
 }
+
+export const ClUtils = new ClientUtils({ promiseTimeout: 2000 });
 
 type CallbackFn<T> = (data: T, cb: CallableFunction) => void;
 
