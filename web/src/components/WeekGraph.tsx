@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { useConfig } from '@hooks/useConfig';
-import { Divider, Paper, Popover, Stack } from '@mui/material';
+import { Divider, Popover, Stack } from '@mui/material';
 import { red } from '@mui/material/colors';
 import { Box } from '@mui/system';
 import { GetTransactionHistoryResponse } from '@typings/transactions';

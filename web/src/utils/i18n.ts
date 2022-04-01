@@ -16,8 +16,6 @@ const load = async () => {
   const config = await getConfig();
   const language = config.general.language ?? 'en';
 
-  console.log('Setting initial language to: ', language);
-
   await i18n
     .use(initReactI18next)
     .init({

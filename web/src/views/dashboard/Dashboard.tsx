@@ -14,7 +14,6 @@ import AccountCards, { LoadingCards } from './components/AccountCards';
 import TotalBalance from '@components/TotalBalance';
 import { PreHeading } from '@components/ui/Typography/BodyText';
 import { Heading1 } from '@components/ui/Typography/Headings';
-import { useConfig } from '@hooks/useConfig';
 
 const Lists = styled.section`
   display: grid;
@@ -24,7 +23,6 @@ const Lists = styled.section`
 `;
 
 const Dashboard = () => {
-  const config = useConfig();
   const { t } = useTranslation();
 
   return (

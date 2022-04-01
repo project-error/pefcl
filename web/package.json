@@ -9,7 +9,7 @@
     "@heroicons/react": "^1.0.5",
     "@mui/icons-material": "^5.2.5",
     "@mui/material": "^5.5.1",
-    "@testing-library/jest-dom": "^5.11.4",
+    "@testing-library/jest-dom": "^5.16.3",
     "@testing-library/react": "^12.0.0",
     "@testing-library/user-event": "^12.1.10",
     "@types/jest": "^26.0.15",
@@ -34,6 +34,7 @@
     "react-scripts": "4.0.3",
     "recoil": "^0.5.2",
     "style-loader": "^3.3.1",
+    "tsconfig-paths-jest": "^0.0.1",
     "typescript": "^4.1.2",
     "web-vitals": "^2.1.0",
     "webpack": "^5.70.0"
@@ -45,7 +46,8 @@
     "start:game": "cross-env IN_GAME_DEV=1 yarn dev",
     "build:esbuild": "node scripts/build_ui.js",
     "eject": "react-scripts eject",
-    "test": "jest",
+    "test": "jest --silent",
+    "test:watch": "jest --watch",
     "lint": "eslint src"
   },
   "eslintConfig": {
@@ -76,7 +78,11 @@
     "eslint-plugin-react": "^7.28.0",
     "eslint-plugin-react-hooks": "^4.3.0",
     "html-webpack-plugin": "^5.5.0",
+    "jest": "^27.5.1",
+    "jest-localstorage-mock": "^2.4.19",
+    "jest-watch-typeahead": "^1.0.0",
     "react-test-renderer": "^17.0.2",
+    "ts-jest": "^27.1.4",
     "ts-loader": "^9.2.8",
     "tsconfig-paths-webpack-plugin": "^3.5.2",
     "webpack-cli": "^4.9.2",

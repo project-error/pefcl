@@ -84,7 +84,7 @@ const AccountCards = () => {
         </AnimatePresence>
 
         {orderedAccounts.length < 4 && (
-          <CreateCard onClick={() => setIsCreateAccountOpen(true)}>
+          <CreateCard onClick={() => setIsCreateAccountOpen(true)} title="create-account">
             <Add />
           </CreateCard>
         )}

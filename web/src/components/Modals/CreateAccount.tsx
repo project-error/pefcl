@@ -4,7 +4,7 @@ import { useAtom } from 'jotai';
 import React from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { transactionBaseAtom } from 'src/data/transactions';
+import { transactionBaseAtom } from '@data/transactions';
 import { accountsAtom, defaultAccountAtom } from '../../data/accounts';
 import { useConfig } from '../../hooks/useConfig';
 import { fetchNui } from '../../utils/fetchNui';

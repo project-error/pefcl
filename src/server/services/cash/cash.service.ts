@@ -8,7 +8,7 @@ import { CashDB } from './cash.db';
 import { CashModel } from './cash.model';
 import { Request } from '@typings/http';
 import { ServerError } from '@utils/errors';
-import { AccountErrors, BalanceErrors } from '@typings/Errors';
+import { BalanceErrors } from '@typings/Errors';
 
 const exp: AccountServiceExports = global.exports[config?.exports?.resourceName ?? 'no-use'];
 const logger = mainLogger.child({ module: 'cash' });

@@ -1,13 +1,13 @@
-name: Main CI
+name: Tests - Server & Client
 on: [push, pull_request]
 
 jobs:
-  build:
-    name: Build Test
+  test:
+    name: Testing
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: web
+        working-directory: src
 
     steps:
       - name: Checkout
@@ -34,5 +34,9 @@ jobs:
         run: yarn generate:locale # Should be pushed in the future, pulled on release.
       - name: Install deps
         run: yarn --frozen-lockfile
-      - name: Build
-        run: yarn build
+      - name: Linting
+        run: yarn lint
+      - name: Type checking
+        run: yarn tsc
+      - name: Tests
+        run: yarn test
