@@ -1,8 +1,6 @@
 import { BalanceErrors } from '@typings/Errors';
-import { Api } from 'api';
+import API from 'api';
 import { getNearestPlayer, validateAmount } from 'client-utils';
-
-const api = new Api();
 
 export const giveCash = async (_source: number, args: string[]) => {
   const [amount] = args;
@@ -19,7 +17,7 @@ export const giveCash = async (_source: number, args: string[]) => {
     return;
   }
 
-  await api.giveCash(nearestPlayer.source, Number(amount)).catch((error: Error) => {
+  await API.giveCash(nearestPlayer.source, Number(amount)).catch((error: Error) => {
     if (error.message === BalanceErrors.InsufficentFunds) {
       console.log('You are too poor');
       return;
@@ -30,7 +28,7 @@ export const giveCash = async (_source: number, args: string[]) => {
 };
 
 export const getCash = async () => {
-  const result = await api.getMyCash();
+  const result = await API.getMyCash();
   console.log('Your cash is:', result);
 };
 
@@ -49,7 +47,7 @@ export const createInvoice = async (_source: number, args: string[]) => {
     return;
   }
 
-  await api.createInvoice({
+  await API.createInvoice({
     amount: Number(amount),
     message,
     source: nearestPlayer.source,
@@ -64,7 +62,7 @@ export const depositMoney = async (amount: number) => {
     return;
   }
 
-  return await api.depositMoney(Number(amount));
+  return await API.depositMoney(Number(amount));
 };
 
 export const withdrawMoney = async (amount: number) => {
@@ -75,5 +73,5 @@ export const withdrawMoney = async (amount: number) => {
     return;
   }
 
-  return await api.withdrawMoney(Number(amount));
+  return await API.withdrawMoney(Number(amount));
 };

@@ -9,6 +9,7 @@ import { CashModel } from './cash.model';
 import { Request } from '@typings/http';
 import { ServerError } from '@utils/errors';
 import { AccountErrors, BalanceErrors } from '@typings/Errors';
+import { BalanceEvents } from '@typings/Events';
 
 const exp: AccountServiceExports = global.exports[config?.exports?.resourceName ?? 'no-use'];
 const logger = mainLogger.child({ module: 'cash' });
@@ -72,6 +73,8 @@ export class CashService {
     const cash = await this._cashDB.getCashByIdentifier(identifier);
     await cash?.decrement({ amount });
 
+    emitNet(BalanceEvents.UpdateCashBalance, source, cash);
+
     return cash;
   }
 
@@ -87,6 +90,8 @@ export class CashService {
 
     const cash = await this._cashDB.getCashByIdentifier(identifier);
     await cash?.increment({ amount });
+
+    emitNet(BalanceEvents.UpdateCashBalance, source, cash);
 
     return cash;
   }
