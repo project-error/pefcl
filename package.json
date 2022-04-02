@@ -9,16 +9,20 @@
     "format": "prettier --write .",
     "prepare": "husky install",
     "postinstall": "husky install",
-    "generate:locale": "yarn i18next",
+    "translations:generate": "yarn i18next && localazy upload -w $LOCALAZY_WRITE_KEY",
+    "translations:download": "localazy download -r $LOCALAZY_READ_KEY",
     "build": "yarn build:src && yarn build:web",
     "build:src": "cd src && yarn build",
     "build:web": "cd web && yarn build",
-    "prerelease": "yarn generate:locale && yarn build && sh ./scripts/prerelease.sh"
+    "prerelease": "yarn locale:generate && locale:push && yarn build && sh ./scripts/prerelease.sh"
   },
   "devDependencies": {
     "@commitlint/cli": "^16.0.2",
     "@commitlint/config-conventional": "^16.0.0",
+    "@localazy/cli": "^1.6.0",
+    "axios": "^0.26.1",
     "husky": "^7.0.4",
+    "nodemon": "^2.0.15",
     "prettier": "^2.5.1",
     "pretty-quick": "^3.1.3"
   },

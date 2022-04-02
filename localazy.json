@@ -1,0 +1,14 @@
+{
+  "writeKey": "",
+  "readKey": "",
+
+  "upload": {
+    "type": "json",
+    "files": ["locales/en/default.json"]
+  },
+
+  "download": {
+    "includeSourceLang": true,
+    "files": "locales/${lang}/default.json"
+  }
+}

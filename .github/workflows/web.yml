@@ -26,12 +26,14 @@ jobs:
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
-      - name: Install deps (locale)
+      - name: Install deps (Translations)
         working-directory: .
         run: yarn --frozen-lockfile
-      - name: Generate locale
+      - name: Generate translations
         working-directory: .
-        run: yarn generate:locale # Should be pushed in the future, pulled on release.
+        env:
+          LOCALAZY_WRITE_KEY: a8269809765126758267-2a5d4bd6793f39b170d2ae3ef138f505ff6bd750f74b67a08c534bddd9845eda
+        run: yarn translations:generate
       - name: Install deps
         run: yarn --frozen-lockfile
       - name: Linting

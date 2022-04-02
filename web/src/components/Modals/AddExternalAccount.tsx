@@ -97,7 +97,7 @@ const AddExternalAccountModal = ({ isOpen, onClose }: AddExternalAccountModalPro
                 render={({ field }) => (
                   <TextField
                     label={t('Clearing- & account number')}
-                    placeholder={t('xxx, xxxx-xxxx-xxxx')}
+                    placeholder={'xxx, xxxx-xxxx-xxxx'} // TODO: Generate from numberformatting func
                     {...field}
                     ref={null}
                   />
