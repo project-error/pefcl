@@ -1,5 +1,5 @@
-import en from '@locales/en/translation.json';
-import sv from '@locales/sv/translation.json';
+import en from '@locales/en/default.json';
+import sv from '@locales/sv/default.json';
 import 'dayjs/locale/sv';
 import dayjs from 'dayjs';
 import i18next from 'i18next';

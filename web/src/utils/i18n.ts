@@ -3,8 +3,8 @@ import i18n from 'i18next';
 import 'dayjs/locale/sv';
 import { initReactI18next } from 'react-i18next';
 
-import en from '@locales/en/translation.json';
-import sv from '@locales/sv/translation.json';
+import en from '@locales/en/default.json';
+import sv from '@locales/sv/default.json';
 import { getConfig } from '@utils/api';
 import updateLocale from 'dayjs/plugin/updateLocale';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
