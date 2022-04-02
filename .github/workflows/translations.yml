@@ -1,14 +1,10 @@
-name: Tests - Web, UI
-on: [push]
+name: Translations
+on: [pull_request]
 
 jobs:
   test:
-    name: Testing
+    name: Pushing translations
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: web
-
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -27,16 +23,10 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-yarn-
       - name: Install deps (Translations)
-        working-directory: .
         run: yarn --frozen-lockfile
       - name: Generate translations
         working-directory: .
-        run: yarn translations:generate
-      - name: Install deps
-        run: yarn --frozen-lockfile
-      - name: Linting
-        run: yarn lint
-      - name: Type checking
-        run: yarn tsc
-      - name: Tests
-        run: yarn test
+        env:
+          LOCALAZY_WRITE_KEY: ${{ secrets.LOCALAZY_WRITE_KEY }}
+          LOCALAZY_READ_KEY: ${{ secrets.LOCALAZY_READ_KEY }}
+        run: yarn translations:generate && yarn translations:upload
