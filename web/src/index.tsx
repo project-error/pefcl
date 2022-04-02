@@ -4,7 +4,6 @@ import './index.css';
 import App from './App';
 import { ThemeProvider } from '@mui/material';
 import theme from './utils/theme';
-import { RecoilRoot } from 'recoil';
 import { HashRouter } from 'react-router-dom';
 import i18n from './utils/i18n';
 import { SnackbarProvider } from 'notistack';
@@ -16,15 +15,13 @@ ReactDOM.render(
     <NuiProvider>
       <I18nextProvider i18n={i18n}>
         <HashRouter>
-          <RecoilRoot>
-            <ThemeProvider theme={theme}>
-              <SnackbarProvider maxSnack={2}>
-                <React.Suspense fallback={<div>LOADING</div>}>
-                  <App />
-                </React.Suspense>
-              </SnackbarProvider>
-            </ThemeProvider>
-          </RecoilRoot>
+          <ThemeProvider theme={theme}>
+            <SnackbarProvider maxSnack={2}>
+              <React.Suspense fallback={<div>LOADING</div>}>
+                <App />
+              </React.Suspense>
+            </SnackbarProvider>
+          </ThemeProvider>
         </HashRouter>
       </I18nextProvider>
     </NuiProvider>
