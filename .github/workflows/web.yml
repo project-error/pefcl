@@ -33,6 +33,7 @@ jobs:
         working-directory: .
         env:
           LOCALAZY_WRITE_KEY: a8269809765126758267-2a5d4bd6793f39b170d2ae3ef138f505ff6bd750f74b67a08c534bddd9845eda
+          LOCALAZY_READ_KEY: a8269809765126758267-f01743c76d6e9e434d7b4c6322938eefce8d82a559b57efc2acfcf4531d46089
         run: yarn translations:generate
       - name: Install deps
         run: yarn --frozen-lockfile
