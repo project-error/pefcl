@@ -9,14 +9,14 @@ import theme from '@utils/theme';
 import { useAtom } from 'jotai';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { accountsAtom } from 'src/data/accounts';
+import { accountsAtom } from '@data/accounts';
 import {
   transactionBaseAtom,
   transactionsLimitAtom,
   transactionsOffsetAtom,
   transactionsAtom,
   transactionsTotalAtom,
-} from 'src/data/transactions';
+} from '@data/transactions';
 import { Heading2, Heading5, Heading6 } from '../../components/ui/Typography/Headings';
 import TransactionFilters, { TransactionFilter } from './Filters';
 
