@@ -8,12 +8,17 @@ import {
   BalanceEvents,
 } from '@typings/Events';
 import { Transaction } from '@typings/transactions';
+import API from './api';
 
 onNet(TransactionEvents.NewTransactionBroadcast, (result: Transaction) => {
   SendNUIMessage({ type: TransactionEvents.NewTransactionBroadcast, payload: result });
 });
 
 const CASH_BAL_STAT = GetHashKey('MP0_WALLET_BALANCE');
+
+setImmediate(async () => {
+  StatSetInt(CASH_BAL_STAT, (await API.getMyCash()) ?? 0, true);
+});
 
 onNet(BalanceEvents.UpdateCashBalance, (newBalance: number) => {
   StatSetInt(CASH_BAL_STAT, newBalance, true);
