@@ -73,7 +73,7 @@ export class CashService {
     const cash = await this._cashDB.getCashByIdentifier(identifier);
     await cash?.decrement({ amount });
 
-    emitNet(BalanceEvents.UpdateCashBalance, source, cash);
+    emitNet(BalanceEvents.UpdateCashBalance, source, cash?.getDataValue('amount'));
 
     return cash;
   }
@@ -91,7 +91,7 @@ export class CashService {
     const cash = await this._cashDB.getCashByIdentifier(identifier);
     await cash?.increment({ amount });
 
-    emitNet(BalanceEvents.UpdateCashBalance, source, cash);
+    emitNet(BalanceEvents.UpdateCashBalance, source, cash?.getDataValue('amount'));
 
     return cash;
   }
