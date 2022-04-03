@@ -34,6 +34,6 @@
   },
   "debug": {
     "level": "silly",
-    "mockLicenses": true
+    "mockLicenses": false
   }
 }

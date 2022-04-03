@@ -50,7 +50,7 @@ export class UserService {
 
   async savePlayer(userDTO: UserDTO) {
     if (!userDTO.identifier) {
-      getGameLicense(userDTO.source);
+      userDTO.identifier = getGameLicense(userDTO.source);
     }
 
     if (config.debug?.mockLicenses) {
