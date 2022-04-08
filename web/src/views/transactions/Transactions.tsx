@@ -1,4 +1,3 @@
-import { AccountCard } from '@components/Card';
 import Layout from '@components/Layout';
 import Pagination from '@components/Pagination';
 import TransactionItem from '@components/TransactionItem';
@@ -9,7 +8,6 @@ import theme from '@utils/theme';
 import { useAtom } from 'jotai';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { accountsAtom } from '@data/accounts';
 import {
   transactionBaseAtom,
   transactionsLimitAtom,
@@ -24,12 +22,6 @@ const Container = styled(Stack)`
   height: calc(100% - 5rem);
   display: flex;
   flex-direction: row;
-`;
-
-const SelectedContainer = styled.div<{ isSelected: boolean }>`
-  overflow: hidden;
-  border-radius: ${theme.spacing(2)};
-  ${({ isSelected }) => isSelected && `outline: 1px solid ${theme.palette.primary.main};`}
 `;
 
 const TransactionsContainer = styled(Stack)`
@@ -53,8 +45,6 @@ const TransactionsContainer = styled(Stack)`
 
 const Transactions = () => {
   const { t } = useTranslation();
-  const [selectedAccountId, setSelectedAccountId] = useState(0);
-  const [accounts] = useAtom(accountsAtom);
   const [, updateTransactions] = useAtom(transactionBaseAtom);
   const [transactions] = useAtom(transactionsAtom);
   const [total] = useAtom(transactionsTotalAtom);
@@ -62,17 +52,10 @@ const Transactions = () => {
   const [offset] = useAtom(transactionsOffsetAtom);
   const [activeFilters, setActiveFilters] = useState<TransactionFilter[]>([]);
 
-  const filteredTransactions = transactions.filter(
-    ({ toAccount, fromAccount }) =>
-      toAccount?.id === selectedAccountId ||
-      fromAccount?.id === selectedAccountId ||
-      !selectedAccountId,
-  );
-
   const chipFilteredTransactions =
     activeFilters.length === 0
-      ? filteredTransactions
-      : filteredTransactions.filter((transaction) => {
+      ? transactions
+      : transactions.filter((transaction) => {
           const anyPassed: boolean[] = activeFilters.map((filterFunc) =>
             filterFunc.sort(transaction),
           );
@@ -88,18 +71,6 @@ const Transactions = () => {
       <Heading2>{t('Transactions')}</Heading2>
 
       <Container spacing={4} direction="row" marginTop={4}>
-        <Stack spacing={2} flex="1.5">
-          {accounts.map((account) => (
-            <SelectedContainer
-              key={account.id}
-              isSelected={account.id === selectedAccountId}
-              onClick={() => setSelectedAccountId(account.id ?? 0)}
-            >
-              <AccountCard account={account} />
-            </SelectedContainer>
-          ))}
-        </Stack>
-
         <Stack spacing={2} flex="4">
           <Stack direction="row" justifyContent="space-between">
             <Heading5>{t('Filters')}</Heading5>

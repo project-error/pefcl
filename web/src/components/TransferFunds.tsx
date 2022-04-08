@@ -1,20 +1,20 @@
 import React, { useState } from 'react';
 import { Box, FormHelperText, LinearProgress, Stack } from '@mui/material';
 import { useAtom } from 'jotai';
-import { accountsAtom, defaultAccountAtom } from '../../data/accounts';
-import { Heading2, Heading5 } from '../ui/Typography/Headings';
-import AccountSelect from '../AccountSelect';
-import Button from '../ui/Button';
+import { accountsAtom, defaultAccountAtom } from '../data/accounts';
+import { Heading5 } from './ui/Typography/Headings';
+import AccountSelect from './AccountSelect';
+import Button from './ui/Button';
 import { useTranslation } from 'react-i18next';
-import PriceField from '../ui/Fields/PriceField';
-import { fetchNui } from '../../utils/fetchNui';
+import PriceField from './ui/Fields/PriceField';
+import { fetchNui } from '../utils/fetchNui';
 import { transactionBaseAtom } from 'src/data/transactions';
 import { TransactionEvents } from '@typings/Events';
 import { Transfer, TransferType } from '@typings/transactions';
 import { externalAccountsAtom } from '@data/externalAccounts';
 import { GenericErrors } from '@typings/Errors';
 
-const TransferFundsModal: React.FC<{ onClose(): void }> = ({ onClose }) => {
+const TransferFunds: React.FC<{ onClose?(): void }> = ({ onClose }) => {
   const { t } = useTranslation();
   const [amount, setAmount] = useState('');
   const [accounts, updateAccounts] = useAtom(accountsAtom);
@@ -49,7 +49,7 @@ const TransferFundsModal: React.FC<{ onClose(): void }> = ({ onClose }) => {
       await fetchNui(TransactionEvents.CreateTransfer, payload);
       await updateAccounts();
       await updateTransactions();
-      onClose();
+      onClose?.();
     } catch (error: Error | unknown) {
       if (error instanceof Error && error.message === GenericErrors.NotFound) {
         setError(t('No account found to receive transfer.'));
@@ -70,10 +70,8 @@ const TransferFundsModal: React.FC<{ onClose(): void }> = ({ onClose }) => {
 
   return (
     <>
-      <Box p={5} display="flex" flexDirection="column">
+      <Box p="2rem 0 0" display="flex" flexDirection="column">
         <Stack spacing={4}>
-          <Heading2>{t('Transfer')}</Heading2>
-
           <Stack direction="row" spacing={4}>
             <Stack flex={1} spacing={1}>
               <Heading5>{t('From account')}</Heading5>
@@ -108,11 +106,8 @@ const TransferFundsModal: React.FC<{ onClose(): void }> = ({ onClose }) => {
           <FormHelperText>{error}</FormHelperText>
 
           <Stack alignSelf="flex-end" direction="row" spacing={4}>
-            <Button color="error" onClick={onClose}>
-              {t('Cancel')}
-            </Button>
             <Button disabled={isDisabled} onClick={handleTransfer}>
-              {t('Transfer')}
+              {t('Transfer funds')}
             </Button>
           </Stack>
         </Stack>
@@ -122,4 +117,4 @@ const TransferFundsModal: React.FC<{ onClose(): void }> = ({ onClose }) => {
   );
 };
 
-export default TransferFundsModal;
+export default TransferFunds;

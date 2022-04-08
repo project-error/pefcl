@@ -1,47 +1,73 @@
 import styled from '@emotion/styled';
-import { MenuItem, MenuList, Popover } from '@mui/material';
-import React, { useRef, useState } from 'react';
+import { CircularProgress } from '@mui/material';
+import { Box } from '@mui/system';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
-import LayoutHeader from './LayoutHeader';
-import { Heading2 } from './ui/Typography/Headings';
+import Sidebar from './Sidebar';
+import { Heading2, Heading5 } from './ui/Typography/Headings';
+import { AnimatePresence, motion } from 'framer-motion';
 
 const Container = styled.div`
+  display: flex;
   position: relative;
-  padding: 3rem;
   height: 100%;
 `;
 
-const Content = styled.div`
+const Content = styled(motion.div)`
+  padding: 2rem;
+  flex: 1;
   height: 100%;
 `;
+
+const LoadingContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
+`;
+
+const pageVariants = {
+  initial: {
+    x: 0,
+    y: 400,
+  },
+  in: {
+    x: 0,
+    y: 0,
+  },
+  out: {
+    x: 100,
+    y: -200,
+  },
+};
 
 const Layout: React.FC<{ title?: string }> = ({ children, title }) => {
   const { t } = useTranslation();
-  const menuRef = useRef<HTMLDivElement>(null);
-  const [isOpen, setIsOpen] = useState(false);
-
   return (
     <Container>
-      <LayoutHeader />
-
-      <Popover
-        open={isOpen}
-        onClose={() => setIsOpen(false)}
-        anchorEl={menuRef.current}
-        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-      >
-        <MenuList>
-          <MenuItem title="transfer" value="Transfer">
-            <span>{t('Transfer funds')}</span>
-          </MenuItem>
-        </MenuList>
-      </Popover>
-
-      <Content>
-        <Heading2>{title}</Heading2>
-        {children}
-      </Content>
+      <Sidebar />
+      <AnimatePresence>
+        <Content
+          initial="initial"
+          animate="in"
+          exit="out"
+          variants={pageVariants}
+          transition={{ duration: 0.45, type: 'spring' }}
+        >
+          <Heading2>{title}</Heading2>
+          <React.Suspense
+            fallback={
+              <LoadingContainer>
+                <Heading5>{t('Loading {{name}} view ..', { name: title })}</Heading5>
+                <Box p={4}>
+                  <CircularProgress />
+                </Box>
+              </LoadingContainer>
+            }
+          >
+            {children}
+          </React.Suspense>
+        </Content>
+      </AnimatePresence>
     </Container>
   );
 };

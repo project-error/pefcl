@@ -15,7 +15,10 @@ const colors: Record<Color, SerializedStyles> = {
   secondary: css``,
   error: css``,
   info: css``,
-  success: css``,
+  success: css`
+    color: ${theme.palette.success.contrastText};
+    background-color: ${theme.palette.primary.dark};
+  `,
   warning: css``,
 };
 
@@ -25,7 +28,7 @@ const Container = styled.div<{ color: Color }>`
   border-radius: ${theme.spacing(1)};
 
   color: ${theme.palette.primary.main};
-  background-color: ${theme.palette.background.dark12};
+  background-color: ${theme.palette.background.light2};
 
   span {
     font-size: 0.875rem;

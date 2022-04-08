@@ -13,9 +13,10 @@ import theme from './utils/theme';
 import Accounts from './views/accounts/Accounts';
 import Dashboard from './views/dashboard/Dashboard';
 import Invoices from './views/Invoices/Invoices';
-import Transactions from './views/transactions/Transactions';
 import ATM from './views/ATM/ATM';
 import { UpdatesWrapper } from '@hooks/useUpdates';
+import Transfer from './views/transfer/Transfer';
+import Transactions from './views/transactions/Transactions';
 
 dayjs.extend(updateLocale);
 
@@ -77,13 +78,11 @@ const App: React.FC = () => {
       {!isAtmVisible && isVisible && (
         <Container>
           <Content>
-            <React.Suspense fallback={<span>LOADING (This is not good.)</span>}>
-              <Route path="/" exact component={Dashboard} />
-            </React.Suspense>
-
+            <Route path="/" exact component={Dashboard} />
             <Route path="/accounts" component={Accounts} />
             <Route path="/transactions" component={Transactions} />
             <Route path="/invoices" component={Invoices} />
+            <Route path="/transfer" component={Transfer} />
           </Content>
         </Container>
       )}
