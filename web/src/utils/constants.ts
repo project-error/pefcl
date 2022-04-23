@@ -76,7 +76,7 @@ export const mockedInvoices: Invoice[] = [
     from: 'Cardealer',
     to: 'You',
     createdAt: now.subtract(1, 'hour').unix().toString(),
-    expiresAt: now.add(7, 'days').unix().toString(),
+    expiresAt: now.add(7, 'days').toString(),
     status: InvoiceStatus.PENDING,
   },
   {
@@ -86,7 +86,7 @@ export const mockedInvoices: Invoice[] = [
     from: 'Bennys AB',
     to: 'You',
     createdAt: now.subtract(4, 'hour').unix().toString(),
-    expiresAt: now.add(3, 'days').unix().toString(),
+    expiresAt: now.add(3, 'days').toString(),
     status: InvoiceStatus.PENDING,
   },
   {
@@ -96,7 +96,7 @@ export const mockedInvoices: Invoice[] = [
     from: 'Bennys AB',
     to: 'You',
     createdAt: now.subtract(21, 'days').unix().toString(),
-    expiresAt: now.subtract(7, 'days').unix().toString(),
+    expiresAt: now.subtract(7, 'days').toString(),
     status: InvoiceStatus.PAID,
   },
 ];

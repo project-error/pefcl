@@ -79,7 +79,7 @@ const InvoiceItem: React.FC<{ invoice: Invoice }> = ({ invoice, ...props }) => {
           <ExpiresAndButton>
             <Stack>
               <Heading6>{t('Expires')}</Heading6>
-              <ExpireDate>{expiresDate.calendar()}</ExpireDate>
+              <ExpireDate>{expiresDate.format('YYYY/MM/DD')}</ExpireDate>
             </Stack>
 
             <Button onClick={() => setIsPayOpen(true)}>{t('Pay invoice')}</Button>
