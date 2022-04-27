@@ -4,12 +4,13 @@ import React from 'react';
 import CheckIcon from '../../icons/CheckIcon';
 import theme from '../../utils/theme';
 
-const BaseBox = styled.div`
+const BaseBox = styled.div<{ isDisabled?: boolean }>`
   width: 2rem;
   height: 2rem;
 
   border-radius: ${theme.spacing(0.5)};
-  background-color: ${theme.palette.background.dark12};
+  background-color: ${({ isDisabled }) =>
+    isDisabled ? theme.palette.background.light4 : theme.palette.background.dark12};
 
   display: flex;
   align-items: center;
@@ -18,10 +19,6 @@ const BaseBox = styled.div`
   svg {
     width: inherit;
     height: inherit;
-  }
-
-  :focus {
-    color: red;
   }
 `;
 
@@ -40,7 +37,7 @@ const Checkbox: React.FC<CheckboxProps> = (props) => {
             <CheckIcon />
           </CheckedBox>
         }
-        icon={<BaseBox />}
+        icon={<BaseBox isDisabled={props.disabled} />}
       />
     </div>
   );

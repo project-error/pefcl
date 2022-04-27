@@ -34,6 +34,8 @@ const CreateAccountModal: React.FC<{ onClose(): void }> = ({ onClose }) => {
     },
   });
 
+  const isDefaultAccount = watch('isDefault');
+  const isSharedAccount = watch('isShared');
   const watchedAccountId = watch('fromAccountId');
   const selectedAccount = accounts.find((account) => account.id === watchedAccountId);
 
@@ -80,7 +82,7 @@ const CreateAccountModal: React.FC<{ onClose(): void }> = ({ onClose }) => {
                   control={control}
                   render={({ field }) => (
                     <FormControlLabel
-                      control={<Checkbox {...field} ref={null} />}
+                      control={<Checkbox {...field} ref={null} disabled={isSharedAccount} />}
                       label={<Heading6>{t('This should be the default account')}</Heading6>}
                     />
                   )}
@@ -93,7 +95,7 @@ const CreateAccountModal: React.FC<{ onClose(): void }> = ({ onClose }) => {
                   control={control}
                   render={({ field }) => (
                     <FormControlLabel
-                      control={<Checkbox {...field} ref={null} />}
+                      control={<Checkbox {...field} ref={null} disabled={isDefaultAccount} />}
                       label={<Heading6>{t('This is a shared account')}</Heading6>}
                     />
                   )}
