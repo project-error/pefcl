@@ -1,6 +1,6 @@
 import { BalanceErrors } from '@typings/Errors';
-import API from 'api';
-import { getNearestPlayer, validateAmount } from 'client-utils';
+import API from 'cl_api';
+import { getNearestPlayer, validateAmount } from 'cl_utils';
 
 export const giveCash = async (_source: number, args: string[]) => {
   const [amount] = args;
@@ -25,11 +25,6 @@ export const giveCash = async (_source: number, args: string[]) => {
 
     console.log(error);
   });
-};
-
-export const getCash = async () => {
-  const result = await API.getMyCash();
-  console.log('Your cash is:', result);
 };
 
 export const createInvoice = async (_source: number, args: string[]) => {

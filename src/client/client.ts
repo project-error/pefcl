@@ -1,9 +1,9 @@
-import './events';
-import './exports';
+import './cl_events';
+import './cl_exports';
 import { GeneralEvents } from '@typings/Events';
 import { RegisterNuiCB } from '@project-error/pe-utils';
-import { createInvoice, getCash, giveCash } from './functions';
-import Config from './client-config';
+import { createInvoice, giveCash } from './functions';
+import Config from './cl_config';
 
 let isAtmOpen = false;
 let isBankOpen = false;
@@ -75,7 +75,7 @@ RegisterNuiCB<void>(GeneralEvents.CloseUI, async () => {
 });
 
 RegisterCommand(
-  'showcash',
+  'cash',
   async () => {
     if (Config.general?.useFrameworkIntegration) return;
 
@@ -85,6 +85,5 @@ RegisterCommand(
   false,
 );
 
-RegisterCommand('cash', getCash, false);
 RegisterCommand('giveCash', giveCash, false);
 RegisterCommand('createInvoice', createInvoice, false);

@@ -8,7 +8,8 @@ import {
   BalanceEvents,
 } from '@typings/Events';
 import { Transaction } from '@typings/transactions';
-import API from './api';
+import { RegisterNuiProxy } from 'cl_utils';
+import API from './cl_api';
 
 onNet(TransactionEvents.NewTransactionBroadcast, (result: Transaction) => {
   SendNUIMessage({ type: TransactionEvents.NewTransactionBroadcast, payload: result });
@@ -23,8 +24,6 @@ setImmediate(async () => {
 onNet(BalanceEvents.UpdateCashBalance, (newBalance: number) => {
   StatSetInt(CASH_BAL_STAT, newBalance, true);
 });
-
-import { RegisterNuiProxy } from './client-utils';
 
 RegisterNuiProxy(AccountEvents.GetAccounts);
 RegisterNuiProxy(AccountEvents.CreateAccount);

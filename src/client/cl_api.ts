@@ -1,20 +1,21 @@
+import { ClientUtils } from '@project-error/pe-utils';
 import { ATMInput } from '@typings/Account';
 import { AccountEvents, CashEvents, InvoiceEvents } from '@typings/Events';
 import { ServerPromiseResp } from '@typings/http';
 import { Invoice, InvoiceOnlineInput } from '@typings/Invoice';
-import ClientUtils from 'client-utils';
 
 export class Api {
   utils: ClientUtils;
 
   constructor() {
-    this.utils = new ClientUtils({ promiseTimeout: 200 });
+    this.utils = new ClientUtils({ promiseTimout: 200 });
   }
 
   async getInvoices(): Promise<Invoice[]> {
     try {
       const serverRes = await this.utils.emitNetPromise<ServerPromiseResp<Invoice[]>>(
         InvoiceEvents.Get,
+        {},
       );
 
       if (serverRes.status !== 'ok') {
@@ -46,6 +47,7 @@ export class Api {
     try {
       const serverRes = await this.utils.emitNetPromise<ServerPromiseResp<number>>(
         CashEvents.GetMyCash,
+        {},
       );
 
       if (serverRes.status !== 'ok') {
