@@ -5,13 +5,14 @@ import { singleton } from 'tsyringe';
 import { OnlineUser, UserDTO } from '../../../../typings/user';
 import { getPlayerIdentifier, getPlayerName } from '../../utils/misc';
 import { UserModule } from './user.module';
-import { Export } from '@server/decorators/Export';
+import { Export, ExportListener } from '@server/decorators/Export';
 import { ServerExports } from '@server/../../typings/exports/server';
 import { UserEvents } from '@server/../../typings/Events';
 
 const logger = mainLogger.child({ module: 'user' });
 
 @singleton()
+@ExportListener()
 export class UserService {
   private readonly usersBySource: Map<number, UserModule>; // Player class
   constructor() {
