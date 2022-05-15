@@ -1,10 +1,8 @@
 /* Exports used with framework integrations */
 
-export interface FrameworkIntegrationExports {
-  /* User exports */
-  getPlayerName(source: number): string;
-  getPlayerIdentifier(source: number): string;
+import { OnlineUser } from './user';
 
+export interface FrameworkIntegrationExports {
   /* Cash exports */
   getCash(source: number): number;
   addCash: (source: number, amount: number) => void;

@@ -14,8 +14,8 @@ import {
 import {
   AccountEvents,
   ExternalAccountEvents,
-  GeneralEvents,
   SharedAccountEvents,
+  UserEvents,
 } from '@typings/Events';
 import { Request, Response } from '@typings/http';
 import { ServerExports } from '@typings/exports/server';
@@ -24,6 +24,7 @@ import { Event, EventListener } from '@decorators/Event';
 import { ExternalAccountService } from '@services/accountExternal/externalAccount.service';
 import { AuthService } from '@services/auth/auth.service';
 import { Export, ExportListener } from '@decorators/Export';
+import { UserModule } from '../user/user.module';
 
 @Controller('Account')
 @PromiseEventListener()
@@ -204,18 +205,9 @@ export class AccountController {
   }
 
   /* When starting the resource / new player joining. We should handle the default account. */
-  @Event(GeneralEvents.ResourceStarted)
-  async onServerResourceStart() {
-    const players = getPlayers();
-    players.forEach((player) => {
-      this._accountService.createInitialAccount(Number(player));
-    });
-  }
-
-  /* When starting the resource / new player joining. We should handle the default account. */
-  @Event('playerJoining')
-  async onPlayerJoining() {
-    const src = global.source;
+  @Event(UserEvents.Loaded)
+  async onUserLoaded(user: UserModule) {
+    const src = user.getSource();
     this._accountService.createInitialAccount(src);
   }
 }

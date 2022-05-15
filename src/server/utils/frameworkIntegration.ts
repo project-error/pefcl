@@ -12,8 +12,6 @@ const frameworkIntegrationKeys: FrameworkIntegrationFunction[] = [
   'addCash',
   'removeCash',
   'getCash',
-  'getPlayerName',
-  'getPlayerIdentifier',
 ];
 
 export const validateResourceExports = (resourceExports: FrameworkIntegrationExports): boolean => {

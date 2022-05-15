@@ -74,16 +74,6 @@ if (isMocking) {
         console.log('global.server.ts: Removing cash ..');
         throw new Error('no funds');
       },
-      getPlayerName: (source: number) => {
-        console.log('global.server.ts: Getting player name ..');
-        const src = source.toString();
-        return players[src].name;
-      },
-      getPlayerIdentifier: (source: number) => {
-        console.log('global.server.ts: Getting player name ..');
-        const src = source.toString();
-        return players[src].license;
-      },
     },
   });
 
@@ -101,5 +91,10 @@ if (isMocking) {
 
   global.emitNet = (event: string, ...args: any[]) => {
     NetEmitter.emit(event, ...args);
+  };
+
+  global.StopResource = (resource: string) => {
+    console.log('global.server.ts: Stopping resource ..' + resource);
+    process.exit(0);
   };
 }

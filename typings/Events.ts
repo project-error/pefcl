@@ -6,6 +6,7 @@ export enum GeneralEvents {
 
 export enum UserEvents {
   GetUsers = 'pefcl:userEventsGetUsers',
+  Loaded = 'pefcl:userLoaded',
 }
 
 export enum AccountEvents {

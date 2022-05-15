@@ -128,6 +128,7 @@ export class AccountService {
 
   async createInitialAccount(source: number): Promise<Account> {
     logger.silly('Checking if default account exists ...');
+
     const user = this._userService.getUser(source);
     const defaultAccount = await this._accountDB.getDefaultAccountByIdentifier(
       user.getIdentifier(),
