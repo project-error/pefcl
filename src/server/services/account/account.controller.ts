@@ -24,7 +24,7 @@ import { Event, EventListener } from '@decorators/Event';
 import { ExternalAccountService } from '@services/accountExternal/externalAccount.service';
 import { AuthService } from '@services/auth/auth.service';
 import { Export, ExportListener } from '@decorators/Export';
-import { UserModule } from '../user/user.module';
+import { OnlineUser } from '@server/../../typings/user';
 
 @Controller('Account')
 @PromiseEventListener()
@@ -206,8 +206,8 @@ export class AccountController {
 
   /* When starting the resource / new player joining. We should handle the default account. */
   @Event(UserEvents.Loaded)
-  async onUserLoaded(user: UserModule) {
-    const src = user.getSource();
+  async onUserLoaded(user: OnlineUser) {
+    const src = user.source;
     this._accountService.createInitialAccount(src);
   }
 }
