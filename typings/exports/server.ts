@@ -10,6 +10,7 @@ export enum ServerExports {
   RemoveBankBalance = 'removeBankBalance',
   WithdrawMoney = 'withdrawMoney',
   DepositMoney = 'depositMoney',
+  CreateInvoice = 'createInvoice',
 }
 
 export type WithdrawMoneyExport = (

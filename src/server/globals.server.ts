@@ -3,13 +3,14 @@ import { readFileSync } from 'fs';
 import path from 'path';
 
 const isMocking = process.env.NODE_ENV === 'mocking' || process.env.NODE_ENV === 'test';
+export const mockedResourceName = 'pefcl';
 
 // TODO: Move this into package
 const convars = {
   mysql_connection_string: 'mysql://root:bruv@localhost/dev',
 };
 
-const players = {
+const players: any = {
   '2': {
     name: 'BingoBerra',
     license: 'license:1',
@@ -35,7 +36,7 @@ if (isMocking) {
   };
 
   global.GetCurrentResourceName = () => {
-    return 'pe-financial';
+    return mockedResourceName;
   };
 
   global.GetPlayerName = (source: keyof typeof players) => {
@@ -60,14 +61,28 @@ if (isMocking) {
   };
 
   global.exports = () => ({
-    'my-resource': {
-      pefclDepositMoney: () => {
-        console.log('global.server.ts: Depositing money ..');
+    'your-resource': {
+      addCash: () => {
+        console.log('global.server.ts: Adding cash ..');
         throw new Error('no funds');
       },
-      getCurrentBalance: () => {
-        console.log('global.server.ts: Getting balance ..');
+      getCash: () => {
+        console.log('global.server.ts: Getting cash ..');
         return 2500;
+      },
+      removeCash: () => {
+        console.log('global.server.ts: Removing cash ..');
+        throw new Error('no funds');
+      },
+      getPlayerName: (source: number) => {
+        console.log('global.server.ts: Getting player name ..');
+        const src = source.toString();
+        return players[src].name;
+      },
+      getPlayerIdentifier: (source: number) => {
+        console.log('global.server.ts: Getting player name ..');
+        const src = source.toString();
+        return players[src].license;
       },
     },
   });

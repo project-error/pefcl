@@ -49,7 +49,7 @@ export class ExternalAccountService {
       throw new ServerError(AccountErrors.AlreadyExists);
     }
 
-    const myAccounts = await this._accountDB.getAccountsByIdentifier(user.identifier);
+    const myAccounts = await this._accountDB.getAccountsByIdentifier(user.getIdentifier());
     const ids = myAccounts.map((account) => account.getDataValue('id'));
     if (ids.includes(targetAccount.getDataValue('id'))) {
       throw new ServerError(ExternalAccountErrors.AccountIsYours);

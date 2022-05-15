@@ -3,14 +3,17 @@ export type DeepPartial<T> = T extends object
       [P in keyof T]?: DeepPartial<T[P]>;
     }
   : T;
+
+export type IdentifierType = 'license' | 'xbox' | 'discord' | 'steam';
 export interface ResourceConfig {
-  exports: {
-    resourceName: string;
-  };
   general: {
-    useFrameworkIntegration: boolean;
     language: string;
     currency: string;
+    identifierType: string;
+  };
+  frameworkIntegration: {
+    enabled: boolean;
+    resource: string;
   };
   database: {
     profileQueries: boolean;

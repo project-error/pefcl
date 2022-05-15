@@ -51,13 +51,15 @@ export class AccountService {
 
   private async getMyAccounts(source: number) {
     const user = this._userService.getUser(source);
-    const accounts = await this._accountDB.getAccountsByIdentifier(user.identifier);
+    const accounts = await this._accountDB.getAccountsByIdentifier(user.getIdentifier());
     return accounts;
   }
 
   private async getMySharedAccounts(source: number): Promise<Account[]> {
     const user = this._userService.getUser(source);
-    const accounts = await this._sharedAccountDB.getSharedAccountsByIdentifier(user.identifier);
+    const accounts = await this._sharedAccountDB.getSharedAccountsByIdentifier(
+      user.getIdentifier(),
+    );
     const mappedAccounts = accounts.map((sharedAccount) => {
       const acc = sharedAccount.getDataValue('account') as unknown as AccountModel;
       const sharedAcc = sharedAccount.toJSON();
@@ -74,7 +76,7 @@ export class AccountService {
 
   async getDefaultAccountBySource(source: number) {
     const user = this._userService.getUser(source);
-    return await this._accountDB.getDefaultAccountByIdentifier(user.identifier);
+    return await this._accountDB.getDefaultAccountByIdentifier(user.getIdentifier());
   }
 
   async handleGetMyAccounts(source: number): Promise<Account[]> {
@@ -127,7 +129,9 @@ export class AccountService {
   async createInitialAccount(source: number): Promise<Account> {
     logger.silly('Checking if default account exists ...');
     const user = this._userService.getUser(source);
-    const defaultAccount = await this._accountDB.getDefaultAccountByIdentifier(user.identifier);
+    const defaultAccount = await this._accountDB.getDefaultAccountByIdentifier(
+      user.getIdentifier(),
+    );
 
     if (defaultAccount) {
       logger.silly('Default account exists.');
@@ -138,7 +142,7 @@ export class AccountService {
     const initialAccount = await this._accountDB.createAccount({
       accountName: i18next.t('Personal account'),
       isDefault: true,
-      ownerIdentifier: user.identifier,
+      ownerIdentifier: user.getIdentifier(),
       type: AccountType.Personal,
     });
 
@@ -227,7 +231,7 @@ export class AccountService {
       // TODO #2: Is this the best we can do?
       const deletingAccount = await this._accountDB.getAuthorizedAccountById(
         req.data.accountId,
-        user.identifier,
+        user.getIdentifier(),
       );
 
       // TODO: Implement smarter way of doing this check. Generally you can't access other players accounts.
@@ -276,7 +280,10 @@ export class AccountService {
 
     const t = await sequelize.transaction();
     try {
-      const fromAccount = await this._accountDB.getAuthorizedAccountById(fromId, user.identifier);
+      const fromAccount = await this._accountDB.getAuthorizedAccountById(
+        fromId,
+        user.getIdentifier(),
+      );
       const toAccount = await this._accountDB.getAccountById(toId);
 
       if (!fromAccount || !toAccount) {
@@ -394,7 +401,9 @@ export class AccountService {
   async handleSetDefaultAccount(req: Request<{ accountId: number }>) {
     const user = this._userService.getUser(req.source);
     logger.silly(
-      `Changing default account for user ${user.identifier} to accountId ${req.data.accountId} ...`,
+      `Changing default account for user ${user.getIdentifier()} to accountId ${
+        req.data.accountId
+      } ...`,
     );
 
     const t = await sequelize.transaction();

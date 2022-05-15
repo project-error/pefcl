@@ -1,10 +1,9 @@
 import { GenericErrors } from '@typings/Errors';
 import { ServerError } from '@utils/errors';
-import { config } from '@utils/server-config';
 import { mainLogger } from '@server/sv_logger';
 import { singleton } from 'tsyringe';
 import { UserDTO } from '../../../../typings/user';
-import { getGameLicense } from '../../utils/misc';
+import { getPlayerIdentifier, getPlayerName } from '../../utils/misc';
 import { UserModule } from './user.module';
 
 const logger = mainLogger.child({ module: 'user' });
@@ -34,7 +33,7 @@ export class UserService {
     let user: UserModule | undefined;
 
     this.getAllUsers().forEach((onlineUser) => {
-      user = onlineUser.identifier === identifier ? onlineUser : user;
+      user = onlineUser.getIdentifier() === identifier ? onlineUser : user;
     });
 
     return user;
@@ -49,28 +48,13 @@ export class UserService {
   }
 
   async savePlayer(userDTO: UserDTO) {
-    if (!userDTO.identifier) {
-      userDTO.identifier = getGameLicense(userDTO.source);
-    }
-
-    if (config.debug?.mockLicenses) {
-      userDTO.identifier = `license:${userDTO.source}`;
-    }
-
-    if (!userDTO.name) {
-      userDTO.name = GetPlayerName(userDTO.source.toString());
-    }
-
-    if (!userDTO.identifier) {
-      logger.error('User could not be saved. Missing identifier.');
-      logger.error(userDTO);
-      return;
-    }
+    const identifier = getPlayerIdentifier(userDTO.source);
+    const name = getPlayerName(userDTO.source);
 
     const user = new UserModule({
+      name,
+      identifier,
       source: userDTO.source,
-      identifier: userDTO.identifier,
-      name: userDTO.name,
     });
 
     logger.debug('New user loaded for pe-fcl');

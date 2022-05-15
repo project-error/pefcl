@@ -1,19 +1,50 @@
 import { DEFAULT_CLEARING_NUMBER } from './constants';
+import { getFrameworkExports } from './frameworkIntegration';
 import { config } from './server-config';
+
+const useFrameworkIntegration = config.frameworkIntegration?.enabled;
+
+export const getExports = (): any => {
+  return typeof global.exports === 'function' ? global.exports() : global.exports;
+};
 
 export const getSource = (): number => global.source;
 
-export const getGameLicense = (source: number) => {
-  const identifiers = getPlayerIdentifiers(source);
-  let playerIdentifier;
+export const getPlayerIdentifier = (source: number): string => {
+  const identifiers = getPlayerIdentifiers(source.toString());
 
-  for (const id of identifiers) {
-    if (id.includes('license:')) {
-      playerIdentifier = id;
-    }
+  if (config.debug?.mockLicenses) {
+    return `license:${source}`;
   }
 
-  return playerIdentifier;
+  if (useFrameworkIntegration) {
+    const frameworkExports = getFrameworkExports();
+    const identifier = frameworkExports.getPlayerIdentifier(source);
+
+    if (!identifier) {
+      throw new Error('Failed to get identifier for player' + source);
+    }
+
+    return identifier;
+  }
+
+  const identifierType = config.general?.identifierType ?? 'license';
+  const identifier = identifiers.find((identifier) => identifier.includes(`${identifierType}:`));
+
+  if (!identifier) {
+    throw new Error('Failed to get identifier for player' + source);
+  }
+
+  return identifier;
+};
+
+export const getPlayerName = (source: number): string => {
+  if (useFrameworkIntegration) {
+    const frameworkExports = getFrameworkExports();
+    return frameworkExports.getPlayerName(source);
+  }
+
+  return GetPlayerName(source.toString());
 };
 
 export const getClearingNumber = (initialConfig = config): string => {

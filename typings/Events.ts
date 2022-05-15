@@ -1,6 +1,7 @@
 export enum GeneralEvents {
   CloseUI = 'pefcl:closeNui',
   ResourceStarted = 'pefcl:resourceStarted',
+  ResourceStopped = 'pefcl:resourceStopped',
 }
 
 export enum UserEvents {

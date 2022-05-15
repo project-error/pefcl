@@ -1,8 +1,8 @@
 {
-  "name": "pe-financial",
+  "name": "pefcl",
   "version": "1.0.0",
   "main": "index.js",
-  "repository": "https://github.com/project-error/pe-financial",
+  "repository": "https://github.com/project-error/pefcl",
   "author": "projecterror <info@projecterror.dev>",
   "license": "MIT",
   "scripts": {

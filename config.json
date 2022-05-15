@@ -1,11 +1,12 @@
 {
-  "exports": {
-    "resourceName": "your-resource"
-  },
   "general": {
-    "useFrameworkIntegration": false,
     "language": "en",
-    "currency": "USD"
+    "currency": "USD",
+    "identifierType": "license"
+  },
+  "frameworkIntegration": {
+    "enabled": false,
+    "resource": "your-resource"
   },
   "database": {
     "profileQueries": true,

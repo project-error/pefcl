@@ -1,3 +1,5 @@
+import { ServerExports } from '@server/../../typings/exports/server';
+import { Export } from '@server/decorators/Export';
 import { InvoiceEvents } from '@typings/Events';
 import { Request, Response } from '@typings/http';
 import { Invoice, InvoiceInput, InvoiceOnlineInput, PayInvoiceInput } from '@typings/Invoice';
@@ -23,6 +25,7 @@ export class InvoiceController {
     return res({ status: 'ok', data: data });
   }
 
+  @Export(ServerExports.CreateInvoice)
   @NetPromise(InvoiceEvents.CreateInvoice)
   async createInvoice(req: Request<InvoiceInput>, res: Response<Invoice>) {
     const data = await this._InvoiceService.createInvoice(req.data);
