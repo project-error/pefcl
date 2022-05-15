@@ -9,7 +9,7 @@ export interface ResourceConfig {
   general: {
     language: string;
     currency: string;
-    identifierType: IdentifierType;
+    identifierType: string;
   };
   frameworkIntegration: {
     enabled: boolean;

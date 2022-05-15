@@ -79,6 +79,11 @@ if (isMocking) {
         const src = source.toString();
         return players[src].name;
       },
+      getPlayerIdentifier: (source: number) => {
+        console.log('global.server.ts: Getting player name ..');
+        const src = source.toString();
+        return players[src].license;
+      },
     },
   });
 

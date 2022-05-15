@@ -2,10 +2,10 @@
   "general": {
     "language": "en",
     "currency": "USD",
-    "licenseType": "license"
+    "identifierType": "license"
   },
   "frameworkIntegration": {
-    "enabled": true,
+    "enabled": false,
     "resource": "your-resource"
   },
   "database": {
