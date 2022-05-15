@@ -1,8 +1,6 @@
 import { DEFAULT_CLEARING_NUMBER } from './constants';
-import { getFrameworkExports } from './frameworkIntegration';
 import { config } from './server-config';
 
-const useFrameworkIntegration = config.frameworkIntegration?.enabled;
 const isMocking = process.env.NODE_ENV === 'mocking';
 
 export const getExports = () => {
@@ -22,17 +20,6 @@ export const getPlayerIdentifier = (source: number): string => {
     return `license:${source}`;
   }
 
-  if (useFrameworkIntegration) {
-    const frameworkExports = getFrameworkExports();
-    const identifier = frameworkExports.getPlayerIdentifier(source);
-
-    if (!identifier) {
-      throw new Error('Failed to get identifier for player' + source);
-    }
-
-    return identifier;
-  }
-
   const identifierType = config.general?.identifierType ?? 'license';
   const identifier = identifiers.find((identifier) => identifier.includes(`${identifierType}:`));
 
@@ -44,11 +31,6 @@ export const getPlayerIdentifier = (source: number): string => {
 };
 
 export const getPlayerName = (source: number): string => {
-  if (useFrameworkIntegration) {
-    const frameworkExports = getFrameworkExports();
-    return frameworkExports.getPlayerName(source);
-  }
-
   return GetPlayerName(source.toString());
 };
 

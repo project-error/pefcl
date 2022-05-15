@@ -19,17 +19,12 @@ export class BootService {
     this._userService = userService;
   }
 
-  private checkExports(): boolean {
-    if (config?.frameworkIntegration?.enabled) {
-      logger.info('Framework integration is enabled.');
-      const resourceExports = getFrameworkExports();
+  private checkExports() {
+    const resourceExports = getFrameworkExports();
 
-      if (!validateResourceExports(resourceExports)) {
-        return false;
-      }
+    if (!validateResourceExports(resourceExports)) {
+      throw new Error('Framework integration failed');
     }
-
-    return true;
   }
 
   async handleResourceStart() {
@@ -37,12 +32,17 @@ export class BootService {
     await sequelize.authenticate();
     logger.debug('Connected to database.');
 
-    const isValid = this.checkExports();
+    if (config?.frameworkIntegration?.enabled) {
+      logger.info('Framework integration is enabled.');
 
-    if (!isValid) {
-      logger.error(`Stopped ${resourceName} because of invalid framework exports.`);
-      this.handleResourceStop();
-      return;
+      try {
+        this.checkExports();
+      } catch (error: unknown | Error) {
+        logger.error('Stopping resource due to framework integration error. Reason:');
+        logger.error(error);
+        this.handleResourceStop();
+        return;
+      }
     }
 
     logger.info(`Starting ${resourceName}.`);
@@ -52,5 +52,6 @@ export class BootService {
   async handleResourceStop() {
     logger.info(`Stopping ${resourceName}.`);
     emit(GeneralEvents.ResourceStopped);
+    StopResource(resourceName);
   }
 }

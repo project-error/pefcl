@@ -2,9 +2,12 @@ import { GenericErrors } from '@typings/Errors';
 import { ServerError } from '@utils/errors';
 import { mainLogger } from '@server/sv_logger';
 import { singleton } from 'tsyringe';
-import { UserDTO } from '../../../../typings/user';
+import { OnlineUser, UserDTO } from '../../../../typings/user';
 import { getPlayerIdentifier, getPlayerName } from '../../utils/misc';
 import { UserModule } from './user.module';
+import { Export } from '@server/decorators/Export';
+import { ServerExports } from '@server/../../typings/exports/server';
+import { UserEvents } from '@server/../../typings/Events';
 
 const logger = mainLogger.child({ module: 'user' });
 
@@ -47,6 +50,16 @@ export class UserService {
     this.usersBySource.delete(source);
   }
 
+  @Export(ServerExports.LoadPlayer)
+  async loadPlayer(data: OnlineUser) {
+    logger.debug('Loading player for pefcl with export');
+
+    const user = new UserModule(data);
+    this.usersBySource.set(user.getSource(), user);
+
+    emit(UserEvents.Loaded, user);
+  }
+
   async savePlayer(userDTO: UserDTO) {
     const identifier = getPlayerIdentifier(userDTO.source);
     const name = getPlayerName(userDTO.source);
@@ -61,5 +74,6 @@ export class UserService {
     logger.debug(user);
 
     this.usersBySource.set(userDTO.source, user);
+    emit(UserEvents.Loaded, user);
   }
 }

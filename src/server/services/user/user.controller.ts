@@ -1,6 +1,7 @@
 import { Controller } from '@decorators/Controller';
 import { EventListener, Event } from '@decorators/Event';
 import { NetPromise, PromiseEventListener } from '@decorators/NetPromise';
+import { config } from '@server/utils/server-config';
 import { GeneralEvents, UserEvents } from '@typings/Events';
 import { Request, Response } from '@typings/http';
 import { OnlineUser } from '@typings/user';
@@ -37,12 +38,16 @@ export class UserController {
 
   @Event('playerJoining')
   playerJoining() {
+    if (config.frameworkIntegration?.enabled) return;
+
     const _source = global.source;
     this._userService.savePlayer({ source: _source });
   }
 
   @Event(GeneralEvents.ResourceStarted)
   async onServerResourceStart() {
+    if (config.frameworkIntegration?.enabled) return;
+
     const players = getPlayers();
     players.forEach((player) => {
       this._userService.savePlayer({ source: parseInt(player, 10) });
