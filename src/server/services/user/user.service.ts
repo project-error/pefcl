@@ -54,6 +54,7 @@ export class UserService {
   @Export(ServerExports.LoadPlayer)
   async loadPlayer(data: OnlineUser) {
     logger.debug('Loading player for pefcl with export');
+    logger.debug(data);
 
     const user = new UserModule(data);
     this.usersBySource.set(user.getSource(), user);
