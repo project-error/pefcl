@@ -11,7 +11,12 @@ import {
   RenameAccountInput,
   SharedAccountUser,
 } from '@typings/Account';
-import { AccountEvents, ExternalAccountEvents, SharedAccountEvents } from '@typings/Events';
+import {
+  AccountEvents,
+  ExternalAccountEvents,
+  GeneralEvents,
+  SharedAccountEvents,
+} from '@typings/Events';
 import { Request, Response } from '@typings/http';
 import { ServerExports } from '@typings/exports/server';
 import { AccountService } from './account.service';
@@ -199,12 +204,8 @@ export class AccountController {
   }
 
   /* When starting the resource / new player joining. We should handle the default account. */
-  @Event('onServerResourceStart')
-  async onServerResourceStart(resource: string) {
-    if (resource !== GetCurrentResourceName()) {
-      return;
-    }
-
+  @Event(GeneralEvents.ResourceStarted)
+  async onServerResourceStart() {
     const players = getPlayers();
     players.forEach((player) => {
       this._accountService.createInitialAccount(Number(player));

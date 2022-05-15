@@ -22,6 +22,8 @@ import './utils/i18n';
 import { load } from './utils/i18n';
 import './utils/pool';
 import './utils/server-config';
+import { mainLogger } from './sv_logger';
+import { mockedResourceName } from './globals.server';
 
 const hotReloadConfig = {
   resourceName: GetCurrentResourceName(),
@@ -88,10 +90,10 @@ if (isMocking) {
   app.post(...createEndpoint(ExternalAccountEvents.Add));
   app.post(...createEndpoint(ExternalAccountEvents.Get));
 
-  app.listen(port, () => {
-    console.log(`[MOCKSERVER]: listening on port: ${port}`);
+  app.listen(port, async () => {
+    mainLogger.child({ module: 'server' }).debug(`[MOCKSERVER]: listening on port: ${port}`);
 
-    emit('onServerResourceStart', 'pe-financial');
+    emit('onServerResourceStart', mockedResourceName);
     global.source = 2;
   });
 }

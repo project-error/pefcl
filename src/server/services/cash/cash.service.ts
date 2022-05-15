@@ -1,6 +1,5 @@
 import { singleton } from 'tsyringe';
 import { Cash, ChangeCashInput } from '@typings/Cash';
-import { AccountServiceExports } from '@typings/exports';
 import { config } from '@utils/server-config';
 import { mainLogger } from '../../sv_logger';
 import { UserService } from '../user/user.service';
@@ -10,9 +9,10 @@ import { Request } from '@typings/http';
 import { ServerError } from '@utils/errors';
 import { BalanceEvents } from '@typings/Events';
 import { BalanceErrors } from '@typings/Errors';
+import { getFrameworkExports } from '@server/utils/frameworkIntegration';
 
-const exp: AccountServiceExports = global.exports[config?.exports?.resourceName ?? 'no-use'];
 const logger = mainLogger.child({ module: 'cash' });
+const useFrameworkIntegration = config?.frameworkIntegration?.enabled;
 
 @singleton()
 export class CashService {
@@ -31,8 +31,9 @@ export class CashService {
 
   async getMyCash(source: number): Promise<number> {
     const user = this._userService.getUser(source);
-    if (config?.general?.useFrameworkIntegration) {
-      return user?.getBalance() ?? 0;
+    if (useFrameworkIntegration) {
+      const exports = getFrameworkExports();
+      return exports.getCash(user.getSource()) ?? 0;
     }
 
     const cash = await this.getCashModel(source);
@@ -65,8 +66,9 @@ export class CashService {
     const user = this._userService.getUser(source);
     const identifier = user.getIdentifier();
 
-    if (config?.general?.useFrameworkIntegration) {
-      exp.pefclDepositMoney(source, amount);
+    if (useFrameworkIntegration) {
+      const exports = getFrameworkExports();
+      exports.removeCash(source, amount);
       return null;
     }
 
@@ -75,7 +77,7 @@ export class CashService {
 
     emitNet(BalanceEvents.UpdateCashBalance, source, cash?.getDataValue('amount'));
 
-    return cash;
+    return null;
   }
 
   async handleAddCash(source: number, amount: number): Promise<CashModel | null> {
@@ -83,8 +85,9 @@ export class CashService {
     const user = this._userService.getUser(source);
     const identifier = user.getIdentifier();
 
-    if (config?.general?.useFrameworkIntegration) {
-      exp.pefclWithdrawMoney(source, amount);
+    if (useFrameworkIntegration) {
+      const exports = getFrameworkExports();
+      exports.addCash(source, amount);
       return null;
     }
 

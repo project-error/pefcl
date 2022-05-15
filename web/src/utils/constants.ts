@@ -3,7 +3,7 @@ import { GetTransactionsResponse, TransactionType } from '../../../typings/trans
 import { Invoice, InvoiceStatus } from '../../../typings/Invoice';
 import dayjs from 'dayjs';
 
-export const resourceDefaultName = 'pe-financial';
+export const resourceDefaultName = 'pefcl';
 
 const now = dayjs();
 
