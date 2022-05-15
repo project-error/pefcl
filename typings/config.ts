@@ -25,6 +25,7 @@ export interface ResourceConfig {
   accounts: {
     startAmount: number;
     clearingNumber: string | number;
+    maximumNumberOfAccounts: number;
   };
   cash: {
     startAmount: number;

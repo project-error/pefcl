@@ -40,6 +40,26 @@ export const mockedAccounts: Account[] = [
     type: AccountType.Shared,
     role: AccountRole.Owner,
   },
+  {
+    id: 4,
+    accountName: 'Bennys AB',
+    number: '920, 1000-2000-3004',
+    balance: 1800000,
+    isDefault: false,
+    ownerIdentifier: '',
+    type: AccountType.Shared,
+    role: AccountRole.Owner,
+  },
+  {
+    id: 5,
+    accountName: 'Bennys AB',
+    number: '920, 1000-2000-3004',
+    balance: 1800000,
+    isDefault: false,
+    ownerIdentifier: '',
+    type: AccountType.Shared,
+    role: AccountRole.Owner,
+  },
 ];
 
 export const mockedTransactions: GetTransactionsResponse = {
