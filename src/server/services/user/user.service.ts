@@ -58,7 +58,7 @@ export class UserService {
     const user = new UserModule(data);
     this.usersBySource.set(user.getSource(), user);
 
-    emit(UserEvents.Loaded, user);
+    emit(UserEvents.Loaded, data);
   }
 
   async savePlayer(userDTO: UserDTO) {
@@ -75,6 +75,10 @@ export class UserService {
     logger.debug(user);
 
     this.usersBySource.set(userDTO.source, user);
-    emit(UserEvents.Loaded, user);
+    emit(UserEvents.Loaded, {
+      name,
+      identifier,
+      source: userDTO.source,
+    });
   }
 }
