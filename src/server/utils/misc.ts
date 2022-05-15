@@ -3,8 +3,13 @@ import { getFrameworkExports } from './frameworkIntegration';
 import { config } from './server-config';
 
 const useFrameworkIntegration = config.frameworkIntegration?.enabled;
+const isMocking = process.env.NODE_ENV === 'mocking';
 
-export const getExports = (): any => {
+export const getExports = () => {
+  if (!isMocking) {
+    return global.exports;
+  }
+
   return typeof global.exports === 'function' ? global.exports() : global.exports;
 };
 

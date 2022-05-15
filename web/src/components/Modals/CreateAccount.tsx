@@ -76,19 +76,6 @@ const CreateAccountModal: React.FC<{ onClose(): void }> = ({ onClose }) => {
 
               <div>
                 <Controller
-                  name="isDefault"
-                  control={control}
-                  render={({ field }) => (
-                    <FormControlLabel
-                      control={<Checkbox {...field} ref={null} />}
-                      label={<Heading6>{t('This should be the default account')}</Heading6>}
-                    />
-                  )}
-                />
-              </div>
-
-              <div>
-                <Controller
                   name="isShared"
                   control={control}
                   render={({ field }) => (
