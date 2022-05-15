@@ -105,60 +105,11 @@ if (isMocking) {
 
       service.loadPlayer({
         source: 3,
-        identifier: 'custom-character-identifier:john-doe',
         name: 'John Doe',
+        identifier: 'custom-character-identifier:john-doe',
       });
     }
   });
 }
 
-const init = async () => {
-  await load();
-
-  // emit('playerJoining', {});
-
-  /* */
-  /* */
-  /** DEBUGGING STUFF */
-  /* */
-  /* */
-
-  // emitNet(AccountEvents.WithdrawMoney, 'returnEvent', {
-  //   amount: 2000,
-  //   message: 'ATM Withdrawal',
-  // });
-
-  // emitNet(AccountEvents.DepositMoney, 'returnEvent', {
-  //   amount: 2000,
-  //   message: 'ATM Deposition',
-  // });
-
-  // const payload = {
-  //   to: 'license:1',
-  //   from: 'Karl-Jan',
-  //   message: i18n.t('Payment'),
-  //   amount: 50,
-  // };
-
-  // emitNet(InvoiceEvents.CreateInvoice, AccountEvents.CreateAccountResponse, payload);
-
-  /* Emit something */
-  // const createSharedAccount: PreDBAccount = {
-  //   accountName: 'Bennys AB',
-  //   isShared: true,
-  //   fromAccountId: 0,
-  // };
-
-  // emitNet(AccountEvents.CreateAccount, AccountEvents.CreateAccountResponse, createSharedAccount);
-
-  // const payload: AddToSharedAccountInput = { accountId: 3, source: 3 };
-  // emitNet(AccountEvents.AddUserToSharedAccount, AccountEvents.CreateAccountResponse, payload);
-
-  // const createAccountPayload2: PreDBAccount = {
-  //   accountName: 'Pension',
-  //   isDefault: false,
-  //   fromAccountId: 0,
-  // };
-};
-
-init();
+load();
