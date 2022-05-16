@@ -17,6 +17,7 @@ const Content = styled(motion.div)`
   padding: 2rem;
   flex: 1;
   height: 100%;
+  overflow: hidden;
 `;
 
 const LoadingContainer = styled.div`

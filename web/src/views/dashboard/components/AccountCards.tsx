@@ -2,6 +2,7 @@ import { AccountCard, LoadingAccountCard } from '@components/Card';
 import CreateAccountModal from '@components/Modals/CreateAccount';
 import { orderedAccountsAtom } from '@data/accounts';
 import styled from '@emotion/styled';
+import { useConfig } from '@hooks/useConfig';
 import { Add } from '@mui/icons-material';
 import { Dialog } from '@mui/material';
 import { Account } from '@typings/Account';
@@ -21,11 +22,37 @@ const CardContainer = styled(Reorder.Item)`
 `;
 
 const Cards = styled(Reorder.Group)`
+  position: relative;
   min-height: 7.5rem;
   padding: 0;
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
-  grid-column-gap: ${theme.spacing(2.5)};
+  display: flex;
+  overflow-x: auto;
+  width: 100%;
+  padding-bottom: ${theme.spacing(2)};
+
+  ::-webkit-scrollbar {
+    width: 0.25rem;
+    height: 0.25rem;
+  }
+
+  ::-webkit-scrollbar-track {
+    background-color: ${theme.palette.background.dark4};
+    border-radius: 2rem;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border-radius: 2rem;
+    background-color: #80cae24a;
+  }
+
+  & > * {
+    min-width: calc(25% - ${theme.spacing(1.5)});
+    margin-right: ${theme.spacing(2)};
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
 `;
 
 const CreateCard = styled.div`
@@ -38,6 +65,8 @@ const CreateCard = styled.div`
   font-size: 1.5rem;
   transition: 300ms;
 
+  flex: 0;
+  min-width: 5.5rem;
   width: 5.5rem;
   height: 5.5rem;
 
@@ -52,6 +81,7 @@ const CreateCard = styled.div`
 `;
 
 const AccountCards = () => {
+  const config = useConfig();
   const [, setRefreshOrder] = useState({});
   const [orderedAccounts, setOrderedAccounts] = useAtom(orderedAccountsAtom);
   const [isCreateAccountOpen, setIsCreateAccountOpen] = useState(false);
@@ -83,7 +113,7 @@ const AccountCards = () => {
           ))}
         </AnimatePresence>
 
-        {orderedAccounts.length < 4 && (
+        {orderedAccounts.length < (config.accounts.maximumNumberOfAccounts || 4) && (
           <CreateCard onClick={() => setIsCreateAccountOpen(true)} title="create-account">
             <Add />
           </CreateCard>
