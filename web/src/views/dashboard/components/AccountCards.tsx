@@ -5,13 +5,11 @@ import styled from '@emotion/styled';
 import { useConfig } from '@hooks/useConfig';
 import { Add } from '@mui/icons-material';
 import { Dialog } from '@mui/material';
-import { Account } from '@typings/Account';
 import theme from '@utils/theme';
-import { AnimatePresence, Reorder } from 'framer-motion';
 import { useAtom } from 'jotai';
 import React, { useState } from 'react';
 
-const CardContainer = styled(Reorder.Item)`
+const CardContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-end;
@@ -21,7 +19,7 @@ const CardContainer = styled(Reorder.Item)`
   }
 `;
 
-const Cards = styled(Reorder.Group)`
+const Cards = styled.div`
   position: relative;
   min-height: 7.5rem;
   padding: 0;
@@ -46,7 +44,8 @@ const Cards = styled(Reorder.Group)`
   }
 
   & > * {
-    min-width: calc(25% - ${theme.spacing(1.5)});
+    min-width: 17rem;
+    width: calc(25% - ${theme.spacing(1.5)});
     margin-right: ${theme.spacing(2)};
 
     &:last-child {
@@ -82,15 +81,8 @@ const CreateCard = styled.div`
 
 const AccountCards = () => {
   const config = useConfig();
-  const [, setRefreshOrder] = useState({});
-  const [orderedAccounts, setOrderedAccounts] = useAtom(orderedAccountsAtom);
+  const [orderedAccounts] = useAtom(orderedAccountsAtom);
   const [isCreateAccountOpen, setIsCreateAccountOpen] = useState(false);
-
-  const handleReOrder = (accounts: Account[]) => {
-    const order = accounts?.reduce((prev, curr, index) => ({ ...prev, [curr.id ?? 0]: index }), {});
-    setOrderedAccounts(order);
-    setRefreshOrder(order); // TODO: This would not be needed if the 'orderedAccounts' was updated. Not sure why it doesn't.
-  };
 
   return (
     <>
@@ -104,14 +96,12 @@ const AccountCards = () => {
         <CreateAccountModal onClose={() => setIsCreateAccountOpen(false)} />
       </Dialog>
 
-      <Cards values={orderedAccounts} onReorder={handleReOrder} axis="x">
-        <AnimatePresence initial={false}>
-          {orderedAccounts.map((account) => (
-            <CardContainer key={account.id} value={account}>
-              <AccountCard account={account} />
-            </CardContainer>
-          ))}
-        </AnimatePresence>
+      <Cards>
+        {orderedAccounts.map((account) => (
+          <CardContainer key={account.id}>
+            <AccountCard account={account} />
+          </CardContainer>
+        ))}
 
         {orderedAccounts.length < (config.accounts.maximumNumberOfAccounts || 4) && (
           <CreateCard onClick={() => setIsCreateAccountOpen(true)} title="create-account">
@@ -125,7 +115,7 @@ const AccountCards = () => {
 
 export const LoadingCards = () => {
   return (
-    <Cards values={[]} onReorder={() => null}>
+    <Cards>
       <LoadingAccountCard />
       <LoadingAccountCard />
       <LoadingAccountCard />
