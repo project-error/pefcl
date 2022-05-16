@@ -1,5 +1,5 @@
 import { ServerExports } from '@server/../../typings/exports/server';
-import { Export } from '@server/decorators/Export';
+import { Export, ExportListener } from '@server/decorators/Export';
 import { InvoiceEvents } from '@typings/Events';
 import { Request, Response } from '@typings/http';
 import { Invoice, InvoiceInput, InvoiceOnlineInput, PayInvoiceInput } from '@typings/Invoice';
@@ -9,6 +9,7 @@ import { NetPromise, PromiseEventListener } from '../../decorators/NetPromise';
 import { InvoiceService } from './invoice.service';
 
 @Controller('Invoice')
+@ExportListener()
 @PromiseEventListener()
 export class InvoiceController {
   private readonly _InvoiceService: InvoiceService;
@@ -19,6 +20,7 @@ export class InvoiceController {
     this._userService = userService;
   }
 
+  @Export(ServerExports.GetInvoices)
   @NetPromise(InvoiceEvents.Get)
   async getInvoices(req: Request<void>, res: Response<Invoice[]>) {
     const data = await this._InvoiceService.getAllInvoicesBySource(req.source);
