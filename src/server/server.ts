@@ -2,6 +2,7 @@ import { ServerPromiseResp } from '@project-error/pe-utils';
 import {
   AccountEvents,
   ExternalAccountEvents,
+  GeneralEvents,
   InvoiceEvents,
   SharedAccountEvents,
   TransactionEvents,
@@ -101,9 +102,9 @@ if (isMocking) {
 
     /* Load user with framework Integration */
     if (config.frameworkIntegration?.enabled) {
-      const service = container.resolve(UserService);
+      const userService = container.resolve(UserService);
 
-      service.loadPlayer({
+      userService.loadPlayer({
         source: 3,
         name: 'John Doe',
         identifier: 'custom-character-identifier:john-doe',
@@ -112,4 +113,16 @@ if (isMocking) {
   });
 }
 
+const debug = async () => {
+  // const accountService = container.resolve(AccountService);
+  // accountService.handleWithdrawMoney({
+  //   source: 2,
+  //   data: {
+  //     amount: 200,
+  //     message: 'Withdraw',
+  //   },
+  // });
+};
+
+on(GeneralEvents.ResourceStarted, debug);
 load();

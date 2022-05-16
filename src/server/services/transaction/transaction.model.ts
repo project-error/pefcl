@@ -10,7 +10,7 @@ export class TransactionModel extends Model<
   Optional<Transaction, 'id' | 'createdAt' | 'updatedAt'>
 > {}
 
-TransactionModel.init<typeof TransactionModel, TransactionModel>(
+TransactionModel.init(
   {
     id: {
       type: DataTypes.INTEGER,

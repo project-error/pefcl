@@ -79,9 +79,7 @@ export class TransactionService {
     const data = await this.getMyTransactions(req);
     return {
       ...data,
-      transactions: data.transactions.map((transaction) =>
-        transaction.toJSON(),
-      ) as unknown as Transaction[],
+      transactions: data.transactions as unknown as Transaction[],
     };
   }
 
@@ -188,6 +186,9 @@ export class TransactionService {
   }
 
   async broadcastTransaction(transaction: Transaction) {
+    logger.silly(`Broadcasted transaction:`);
+    logger.silly(JSON.stringify(transaction));
+
     const { ownerIdentifier } = transaction.toAccount ?? {};
     const user = this._userService.getUserByIdentifier(ownerIdentifier ?? '');
 
