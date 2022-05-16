@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, FormHelperText, LinearProgress, Stack } from '@mui/material';
+import { Alert, Box, FormHelperText, LinearProgress, Stack } from '@mui/material';
 import { useAtom } from 'jotai';
 import { accountsAtom, defaultAccountAtom } from '../data/accounts';
 import { Heading5 } from './ui/Typography/Headings';
@@ -25,6 +25,7 @@ const TransferFunds: React.FC<{ onClose?(): void }> = ({ onClose }) => {
   const [toAccountId, setToAccountID] = useState(0);
   const [isTransfering, setIsTransfering] = useState(false);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
   const parsedAmount = Number(amount.replace(/\D/g, ''));
   const fromAccount = accounts.find((account) => account.id === fromAccountId);
@@ -36,6 +37,7 @@ const TransferFunds: React.FC<{ onClose?(): void }> = ({ onClose }) => {
   const handleTransfer = async () => {
     setIsTransfering(true);
     setError('');
+    setSuccess('');
 
     const payload: Transfer = {
       type,
@@ -50,6 +52,8 @@ const TransferFunds: React.FC<{ onClose?(): void }> = ({ onClose }) => {
       await updateAccounts();
       await updateTransactions();
       onClose?.();
+      setAmount('');
+      setSuccess(t('Successfully transferred funds'));
     } catch (error: Error | unknown) {
       if (error instanceof Error && error.message === GenericErrors.NotFound) {
         setError(t('No account found to receive transfer.'));
@@ -104,6 +108,8 @@ const TransferFunds: React.FC<{ onClose?(): void }> = ({ onClose }) => {
           </Stack>
 
           <FormHelperText>{error}</FormHelperText>
+
+          {success && <Alert color="info">{success}</Alert>}
 
           <Stack alignSelf="flex-end" direction="row" spacing={4}>
             <Button disabled={isDisabled} onClick={handleTransfer}>
