@@ -5,12 +5,14 @@ type ExportCallback = (result: ExportResponse) => void;
 
 export enum ServerExports {
   AddCash = 'addCash',
+  GetCash = 'getCash',
   RemoveCash = 'removeCash',
   AddBankBalance = 'addBankBalance',
   RemoveBankBalance = 'removeBankBalance',
   WithdrawMoney = 'withdrawMoney',
   DepositMoney = 'depositMoney',
   CreateInvoice = 'createInvoice',
+  GetInvoices = 'getInvoices',
   LoadPlayer = 'loadPlayer',
 }
 

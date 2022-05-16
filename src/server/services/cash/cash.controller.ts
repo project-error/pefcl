@@ -49,6 +49,7 @@ export class CashController {
     }
   }
 
+  @Export(ServerExports.GetCash)
   @NetPromise(CashEvents.GetMyCash)
   async getMyCash(req: Request<void>, res: Response<number>) {
     const result = await this._cashService.getMyCash(req.source);
@@ -70,6 +71,7 @@ export class CashController {
   @Event('playerJoining')
   async onPlayerJoining() {
     if (config?.frameworkIntegration?.enabled) return;
+
     const src = global.source;
     this._cashService.createInitialCash(src);
   }
