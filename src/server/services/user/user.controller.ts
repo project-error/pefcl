@@ -1,23 +1,28 @@
 import { Controller } from '@decorators/Controller';
 import { EventListener, Event } from '@decorators/Event';
 import { NetPromise, PromiseEventListener } from '@decorators/NetPromise';
+import { ServerExports } from '@server/../../typings/exports/server';
+import { Export, ExportListener } from '@server/decorators/Export';
 import { config } from '@server/utils/server-config';
 import { GeneralEvents, UserEvents } from '@typings/Events';
 import { Request, Response } from '@typings/http';
 import { OnlineUser } from '@typings/user';
-import { BootService } from '../boot/boot.service';
 import { UserService } from './user.service';
 
 @Controller('User')
+@ExportListener()
 @PromiseEventListener()
 @EventListener()
 export class UserController {
   private readonly _userService: UserService;
-  private readonly _bootService: BootService;
 
-  constructor(userService: UserService, bootService: BootService) {
+  constructor(userService: UserService) {
     this._userService = userService;
-    this._bootService = bootService;
+  }
+
+  @Export(ServerExports.LoadPlayer)
+  async loadPlayer(req: Request<OnlineUser>) {
+    this._userService.loadPlayer(req.data);
   }
 
   @NetPromise(UserEvents.GetUsers)

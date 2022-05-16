@@ -5,14 +5,11 @@ import { singleton } from 'tsyringe';
 import { OnlineUser, UserDTO } from '../../../../typings/user';
 import { getPlayerIdentifier, getPlayerName } from '../../utils/misc';
 import { UserModule } from './user.module';
-import { Export, ExportListener } from '@server/decorators/Export';
-import { ServerExports } from '@server/../../typings/exports/server';
 import { UserEvents } from '@server/../../typings/Events';
 
 const logger = mainLogger.child({ module: 'user' });
 
 @singleton()
-@ExportListener()
 export class UserService {
   private readonly usersBySource: Map<number, UserModule>; // Player class
   constructor() {
@@ -51,15 +48,14 @@ export class UserService {
     this.usersBySource.delete(source);
   }
 
-  @Export(ServerExports.LoadPlayer)
-  async loadPlayer(payload: { source: number; data: OnlineUser }) {
+  async loadPlayer(data: OnlineUser) {
     logger.debug('Loading player for pefcl with export');
-    logger.debug(payload.data);
+    logger.debug(data);
 
-    const user = new UserModule(payload.data);
+    const user = new UserModule(data);
     this.usersBySource.set(user.getSource(), user);
 
-    emit(UserEvents.Loaded, payload);
+    emit(UserEvents.Loaded, data);
   }
 
   async savePlayer(userDTO: UserDTO) {
