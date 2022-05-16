@@ -45,10 +45,17 @@ export class AccountController {
     this._externalAccountService = externalAccountService;
   }
 
+  @Export(ServerExports.GetAccounts)
   @NetPromise(AccountEvents.GetAccounts)
   async getAccounts(req: Request<void>, res: Response<Account[]>) {
     const accounts = await this._accountService.handleGetMyAccounts(req.source);
     res({ status: 'ok', data: accounts });
+  }
+
+  @Export(ServerExports.GetTotalBalance)
+  async getTotalBankBalance(req: Request<void>, res: Response<number>) {
+    const balance = await this._accountService.getTotalBankBalance(req.source);
+    res({ status: 'ok', data: balance });
   }
 
   @NetPromise(AccountEvents.CreateAccount)

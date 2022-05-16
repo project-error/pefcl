@@ -74,6 +74,15 @@ export class AccountService {
     return mappedAccounts;
   }
 
+  async getTotalBankBalance(source: number): Promise<number> {
+    const accounts = await this.getMyAccounts(source);
+    const totalBalance = accounts.reduce((total, account) => {
+      return total + account.getDataValue('balance');
+    }, 0);
+
+    return totalBalance;
+  }
+
   async getDefaultAccountBySource(source: number) {
     const user = this._userService.getUser(source);
     return await this._accountDB.getDefaultAccountByIdentifier(user.getIdentifier());
