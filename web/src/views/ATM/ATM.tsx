@@ -10,21 +10,24 @@ import { defaultWithdrawOptions } from '@utils/constants';
 import { formatMoney } from '@utils/currency';
 import { fetchNui } from '@utils/fetchNui';
 import theme from '@utils/theme';
+import { AnimatePresence } from 'framer-motion';
 import { useAtom } from 'jotai';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { motion } from 'framer-motion';
+import { useNuiEvent } from 'react-fivem-hooks';
 
-const Container = styled(Paper)`
+const AnimationContainer = styled.div`
   position: absolute;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -80%);
+`;
 
+const Container = styled(Paper)`
   display: inline-block;
-  margin: 2rem;
   padding: ${theme.spacing(7)};
   border-radius: ${theme.spacing(3)};
-  border: 2px solid #fff;
 `;
 
 const AccountBalance = styled(Heading6)`
@@ -56,6 +59,14 @@ const ATM = () => {
   const [accountBalance] = useAtom(defaultAccountBalance);
   const [, updateAccounts] = useAtom(accountsAtom);
 
+  const [isOpen, setIsOpen] = useState(false);
+
+  useNuiEvent<boolean>({
+    event: 'setVisibleATM',
+    defaultValue: process.env.NODE_ENV === 'development',
+    callback: setIsOpen,
+  });
+
   const handleWithdraw = (amount: number) => {
     const payload: ATMInput = {
       amount,
@@ -69,26 +80,34 @@ const ATM = () => {
   };
 
   return (
-    <Container elevation={4}>
-      <Header>
-        <AccountBalance>{t('Account balance')}</AccountBalance>
-        <Heading2>{formatMoney(accountBalance ?? 0, config.general)}</Heading2>
-      </Header>
+    <AnimatePresence>
+      {isOpen && (
+        <AnimationContainer>
+          <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }}>
+            <Container elevation={4}>
+              <Header>
+                <AccountBalance>{t('Account balance')}</AccountBalance>
+                <Heading2>{formatMoney(accountBalance ?? 0, config.general)}</Heading2>
+              </Header>
 
-      <WithdrawText>{t('Quick withdraw')}</WithdrawText>
-      <WithdrawContainer>
-        {withdrawOptions.map((value) => (
-          <Button
-            key={value}
-            onClick={() => handleWithdraw(value)}
-            data-value={value}
-            disabled={value > (accountBalance ?? 0) || isLoading}
-          >
-            {formatMoney(value, config.general)}
-          </Button>
-        ))}
-      </WithdrawContainer>
-    </Container>
+              <WithdrawText>{t('Quick withdraw')}</WithdrawText>
+              <WithdrawContainer>
+                {withdrawOptions.map((value) => (
+                  <Button
+                    key={value}
+                    onClick={() => handleWithdraw(value)}
+                    data-value={value}
+                    disabled={value > (accountBalance ?? 0) || isLoading}
+                  >
+                    {formatMoney(value, config.general)}
+                  </Button>
+                ))}
+              </WithdrawContainer>
+            </Container>
+          </motion.div>
+        </AnimationContainer>
+      )}
+    </AnimatePresence>
   );
 };
 

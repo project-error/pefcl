@@ -17,6 +17,7 @@ import ATM from './views/ATM/ATM';
 import { UpdatesWrapper } from '@hooks/useUpdates';
 import Transfer from './views/transfer/Transfer';
 import Transactions from './views/transactions/Transactions';
+import DebugBar from '@components/DebugBar';
 
 dayjs.extend(updateLocale);
 
@@ -45,7 +46,7 @@ const App: React.FC = () => {
 
   const { data: isVisible } = useNuiEvent<boolean>({
     event: 'setVisible',
-    defaultValue: process.env.NODE_ENV === 'development',
+    defaultValue: false,
   });
 
   const { data: isAtmVisible } = useNuiEvent<boolean>({
@@ -75,6 +76,8 @@ const App: React.FC = () => {
 
   return (
     <>
+      {process.env.NODE_ENV === 'development' && <DebugBar />}
+
       {!isAtmVisible && isVisible && (
         <Container>
           <Content>
@@ -87,7 +90,7 @@ const App: React.FC = () => {
         </Container>
       )}
 
-      {isAtmVisible && <ATM />}
+      <ATM />
 
       {/* We don't need to show any fallback for the update component since it doesn't render anything anyway. */}
       <React.Suspense fallback={null}>{hasLoaded && <UpdatesWrapper />}</React.Suspense>
