@@ -1,6 +1,6 @@
 import { Op } from 'sequelize';
 import { singleton } from 'tsyringe';
-import { GetTransactionsInput, TransactionInput, TransactionType } from '@typings/transactions';
+import { GetTransactionsInput, TransactionInput, TransactionType } from '@typings/Transaction';
 import { AccountModel } from '../account/account.model';
 import { TransactionModel } from './transaction.model';
 import { Transaction as SequelizeTransaction } from 'sequelize/types';

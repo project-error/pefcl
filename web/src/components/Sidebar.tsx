@@ -6,7 +6,7 @@ import { Badge } from '@mui/material';
 import { Link, useRouteMatch } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAtom } from 'jotai';
-import { totalPendingInvoices } from '@data/invoices';
+import { invoicesAtom, totalUnpaidInvoices } from '@data/invoices';
 
 const List = styled.ul`
   margin: 0;
@@ -79,7 +79,7 @@ const ListItem = ({ to, icon, label, amount }: ListItemProps) => {
 
 const Sidebar = () => {
   const { t } = useTranslation();
-  const [totalUnpaidInovices] = useAtom(totalPendingInvoices);
+  const [count] = useAtom(totalUnpaidInvoices);
 
   return (
     <List>
@@ -87,12 +87,7 @@ const Sidebar = () => {
       <ListItem to="/accounts" icon={<CreditCardRounded />} label={t('Accounts')} />
       <ListItem to="/transfer" icon={<SwapHoriz />} label={t('Transfer')} />
       <ListItem to="/transactions" icon={<Paid />} label={t('Transactions')} />
-      <ListItem
-        to="/invoices"
-        icon={<Receipt />}
-        label={t('Invoices')}
-        amount={totalUnpaidInovices}
-      />
+      <ListItem to="/invoices" icon={<Receipt />} label={t('Invoices')} amount={count} />
     </List>
   );
 };

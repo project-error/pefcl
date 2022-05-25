@@ -86,6 +86,7 @@ if (isMocking) {
   app.post(...createEndpoint(TransactionEvents.CreateTransfer));
   app.post(...createEndpoint(TransactionEvents.GetHistory));
   app.post(...createEndpoint(InvoiceEvents.Get));
+  app.post(...createEndpoint(InvoiceEvents.CountUnpaid));
   app.post(...createEndpoint(InvoiceEvents.CreateInvoice));
   app.post(...createEndpoint(InvoiceEvents.PayInvoice));
   app.post(...createEndpoint(SharedAccountEvents.AddUser));

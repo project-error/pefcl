@@ -9,7 +9,7 @@ import {
   TransactionType,
   Transfer,
   TransferType,
-} from '@typings/transactions';
+} from '@typings/Transaction';
 import { sequelize } from '@server/utils/pool';
 import { mainLogger } from '@server/sv_logger';
 import { UserService } from '../user/user.service';

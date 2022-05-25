@@ -1,5 +1,5 @@
 import { Chip, Stack } from '@mui/material';
-import { Transaction, TransactionType } from '@typings/transactions';
+import { Transaction, TransactionType } from '@typings/Transaction';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { TranslateFunction } from '@utils/i18n';

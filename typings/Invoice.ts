@@ -45,3 +45,14 @@ export interface PayInvoiceInput {
   invoiceId: number;
   fromAccountId: number;
 }
+
+export interface GetInvoicesInput {
+  limit: number;
+  offset: number;
+}
+
+export interface GetInvoicesResponse extends GetInvoicesInput {
+  total: number;
+  totalUnpaid: number;
+  invoices: Invoice[];
+}

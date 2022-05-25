@@ -9,6 +9,7 @@ export enum ServerExports {
   RemoveCash = 'removeCash',
   GetAccounts = 'getAccounts',
   GetTotalBalance = 'getTotalBalance',
+  GetUnpaidInvoices = 'getUnpaidInvoices',
   AddBankBalance = 'addBankBalance',
   AddBankBalanceByIdentifier = 'addBankBalanceByIdentifier',
   RemoveBankBalance = 'removeBankBalance',

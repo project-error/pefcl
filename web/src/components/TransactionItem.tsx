@@ -6,7 +6,7 @@ import styled from '@emotion/styled';
 import { BodyText } from '@ui/Typography/BodyText';
 import theme from '@utils/theme';
 import { useConfig } from '@hooks/useConfig';
-import { Transaction, TransactionType } from '@typings/transactions';
+import { Transaction, TransactionType } from '@typings/Transaction';
 import { Stack } from '@mui/material';
 import { Heading6 } from '@ui/Typography/Headings';
 import { formatMoney } from '@utils/currency';

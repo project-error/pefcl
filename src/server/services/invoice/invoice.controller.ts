@@ -2,11 +2,17 @@ import { ServerExports } from '@server/../../typings/exports/server';
 import { Export, ExportListener } from '@server/decorators/Export';
 import { InvoiceEvents } from '@typings/Events';
 import { Request, Response } from '@typings/http';
-import { Invoice, CreateInvoiceInput, InvoiceOnlineInput, PayInvoiceInput } from '@typings/Invoice';
+import {
+  Invoice,
+  CreateInvoiceInput,
+  InvoiceOnlineInput,
+  PayInvoiceInput,
+  GetInvoicesInput,
+  GetInvoicesResponse,
+} from '@typings/Invoice';
 import { UserService } from 'services/user/user.service';
 import { Controller } from '../../decorators/Controller';
 import { NetPromise, PromiseEventListener } from '../../decorators/NetPromise';
-import { InvoiceModel } from './invoice.model';
 import { InvoiceService } from './invoice.service';
 
 @Controller('Invoice')
@@ -23,9 +29,25 @@ export class InvoiceController {
 
   @Export(ServerExports.GetInvoices)
   @NetPromise(InvoiceEvents.Get)
-  async getInvoices(req: Request<void>, res: Response<InvoiceModel[]>) {
-    const data = await this._InvoiceService.getAllInvoicesBySource(req.source);
-    return res({ status: 'ok', data: data });
+  async getInvoices(req: Request<GetInvoicesInput>, res: Response<GetInvoicesResponse>) {
+    const data = await this._InvoiceService.getAllInvoicesBySource(req);
+    return res({
+      status: 'ok',
+      data: {
+        ...req.data,
+        ...data,
+      },
+    });
+  }
+
+  @Export(ServerExports.GetUnpaidInvoices)
+  @NetPromise(InvoiceEvents.CountUnpaid)
+  async countUnpaid(req: Request<number>, res: Response<number>) {
+    const count = await this._InvoiceService.countUnpaidInvoices(req.source);
+    return res({
+      status: 'ok',
+      data: count,
+    });
   }
 
   @Export(ServerExports.CreateInvoice)

@@ -58,6 +58,8 @@ const PayInvoiceModal = ({ onClose, invoice }: PayInvoiceModalProps) => {
       .finally(onClose);
   };
 
+  const hasEnoughFunds = (selectedAccount?.balance ?? 0) > invoice.amount;
+
   return (
     <Paper>
       <Stack p={8} direction="row" spacing={12} justifyContent="space-between">
@@ -86,6 +88,7 @@ const PayInvoiceModal = ({ onClose, invoice }: PayInvoiceModalProps) => {
 
         <Stack spacing={4} flex={1}>
           <AccountSelect
+            isFromAccount
             accounts={accounts}
             onSelect={setSelectedAccountId}
             selectedId={selectedAccountId}
@@ -97,7 +100,7 @@ const PayInvoiceModal = ({ onClose, invoice }: PayInvoiceModalProps) => {
             <Button color="error" onClick={onClose}>
               {t('Cancel')}
             </Button>
-            <Button onClick={handlePayInvoice} disabled={!selectedAccountId}>
+            <Button onClick={handlePayInvoice} disabled={!selectedAccountId || !hasEnoughFunds}>
               {t('Pay invoice')}
             </Button>
           </Stack>

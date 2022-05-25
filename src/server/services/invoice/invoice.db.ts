@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { CreateInvoiceInput, InvoiceStatus } from '@typings/Invoice';
+import { CreateInvoiceInput, GetInvoicesInput, InvoiceStatus } from '@typings/Invoice';
 import { InvoiceModel } from './invoice.model';
 import { MS_TWO_WEEKS } from '@utils/constants';
 
@@ -9,8 +9,21 @@ export class InvoiceDB {
     return await InvoiceModel.findAll();
   }
 
-  async getAllReceivingInvoices(identifier: string): Promise<InvoiceModel[]> {
-    return await InvoiceModel.findAll({ where: { toIdentifier: identifier } });
+  async getAllReceivingInvoices(
+    identifier: string,
+    pagination: GetInvoicesInput,
+  ): Promise<InvoiceModel[]> {
+    return await InvoiceModel.findAll({ where: { toIdentifier: identifier }, ...pagination });
+  }
+
+  async getReceivedInvoicesCount(identifier: string): Promise<number> {
+    return await InvoiceModel.count({ where: { toIdentifier: identifier } });
+  }
+
+  async getUnpaidInvoicesCount(identifier: string): Promise<number> {
+    return await InvoiceModel.count({
+      where: { toIdentifier: identifier, status: InvoiceStatus.PENDING },
+    });
   }
 
   async getInvoiceById(id: number): Promise<InvoiceModel | null> {

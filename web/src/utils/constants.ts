@@ -1,5 +1,5 @@
 import { Account, AccountRole, AccountType } from '@typings/Account';
-import { GetTransactionsResponse, TransactionType } from '../../../typings/transactions';
+import { GetTransactionsResponse, TransactionType } from '../../../typings/Transaction';
 import { Invoice, InvoiceStatus } from '../../../typings/Invoice';
 import dayjs from 'dayjs';
 

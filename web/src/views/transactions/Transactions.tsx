@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next';
 import { Heading2, Heading5, Heading6 } from '../../components/ui/Typography/Headings';
 import TransactionFilters, { TransactionFilter } from './Filters';
 import { fetchNui } from '@utils/fetchNui';
-import { GetTransactionsResponse, Transaction } from '@typings/transactions';
+import { GetTransactionsResponse, Transaction } from '@typings/Transaction';
 import { TransactionEvents } from '@typings/Events';
 
 const Container = styled(Stack)`
@@ -101,7 +101,13 @@ const Transactions = () => {
           </TransactionsContainer>
 
           <Stack sx={{ marginTop: 'auto', alignSelf: 'flex-end' }}>
-            <Pagination count={pages} shape="rounded" onChange={handleChange} page={page} />
+            <Pagination
+              count={pages}
+              shape="rounded"
+              onChange={handleChange}
+              page={page}
+              color="primary"
+            />
           </Stack>
         </Stack>
       </Container>

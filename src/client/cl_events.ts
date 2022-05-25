@@ -9,7 +9,7 @@ import {
   Broadcasts,
 } from '@typings/Events';
 import { Invoice } from '@typings/Invoice';
-import { Transaction } from '@typings/transactions';
+import { Transaction } from '@typings/Transaction';
 import { RegisterNuiProxy } from 'cl_utils';
 import API from './cl_api';
 

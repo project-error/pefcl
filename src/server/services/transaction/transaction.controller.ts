@@ -5,7 +5,7 @@ import {
   GetTransactionsInput,
   GetTransactionsResponse,
   Transfer,
-} from '@typings/transactions';
+} from '@typings/Transaction';
 import { Controller } from '../../decorators/Controller';
 import { NetPromise, PromiseEventListener } from '../../decorators/NetPromise';
 import { TransactionService } from './transaction.service';

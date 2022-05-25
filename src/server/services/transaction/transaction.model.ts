@@ -1,7 +1,7 @@
 import { DATABASE_PREFIX } from '@utils/constants';
 import { DataTypes, Model, Optional } from 'sequelize';
 import { singleton } from 'tsyringe';
-import { Transaction, TransactionType } from '../../../../typings/transactions';
+import { Transaction, TransactionType } from '../../../../typings/Transaction';
 import { sequelize } from '../../utils/pool';
 import { timestamps } from '../timestamps.model';
 

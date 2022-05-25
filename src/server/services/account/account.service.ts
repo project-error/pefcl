@@ -21,7 +21,7 @@ import { sequelize } from '../../utils/pool';
 import { TransactionService } from '../transaction/transaction.service';
 import { CashService } from '../cash/cash.service';
 import i18next from '@utils/i18n';
-import { TransactionType } from '@typings/transactions';
+import { TransactionType } from '@typings/Transaction';
 import { AccountModel } from './account.model';
 import { ServerError } from '@utils/errors';
 import { AuthorizationErrors, BalanceErrors, GenericErrors } from '@typings/Errors';

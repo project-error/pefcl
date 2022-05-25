@@ -1,6 +1,6 @@
 import { singleton } from 'tsyringe';
 import { Request } from '../../../../typings/http';
-import { CreateInvoiceInput, PayInvoiceInput } from '../../../../typings/Invoice';
+import { CreateInvoiceInput, GetInvoicesInput, PayInvoiceInput } from '../../../../typings/Invoice';
 import { sequelize } from '../../utils/pool';
 import { mainLogger } from '../../sv_logger';
 import { UserService } from '../user/user.service';
@@ -8,7 +8,7 @@ import { AccountDB } from '../account/account.db';
 import { TransactionDB } from '../transaction/transaction.db';
 import { InvoiceDB } from './invoice.db';
 import i18n from '@utils/i18n';
-import { TransactionType } from '@typings/transactions';
+import { TransactionType } from '@typings/Transaction';
 import { ServerError } from '@utils/errors';
 import { AccountErrors, GenericErrors } from '@typings/Errors';
 import { TransactionService } from '../transaction/transaction.service';
@@ -38,11 +38,30 @@ export class InvoiceService {
     this.transactionService = transactionService;
   }
 
-  async getAllInvoicesBySource(source: number) {
-    logger.silly('Fetching user invoices!');
+  async countUnpaidInvoices(source: number) {
     const user = this._userService.getUser(source);
-    const invoices = await this._invoiceDB.getAllReceivingInvoices(user.getIdentifier());
-    return invoices;
+    const total = await this._invoiceDB.getUnpaidInvoicesCount(user.getIdentifier());
+    return total;
+  }
+
+  async countTotalInvoices(source: number) {
+    const user = this._userService.getUser(source);
+    const total = await this._invoiceDB.getReceivedInvoicesCount(user.getIdentifier());
+    return total;
+  }
+
+  async getAllInvoicesBySource(req: Request<GetInvoicesInput>) {
+    logger.silly('Fetching user invoices ..');
+    const user = this._userService.getUser(req.source);
+    const invoices = await this._invoiceDB.getAllReceivingInvoices(user.getIdentifier(), req.data);
+    const total = await this.countTotalInvoices(req.source);
+    const totalUnpaid = await this.countUnpaidInvoices(req.source);
+
+    return {
+      total,
+      totalUnpaid: totalUnpaid,
+      invoices: invoices.map((invoice) => invoice.toJSON()),
+    };
   }
 
   async createInvoice(data: CreateInvoiceInput) {
@@ -126,7 +145,6 @@ export class InvoiceService {
 
       t.commit();
     } catch (err) {
-      console.log('Rolling back');
       t.rollback();
       logger.error(err);
     }

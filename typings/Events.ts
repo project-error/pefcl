@@ -47,6 +47,7 @@ export enum TransactionEvents {
 
 export enum InvoiceEvents {
   Get = 'pefcl:getInvoices',
+  CountUnpaid = 'pefcl:countUnpaid',
   CreateInvoice = 'pefcl:createInvoice',
   CreateOnlineInvoice = 'pefcl:createOnlineInvoice',
   PayInvoice = 'pefcl:payInvoice',
