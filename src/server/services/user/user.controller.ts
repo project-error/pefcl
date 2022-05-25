@@ -25,6 +25,11 @@ export class UserController {
     this._userService.loadPlayer(req.data);
   }
 
+  @Export(ServerExports.LoadPlayer)
+  async UnloadPlayer(req: Request<OnlineUser>) {
+    this._userService.unloadPlayer(req.data);
+  }
+
   @NetPromise(UserEvents.GetUsers)
   async getUsers(_req: Request<void>, res: Response<OnlineUser[]>) {
     await new Promise((resolve) => {
@@ -47,6 +52,13 @@ export class UserController {
 
     const _source = global.source;
     this._userService.savePlayer({ source: _source });
+  }
+
+  @Event('playerDropped')
+  playerDropped() {
+    if (config.frameworkIntegration?.enabled) return;
+    const _source = global.source;
+    this._userService.deletePlayer(_source);
   }
 
   @Event(GeneralEvents.ResourceStarted)

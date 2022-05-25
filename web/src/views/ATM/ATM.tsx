@@ -63,7 +63,7 @@ const ATM = () => {
 
   useNuiEvent<boolean>({
     event: 'setVisibleATM',
-    defaultValue: process.env.NODE_ENV === 'development',
+    defaultValue: false,
     callback: setIsOpen,
   });
 

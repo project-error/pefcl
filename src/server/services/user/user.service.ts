@@ -55,7 +55,20 @@ export class UserService {
     const user = new UserModule(data);
     this.usersBySource.set(user.getSource(), user);
 
+    logger.debug('Player loaded, emitting: ' + UserEvents.Loaded);
     emit(UserEvents.Loaded, data);
+    emitNet(UserEvents.Loaded, data, data.source, data);
+  }
+
+  async unloadPlayer(source: number) {
+    logger.debug('Unloading player for pefcl with export');
+    logger.debug(source);
+
+    this.deletePlayer(source);
+
+    logger.debug('Player unloaded, emitting: ' + UserEvents.Unloaded);
+    emit(UserEvents.Unloaded, source);
+    emitNet(UserEvents.Unloaded, source);
   }
 
   async savePlayer(userDTO: UserDTO) {
@@ -77,5 +90,6 @@ export class UserService {
       identifier,
       source: userDTO.source,
     });
+    emitNet(UserEvents.Loaded, userDTO.source, user);
   }
 }

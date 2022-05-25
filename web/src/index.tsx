@@ -17,7 +17,7 @@ ReactDOM.render(
         <HashRouter>
           <ThemeProvider theme={theme}>
             <SnackbarProvider maxSnack={2}>
-              <React.Suspense fallback={<div>LOADING</div>}>
+              <React.Suspense fallback={<div>Fetching app</div>}>
                 <App />
               </React.Suspense>
             </SnackbarProvider>

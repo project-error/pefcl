@@ -14,10 +14,11 @@ import Accounts from './views/accounts/Accounts';
 import Dashboard from './views/dashboard/Dashboard';
 import Invoices from './views/Invoices/Invoices';
 import ATM from './views/ATM/ATM';
-import { UpdatesWrapper } from '@hooks/useUpdates';
+import { BroadcastsWrapper } from '@hooks/useBroadcasts';
 import Transfer from './views/transfer/Transfer';
 import Transactions from './views/transactions/Transactions';
-import DebugBar from '@components/DebugBar';
+import Devbar from '@components/DebugBar';
+import { UserEvents } from '@typings/Events';
 
 dayjs.extend(updateLocale);
 
@@ -42,7 +43,9 @@ const Content = styled.div`
 
 const App: React.FC = () => {
   const config = useConfig();
-  const [hasLoaded, setHasLoaded] = useState(false);
+  const [hasLoaded, setHasLoaded] = useState(process.env.NODE_ENV === 'development');
+  useNuiEvent({ event: UserEvents.Loaded, callback: () => setHasLoaded(true) });
+  useNuiEvent({ event: UserEvents.Unloaded, callback: () => setHasLoaded(false) });
 
   const { data: isVisible } = useNuiEvent<boolean>({
     event: 'setVisible',
@@ -65,35 +68,34 @@ const App: React.FC = () => {
     dayjs.locale(config?.general?.language ?? 'en');
   }, [i18n, config]);
 
-  useEffect(() => {
-    /* Create LOADED state for entire app. 
-      The use of this is to only subscribe to updates from broadcasts once the app has been opened. */
-
-    if (!hasLoaded && (isVisible || isAtmVisible)) {
-      setHasLoaded(true);
-    }
-  }, [hasLoaded, isVisible, isAtmVisible]);
+  if (!hasLoaded) {
+    return null;
+  }
 
   return (
     <>
-      {process.env.NODE_ENV === 'development' && <DebugBar />}
+      {process.env.NODE_ENV === 'development' && <Devbar />}
 
-      {!isAtmVisible && isVisible && (
-        <Container>
-          <Content>
-            <Route path="/" exact component={Dashboard} />
-            <Route path="/accounts" component={Accounts} />
-            <Route path="/transactions" component={Transactions} />
-            <Route path="/invoices" component={Invoices} />
-            <Route path="/transfer" component={Transfer} />
-          </Content>
-        </Container>
-      )}
+      <React.Suspense fallback={'Loading bank'}>
+        {!isAtmVisible && isVisible && (
+          <Container>
+            <Content>
+              <Route path="/" exact component={Dashboard} />
+              <Route path="/accounts" component={Accounts} />
+              <Route path="/transactions" component={Transactions} />
+              <Route path="/invoices" component={Invoices} />
+              <Route path="/transfer" component={Transfer} />
+            </Content>
+          </Container>
+        )}
+      </React.Suspense>
 
-      <ATM />
+      <React.Suspense fallback={null}>
+        <ATM />
+      </React.Suspense>
 
       {/* We don't need to show any fallback for the update component since it doesn't render anything anyway. */}
-      <React.Suspense fallback={null}>{hasLoaded && <UpdatesWrapper />}</React.Suspense>
+      <React.Suspense fallback={null}>{<BroadcastsWrapper />}</React.Suspense>
     </>
   );
 };
