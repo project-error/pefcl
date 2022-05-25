@@ -80,6 +80,7 @@ const TransferFunds: React.FC<{ onClose?(): void }> = ({ onClose }) => {
             <Stack flex={1} spacing={1}>
               <Heading5>{t('From account')}</Heading5>
               <AccountSelect
+                isFromAccount
                 onSelect={setFromAccountId}
                 accounts={accounts}
                 selectedId={fromAccountId}
@@ -89,7 +90,6 @@ const TransferFunds: React.FC<{ onClose?(): void }> = ({ onClose }) => {
             <Stack flex={1} spacing={1}>
               <Heading5>{t('To account')}</Heading5>
               <AccountSelect
-                isExternalAvailable
                 onSelect={setToAccountID}
                 accounts={accounts}
                 selectedId={toAccountId}
