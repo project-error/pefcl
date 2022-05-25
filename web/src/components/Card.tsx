@@ -10,7 +10,7 @@ import { BodyText } from './ui/Typography/BodyText';
 import { Heading3, Heading5, Heading6 } from './ui/Typography/Headings';
 import { Skeleton } from '@mui/material';
 
-const Container = styled.div<{ accountType: AccountType }>`
+const Container = styled.div<{ accountType: AccountType; selected: boolean }>`
   user-select: none;
   width: 100%;
   padding: 1rem;
@@ -31,6 +31,15 @@ const Container = styled.div<{ accountType: AccountType }>`
   :hover {
     box-shadow: ${theme.shadows[6]};
   }
+
+  transition: 200ms ease-in-out;
+  border: 2px solid transparent;
+
+  ${({ selected }) =>
+    selected &&
+    `
+    border: 2px solid ${theme.palette.background.light8};
+  `};
 `;
 
 const Row = styled.div`
@@ -65,15 +74,16 @@ const DefaultText = styled(Heading6)`
 
 type AccountCardProps = {
   account: Account;
+  selected?: boolean;
 };
 
-export const AccountCard: React.FC<AccountCardProps> = ({ account, ...props }) => {
+export const AccountCard = ({ account, selected = false, ...props }: AccountCardProps) => {
   const { type, id, balance, isDefault, accountName } = account;
   const { t } = useTranslation();
   const config = useConfig();
 
   return (
-    <Container {...props} key={id} accountType={type}>
+    <Container {...props} key={id} accountType={type} selected={selected}>
       <Row>
         <Heading3>{formatMoney(balance, config.general)}</Heading3>
         <Type>
@@ -98,7 +108,7 @@ export const AccountCard: React.FC<AccountCardProps> = ({ account, ...props }) =
 
 export const LoadingAccountCard = () => {
   return (
-    <Container accountType={AccountType.Personal}>
+    <Container accountType={AccountType.Personal} selected={false}>
       <Row>
         <Heading3>
           <Skeleton variant="text" width={120} />

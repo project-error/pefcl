@@ -14,7 +14,6 @@ import Select from './ui/Select';
 import Button from './ui/Button';
 import { Box } from '@mui/system';
 import AddExternalAccountModal from './Modals/AddExternalAccount';
-import { Error, Warning } from '@mui/icons-material';
 
 const BalanceText = styled(Heading6)`
   color: ${theme.palette.primary.main};
@@ -56,7 +55,7 @@ const Option: React.FC<{
         <BodyText>{account.accountName}</BodyText>
         {isDisabledByContributor ? (
           <Typography variant="caption">
-            {t('Contributors cannot send money from shared accounts.')}
+            {t('Contributors cannot use money in shared accounts.')}
           </Typography>
         ) : (
           <BalanceText>{formatMoney(account.balance, config.general)}</BalanceText>

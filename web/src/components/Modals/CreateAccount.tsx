@@ -95,6 +95,7 @@ const CreateAccountModal: React.FC<{ onClose(): void }> = ({ onClose }) => {
               control={control}
               render={({ field }) => (
                 <AccountSelect
+                  isFromAccount
                   accounts={accounts}
                   onSelect={field.onChange}
                   selectedId={defaultAccount?.id}

@@ -64,7 +64,12 @@ const CreateCard = styled.div`
   }
 `;
 
-const AccountCards = () => {
+interface AccountCardsProps {
+  selectedAccountId?: number;
+  onSelectAccount?: (id: number) => void;
+}
+
+const AccountCards = ({ onSelectAccount, selectedAccountId }: AccountCardsProps) => {
   const config = useConfig();
   const [orderedAccounts] = useAtom(orderedAccountsAtom);
   const [isCreateAccountOpen, setIsCreateAccountOpen] = useState(false);
@@ -83,8 +88,8 @@ const AccountCards = () => {
 
       <Cards>
         {orderedAccounts.map((account) => (
-          <CardContainer key={account.id}>
-            <AccountCard account={account} />
+          <CardContainer key={account.id} onClick={() => onSelectAccount?.(account.id)}>
+            <AccountCard account={account} selected={account.id === selectedAccountId} />
           </CardContainer>
         ))}
 
