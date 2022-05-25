@@ -7,7 +7,7 @@ import { AccountType } from '@typings/Account';
 import { AccountEvents } from '@typings/Events';
 import { getIsAdmin, getIsOwner } from '@utils/account';
 import { useAtom } from 'jotai';
-import React, { FormEvent, useState } from 'react';
+import React, { FormEvent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { transactionBaseAtom } from 'src/data/transactions';
 import Layout from '../../components/Layout';
@@ -42,7 +42,7 @@ const Accounts = () => {
   const [selectedAccountId, setSelectedAccountId] = useState<number>(defaultAccount?.id ?? 0);
   const selectedAccount = accounts.find((account) => account.id === selectedAccountId);
   const [isRenameOpen, setIsRenameOpen] = useState(false);
-  const [renameInput, setRenameInput] = useState(selectedAccount?.accountName ?? '');
+  const [renameInput, setRenameInput] = useState('');
 
   const handleSetDefault = () => {
     fetchNui(AccountEvents.SetDefaultAccount, { accountId: selectedAccountId })
@@ -65,6 +65,12 @@ const Accounts = () => {
     );
     setIsRenameOpen(false);
   };
+
+  useEffect(() => {
+    if (selectedAccount?.accountName) {
+      setRenameInput(selectedAccount.accountName);
+    }
+  }, [selectedAccount?.accountName]);
 
   const isAdmin = Boolean(selectedAccount && getIsAdmin(selectedAccount));
   const isOwner = Boolean(selectedAccount && getIsOwner(selectedAccount));
