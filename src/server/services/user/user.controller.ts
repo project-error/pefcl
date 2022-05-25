@@ -25,8 +25,8 @@ export class UserController {
     this._userService.loadPlayer(req.data);
   }
 
-  @Export(ServerExports.LoadPlayer)
-  async UnloadPlayer(req: Request<OnlineUser>) {
+  @Export(ServerExports.UnloadPlayer)
+  async unloadPlayer(req: Request<number>) {
     this._userService.unloadPlayer(req.data);
   }
 

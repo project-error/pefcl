@@ -24,6 +24,20 @@ export const useBroadcasts = () => {
       updateInvoices();
     },
   });
+
+  useNuiEvent({
+    event: Broadcasts.NewSharedUser,
+    callback: () => {
+      updateAccounts();
+    },
+  });
+
+  useNuiEvent({
+    event: Broadcasts.RemovedSharedUser,
+    callback: () => {
+      updateAccounts();
+    },
+  });
 };
 
 export const BroadcastsWrapper = () => {

@@ -26,6 +26,7 @@ import { AccountModel } from './account.model';
 import { ServerError } from '@utils/errors';
 import { AuthorizationErrors, BalanceErrors, GenericErrors } from '@typings/Errors';
 import { SharedAccountDB } from '@services/accountShared/sharedAccount.db';
+import { Broadcasts } from '@server/../../typings/Events';
 
 const logger = mainLogger.child({ module: 'accounts' });
 
@@ -110,20 +111,26 @@ export class AccountService {
   async addUserToShared(req: Request<AddToSharedAccountInput>) {
     logger.silly(`Adding user src: ${req.source} to shared account.`);
 
-    // const existingAccount = await SharedAccountModel.findOne({
-    //   where: { user: req.data.identifier, accountId: req.data.accountId },
-    // });
+    const t = await sequelize.transaction();
+    try {
+      const user = this._userService.getUserByIdentifier(req.data.identifier);
+      const account = await this._sharedAccountDB.createSharedAccount({
+        name: req.data.name,
+        user: req.data.identifier,
+        role: req.data.role,
+        accountId: req.data.accountId,
+      });
 
-    // if (existingAccount) {
-    //   throw new ServerError(AccountErrors.AlreadyExists);
-    // }
+      t.afterCommit(() => {
+        emit(Broadcasts.NewSharedUser, account.toJSON());
+        emitNet(Broadcasts.NewSharedUser, user?.getSource(), account.toJSON());
+      });
 
-    return this._sharedAccountDB.createSharedAccount({
-      name: req.data.name,
-      user: req.data.identifier,
-      role: req.data.role,
-      accountId: req.data.accountId,
-    });
+      t.commit();
+      return account;
+    } catch (err) {
+      t.rollback();
+    }
   }
 
   async removeUserFromShared(req: Request<RemoveFromSharedAccountInput>) {

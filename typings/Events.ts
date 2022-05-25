@@ -35,6 +35,8 @@ export enum ExternalAccountEvents {
 export enum Broadcasts {
   NewTransaction = 'pefcl:newTransactionBroadcast',
   NewInvoice = 'pefcl:newInvoiceBroadcast',
+  NewSharedUser = 'pefcl:newSharedUser',
+  RemovedSharedUser = 'pefcl:removedSharedUser',
 }
 
 export enum TransactionEvents {

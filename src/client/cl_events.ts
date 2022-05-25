@@ -10,7 +10,6 @@ import {
 } from '@typings/Events';
 import { Invoice } from '@typings/Invoice';
 import { Transaction } from '@typings/transactions';
-import { OnlineUser } from '@typings/user';
 import { RegisterNuiProxy } from 'cl_utils';
 import API from './cl_api';
 
@@ -22,8 +21,20 @@ onNet(Broadcasts.NewInvoice, (result: Invoice) => {
   SendNUIMessage({ type: Broadcasts.NewInvoice, payload: result });
 });
 
-onNet(UserEvents.Loaded, (result: OnlineUser) => {
-  SendNUIMessage({ type: UserEvents.Loaded, payload: result });
+onNet(Broadcasts.NewSharedUser, () => {
+  SendNUIMessage({ type: Broadcasts.NewSharedUser });
+});
+
+onNet(Broadcasts.RemovedSharedUser, () => {
+  SendNUIMessage({ type: Broadcasts.RemovedSharedUser });
+});
+
+onNet(UserEvents.Loaded, () => {
+  SendNUIMessage({ type: UserEvents.Loaded });
+});
+
+onNet(UserEvents.Unloaded, () => {
+  SendNUIMessage({ type: UserEvents.Unloaded });
 });
 
 const CASH_BAL_STAT = GetHashKey('MP0_WALLET_BALANCE');
