@@ -114,6 +114,10 @@ if (isMocking) {
 }
 
 const debug = async () => {
+  //
+  //
+  //
+  //
   // const accountService = container.resolve(AccountService);
   // accountService.handleWithdrawMoney({
   //   source: 2,
@@ -121,6 +125,27 @@ const debug = async () => {
   //     amount: 200,
   //     message: 'Withdraw',
   //   },
+  // });
+  //
+  //
+  //
+  //
+  //
+  // const invoiceService = container.resolve(InvoiceService);
+  // const invoice = await invoiceService.createInvoice({
+  //   amount: 200,
+  //   to: 'John doe',
+  //   from: 'Repair shop AB',
+  //   message: 'meme',
+  //   toIdentifier: 'license:1',
+  //   fromIdentifier: 'license:2',
+  // });
+  // await invoiceService.payInvoice({
+  //   data: {
+  //     invoiceId: invoice.getDataValue('id'),
+  //     fromAccountId: 2,
+  //   },
+  //   source: 0,
   // });
 };
 

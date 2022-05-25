@@ -3,6 +3,7 @@ import { singleton } from 'tsyringe';
 import { GetTransactionsInput, TransactionInput, TransactionType } from '@typings/transactions';
 import { AccountModel } from '../account/account.model';
 import { TransactionModel } from './transaction.model';
+import { Transaction as SequelizeTransaction } from 'sequelize/types';
 
 interface GetTransactionFromAccounts extends GetTransactionsInput {
   accountIds: number[];
@@ -128,19 +129,29 @@ export class TransactionDB {
     return await TransactionModel.findOne({ where: { id } });
   }
 
-  async create(transaction: TransactionInput): Promise<TransactionModel> {
+  async create(
+    transaction: TransactionInput,
+    sequelizeTransaction: SequelizeTransaction,
+  ): Promise<TransactionModel> {
     const { toAccount, fromAccount, ...dbTransaction } = transaction;
-    const newTransaction = await TransactionModel.create({
-      ...dbTransaction,
-    });
+    const newTransaction = await TransactionModel.create(
+      {
+        ...dbTransaction,
+      },
+      { transaction: sequelizeTransaction },
+    );
 
     const currentMessage = newTransaction.getDataValue('message');
     const currentId = newTransaction.getDataValue('id');
-    await newTransaction.update({ message: `${currentMessage} #${currentId}` });
+    await newTransaction.update(
+      { message: `${currentMessage} #${currentId}` },
+      { transaction: sequelizeTransaction },
+    );
 
-    await newTransaction.setToAccount(toAccount?.id);
-    await newTransaction.setFromAccount(fromAccount?.id);
+    newTransaction.setToAccount(toAccount?.id);
+    newTransaction.setFromAccount(fromAccount?.id);
 
-    return await newTransaction.save();
+    console.log('returning:', newTransaction.toJSON());
+    return newTransaction;
   }
 }

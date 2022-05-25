@@ -28,21 +28,6 @@ const Cards = styled.div`
   width: 100%;
   padding-bottom: ${theme.spacing(2)};
 
-  ::-webkit-scrollbar {
-    width: 0.25rem;
-    height: 0.25rem;
-  }
-
-  ::-webkit-scrollbar-track {
-    background-color: ${theme.palette.background.dark4};
-    border-radius: 2rem;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    border-radius: 2rem;
-    background-color: #80cae24a;
-  }
-
   & > * {
     min-width: 17rem;
     width: calc(25% - ${theme.spacing(1.5)});

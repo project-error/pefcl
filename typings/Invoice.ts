@@ -3,11 +3,13 @@ export enum InvoiceStatus {
   PAID = 'PAID',
 }
 
-export interface InvoiceInput {
-  from: string;
+export interface CreateInvoiceInput {
   to: string;
+  from: string;
   amount: number;
   message: string;
+  toIdentifier: string;
+  fromIdentifier: string;
   expiresAt?: string;
 }
 
@@ -20,9 +22,18 @@ export interface InvoiceOnlineInput {
 export interface Invoice {
   id: number;
   amount: number;
-  from: string;
-  to: string;
   message: string;
+
+  /* Displayed information, on invoice pages and such. */
+  to: string;
+  from: string;
+
+  /* Personal identifiers */
+  toIdentifier: string;
+  fromIdentifier: string;
+
+  /* Optional to insert balance to specific account. */
+  recieverAccountId?: number;
 
   status: InvoiceStatus;
   expiresAt?: string;

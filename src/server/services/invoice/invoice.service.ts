@@ -1,6 +1,6 @@
 import { singleton } from 'tsyringe';
 import { Request } from '../../../../typings/http';
-import { InvoiceInput, PayInvoiceInput } from '../../../../typings/Invoice';
+import { CreateInvoiceInput, PayInvoiceInput } from '../../../../typings/Invoice';
 import { sequelize } from '../../utils/pool';
 import { mainLogger } from '../../sv_logger';
 import { UserService } from '../user/user.service';
@@ -10,7 +10,8 @@ import { InvoiceDB } from './invoice.db';
 import i18n from '@utils/i18n';
 import { TransactionType } from '@typings/transactions';
 import { ServerError } from '@utils/errors';
-import { GenericErrors } from '@typings/Errors';
+import { AccountErrors, GenericErrors } from '@typings/Errors';
+import { TransactionService } from '../transaction/transaction.service';
 
 const logger = mainLogger.child({ module: 'invoice-service' });
 
@@ -20,36 +21,35 @@ export class InvoiceService {
   _invoiceDB: InvoiceDB;
   _transactionDB: TransactionDB;
   _userService: UserService;
+  transactionService: TransactionService;
 
   constructor(
     userService: UserService,
     invoiceDB: InvoiceDB,
     accountDB: AccountDB,
     transactionDB: TransactionDB,
+    transactionService: TransactionService,
   ) {
     this._userService = userService;
     this._invoiceDB = invoiceDB;
     this._accountDB = accountDB;
     this._transactionDB = transactionDB;
+    this.transactionService = transactionService;
   }
 
   async getAllInvoicesBySource(source: number) {
     logger.silly('Fetching user invoices!');
     const user = this._userService.getUser(source);
     const invoices = await this._invoiceDB.getAllReceivingInvoices(user.getIdentifier());
-    return invoices.map((invoice) => ({
-      ...invoice.toJSON(),
-      // TODO: Use Timestamps as saving type instead for dates. Dates currently get fucked on events SERVER > CLIENT.
-      expiresAt: new Date(invoice.getDataValue('expiresAt') ?? '').toDateString(),
-      createdAt: new Date(invoice.getDataValue('createdAt') ?? '').toDateString(),
-    }));
+    return invoices;
   }
 
-  async createInvoice(data: InvoiceInput) {
-    logger.silly('Creating invoice.');
+  async createInvoice(data: CreateInvoiceInput) {
+    logger.silly('Creating invoice ..');
     logger.silly(data);
 
     const invoice = await this._invoiceDB.createInvoice(data);
+    logger.silly('Created invoice.');
     return invoice;
   }
 
@@ -59,30 +59,62 @@ export class InvoiceService {
 
     const t = await sequelize.transaction();
     try {
-      const account = await this._accountDB.getAccountById(req.data.fromAccountId);
+      const fromAccount = await this._accountDB.getAccountById(req.data.fromAccountId);
       const invoice = await this._invoiceDB.getInvoiceById(req.data.invoiceId);
+      const toAccountIdentifier = invoice?.getDataValue('fromIdentifier');
+      const toAccount = await this._accountDB.getDefaultAccountByIdentifier(
+        toAccountIdentifier ?? '',
+      );
 
-      if (!invoice || !account) {
+      if (!invoice || !fromAccount || !toAccount) {
         throw new ServerError(GenericErrors.NotFound);
       }
 
-      const accountBalance = account.getDataValue('balance');
+      if (fromAccount.getDataValue('id') === toAccount.getDataValue('id')) {
+        throw new ServerError(AccountErrors.SameAccount);
+      }
+
+      const accountBalance = fromAccount.getDataValue('balance');
       const invoiceAmount = invoice.getDataValue('amount');
+
       if (accountBalance < invoiceAmount) {
         throw new Error('Insufficent funds');
       }
 
-      await this._transactionDB.create({
-        amount: invoiceAmount,
-        fromAccount: account.toJSON(),
-        message: i18n.t('Paid invoice'),
-        type: TransactionType.Outgoing,
-      });
-
-      await account.decrement('balance', { by: invoiceAmount });
+      /* TODO: Implement transaction fee if wanted */
+      await toAccount.increment('balance', { by: invoiceAmount, transaction: t });
+      await fromAccount.decrement('balance', { by: invoiceAmount, transaction: t });
       await this._invoiceDB.payInvoice(req.data.invoiceId);
+
+      await this.transactionService.handleCreateTransaction(
+        {
+          amount: invoiceAmount,
+          message: i18n.t('Paid outgoing invoice to: {{to}}', {
+            to: invoice.getDataValue('to'),
+          }),
+          fromAccount: fromAccount.toJSON(),
+          toAccount: toAccount.toJSON(),
+          type: TransactionType.Outgoing,
+        },
+        t,
+      );
+
+      await this.transactionService.handleCreateTransaction(
+        {
+          amount: invoiceAmount,
+          message: i18n.t('Received incoming invoice from: {{from}}', {
+            from: invoice.getDataValue('from'),
+          }),
+          fromAccount: fromAccount.toJSON(),
+          toAccount: toAccount.toJSON(),
+          type: TransactionType.Incoming,
+        },
+        t,
+      );
+
       t.commit();
     } catch (err) {
+      console.log('Rolling back');
       t.rollback();
       logger.error(err);
     }

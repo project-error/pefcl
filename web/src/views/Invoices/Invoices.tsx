@@ -15,20 +15,29 @@ const NoInvoicesText = styled(Heading3)`
   color: ${theme.palette.text.secondary};
 `;
 
+const InvoicesContainer = styled(Stack)`
+  overflow: auto;
+  max-height: calc(100% - 4.5rem);
+  padding-right: 1rem;
+`;
+
 const Invoices = () => {
   const { t } = useTranslation();
   const [invoices] = useAtom(invoicesAtom);
 
   return (
     <Layout title={t('Invoices')}>
-      <Stack spacing={2}>
+      <Stack paddingBottom="1rem">
         <Heading6>{t('Pay your bills')}</Heading6>
+      </Stack>
+
+      <InvoicesContainer spacing={2.5}>
         {invoices.map((invoice) => (
           <InvoiceItem key={invoice.id} invoice={invoice} />
         ))}
+      </InvoicesContainer>
 
-        {invoices.length === 0 && <NoInvoicesText>{t('No invoices, yet.')}</NoInvoicesText>}
-      </Stack>
+      {invoices.length === 0 && <NoInvoicesText>{t('No invoices, yet.')}</NoInvoicesText>}
     </Layout>
   );
 };

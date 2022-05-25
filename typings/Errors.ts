@@ -10,6 +10,7 @@ export enum ExternalAccountErrors {
 
 export enum AccountErrors {
   AlreadyExists = 'AccountAlreadyExists',
+  SameAccount = 'SameAccount',
 }
 
 export enum BalanceErrors {

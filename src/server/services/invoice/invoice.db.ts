@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { InvoiceInput, InvoiceStatus } from '@typings/Invoice';
+import { CreateInvoiceInput, InvoiceStatus } from '@typings/Invoice';
 import { InvoiceModel } from './invoice.model';
 import { MS_TWO_WEEKS } from '@utils/constants';
 
@@ -10,14 +10,14 @@ export class InvoiceDB {
   }
 
   async getAllReceivingInvoices(identifier: string): Promise<InvoiceModel[]> {
-    return await InvoiceModel.findAll({ where: { to: identifier } });
+    return await InvoiceModel.findAll({ where: { toIdentifier: identifier } });
   }
 
   async getInvoiceById(id: number): Promise<InvoiceModel | null> {
     return await InvoiceModel.findOne({ where: { id } });
   }
 
-  async createInvoice(input: InvoiceInput): Promise<InvoiceModel> {
+  async createInvoice(input: CreateInvoiceInput): Promise<InvoiceModel> {
     const expiresAt = input.expiresAt
       ? input.expiresAt
       : new Date(Date.now() + MS_TWO_WEEKS).toString();

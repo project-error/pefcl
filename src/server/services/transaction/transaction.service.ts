@@ -23,6 +23,7 @@ import { AccountRole } from '@typings/Account';
 import { MS_ONE_WEEK } from '@utils/constants';
 import { TransactionEvents } from '@typings/Events';
 import { SharedAccountDB } from '../accountShared/sharedAccount.db';
+import { Transaction as SequelizeTransaction } from 'sequelize/types';
 
 const logger = mainLogger.child({ module: 'transactionService' });
 
@@ -59,17 +60,17 @@ export class TransactionService {
     });
     const total = await this._transactionDB.getTotalTransactionsFromAccounts(accountIds);
 
-    const mappedTransactions = transactions.map((transaction) => {
-      const date = new Date(transaction.getDataValue('createdAt') ?? '');
-      transaction.setDataValue('createdAt', date.toLocaleString());
-      return transaction;
-    });
+    // const mappedTransactions = transactions.map((transaction) => {
+    //   const date = new Date(transaction.getDataValue('createdAt') ?? '');
+    //   transaction.setDataValue('createdAt', date.toLocaleString());
+    //   return transaction;
+    // });
 
     return {
       total: total,
       offset: req.data.offset,
       limit: req.data.limit,
-      transactions: mappedTransactions,
+      transactions: transactions,
     };
   }
 
@@ -87,11 +88,11 @@ export class TransactionService {
     logger.silly('Creating internal transfer');
     logger.silly(req);
 
-    const t = await sequelize.transaction();
     const user = this._userService.getUser(req.source);
     const identifier = user.getIdentifier();
     const { fromAccountId, toAccountId, amount, message } = req.data;
 
+    const t = await sequelize.transaction();
     try {
       const myAccount = await this._accountDB.getAuthorizedAccountById(fromAccountId, identifier);
       const sharedAccount = await this._sharedAccountDB.getAuthorizedSharedAccountById(
@@ -109,13 +110,16 @@ export class TransactionService {
 
       await toAccount.increment('balance', { by: amount });
       await fromAccount.decrement('balance', { by: amount });
-      await this.handleCreateTransaction({
-        amount: amount,
-        message: message,
-        toAccount: toAccount.toJSON(),
-        type: TransactionType.Transfer,
-        fromAccount: fromAccount.toJSON(),
-      });
+      await this.handleCreateTransaction(
+        {
+          amount: amount,
+          message: message,
+          toAccount: toAccount.toJSON(),
+          type: TransactionType.Transfer,
+          fromAccount: fromAccount.toJSON(),
+        },
+        t,
+      );
 
       t.commit();
     } catch (e) {
@@ -138,8 +142,8 @@ export class TransactionService {
         throw new ServerError(GenericErrors.NotFound);
       }
 
-      await myAccount.decrement('balance', { by: req.data.amount });
-      await toAccount.increment('balance', { by: req.data.amount });
+      await myAccount.decrement('balance', { by: req.data.amount, transaction: t });
+      await toAccount.increment('balance', { by: req.data.amount, transaction: t });
 
       /*  Since this is a external "transfer", it's not actually a TransactionType.Transfer.
           But a seperate TransactionType.Incoming & TransactionType.Outgoing.
@@ -153,8 +157,8 @@ export class TransactionService {
         toAccount: toAccount.toJSON(),
         fromAccount: myAccount.toJSON(),
       };
-      await this.handleCreateTransaction({ ...data, type: TransactionType.Outgoing });
-      await this.handleCreateTransaction({ ...data, type: TransactionType.Incoming });
+      await this.handleCreateTransaction({ ...data, type: TransactionType.Outgoing }, t);
+      await this.handleCreateTransaction({ ...data, type: TransactionType.Incoming }, t);
 
       t.commit();
     } catch (e) {
@@ -176,12 +180,19 @@ export class TransactionService {
     return await this.handleInternalTransfer(req);
   }
 
-  async handleCreateTransaction(input: TransactionInput): Promise<TransactionModel> {
+  async handleCreateTransaction(
+    input: TransactionInput,
+    sequelizeTransaction: SequelizeTransaction,
+  ): Promise<TransactionModel | null> {
     logger.silly(`Created transaction.`);
     logger.silly(input);
 
-    const transaction = await this._transactionDB.create(input);
-    await this.broadcastTransaction({ ...input, ...transaction.toJSON() });
+    const transaction = await this._transactionDB.create(input, sequelizeTransaction);
+
+    sequelizeTransaction.afterCommit(() => {
+      this.broadcastTransaction({ ...input, ...transaction.toJSON() });
+    });
+
     return transaction;
   }
 

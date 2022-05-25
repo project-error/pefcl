@@ -3,6 +3,7 @@ import { Settings } from '@mui/icons-material';
 import { Fab, Stack, Typography } from '@mui/material';
 import theme from '@utils/theme';
 import { AnimatePresence, motion } from 'framer-motion';
+import { t } from 'i18next';
 import React, { useEffect, useState } from 'react';
 import Button from './ui/Button';
 
@@ -23,7 +24,7 @@ const FabContainer = styled.div`
 const DebugBar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
-  const [isBankOpen, setIsBankOpen] = useState(false);
+  const [isBankOpen, setIsBankOpen] = useState(process.env.NODE_ENV === 'development');
   const [isAtmOpen, setIsAtmOpen] = useState(false);
 
   useEffect(() => {

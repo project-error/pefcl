@@ -218,12 +218,15 @@ export class AccountService {
 
       if (!isFirstSetup) {
         await fromAccount?.decrement('balance', { by: config?.prices?.newAccount ?? 0 });
-        await this._transactionService.handleCreateTransaction({
-          amount: config?.prices?.newAccount ?? 0,
-          message: i18next.t('Opened a new account'),
-          fromAccount: fromAccount.toJSON(),
-          type: TransactionType.Outgoing,
-        });
+        await this._transactionService.handleCreateTransaction(
+          {
+            amount: config?.prices?.newAccount ?? 0,
+            message: i18next.t('Opened a new account'),
+            fromAccount: fromAccount.toJSON(),
+            type: TransactionType.Outgoing,
+          },
+          t,
+        );
       }
 
       t.commit();
@@ -265,15 +268,18 @@ export class AccountService {
         throw new Error('The balance of the account is too low. It cannot be deleted!');
       }
 
-      await this._transactionService.handleCreateTransaction({
-        amount: deletingAccountBalance,
-        message: i18next.t('Remaining funds from "{{deletedAccount}}"', {
-          deletedAccount: deletingAccount.getDataValue('accountName'),
-        }),
-        type: TransactionType.Transfer,
-        fromAccount: deletingAccount.toJSON(),
-        toAccount: defaultAccount.toJSON(),
-      });
+      await this._transactionService.handleCreateTransaction(
+        {
+          amount: deletingAccountBalance,
+          message: i18next.t('Remaining funds from "{{deletedAccount}}"', {
+            deletedAccount: deletingAccount.getDataValue('accountName'),
+          }),
+          type: TransactionType.Transfer,
+          fromAccount: deletingAccount.toJSON(),
+          toAccount: defaultAccount.toJSON(),
+        },
+        t,
+      );
 
       await defaultAccount.increment('balance', { by: deletingAccountBalance });
       await deletingAccount.destroy();
@@ -352,12 +358,15 @@ export class AccountService {
       /* Check this part. - Deposition from. */
       await this._cashService.handleRemoveCash(req.source, depositionAmount);
       await targetAccount.increment({ balance: depositionAmount });
-      await this._transactionService.handleCreateTransaction({
-        amount: depositionAmount,
-        message: req.data.message,
-        type: TransactionType.Incoming,
-        toAccount: targetAccount.toJSON(),
-      });
+      await this._transactionService.handleCreateTransaction(
+        {
+          amount: depositionAmount,
+          message: req.data.message,
+          type: TransactionType.Incoming,
+          toAccount: targetAccount.toJSON(),
+        },
+        t,
+      );
 
       logger.silly(
         `Successfully deposited ${depositionAmount} into account ${targetAccount.getDataValue(
@@ -398,12 +407,15 @@ export class AccountService {
       await this._cashService.handleAddCash(req.source, withdrawAmount);
       await targetAccount.decrement({ balance: withdrawAmount });
 
-      await this._transactionService.handleCreateTransaction({
-        amount: withdrawAmount,
-        message: req.data.message,
-        type: TransactionType.Outgoing,
-        fromAccount: targetAccount.toJSON(),
-      });
+      await this._transactionService.handleCreateTransaction(
+        {
+          amount: withdrawAmount,
+          message: req.data.message,
+          type: TransactionType.Outgoing,
+          fromAccount: targetAccount.toJSON(),
+        },
+        t,
+      );
 
       logger.silly(`Withdrew ${withdrawAmount} from account ${accountId}`);
       logger.silly({ withdrawAmount, currentAccountBalance });
@@ -490,12 +502,18 @@ export class AccountService {
     const user = this._userService.getUser(req.source);
     const account = await this._accountDB.getDefaultAccountByIdentifier(user.getIdentifier());
     await account?.increment({ balance: req.data.amount });
-    await this._transactionService.handleCreateTransaction({
-      amount: req.data.amount,
-      message: req.data.message,
-      fromAccount: account?.toJSON(),
-      type: TransactionType.Incoming,
-    });
+
+    const t = await sequelize.transaction();
+    await this._transactionService.handleCreateTransaction(
+      {
+        amount: req.data.amount,
+        message: req.data.message,
+        fromAccount: account?.toJSON(),
+        type: TransactionType.Incoming,
+      },
+      t,
+    );
+    t.commit();
   }
 
   async removeMoney(req: Request<{ amount: number; message: string }>) {
@@ -503,11 +521,17 @@ export class AccountService {
     const user = this._userService.getUser(req.source);
     const account = await this._accountDB.getDefaultAccountByIdentifier(user.getIdentifier());
     await account?.decrement({ balance: req.data.amount });
-    await this._transactionService.handleCreateTransaction({
-      amount: req.data.amount,
-      message: req.data.message,
-      fromAccount: account?.toJSON(),
-      type: TransactionType.Outgoing,
-    });
+
+    const t = await sequelize.transaction();
+    await this._transactionService.handleCreateTransaction(
+      {
+        amount: req.data.amount,
+        message: req.data.message,
+        fromAccount: account?.toJSON(),
+        type: TransactionType.Outgoing,
+      },
+      t,
+    );
+    t.commit();
   }
 }

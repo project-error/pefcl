@@ -5,7 +5,10 @@ import { Invoice, InvoiceStatus } from '../../../../typings/Invoice';
 import { sequelize } from '../../utils/pool';
 
 @singleton()
-export class InvoiceModel extends Model<Invoice, Optional<Invoice, 'id' | 'status'>> {}
+export class InvoiceModel extends Model<
+  Invoice,
+  Optional<Invoice, 'id' | 'status' | 'recieverAccountId'>
+> {}
 
 InvoiceModel.init(
   {
@@ -14,17 +17,29 @@ InvoiceModel.init(
       autoIncrement: true,
       primaryKey: true,
     },
-    message: {
+    to: {
+      defaultValue: 'unknown',
       type: DataTypes.STRING,
-      allowNull: false,
     },
     from: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    to: {
+    message: {
       type: DataTypes.STRING,
       allowNull: false,
+    },
+    fromIdentifier: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    toIdentifier: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    recieverAccountId: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
     },
     amount: {
       type: DataTypes.INTEGER,

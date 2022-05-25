@@ -40,7 +40,7 @@ const PayInvoiceModal = ({ onClose, invoice }: PayInvoiceModalProps) => {
   const config = useConfig();
   const { t } = useTranslation();
 
-  const date = dayjs(invoice.expiresAt);
+  const expiresDate = dayjs(invoice.expiresAt);
   const selectedAccount = accounts.find((account) => account.id === selectedAccountId);
 
   const handlePayInvoice = () => {
@@ -79,7 +79,7 @@ const PayInvoiceModal = ({ onClose, invoice }: PayInvoiceModalProps) => {
           <Stack spacing={0.25}>
             <Heading6>{t('Expires')}</Heading6>
             <BodyText>
-              {date.calendar()} ({date.fromNow()})
+              {expiresDate.format('YYYY/MM/DD HH:mm')} ({expiresDate.fromNow()})
             </BodyText>
           </Stack>
         </Stack>
