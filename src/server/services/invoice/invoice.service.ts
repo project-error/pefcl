@@ -61,10 +61,14 @@ export class InvoiceService {
     try {
       const fromAccount = await this._accountDB.getAccountById(req.data.fromAccountId);
       const invoice = await this._invoiceDB.getInvoiceById(req.data.invoiceId);
+
+      /* Should we insert money to a specific account? */
+      const recieverAccountId = invoice?.getDataValue('recieverAccountId');
       const toAccountIdentifier = invoice?.getDataValue('fromIdentifier');
-      const toAccount = await this._accountDB.getDefaultAccountByIdentifier(
-        toAccountIdentifier ?? '',
-      );
+
+      const toAccount = recieverAccountId
+        ? await this._accountDB.getAccountById(recieverAccountId)
+        : await this._accountDB.getDefaultAccountByIdentifier(toAccountIdentifier ?? '');
 
       if (!invoice || !fromAccount || !toAccount) {
         throw new ServerError(GenericErrors.NotFound);
