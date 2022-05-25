@@ -12,6 +12,7 @@ import {
   RemoveFromSharedAccountInput,
   SharedAccountUser,
   CreateSharedInput,
+  AddBankBalanceInput,
 } from '@typings/Account';
 import { UserService } from '../user/user.service';
 import { config } from '@utils/server-config';
@@ -497,23 +498,49 @@ export class AccountService {
     return account;
   }
 
-  async addMoney(req: Request<{ amount: number; message: string }>) {
-    logger.silly(`Adding money to ${req.source}...`);
-    const user = this._userService.getUser(req.source);
-    const account = await this._accountDB.getDefaultAccountByIdentifier(user.getIdentifier());
-    await account?.increment({ balance: req.data.amount });
+  async addBalanceByIdentifier(req: Request<AddBankBalanceInput>) {
+    const account = await this._accountDB.getDefaultAccountByIdentifier(req.data.identifier);
 
     const t = await sequelize.transaction();
-    await this._transactionService.handleCreateTransaction(
-      {
-        amount: req.data.amount,
-        message: req.data.message,
-        fromAccount: account?.toJSON(),
-        type: TransactionType.Incoming,
-      },
-      t,
-    );
-    t.commit();
+    try {
+      await account?.increment({ balance: req.data.amount });
+      await this._transactionService.handleCreateTransaction(
+        {
+          amount: req.data.amount,
+          message: req.data.message,
+          fromAccount: account?.toJSON(),
+          type: TransactionType.Incoming,
+        },
+        t,
+      );
+      t.commit();
+    } catch (err) {
+      t.rollback();
+    }
+  }
+
+  async addMoney(req: Request<{ amount: number; message: string }>) {
+    logger.silly(`Adding money to ${req.source} ..`);
+
+    const user = this._userService.getUser(req.source);
+    const account = await this._accountDB.getDefaultAccountByIdentifier(user.getIdentifier());
+
+    const t = await sequelize.transaction();
+    try {
+      await account?.increment({ balance: req.data.amount });
+      await this._transactionService.handleCreateTransaction(
+        {
+          amount: req.data.amount,
+          message: req.data.message,
+          fromAccount: account?.toJSON(),
+          type: TransactionType.Incoming,
+        },
+        t,
+      );
+      t.commit();
+    } catch (err) {
+      t.rollback();
+    }
   }
 
   async removeMoney(req: Request<{ amount: number; message: string }>) {

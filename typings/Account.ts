@@ -94,3 +94,9 @@ export interface ExternalAccountInput {
   number: string;
   userId: string;
 }
+
+export interface AddBankBalanceInput {
+  amount: number;
+  message: string;
+  identifier: string;
+}

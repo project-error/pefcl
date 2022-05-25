@@ -3,6 +3,7 @@ import { NetPromise, PromiseEventListener } from '../../decorators/NetPromise';
 import {
   Account,
   AccountRole,
+  AddBankBalanceInput,
   AddToSharedAccountInput,
   ATMInput,
   CreateSharedInput,
@@ -200,7 +201,17 @@ export class AccountController {
   }
 
   @Export(ServerExports.AddBankBalance)
-  async addBankBalance(req: Request<{ amount: number; message: string }>, res: Response<object>) {
+  async addBankBalance(req: Request<{ amount: number; message: string }>, res: Response<unknown>) {
+    try {
+      await this._accountService.addMoney(req);
+      res({ status: 'ok', data: {} });
+    } catch (err) {
+      res({ status: 'error', errorMsg: err.message });
+    }
+  }
+
+  @Export(ServerExports.AddBankBalanceByIdentifier)
+  async addBankBalanceByIdentifier(req: Request<AddBankBalanceInput>, res: Response<unknown>) {
     try {
       await this._accountService.addMoney(req);
       res({ status: 'ok', data: {} });
@@ -212,7 +223,7 @@ export class AccountController {
   @Export(ServerExports.RemoveBankBalance)
   async removeBankBalance(
     req: Request<{ amount: number; message: string }>,
-    res: Response<object>,
+    res: Response<unknown>,
   ) {
     try {
       await this._accountService.removeMoney(req);
