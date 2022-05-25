@@ -5,6 +5,7 @@ import {
   AccountRole,
   AddToSharedAccountInput,
   ATMInput,
+  CreateSharedInput,
   ExternalAccount,
   PreDBAccount,
   RemoveFromSharedAccountInput,
@@ -75,6 +76,16 @@ export class AccountController {
       await this._auth.isAuthorizedAccount(req.data.accountId, req.source, [AccountRole.Owner]);
       await this._accountService.handleDeleteAccount(req);
       res({ status: 'ok', data: {} });
+    } catch (err) {
+      res({ status: 'error', errorMsg: err.message });
+    }
+  }
+
+  @Export(ServerExports.CreateAccount)
+  async exportCreateAccount(req: Request<CreateSharedInput>, res: Response<Account>) {
+    try {
+      const account = await this._accountService.createAccount(req);
+      res({ status: 'ok', data: account });
     } catch (err) {
       res({ status: 'error', errorMsg: err.message });
     }

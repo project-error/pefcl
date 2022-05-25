@@ -7,7 +7,7 @@ import { generateAccountNumber } from '@utils/misc';
 
 export class AccountModel extends Model<
   Account,
-  Optional<Account, 'id' | 'number' | 'balance' | 'role'>
+  Optional<Account, 'id' | 'number' | 'balance' | 'role' | 'isDefault'>
 > {}
 
 AccountModel.init(

@@ -16,6 +16,7 @@ export enum ServerExports {
   CreateInvoice = 'createInvoice',
   GetInvoices = 'getInvoices',
   LoadPlayer = 'loadPlayer',
+  CreateAccount = 'createAccount',
 }
 
 export type WithdrawMoneyExport = (

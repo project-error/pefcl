@@ -11,6 +11,7 @@ import {
   AccountRole,
   RemoveFromSharedAccountInput,
   SharedAccountUser,
+  CreateSharedInput,
 } from '@typings/Account';
 import { UserService } from '../user/user.service';
 import { config } from '@utils/server-config';
@@ -150,14 +151,27 @@ export class AccountService {
 
     logger.debug('Creating initial account ...');
     const initialAccount = await this._accountDB.createAccount({
-      accountName: i18next.t('Personal account'),
       isDefault: true,
+      accountName: i18next.t('Personal account'),
       ownerIdentifier: user.getIdentifier(),
       type: AccountType.Personal,
     });
 
     logger.debug('Successfully created initial account.');
     return initialAccount.toJSON();
+  }
+
+  async createAccount(req: Request<CreateSharedInput>): Promise<Account> {
+    logger.silly('Creating an account ..');
+    logger.silly(req);
+
+    const account = await this._accountDB.createAccount({
+      type: req.data.type,
+      accountName: req.data.name,
+      ownerIdentifier: req.data.identifier,
+    });
+
+    return account.toJSON();
   }
 
   async handleCreateAccount(req: Request<PreDBAccount>): Promise<Account | undefined> {
@@ -168,17 +182,11 @@ export class AccountService {
 
     const t = await sequelize.transaction();
     try {
-      if (req.data.isDefault) {
-        const defaultAccount = await this._accountDB.getDefaultAccountByIdentifier(userIdentifier);
-        defaultAccount?.update({ isDefault: false });
-      }
-
       const userAccounts = await this._accountDB.getAccountsByIdentifier(userIdentifier);
       const fromAccount = await this._accountDB.getAccountById(req.data.fromAccountId);
 
       const isFirstSetup = userAccounts.length === 0;
       const isShared = req.data.isShared && !isFirstSetup;
-      const isDefault = isFirstSetup ?? req.data.isDefault;
 
       if (!fromAccount) {
         throw new ServerError(GenericErrors.NotFound);
@@ -197,7 +205,6 @@ export class AccountService {
         ...req.data,
         accountName: req.data.accountName ?? defaultAccountName,
         type: isShared ? AccountType.Shared : AccountType.Personal,
-        isDefault: isShared ? false : isDefault,
         ownerIdentifier: userIdentifier,
       });
 
