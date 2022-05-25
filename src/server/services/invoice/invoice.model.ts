@@ -3,6 +3,7 @@ import { DataTypes, Model, Optional } from 'sequelize';
 import { singleton } from 'tsyringe';
 import { Invoice, InvoiceStatus } from '../../../../typings/Invoice';
 import { sequelize } from '../../utils/pool';
+import { timestamps } from '../timestamps.model';
 
 @singleton()
 export class InvoiceModel extends Model<
@@ -52,17 +53,15 @@ InvoiceModel.init(
     expiresAt: {
       type: DataTypes.DATE,
       allowNull: false,
+      get() {
+        return new Date(this.getDataValue('expiresAt') ?? '').getTime();
+      },
       defaultValue: () => new Date(Date.now() + MS_TWO_WEEKS).toString(),
     },
+    ...timestamps,
   },
   {
     sequelize: sequelize,
     tableName: DATABASE_PREFIX + 'invoices',
-    getterMethods: {
-      getDate() {
-        const date = new Date(this.getDataValue('createdAt') ?? '');
-        return date.toDateString();
-      },
-    },
   },
 );

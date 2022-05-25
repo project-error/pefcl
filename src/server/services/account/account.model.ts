@@ -4,6 +4,7 @@ import { config } from '@utils/server-config';
 import { Account, AccountRole, AccountType } from '@typings/Account';
 import { sequelize } from '@utils/pool';
 import { generateAccountNumber } from '@utils/misc';
+import { timestamps } from '../timestamps.model';
 
 export class AccountModel extends Model<
   Account,
@@ -44,6 +45,7 @@ AccountModel.init(
       type: DataTypes.STRING,
       defaultValue: AccountType.Personal,
     },
+    ...timestamps,
   },
   { sequelize: sequelize, tableName: DATABASE_PREFIX + 'accounts', paranoid: true },
 );
