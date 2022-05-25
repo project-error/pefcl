@@ -114,12 +114,15 @@ export class AccountService {
     const t = await sequelize.transaction();
     try {
       const user = this._userService.getUserByIdentifier(req.data.identifier);
-      const account = await this._sharedAccountDB.createSharedAccount({
-        name: req.data.name,
-        user: req.data.identifier,
-        role: req.data.role,
-        accountId: req.data.accountId,
-      });
+      const account = await this._sharedAccountDB.createSharedAccount(
+        {
+          name: req.data.name,
+          user: req.data.identifier,
+          role: req.data.role,
+          accountId: req.data.accountId,
+        },
+        t,
+      );
 
       t.afterCommit(() => {
         emit(Broadcasts.NewSharedUser, account.toJSON());
@@ -130,18 +133,37 @@ export class AccountService {
       return account;
     } catch (err) {
       t.rollback();
+      logger.error('Failed to add user to shared account');
     }
   }
 
   async removeUserFromShared(req: Request<RemoveFromSharedAccountInput>) {
     logger.silly(`Removing user. identifier: ${req.data.identifier} to shared account.`);
     const { identifier, accountId } = req.data;
+    const user = this._userService.getUserByIdentifier(req.data.identifier);
     const mySharedAccounts = await this._sharedAccountDB.getSharedAccountsByIdentifier(identifier);
-    const deletingAccount = mySharedAccounts.find(
+    const account = mySharedAccounts.find(
       (account) => account?.getDataValue('account')?.id === accountId,
     );
 
-    return await deletingAccount?.destroy();
+    if (!account) {
+      throw new ServerError(GenericErrors.NotFound);
+    }
+
+    const t = await sequelize.transaction();
+    try {
+      await account?.destroy({ transaction: t });
+
+      t.afterCommit(() => {
+        emit(Broadcasts.RemovedSharedUser, account.toJSON());
+        emitNet(Broadcasts.RemovedSharedUser, user?.getSource(), account.toJSON());
+      });
+
+      t.commit();
+    } catch (error) {
+      t.rollback();
+      logger.error('Failed to remove user from shared account');
+    }
   }
 
   async createInitialAccount(source: number): Promise<Account> {
@@ -209,19 +231,25 @@ export class AccountService {
         ? i18next.t('Shared account')
         : i18next.t('Personal account');
 
-      const account = await this._accountDB.createAccount({
-        ...req.data,
-        accountName: req.data.accountName ?? defaultAccountName,
-        type: isShared ? AccountType.Shared : AccountType.Personal,
-        ownerIdentifier: userIdentifier,
-      });
+      const account = await this._accountDB.createAccount(
+        {
+          ...req.data,
+          accountName: req.data.accountName ?? defaultAccountName,
+          type: isShared ? AccountType.Shared : AccountType.Personal,
+          ownerIdentifier: userIdentifier,
+        },
+        t,
+      );
 
       if (isShared) {
-        await this._sharedAccountDB.createSharedAccount({
-          accountId: account.getDataValue('id') ?? 0,
-          user: userIdentifier,
-          role: AccountRole.Owner,
-        });
+        await this._sharedAccountDB.createSharedAccount(
+          {
+            accountId: account.getDataValue('id') ?? 0,
+            user: userIdentifier,
+            role: AccountRole.Owner,
+          },
+          t,
+        );
       }
 
       if (!isFirstSetup) {

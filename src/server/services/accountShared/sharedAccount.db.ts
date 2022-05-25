@@ -4,6 +4,7 @@ import { ServerError } from '@utils/errors';
 import { AccountModel } from '@services/account/account.model';
 import { singleton } from 'tsyringe';
 import { SharedAccountModel } from './sharedAccount.model';
+import { Transaction } from 'sequelize/types';
 
 const include = [{ model: AccountModel, as: 'account' }];
 
@@ -41,8 +42,11 @@ export class SharedAccountDB {
     return sharedAccount?.getDataValue('account') as unknown as AccountModel;
   }
 
-  async createSharedAccount(input: SharedAccountInput): Promise<SharedAccountModel> {
-    const account = await SharedAccountModel.create(input);
+  async createSharedAccount(
+    input: SharedAccountInput,
+    transaction: Transaction,
+  ): Promise<SharedAccountModel> {
+    const account = await SharedAccountModel.create(input, { transaction });
     await account.setAccount(input.accountId);
     return account;
   }
