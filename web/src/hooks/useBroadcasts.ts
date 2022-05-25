@@ -1,23 +1,32 @@
 import { accountsAtom } from '@data/accounts';
+import { invoicesAtom } from '@data/invoices';
 import { transactionBaseAtom } from '@data/transactions';
-import { TransactionEvents } from '@typings/Events';
+import { Broadcasts } from '@typings/Events';
 import { useAtom } from 'jotai';
 import { useNuiEvent } from 'react-fivem-hooks';
 
-export const useUpdates = () => {
+export const useBroadcasts = () => {
+  const [, updateInvoices] = useAtom(invoicesAtom);
   const [, updateTransactions] = useAtom(transactionBaseAtom);
   const [, updateAccounts] = useAtom(accountsAtom);
 
   useNuiEvent({
-    event: TransactionEvents.NewTransactionBroadcast,
+    event: Broadcasts.NewTransaction,
     callback: () => {
       updateTransactions();
       updateAccounts();
     },
   });
+
+  useNuiEvent({
+    event: Broadcasts.NewInvoice,
+    callback: () => {
+      updateInvoices();
+    },
+  });
 };
 
-export const UpdatesWrapper = () => {
-  useUpdates();
+export const BroadcastsWrapper = () => {
+  useBroadcasts();
   return null;
 };

@@ -102,13 +102,21 @@ if (isMocking) {
 
     /* Load user with framework Integration */
     if (config.frameworkIntegration?.enabled) {
+      global.source = 3;
       const userService = container.resolve(UserService);
-
-      userService.loadPlayer({
+      const player1 = {
         source: 3,
         name: 'John Doe',
         identifier: 'custom-character-identifier:john-doe',
-      });
+      };
+      const player2 = {
+        source: 4,
+        name: 'Second Player',
+        identifier: 'custom-character-identifier:john-other',
+      };
+
+      userService.loadPlayer(player1);
+      userService.loadPlayer(player2);
     }
   });
 }

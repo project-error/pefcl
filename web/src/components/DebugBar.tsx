@@ -3,7 +3,6 @@ import { Settings } from '@mui/icons-material';
 import { Fab, Stack, Typography } from '@mui/material';
 import theme from '@utils/theme';
 import { AnimatePresence, motion } from 'framer-motion';
-import { t } from 'i18next';
 import React, { useEffect, useState } from 'react';
 import Button from './ui/Button';
 
@@ -21,10 +20,10 @@ const FabContainer = styled.div`
   right: 1rem;
 `;
 
-const DebugBar = () => {
+const Devbar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
-  const [isBankOpen, setIsBankOpen] = useState(process.env.NODE_ENV === 'development');
+  const [isBankOpen, setIsBankOpen] = useState(false);
   const [isAtmOpen, setIsAtmOpen] = useState(false);
 
   useEffect(() => {
@@ -51,7 +50,7 @@ const DebugBar = () => {
         {isOpen && (
           <Container exit={{ y: -100 }} initial={{ y: -100 }} animate={{ y: 0 }}>
             <Stack spacing={1}>
-              <Typography variant="caption">Debug bar</Typography>
+              <Typography variant="caption">Devbar</Typography>
               <Stack direction="row" spacing={2}>
                 <Button onClick={() => setIsAtmOpen((prev) => !prev)}>
                   {isAtmOpen ? 'Close' : 'Open'} ATM
@@ -74,4 +73,4 @@ const DebugBar = () => {
   );
 };
 
-export default DebugBar;
+export default Devbar;

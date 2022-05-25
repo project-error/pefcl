@@ -12,6 +12,7 @@ import { TransactionType } from '@typings/transactions';
 import { ServerError } from '@utils/errors';
 import { AccountErrors, GenericErrors } from '@typings/Errors';
 import { TransactionService } from '../transaction/transaction.service';
+import { Broadcasts } from '@server/../../typings/Events';
 
 const logger = mainLogger.child({ module: 'invoice-service' });
 
@@ -50,6 +51,13 @@ export class InvoiceService {
 
     const invoice = await this._invoiceDB.createInvoice(data);
     logger.silly('Created invoice.');
+
+    const toUser = this._userService.getUserByIdentifier(data.toIdentifier);
+    const fromUser = this._userService.getUserByIdentifier(data.fromIdentifier);
+
+    toUser && emitNet(Broadcasts.NewInvoice, toUser.getSource(), invoice);
+    fromUser && emitNet(Broadcasts.NewInvoice, fromUser.getSource(), invoice);
+
     return invoice;
   }
 

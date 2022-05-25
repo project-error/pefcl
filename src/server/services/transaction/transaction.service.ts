@@ -21,7 +21,7 @@ import { ServerError } from '@utils/errors';
 import { GenericErrors } from '@typings/Errors';
 import { AccountRole } from '@typings/Account';
 import { MS_ONE_WEEK } from '@utils/constants';
-import { TransactionEvents } from '@typings/Events';
+import { Broadcasts } from '@typings/Events';
 import { SharedAccountDB } from '../accountShared/sharedAccount.db';
 import { Transaction as SequelizeTransaction } from 'sequelize/types';
 
@@ -207,7 +207,7 @@ export class TransactionService {
       return;
     }
 
-    emitNet(TransactionEvents.NewTransactionBroadcast, user.getSource(), transaction);
+    emitNet(Broadcasts.NewTransaction, user.getSource(), transaction);
   }
 
   async handleGetHistory(req: Request<void>): Promise<GetTransactionHistoryResponse> {
