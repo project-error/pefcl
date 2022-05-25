@@ -1,22 +1,16 @@
 import Layout from '@components/Layout';
-import Pagination from '@components/Pagination';
 import TransactionItem from '@components/TransactionItem';
 import Count from '@components/ui/Count';
 import styled from '@emotion/styled';
-import { Stack } from '@mui/material';
+import { Pagination, Stack } from '@mui/material';
 import theme from '@utils/theme';
-import { useAtom } from 'jotai';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  transactionBaseAtom,
-  transactionsLimitAtom,
-  transactionsOffsetAtom,
-  transactionsAtom,
-  transactionsTotalAtom,
-} from '@data/transactions';
 import { Heading2, Heading5, Heading6 } from '../../components/ui/Typography/Headings';
 import TransactionFilters, { TransactionFilter } from './Filters';
+import { fetchNui } from '@utils/fetchNui';
+import { GetTransactionsResponse, Transaction } from '@typings/transactions';
+import { TransactionEvents } from '@typings/Events';
 
 const Container = styled(Stack)`
   height: calc(100% - 5rem);
@@ -45,12 +39,31 @@ const TransactionsContainer = styled(Stack)`
 
 const Transactions = () => {
   const { t } = useTranslation();
-  const [, updateTransactions] = useAtom(transactionBaseAtom);
-  const [transactions] = useAtom(transactionsAtom);
-  const [total] = useAtom(transactionsTotalAtom);
-  const [limit] = useAtom(transactionsLimitAtom);
-  const [offset] = useAtom(transactionsOffsetAtom);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [total, setTotal] = useState(0);
+  const [limit, setLimit] = useState(10);
   const [activeFilters, setActiveFilters] = useState<TransactionFilter[]>([]);
+  const pages = Math.ceil(total / limit);
+  const [page, setPage] = useState(1);
+
+  const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
+    setPage(value);
+  };
+
+  useEffect(() => {
+    fetchNui<GetTransactionsResponse>(TransactionEvents.Get, {
+      limit,
+      offset: limit * (page - 1),
+    }).then((res) => {
+      if (!res) {
+        return;
+      }
+
+      setLimit(res.limit);
+      setTotal(res.total);
+      setTransactions(res.transactions);
+    });
+  }, [page, limit]);
 
   const chipFilteredTransactions =
     activeFilters.length === 0
@@ -61,10 +74,6 @@ const Transactions = () => {
           );
           return anyPassed.some(Boolean);
         });
-
-  const handlePagination = (offset: number) => {
-    updateTransactions({ offset });
-  };
 
   return (
     <Layout>
@@ -91,7 +100,9 @@ const Transactions = () => {
             ))}
           </TransactionsContainer>
 
-          <Pagination limit={limit} offset={offset} total={total} onChange={handlePagination} />
+          <Stack sx={{ marginTop: 'auto', alignSelf: 'flex-end' }}>
+            <Pagination count={pages} shape="rounded" onChange={handleChange} page={page} />
+          </Stack>
         </Stack>
       </Container>
     </Layout>

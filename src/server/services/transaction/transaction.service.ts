@@ -54,17 +54,13 @@ export class TransactionService {
     const accounts = await this._accountDB.getAccountsByIdentifier(user.getIdentifier());
 
     const accountIds = accounts.map((account) => account.getDataValue('id') ?? 0);
+
     const transactions = await this._transactionDB.getTransactionFromAccounts({
       ...req.data,
       accountIds,
     });
-    const total = await this._transactionDB.getTotalTransactionsFromAccounts(accountIds);
 
-    // const mappedTransactions = transactions.map((transaction) => {
-    //   const date = new Date(transaction.getDataValue('createdAt') ?? '');
-    //   transaction.setDataValue('createdAt', date.toLocaleString());
-    //   return transaction;
-    // });
+    const total = await this._transactionDB.getTotalTransactionsFromAccounts(accountIds);
 
     return {
       total: total,

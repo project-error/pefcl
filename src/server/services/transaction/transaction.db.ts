@@ -24,13 +24,32 @@ export class TransactionDB {
       where: {
         [Op.or]: [
           {
-            fromAccountId: {
-              [Op.in]: accountIds,
+            [Op.and]: {
+              fromAccountId: {
+                [Op.in]: accountIds,
+              },
+              type: TransactionType.Outgoing,
             },
           },
           {
-            toAccountId: {
-              [Op.in]: accountIds,
+            [Op.and]: {
+              toAccountId: {
+                [Op.in]: accountIds,
+              },
+              type: TransactionType.Incoming,
+            },
+          },
+          {
+            [Op.and]: {
+              [Op.or]: {
+                toAccountId: {
+                  [Op.in]: accountIds,
+                },
+                fromAccountId: {
+                  [Op.in]: accountIds,
+                },
+              },
+              type: TransactionType.Transfer,
             },
           },
         ],
