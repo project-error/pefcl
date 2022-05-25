@@ -28,7 +28,10 @@ const CreateAccountModal: React.FC<{ onClose(): void }> = ({ onClose }) => {
   const [accounts, updateAccounts] = useAtom(accountsAtom);
   const [, updateTransactions] = useAtom(transactionBaseAtom);
   const [defaultAccount] = useAtom(defaultAccountAtom);
+
   const { control, handleSubmit, watch } = useForm<CreateAccountForm>({
+    mode: 'all',
+    reValidateMode: 'onChange',
     defaultValues: {
       fromAccountId: defaultAccount?.id ?? 0,
     },
@@ -63,15 +66,27 @@ const CreateAccountModal: React.FC<{ onClose(): void }> = ({ onClose }) => {
                     value: true,
                     message: t('Account name is required'),
                   },
+                  maxLength: {
+                    value: 25,
+                    message: t('Account name is too long'),
+                  },
+                  pattern: {
+                    value: /^[a-zA-Z0-9_]*$/,
+                    message: t('Invalid account name'),
+                  },
                 }}
-                render={({ field }) => (
-                  <TextField
-                    placeholder={t('Account name')}
-                    label={t('Account name')}
-                    {...field}
-                    ref={null}
-                  />
-                )}
+                render={({ field, fieldState }) => {
+                  console.log({ fieldState });
+                  return (
+                    <TextField
+                      placeholder={t('Account name')}
+                      label={t('Account name')}
+                      helperText={fieldState.error?.message}
+                      {...field}
+                      ref={null}
+                    />
+                  );
+                }}
               />
 
               <div>

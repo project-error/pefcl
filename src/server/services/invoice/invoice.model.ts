@@ -21,14 +21,29 @@ InvoiceModel.init(
     to: {
       defaultValue: 'unknown',
       type: DataTypes.STRING,
+      validate: {
+        isAlphanumeric: true,
+        max: 80,
+        min: 1,
+      },
     },
     from: {
       type: DataTypes.STRING,
       allowNull: false,
+      validate: {
+        isAlphanumeric: true,
+        max: 80,
+        min: 1,
+      },
     },
     message: {
       type: DataTypes.STRING,
       allowNull: false,
+      validate: {
+        isAlphanumeric: true,
+        max: 80,
+        min: 1,
+      },
     },
     fromIdentifier: {
       type: DataTypes.STRING,
@@ -45,6 +60,9 @@ InvoiceModel.init(
     amount: {
       type: DataTypes.INTEGER,
       defaultValue: 0,
+      validate: {
+        min: 0,
+      },
     },
     status: {
       type: DataTypes.STRING,

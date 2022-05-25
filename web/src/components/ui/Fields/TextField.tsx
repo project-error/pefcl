@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { InputBase, InputBaseProps, StandardTextFieldProps } from '@mui/material';
+import { InputBase, InputBaseProps, StandardTextFieldProps, Typography } from '@mui/material';
 import React from 'react';
 import theme from '../../../utils/theme';
 import { Heading5 } from '../Typography/Headings';
@@ -34,18 +34,29 @@ const Label = styled(Heading5)`
   margin-bottom: 0.5rem;
 `;
 
+const HelperText = styled(Typography)`
+  margin-top: 0.5rem;
+`;
+
 interface Props extends InputBaseProps {
   label?: string;
+  helperText?: string;
   InputProps?: StandardTextFieldProps['InputProps'];
   InputLabelProps?: StandardTextFieldProps['InputLabelProps'];
 }
-const TextField = ({ InputProps, InputLabelProps, ...props }: Props) => {
+const TextField = ({ InputProps, InputLabelProps, helperText, ...props }: Props) => {
   return (
     <LabelWrapper>
       {props.label && <Label {...InputLabelProps}>{props.label}</Label>}
       <Container>
         <InputBase {...InputProps} {...props} />
       </Container>
+
+      {helperText && (
+        <HelperText variant="caption" color="error">
+          {helperText}
+        </HelperText>
+      )}
     </LabelWrapper>
   );
 };

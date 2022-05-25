@@ -25,6 +25,11 @@ AccountModel.init(
     },
     accountName: {
       type: DataTypes.STRING,
+      validate: {
+        isAlphanumeric: true,
+        max: 25,
+        min: 1,
+      },
     },
     isDefault: {
       type: DataTypes.BOOLEAN,
