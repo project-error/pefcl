@@ -2,8 +2,9 @@
 name: Bug Report
 about: Create a bug report to help solve an issue
 title: 'Bug: TITLE'
-labels: New Issue
+labels: ''
 assignees: ''
+
 ---
 
 **Describe the issue**
