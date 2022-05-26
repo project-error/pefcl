@@ -14,6 +14,7 @@ import Button from '../ui/Button';
 import Checkbox from '../ui/Checkbox';
 import TextField from '../ui/Fields/TextField';
 import { Heading2, Heading6 } from '../ui/Typography/Headings';
+import { regexAlphaNumeric } from '@shared/utils/regexes';
 
 interface CreateAccountForm {
   accountName: string;
@@ -71,7 +72,7 @@ const CreateAccountModal: React.FC<{ onClose(): void }> = ({ onClose }) => {
                     message: t('Account name is too long'),
                   },
                   pattern: {
-                    value: /^[a-zA-Z0-9_]*$/,
+                    value: regexAlphaNumeric,
                     message: t('Invalid account name'),
                   },
                 }}

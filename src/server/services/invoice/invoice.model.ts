@@ -1,3 +1,4 @@
+import { regexAlphaNumeric } from '@shared/utils/regexes';
 import { DATABASE_PREFIX, MS_TWO_WEEKS } from '@utils/constants';
 import { DataTypes, Model, Optional } from 'sequelize';
 import { singleton } from 'tsyringe';
@@ -22,7 +23,7 @@ InvoiceModel.init(
       defaultValue: 'unknown',
       type: DataTypes.STRING,
       validate: {
-        isAlphanumeric: true,
+        is: regexAlphaNumeric,
         max: 80,
         min: 1,
       },
@@ -31,7 +32,7 @@ InvoiceModel.init(
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
-        isAlphanumeric: true,
+        is: regexAlphaNumeric,
         max: 80,
         min: 1,
       },
@@ -40,7 +41,7 @@ InvoiceModel.init(
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
-        isAlphanumeric: true,
+        is: regexAlphaNumeric,
         max: 80,
         min: 1,
       },

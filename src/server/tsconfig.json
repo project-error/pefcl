@@ -15,13 +15,13 @@
     "noEmit": true,
     "baseUrl": ".",
     "paths": {
+      "@shared/*": ["./../../shared/*"],
       "@server/*": ["./*"],
       "@utils/*": ["utils/*"],
       "@services/*": ["services/*"],
       "@decorators/*": ["decorators/*"],
       "@locales/*": ["../../locales/*"],
-      "@typings/*": ["../../typings/*"],
-      "@shared/*": ["../../shared/*"]
+      "@typings/*": ["../../typings/*"]
     }
   },
   "include": ["./**/*", "../../shared/**/*"],
