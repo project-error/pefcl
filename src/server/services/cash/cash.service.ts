@@ -40,9 +40,9 @@ export class CashService {
     return cash?.getDataValue('amount') ?? 0;
   }
 
-  async createInitialCash(source: number): Promise<Cash> {
-    const user = this._userService.getUser(source);
-    logger.debug(`Creating initial cash row for ${user?.getIdentifier() ?? ''}`);
+  async createInitialCash(src: number): Promise<Cash> {
+    logger.debug(`Creating initial cash row for source: ${src}`);
+    const user = this._userService.getUser(src);
     const cash = await this._cashDB.createInitial(user?.getIdentifier() ?? '');
     return cash.toJSON();
   }

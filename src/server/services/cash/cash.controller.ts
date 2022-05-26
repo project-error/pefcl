@@ -1,8 +1,9 @@
 import { Export, ExportListener } from '@decorators/Export';
 import { NetPromise, PromiseEventListener } from '@decorators/NetPromise';
+import { OnlineUser } from '@server/../../typings/user';
 import { config } from '@server/utils/server-config';
 import { ChangeCashInput } from '@typings/Cash';
-import { CashEvents, GeneralEvents } from '@typings/Events';
+import { CashEvents, UserEvents } from '@typings/Events';
 import { ServerExports } from '@typings/exports/server';
 import { Request, Response } from '@typings/http';
 import { Controller } from '../../decorators/Controller';
@@ -57,22 +58,10 @@ export class CashController {
     return;
   }
 
-  @Event(GeneralEvents.ResourceStarted)
-  async onServerResourceStart() {
-    if (config?.frameworkIntegration?.enabled) return;
-
-    const players = getPlayers();
-    players.forEach((player) => {
-      this._cashService.createInitialCash(Number(player));
-    });
-  }
-
   /* When starting the resource / new player joining. We should handle the default account. */
-  @Event('playerJoining')
-  async onPlayerJoining() {
-    if (config?.frameworkIntegration?.enabled) return;
-
-    const src = global.source;
-    this._cashService.createInitialCash(src);
+  @Event(UserEvents.Loaded)
+  async onUserLoaded(user: OnlineUser) {
+    if (config.frameworkIntegration?.enabled) return;
+    this._cashService.createInitialCash(user.source);
   }
 }
