@@ -71,7 +71,7 @@ export class UserService {
     emitNet(UserEvents.Unloaded, source);
   }
 
-  async savePlayer(userDTO: UserDTO) {
+  async loadStandalonePlayer(userDTO: UserDTO) {
     const identifier = getPlayerIdentifier(userDTO.source);
     const name = getPlayerName(userDTO.source);
 

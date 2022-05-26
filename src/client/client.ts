@@ -1,6 +1,6 @@
 import './cl_events';
 import './cl_exports';
-import { GeneralEvents } from '@typings/Events';
+import { GeneralEvents, UserEvents } from '@typings/Events';
 import { RegisterNuiCB } from '@project-error/pe-utils';
 import { createInvoice, giveCash } from './functions';
 import config from './cl_config';
@@ -30,14 +30,22 @@ export const setAtmIsOpen = (bool: boolean) => {
 };
 
 RegisterCommand(
-  'bank',
+  'bank-force-load',
   () => {
-    setBankIsOpen(!isBankOpen);
+    SendNUIMessage({ type: UserEvents.Loaded });
   },
   false,
 );
 
 if (!useFrameworkIntegration) {
+  RegisterCommand(
+    'bank',
+    () => {
+      setBankIsOpen(!isBankOpen);
+    },
+    false,
+  );
+
   RegisterCommand(
     'atm',
     () => {

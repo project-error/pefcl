@@ -90,12 +90,12 @@ const App: React.FC = () => {
         )}
       </React.Suspense>
 
-      <React.Suspense fallback={null}>
+      <React.Suspense fallback={'Opening atm'}>
         <ATM />
       </React.Suspense>
 
       {/* We don't need to show any fallback for the update component since it doesn't render anything anyway. */}
-      <React.Suspense fallback={null}>{<BroadcastsWrapper />}</React.Suspense>
+      <React.Suspense fallback={'Broadcast wrapper'}>{<BroadcastsWrapper />}</React.Suspense>
     </>
   );
 };

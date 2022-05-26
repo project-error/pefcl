@@ -50,6 +50,9 @@ export class TransactionService {
   }
 
   private async getMyTransactions(req: Request<GetTransactionsInput>) {
+    logger.silly('Getting transactions');
+    logger.silly(req);
+
     const user = this._userService.getUser(req.source);
     const accounts = await this._accountDB.getAccountsByIdentifier(user.getIdentifier());
 
@@ -61,6 +64,8 @@ export class TransactionService {
     });
 
     const total = await this._transactionDB.getTotalTransactionsFromAccounts(accountIds);
+
+    logger.silly('Returned total of ' + total + ' transactions.');
 
     return {
       total: total,
@@ -76,7 +81,7 @@ export class TransactionService {
     const data = await this.getMyTransactions(req);
     return {
       ...data,
-      transactions: data.transactions as unknown as Transaction[],
+      transactions: data.transactions.map((transaction) => transaction.toJSON()),
     };
   }
 

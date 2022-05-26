@@ -51,7 +51,7 @@ export class UserController {
     if (config.frameworkIntegration?.enabled) return;
 
     const _source = global.source;
-    this._userService.savePlayer({ source: _source });
+    this._userService.loadStandalonePlayer({ source: _source });
   }
 
   @Event('playerDropped')
@@ -67,7 +67,7 @@ export class UserController {
 
     const players = getPlayers();
     players.forEach((player) => {
-      this._userService.savePlayer({ source: parseInt(player, 10) });
+      this._userService.loadStandalonePlayer({ source: parseInt(player, 10) });
     });
   }
 }

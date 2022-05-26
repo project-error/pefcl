@@ -30,7 +30,12 @@ onNet(Broadcasts.RemovedSharedUser, () => {
 });
 
 onNet(UserEvents.Loaded, () => {
-  SendNUIMessage({ type: UserEvents.Loaded });
+  // TODO: remove this temp fix
+  // This is only issue on resource reload, wait for resource to be loaded, before playerLoad
+
+  setTimeout(() => {
+    SendNUIMessage({ type: UserEvents.Loaded });
+  }, 2000);
 });
 
 onNet(UserEvents.Unloaded, () => {
@@ -53,9 +58,11 @@ RegisterNuiProxy(AccountEvents.DeleteAccount);
 RegisterNuiProxy(AccountEvents.SetDefaultAccount);
 RegisterNuiProxy(AccountEvents.RenameAccount);
 RegisterNuiProxy(InvoiceEvents.Get);
+RegisterNuiProxy(InvoiceEvents.CountUnpaid);
 RegisterNuiProxy(InvoiceEvents.CreateInvoice);
 RegisterNuiProxy(InvoiceEvents.PayInvoice);
 RegisterNuiProxy(TransactionEvents.Get);
+RegisterNuiProxy(TransactionEvents.GetHistory);
 RegisterNuiProxy(TransactionEvents.CreateTransfer);
 
 RegisterNuiProxy(UserEvents.GetUsers);
@@ -67,4 +74,3 @@ RegisterNuiProxy(ExternalAccountEvents.Get);
 
 RegisterNuiProxy(AccountEvents.WithdrawMoney);
 RegisterNuiProxy(AccountEvents.DepositMoney);
-RegisterNuiProxy(TransactionEvents.GetHistory);
