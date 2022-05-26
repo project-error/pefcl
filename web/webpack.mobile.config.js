@@ -1,10 +1,12 @@
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
-const port = process.env.PORT ?? 3000;
+const ModuleFederationPlugin = require('webpack/lib/container/ModuleFederationPlugin');
+const deps = require('./package.json').dependencies;
+const port = process.env.PORT ?? 3007;
 
 module.exports = {
-  entry: './src/index.tsx',
+  entry: './src/mobileBootstrap.ts',
   mode: 'development',
   output: {
     publicPath: 'auto',
@@ -28,6 +30,15 @@ module.exports = {
         },
       },
       {
+        test: /\.(png|jpe?g|gif)$/i,
+        exclude: /node_modules/,
+        use: [
+          {
+            loader: 'file-loader',
+          },
+        ],
+      },
+      {
         test: /\.(js|jsx)$/,
         exclude: /node_modules/,
         use: {
@@ -41,6 +52,24 @@ module.exports = {
     ],
   },
   plugins: [
+    new ModuleFederationPlugin({
+      name: 'bank',
+      filename: 'remoteEntry.js',
+      exposes: {
+        './config': './npwd.config.ts',
+      },
+      shared: {
+        ...deps,
+        react: {
+          singleton: true,
+          requiredVersion: deps.react,
+        },
+        'react-dom': {
+          singleton: true,
+          requiredVersion: deps['react-dom'],
+        },
+      },
+    }),
     new HtmlWebpackPlugin({
       template: './public/index.html',
     }),
