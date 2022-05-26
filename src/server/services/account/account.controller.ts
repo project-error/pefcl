@@ -236,7 +236,7 @@ export class AccountController {
   @Export(ServerExports.AddBankBalanceByIdentifier)
   async addBankBalanceByIdentifier(req: Request<UpdateBankBalanceInput>, res: Response<unknown>) {
     try {
-      await this._accountService.addMoney(req);
+      await this._accountService.addMoneyByIdentifier(req);
       res({ status: 'ok', data: {} });
     } catch (err) {
       res({ status: 'error', errorMsg: err.message });
