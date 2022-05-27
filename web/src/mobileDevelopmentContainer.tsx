@@ -41,9 +41,11 @@ const Root = () => (
     <NuiProvider>
       <Container>
         <Background src={image} />
-        <AppContainer>
-          <App />
-        </AppContainer>
+        <React.Suspense fallback="Loading phone">
+          <AppContainer>
+            <App />
+          </AppContainer>
+        </React.Suspense>
       </Container>
     </NuiProvider>
   </BrowserRouter>

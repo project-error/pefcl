@@ -1,20 +1,28 @@
 import App from './src/Mobile';
+import BankIcon from './src/BankIcon';
 
-const defaultLanguage = 'en';
-const localizedAppName = {
-  en: 'Very good bank, fleeca suck',
-};
+// const defaultLanguage = 'en';
+// const localizedAppName = {
+//   en: 'APPS_BANK',
+// };
 
-interface Settings {
-  language: 'en';
-}
+// interface Settings {
+//   language: 'en';
+// }
 
-export default (settings: Settings) => ({
+export default () => ({
   id: 'BANK',
-  nameLocale: localizedAppName[settings?.language ?? defaultLanguage],
+  nameLocale: 'BANK',
   color: '#fff',
-  backgroundColor: '#333',
+  backgroundColor: '#264f82',
   path: '/bank',
-  icon: () => 'lol',
+  icon: BankIcon,
   app: App,
 });
+
+if (module.hot) {
+  module.hot.accept('./src/Mobile', function () {
+    console.log('Accepting the updated app from PEFCL ..');
+    window.postMessage({ type: 'RELOAD', payload: 'app:pefcl' }, '*');
+  });
+}
