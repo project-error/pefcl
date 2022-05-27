@@ -5,16 +5,28 @@ const ModuleFederationPlugin = require('webpack/lib/container/ModuleFederationPl
 const deps = require('./package.json').dependencies;
 const port = process.env.PORT ?? 3007;
 
+/* TODO: Fix for real */
+/* Probably bad way of fixing this */
+delete deps['@emotion/react'];
+delete deps['@emotion/styled'];
+delete deps['@mui/material'];
+delete deps['@mui/styles'];
+
 module.exports = {
   entry: './src/mobileBootstrap.ts',
   mode: 'development',
   output: {
     publicPath: 'auto',
-    filename: '[name].js',
+    filename: 'main.js',
   },
   devServer: {
     port,
     hot: true,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
+      'Access-Control-Allow-Headers': 'X-Requested-With, content-type, Authorization',
+    },
   },
   devtool: 'eval-source-map',
   module: {
@@ -72,6 +84,7 @@ module.exports = {
     }),
     new HtmlWebpackPlugin({
       template: './public/index.html',
+      chunks: ['main'],
     }),
     new webpack.DefinePlugin({
       process: { env: {} },
