@@ -2,6 +2,7 @@ import { ExternalAccount } from '@typings/Account';
 import { DATABASE_PREFIX } from '@utils/constants';
 import { DataTypes, Model, Optional } from 'sequelize';
 import { sequelize } from '../../utils/pool';
+import { timestamps } from '../timestamps.model';
 
 export class ExternalAccountModel extends Model<ExternalAccount, Optional<ExternalAccount, 'id'>> {}
 
@@ -21,6 +22,7 @@ ExternalAccountModel.init(
     userId: {
       type: DataTypes.STRING,
     },
+    ...timestamps,
   },
   {
     sequelize: sequelize,

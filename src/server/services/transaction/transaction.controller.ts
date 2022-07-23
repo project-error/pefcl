@@ -5,7 +5,7 @@ import {
   GetTransactionsInput,
   GetTransactionsResponse,
   Transfer,
-} from '@typings/transactions';
+} from '@typings/Transaction';
 import { Controller } from '../../decorators/Controller';
 import { NetPromise, PromiseEventListener } from '../../decorators/NetPromise';
 import { TransactionService } from './transaction.service';
@@ -24,8 +24,12 @@ export class TransactionController {
     req: Request<GetTransactionsInput>,
     res: Response<GetTransactionsResponse>,
   ) {
-    const transactions = await this._transactionService.handleGetMyTransactions(req);
-    res({ status: 'ok', data: transactions });
+    try {
+      const transactions = await this._transactionService.handleGetMyTransactions(req);
+      res({ status: 'ok', data: transactions });
+    } catch (err) {
+      res({ status: 'error', errorMsg: err.message });
+    }
   }
 
   @NetPromise(TransactionEvents.CreateTransfer)

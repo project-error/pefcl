@@ -1,23 +1,33 @@
 import { Controller } from '@decorators/Controller';
 import { EventListener, Event } from '@decorators/Event';
 import { NetPromise, PromiseEventListener } from '@decorators/NetPromise';
-import { UserEvents } from '@typings/Events';
+import { ServerExports } from '@server/../../typings/exports/server';
+import { Export, ExportListener } from '@server/decorators/Export';
+import { config } from '@server/utils/server-config';
+import { GeneralEvents, UserEvents } from '@typings/Events';
 import { Request, Response } from '@typings/http';
 import { OnlineUser } from '@typings/user';
-import { config } from '@utils/server-config';
-import { TransactionService } from 'services/transaction/transaction.service';
 import { UserService } from './user.service';
 
 @Controller('User')
+@ExportListener()
 @PromiseEventListener()
 @EventListener()
 export class UserController {
   private readonly _userService: UserService;
-  private readonly _transactionService: TransactionService;
 
-  constructor(userService: UserService, transactionService: TransactionService) {
+  constructor(userService: UserService) {
     this._userService = userService;
-    this._transactionService = transactionService;
+  }
+
+  @Export(ServerExports.LoadPlayer)
+  async loadPlayer(req: Request<OnlineUser>) {
+    this._userService.loadPlayer(req.data);
+  }
+
+  @Export(ServerExports.UnloadPlayer)
+  async unloadPlayer(req: Request<number>) {
+    this._userService.unloadPlayer(req.data);
   }
 
   @NetPromise(UserEvents.GetUsers)
@@ -30,7 +40,7 @@ export class UserController {
     const list: OnlineUser[] = Array.from(users.values()).map((user) => ({
       name: user.name,
       source: user.getSource(),
-      identifier: user.identifier,
+      identifier: user.getIdentifier(),
     }));
 
     res({ status: 'ok', data: list });
@@ -38,23 +48,26 @@ export class UserController {
 
   @Event('playerJoining')
   playerJoining() {
+    if (config.frameworkIntegration?.enabled) return;
+
     const _source = global.source;
-
-    console.log(`New player loaded: ${GetPlayerName(_source.toString())}`);
-    if (config?.general?.useFrameworkIntegration) return;
-
-    this._userService.savePlayer({ source: _source });
+    this._userService.loadStandalonePlayer({ source: _source });
   }
 
-  @Event('onServerResourceStart')
-  async onServerResourceStart(resource: string) {
-    if (config?.general?.useFrameworkIntegration) return;
-    if (resource === GetCurrentResourceName()) {
-      const players = getPlayers();
+  @Event('playerDropped')
+  playerDropped() {
+    if (config.frameworkIntegration?.enabled) return;
+    const _source = global.source;
+    this._userService.deletePlayer(_source);
+  }
 
-      for (const player of players) {
-        this._userService.savePlayer({ source: parseInt(player, 10) });
-      }
-    }
+  @Event(GeneralEvents.ResourceStarted)
+  async onServerResourceStart() {
+    if (config.frameworkIntegration?.enabled) return;
+
+    const players = getPlayers();
+    players.forEach((player) => {
+      this._userService.loadStandalonePlayer({ source: parseInt(player, 10) });
+    });
   }
 }

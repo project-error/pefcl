@@ -1,35 +1,21 @@
-import { AccountCard } from '@components/Card';
 import Layout from '@components/Layout';
-import Pagination from '@components/Pagination';
 import TransactionItem from '@components/TransactionItem';
 import Count from '@components/ui/Count';
 import styled from '@emotion/styled';
-import { Stack } from '@mui/material';
+import { Pagination, Stack } from '@mui/material';
 import theme from '@utils/theme';
-import { useAtom } from 'jotai';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { accountsAtom } from 'src/data/accounts';
-import {
-  transactionBaseAtom,
-  transactionsLimitAtom,
-  transactionsOffsetAtom,
-  transactionsAtom,
-  transactionsTotalAtom,
-} from 'src/data/transactions';
 import { Heading2, Heading5, Heading6 } from '../../components/ui/Typography/Headings';
 import TransactionFilters, { TransactionFilter } from './Filters';
+import { fetchNui } from '@utils/fetchNui';
+import { GetTransactionsResponse, Transaction } from '@typings/Transaction';
+import { TransactionEvents } from '@typings/Events';
 
 const Container = styled(Stack)`
   height: calc(100% - 5rem);
   display: flex;
   flex-direction: row;
-`;
-
-const SelectedContainer = styled.div<{ isSelected: boolean }>`
-  overflow: hidden;
-  border-radius: ${theme.spacing(2)};
-  ${({ isSelected }) => isSelected && `outline: 1px solid ${theme.palette.primary.main};`}
 `;
 
 const TransactionsContainer = styled(Stack)`
@@ -53,53 +39,47 @@ const TransactionsContainer = styled(Stack)`
 
 const Transactions = () => {
   const { t } = useTranslation();
-  const [selectedAccountId, setSelectedAccountId] = useState(0);
-  const [accounts] = useAtom(accountsAtom);
-  const [, updateTransactions] = useAtom(transactionBaseAtom);
-  const [transactions] = useAtom(transactionsAtom);
-  const [total] = useAtom(transactionsTotalAtom);
-  const [limit] = useAtom(transactionsLimitAtom);
-  const [offset] = useAtom(transactionsOffsetAtom);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [total, setTotal] = useState(0);
+  const [limit, setLimit] = useState(10);
   const [activeFilters, setActiveFilters] = useState<TransactionFilter[]>([]);
+  const pages = Math.ceil(total / limit);
+  const [page, setPage] = useState(1);
 
-  const filteredTransactions = transactions.filter(
-    ({ toAccount, fromAccount }) =>
-      toAccount?.id === selectedAccountId ||
-      fromAccount?.id === selectedAccountId ||
-      !selectedAccountId,
-  );
+  const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
+    setPage(value);
+  };
+
+  useEffect(() => {
+    fetchNui<GetTransactionsResponse>(TransactionEvents.Get, {
+      limit,
+      offset: limit * (page - 1),
+    }).then((res) => {
+      if (!res) {
+        return;
+      }
+
+      setLimit(res.limit);
+      setTotal(res.total);
+      setTransactions(res.transactions);
+    });
+  }, [page, limit]);
 
   const chipFilteredTransactions =
     activeFilters.length === 0
-      ? filteredTransactions
-      : filteredTransactions.filter((transaction) => {
+      ? transactions
+      : transactions.filter((transaction) => {
           const anyPassed: boolean[] = activeFilters.map((filterFunc) =>
             filterFunc.sort(transaction),
           );
           return anyPassed.some(Boolean);
         });
 
-  const handlePagination = (offset: number) => {
-    updateTransactions({ offset });
-  };
-
   return (
     <Layout>
       <Heading2>{t('Transactions')}</Heading2>
 
       <Container spacing={4} direction="row" marginTop={4}>
-        <Stack spacing={2} flex="1.5">
-          {accounts.map((account) => (
-            <SelectedContainer
-              key={account.id}
-              isSelected={account.id === selectedAccountId}
-              onClick={() => setSelectedAccountId(account.id ?? 0)}
-            >
-              <AccountCard account={account} />
-            </SelectedContainer>
-          ))}
-        </Stack>
-
         <Stack spacing={2} flex="4">
           <Stack direction="row" justifyContent="space-between">
             <Heading5>{t('Filters')}</Heading5>
@@ -120,7 +100,15 @@ const Transactions = () => {
             ))}
           </TransactionsContainer>
 
-          <Pagination limit={limit} offset={offset} total={total} onChange={handlePagination} />
+          <Stack sx={{ marginTop: 'auto', alignSelf: 'flex-end' }}>
+            <Pagination
+              count={pages}
+              shape="rounded"
+              onChange={handleChange}
+              page={page}
+              color="primary"
+            />
+          </Stack>
         </Stack>
       </Container>
     </Layout>

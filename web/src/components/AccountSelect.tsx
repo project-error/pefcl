@@ -1,9 +1,9 @@
 import styled from '@emotion/styled';
-import { ListSubheader, MenuItem, SelectChangeEvent, Stack } from '@mui/material';
+import { ListSubheader, MenuItem, SelectChangeEvent, Stack, Typography } from '@mui/material';
 import { t } from 'i18next';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Account, AccountType, ExternalAccount } from '@typings/Account';
+import { Account, AccountRole, AccountType, ExternalAccount } from '@typings/Account';
 import { ResourceConfig } from '../../../typings/config';
 import { useConfig } from '../hooks/useConfig';
 import { formatMoney } from '../utils/currency';
@@ -43,15 +43,28 @@ const ListItem = styled.div`
   padding-right: 0.75rem;
 `;
 
-const Option: React.FC<{ account: Account; config: ResourceConfig }> = ({ account, config }) => {
+const Option: React.FC<{
+  account: Account;
+  config: ResourceConfig;
+  isDisabledByContributor?: boolean;
+}> = ({ account, config, isDisabledByContributor }) => {
   const { t } = useTranslation();
   return (
     <ListItem>
       <Stack p="0rem 0.5rem">
         <BodyText>{account.accountName}</BodyText>
-        <BalanceText>{formatMoney(account.balance, config.general)}</BalanceText>
+        {isDisabledByContributor ? (
+          <Typography variant="caption">
+            {t('Contributors cannot use money in shared accounts.')}
+          </Typography>
+        ) : (
+          <BalanceText>{formatMoney(account.balance, config.general)}</BalanceText>
+        )}
       </Stack>
-      <Heading6>{account.type === AccountType.Personal ? t('Personal') : t('Shared')}</Heading6>
+
+      <Stack direction="row" spacing={2}>
+        <Heading6>{account.type === AccountType.Personal ? t('Personal') : t('Shared')}</Heading6>
+      </Stack>
     </ListItem>
   );
 };
@@ -59,7 +72,7 @@ const Option: React.FC<{ account: Account; config: ResourceConfig }> = ({ accoun
 interface AccountSelectProps {
   accounts: Account[];
   selectedId?: number;
-  isExternalAvailable?: boolean;
+  isFromAccount?: boolean;
   externalAccounts?: ExternalAccount[];
   onSelect(accountId: number): void;
 }
@@ -68,7 +81,7 @@ const AccountSelect = ({
   accounts,
   onSelect,
   selectedId,
-  isExternalAvailable = false,
+  isFromAccount = false,
   externalAccounts = [],
 }: AccountSelectProps) => {
   const config = useConfig();
@@ -103,7 +116,7 @@ const AccountSelect = ({
         sx={{ width: '100%' }}
         MenuProps={{ sx: { maxHeight: '25rem', scrollbarColor: '#222', scrollbarWidth: '2px' } }}
       >
-        {isExternalAvailable && (
+        {!isFromAccount && (
           <Box p={2} display="flex">
             <Button fullWidth onClick={() => setIsExternalOpen(true)}>
               {t('Add external account')}
@@ -122,15 +135,22 @@ const AccountSelect = ({
         )}
 
         {externalAccounts.length > 0 && <ListSubheader>{t('Your accounts')}</ListSubheader>}
-        {accounts.map((account) => (
-          <StyledMenuItem
-            key={account.id}
-            value={account.id.toString()}
-            disabled={selectedId === account.id}
-          >
-            <Option account={account} config={config} />
-          </StyledMenuItem>
-        ))}
+        {accounts.map((account) => {
+          const isDisabledByContributor = isFromAccount && account.role === AccountRole.Contributor;
+          return (
+            <StyledMenuItem
+              key={account.id}
+              value={account.id.toString()}
+              disabled={selectedId === account.id || isDisabledByContributor}
+            >
+              <Option
+                account={account}
+                config={config}
+                isDisabledByContributor={isDisabledByContributor}
+              />
+            </StyledMenuItem>
+          );
+        })}
 
         {externalAccounts.length > 0 && <ListSubheader>{t('External accounts')}</ListSubheader>}
         {externalAccounts.map((account) => (

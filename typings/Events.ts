@@ -1,10 +1,13 @@
 export enum GeneralEvents {
   CloseUI = 'pefcl:closeNui',
   ResourceStarted = 'pefcl:resourceStarted',
+  ResourceStopped = 'pefcl:resourceStopped',
 }
 
 export enum UserEvents {
   GetUsers = 'pefcl:userEventsGetUsers',
+  Loaded = 'pefcl:userLoaded',
+  Unloaded = 'pefcl:userUnloaded',
 }
 
 export enum AccountEvents {
@@ -29,15 +32,22 @@ export enum ExternalAccountEvents {
   Get = 'pefcl:getExternalAccount',
 }
 
+export enum Broadcasts {
+  NewTransaction = 'pefcl:newTransactionBroadcast',
+  NewInvoice = 'pefcl:newInvoiceBroadcast',
+  NewSharedUser = 'pefcl:newSharedUser',
+  RemovedSharedUser = 'pefcl:removedSharedUser',
+}
+
 export enum TransactionEvents {
   Get = 'pefcl:getTransactions',
   GetHistory = 'pefcl:getTransactionsHistory',
   CreateTransfer = 'pefcl:createTransfer',
-  NewTransactionBroadcast = 'pefcl:newTransactionBroadcast',
 }
 
 export enum InvoiceEvents {
   Get = 'pefcl:getInvoices',
+  CountUnpaid = 'pefcl:countUnpaid',
   CreateInvoice = 'pefcl:createInvoice',
   CreateOnlineInvoice = 'pefcl:createOnlineInvoice',
   PayInvoice = 'pefcl:payInvoice',

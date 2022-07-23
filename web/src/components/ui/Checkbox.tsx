@@ -19,10 +19,6 @@ const BaseBox = styled.div`
     width: inherit;
     height: inherit;
   }
-
-  :focus {
-    color: red;
-  }
 `;
 
 const CheckedBox = styled(BaseBox)`

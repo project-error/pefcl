@@ -6,7 +6,7 @@ import styled from '@emotion/styled';
 import { BodyText } from '@ui/Typography/BodyText';
 import theme from '@utils/theme';
 import { useConfig } from '@hooks/useConfig';
-import { Transaction, TransactionType } from '@typings/transactions';
+import { Transaction, TransactionType } from '@typings/Transaction';
 import { Stack } from '@mui/material';
 import { Heading6 } from '@ui/Typography/Headings';
 import { formatMoney } from '@utils/currency';
@@ -44,7 +44,7 @@ const TransactionItem: React.FC<{ transaction: Transaction; isLimitedSpace?: boo
   const { t } = useTranslation();
   const { message, amount, id, createdAt, toAccount, fromAccount, type } = transaction;
   const config = useConfig();
-  const date = dayjs(createdAt);
+  const createdAtDate = dayjs(createdAt);
   const isOutgoing = type === TransactionType.Outgoing;
   const isIncoming = type === TransactionType.Incoming;
   const isTransfer = type === TransactionType.Transfer;
@@ -77,7 +77,7 @@ const TransactionItem: React.FC<{ transaction: Transaction; isLimitedSpace?: boo
             </Stack>
           )}
 
-          <TransactionDate>{date.fromNow()}</TransactionDate>
+          <TransactionDate>{createdAtDate.fromNow()}</TransactionDate>
         </Stack>
 
         <Stack alignItems="flex-end">
@@ -89,7 +89,9 @@ const TransactionItem: React.FC<{ transaction: Transaction; isLimitedSpace?: boo
             <BodyText>{formatMoney(amount, config.general)}</BodyText>
           </Stack>
 
-          {!isLimitedSpace && <TransactionDate>{date.calendar()}</TransactionDate>}
+          {!isLimitedSpace && (
+            <TransactionDate>{createdAtDate.format('YYYY/MM/DD')}</TransactionDate>
+          )}
         </Stack>
       </Stack>
     </Container>

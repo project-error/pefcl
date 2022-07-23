@@ -1,19 +1,37 @@
 import { DEFAULT_CLEARING_NUMBER } from './constants';
 import { config } from './server-config';
 
-export const getSource = (): number => global.source;
+const isMocking = process.env.NODE_ENV === 'mocking';
 
-export const getGameLicense = (source: number) => {
-  const identifiers = getPlayerIdentifiers(source);
-  let playerIdentifier;
-
-  for (const id of identifiers) {
-    if (id.includes('license:')) {
-      playerIdentifier = id;
-    }
+export const getExports = () => {
+  if (!isMocking) {
+    return global.exports;
   }
 
-  return playerIdentifier;
+  return typeof global.exports === 'function' ? global.exports() : global.exports;
+};
+
+export const getSource = (): number => global.source;
+
+export const getPlayerIdentifier = (source: number): string => {
+  const identifiers = getPlayerIdentifiers(source.toString());
+
+  if (config.debug?.mockLicenses) {
+    return `license:${source}`;
+  }
+
+  const identifierType = config.general?.identifierType ?? 'license';
+  const identifier = identifiers.find((identifier) => identifier.includes(`${identifierType}:`));
+
+  if (!identifier) {
+    throw new Error('Failed to get identifier for player' + source);
+  }
+
+  return identifier;
+};
+
+export const getPlayerName = (source: number): string => {
+  return GetPlayerName(source.toString());
 };
 
 export const getClearingNumber = (initialConfig = config): string => {

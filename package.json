@@ -1,8 +1,8 @@
 {
-  "name": "pe-financial",
+  "name": "pefcl",
   "version": "1.0.0",
   "main": "index.js",
-  "repository": "https://github.com/project-error/pe-financial",
+  "repository": "https://github.com/project-error/pefcl",
   "author": "projecterror <info@projecterror.dev>",
   "license": "MIT",
   "scripts": {
@@ -10,7 +10,7 @@
     "prepare": "husky install",
     "postinstall": "husky install",
     "translations:generate": "yarn i18next",
-    "translations:download": "localazy download -r $LOCALAZY_READ_KEY",
+    "translations:download": "localazy download",
     "translations:upload": "localazy upload -w $LOCALAZY_WRITE_KEY -r $LOCALAZY_READ_KEY",
     "build": "yarn build:src && yarn build:web",
     "build:src": "cd src && yarn build",

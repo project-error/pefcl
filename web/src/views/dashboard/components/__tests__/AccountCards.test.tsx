@@ -5,7 +5,7 @@ import { renderWithProviders } from '@utils/test';
 import { mockedAccounts } from '@utils/constants';
 
 jest.mock('@utils/fetchNui', () => ({
-  fetchNui: () => mockedAccounts,
+  fetchNui: () => [mockedAccounts[0], mockedAccounts[1]],
 }));
 
 const Loading = () => {

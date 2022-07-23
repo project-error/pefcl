@@ -2,6 +2,7 @@ import { CreateAccountInput } from '@typings/Account';
 import { ExternalAccountDB } from '@services/accountExternal/externalAccount.db';
 import { singleton } from 'tsyringe';
 import { AccountModel } from './account.model';
+import { Transaction } from 'sequelize/types';
 
 export interface RemoveFromSharedAccountInput {
   accountId: number;
@@ -17,7 +18,6 @@ export class AccountDB {
   }
 
   async getAccounts(): Promise<AccountModel[]> {
-    console.log('getting accounts :monkaS:');
     return await AccountModel.findAll();
   }
 
@@ -43,7 +43,10 @@ export class AccountDB {
     return await AccountModel.findOne({ where: { number } });
   }
 
-  async createAccount(account: CreateAccountInput): Promise<AccountModel> {
-    return await AccountModel.create(account);
+  async createAccount(
+    account: CreateAccountInput,
+    transaction?: Transaction,
+  ): Promise<AccountModel> {
+    return await AccountModel.create(account, { transaction });
   }
 }

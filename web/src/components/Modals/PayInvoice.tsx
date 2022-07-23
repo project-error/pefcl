@@ -40,7 +40,7 @@ const PayInvoiceModal = ({ onClose, invoice }: PayInvoiceModalProps) => {
   const config = useConfig();
   const { t } = useTranslation();
 
-  const date = dayjs(invoice.expiresAt);
+  const expiresDate = dayjs(invoice.expiresAt);
   const selectedAccount = accounts.find((account) => account.id === selectedAccountId);
 
   const handlePayInvoice = () => {
@@ -57,6 +57,8 @@ const PayInvoiceModal = ({ onClose, invoice }: PayInvoiceModalProps) => {
       })
       .finally(onClose);
   };
+
+  const hasEnoughFunds = (selectedAccount?.balance ?? 0) > invoice.amount;
 
   return (
     <Paper>
@@ -79,13 +81,14 @@ const PayInvoiceModal = ({ onClose, invoice }: PayInvoiceModalProps) => {
           <Stack spacing={0.25}>
             <Heading6>{t('Expires')}</Heading6>
             <BodyText>
-              {date.calendar()} ({date.fromNow()})
+              {expiresDate.format('YYYY/MM/DD HH:mm')} ({expiresDate.fromNow()})
             </BodyText>
           </Stack>
         </Stack>
 
         <Stack spacing={4} flex={1}>
           <AccountSelect
+            isFromAccount
             accounts={accounts}
             onSelect={setSelectedAccountId}
             selectedId={selectedAccountId}
@@ -97,7 +100,7 @@ const PayInvoiceModal = ({ onClose, invoice }: PayInvoiceModalProps) => {
             <Button color="error" onClick={onClose}>
               {t('Cancel')}
             </Button>
-            <Button onClick={handlePayInvoice} disabled={!selectedAccountId}>
+            <Button onClick={handlePayInvoice} disabled={!selectedAccountId || !hasEnoughFunds}>
               {t('Pay invoice')}
             </Button>
           </Stack>

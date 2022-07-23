@@ -1,6 +1,12 @@
-export interface AccountServiceExports {
-  getCurrentBalance(source: number): number;
-  getCurrentBankBalance(source: number): number;
-  pefclDepositMoney: (source: number, amount: number) => void;
-  pefclWithdrawMoney: (source: number, amount: number) => void;
+/* Exports used with framework integrations */
+
+import { OnlineUser } from './user';
+
+export interface FrameworkIntegrationExports {
+  /* Cash exports */
+  getCash(source: number): number;
+  addCash: (source: number, amount: number) => void;
+  removeCash: (source: number, amount: number) => void;
 }
+
+export type FrameworkIntegrationFunction = keyof FrameworkIntegrationExports;

@@ -1,14 +1,15 @@
 import TextField from '@components/ui/Fields/TextField';
 import styled from '@emotion/styled';
+import { SpaceBar } from '@mui/icons-material';
 import { Dialog, DialogActions, DialogContent, DialogTitle, Stack } from '@mui/material';
+import { Box } from '@mui/system';
 import { AccountType } from '@typings/Account';
 import { AccountEvents } from '@typings/Events';
 import { getIsAdmin, getIsOwner } from '@utils/account';
 import { useAtom } from 'jotai';
-import React, { FormEvent, useState } from 'react';
+import React, { FormEvent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { transactionBaseAtom } from 'src/data/transactions';
-import { AccountCard } from '../../components/Card';
 import Layout from '../../components/Layout';
 import Button from '../../components/ui/Button';
 import { PreHeading } from '../../components/ui/Typography/BodyText';
@@ -18,24 +19,8 @@ import { useConfig } from '../../hooks/useConfig';
 import { formatMoney } from '../../utils/currency';
 import { fetchNui } from '../../utils/fetchNui';
 import theme from '../../utils/theme';
+import AccountCards from '../dashboard/components/AccountCards';
 import SharedSettings from './SharedSettings';
-
-const Cards = styled.div`
-  padding: 0;
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
-  margin-top: ${theme.spacing(4)};
-  grid-column-gap: ${theme.spacing(2.5)};
-`;
-
-const Column = styled(Stack)``;
-
-const SelectedContainer = styled.div<{ isSelected: boolean }>`
-  overflow: hidden;
-  border-radius: ${theme.spacing(2)};
-  opacity: 0.6;
-  ${({ isSelected }) => isSelected && `opacity: 1;`}
-`;
 
 const Dangerzone = styled.div`
   border: 1px solid ${theme.palette.error.main};
@@ -57,7 +42,7 @@ const Accounts = () => {
   const [selectedAccountId, setSelectedAccountId] = useState<number>(defaultAccount?.id ?? 0);
   const selectedAccount = accounts.find((account) => account.id === selectedAccountId);
   const [isRenameOpen, setIsRenameOpen] = useState(false);
-  const [renameInput, setRenameInput] = useState(selectedAccount?.accountName ?? '');
+  const [renameInput, setRenameInput] = useState('');
 
   const handleSetDefault = () => {
     fetchNui(AccountEvents.SetDefaultAccount, { accountId: selectedAccountId })
@@ -80,6 +65,12 @@ const Accounts = () => {
     );
     setIsRenameOpen(false);
   };
+
+  useEffect(() => {
+    if (selectedAccount?.accountName) {
+      setRenameInput(selectedAccount.accountName);
+    }
+  }, [selectedAccount?.accountName]);
 
   const isAdmin = Boolean(selectedAccount && getIsAdmin(selectedAccount));
   const isOwner = Boolean(selectedAccount && getIsOwner(selectedAccount));
@@ -122,20 +113,15 @@ const Accounts = () => {
         <Heading1>{formatMoney(totalBalance, config.general)}</Heading1>
       </Stack>
 
-      <Cards>
-        {accounts.map((account) => (
-          <SelectedContainer
-            key={account.id}
-            isSelected={selectedAccountId === account.id}
-            onClick={() => setSelectedAccountId(account.id ?? 0)}
-          >
-            <AccountCard account={account} />
-          </SelectedContainer>
-        ))}
-      </Cards>
+      <Box paddingTop={4}>
+        <AccountCards
+          onSelectAccount={setSelectedAccountId}
+          selectedAccountId={selectedAccountId}
+        />
+      </Box>
 
       <Stack direction="row" spacing={5} marginTop={5}>
-        <Column spacing={5}>
+        <Stack spacing={5}>
           <Stack spacing={1.5} alignItems="flex-start">
             <Heading5>{t('General')}</Heading5>
             <Stack direction="row" spacing={4} alignItems="flex-start">
@@ -185,11 +171,11 @@ const Accounts = () => {
               </Dangerzone>
             </Stack>
           )}
-        </Column>
+        </Stack>
 
-        <Column>
+        <Stack>
           {isShared && <SharedSettings accountId={selectedAccountId} isAdmin={isAdmin} />}
-        </Column>
+        </Stack>
       </Stack>
     </Layout>
   );

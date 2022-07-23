@@ -2,6 +2,7 @@ import { ServerPromiseResp } from '@project-error/pe-utils';
 import {
   AccountEvents,
   ExternalAccountEvents,
+  GeneralEvents,
   InvoiceEvents,
   SharedAccountEvents,
   TransactionEvents,
@@ -22,6 +23,11 @@ import './utils/i18n';
 import { load } from './utils/i18n';
 import './utils/pool';
 import './utils/server-config';
+import { mainLogger } from './sv_logger';
+import { mockedResourceName } from './globals.server';
+import { config } from './utils/server-config';
+import { UserService } from './services/user/user.service';
+import { container } from 'tsyringe';
 
 const hotReloadConfig = {
   resourceName: GetCurrentResourceName(),
@@ -80,6 +86,7 @@ if (isMocking) {
   app.post(...createEndpoint(TransactionEvents.CreateTransfer));
   app.post(...createEndpoint(TransactionEvents.GetHistory));
   app.post(...createEndpoint(InvoiceEvents.Get));
+  app.post(...createEndpoint(InvoiceEvents.CountUnpaid));
   app.post(...createEndpoint(InvoiceEvents.CreateInvoice));
   app.post(...createEndpoint(InvoiceEvents.PayInvoice));
   app.post(...createEndpoint(SharedAccountEvents.AddUser));
@@ -88,61 +95,68 @@ if (isMocking) {
   app.post(...createEndpoint(ExternalAccountEvents.Add));
   app.post(...createEndpoint(ExternalAccountEvents.Get));
 
-  app.listen(port, () => {
-    console.log(`[MOCKSERVER]: listening on port: ${port}`);
+  app.listen(port, async () => {
+    mainLogger.child({ module: 'server' }).debug(`[MOCKSERVER]: listening on port: ${port}`);
 
-    emit('onServerResourceStart', 'pe-financial');
+    emit('onServerResourceStart', mockedResourceName);
     global.source = 2;
+
+    /* Load user with framework Integration */
+    if (config.frameworkIntegration?.enabled) {
+      global.source = 3;
+      const userService = container.resolve(UserService);
+      const player1 = {
+        source: 3,
+        name: 'John Doe',
+        identifier: 'custom-character-identifier:john-doe',
+      };
+      const player2 = {
+        source: 4,
+        name: 'Second Player',
+        identifier: 'custom-character-identifier:john-other',
+      };
+
+      userService.loadPlayer(player1);
+      userService.loadPlayer(player2);
+    }
   });
 }
 
-const init = async () => {
-  await load();
-
-  // emit('playerJoining', {});
-
-  /* */
-  /* */
-  /** DEBUGGING STUFF */
-  /* */
-  /* */
-
-  // emitNet(AccountEvents.WithdrawMoney, 'returnEvent', {
-  //   amount: 2000,
-  //   message: 'ATM Withdrawal',
+const debug = async () => {
+  //
+  //
+  //
+  //
+  // const accountService = container.resolve(AccountService);
+  // accountService.handleWithdrawMoney({
+  //   source: 2,
+  //   data: {
+  //     amount: 200,
+  //     message: 'Withdraw',
+  //   },
   // });
-
-  // emitNet(AccountEvents.DepositMoney, 'returnEvent', {
-  //   amount: 2000,
-  //   message: 'ATM Deposition',
+  //
+  //
+  //
+  //
+  //
+  // const invoiceService = container.resolve(InvoiceService);
+  // const invoice = await invoiceService.createInvoice({
+  //   amount: 200,
+  //   to: 'John doe',
+  //   from: 'Repair shop AB',
+  //   message: 'meme',
+  //   toIdentifier: 'license:1',
+  //   fromIdentifier: 'license:2',
   // });
-
-  // const payload = {
-  //   to: 'license:1',
-  //   from: 'Karl-Jan',
-  //   message: i18n.t('Payment'),
-  //   amount: 50,
-  // };
-
-  // emitNet(InvoiceEvents.CreateInvoice, AccountEvents.CreateAccountResponse, payload);
-
-  /* Emit something */
-  // const createSharedAccount: PreDBAccount = {
-  //   accountName: 'Bennys AB',
-  //   isShared: true,
-  //   fromAccountId: 0,
-  // };
-
-  // emitNet(AccountEvents.CreateAccount, AccountEvents.CreateAccountResponse, createSharedAccount);
-
-  // const payload: AddToSharedAccountInput = { accountId: 3, source: 3 };
-  // emitNet(AccountEvents.AddUserToSharedAccount, AccountEvents.CreateAccountResponse, payload);
-
-  // const createAccountPayload2: PreDBAccount = {
-  //   accountName: 'Pension',
-  //   isDefault: false,
-  //   fromAccountId: 0,
-  // };
+  // await invoiceService.payInvoice({
+  //   data: {
+  //     invoiceId: invoice.getDataValue('id'),
+  //     fromAccountId: 2,
+  //   },
+  //   source: 0,
+  // });
 };
 
-init();
+on(GeneralEvents.ResourceStarted, debug);
+load();

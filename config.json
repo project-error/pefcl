@@ -1,11 +1,12 @@
 {
-  "exports": {
-    "resourceName": "your-resource"
-  },
   "general": {
-    "useFrameworkIntegration": false,
     "language": "en",
-    "currency": "USD"
+    "currency": "USD",
+    "identifierType": "license"
+  },
+  "frameworkIntegration": {
+    "enabled": false,
+    "resource": "your-resource"
   },
   "database": {
     "profileQueries": true,
@@ -19,7 +20,8 @@
   },
   "accounts": {
     "startAmount": 25000,
-    "clearingNumber": 920
+    "clearingNumber": 920,
+    "maximumNumberOfAccounts": 3
   },
   "atms": {
     "distance": 5.0,
@@ -34,6 +36,6 @@
   },
   "debug": {
     "level": "silly",
-    "mockLicenses": true
+    "mockLicenses": false
   }
 }

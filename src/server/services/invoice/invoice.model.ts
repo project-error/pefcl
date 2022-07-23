@@ -1,11 +1,16 @@
+import { regexAlphaNumeric } from '@shared/utils/regexes';
 import { DATABASE_PREFIX, MS_TWO_WEEKS } from '@utils/constants';
 import { DataTypes, Model, Optional } from 'sequelize';
 import { singleton } from 'tsyringe';
 import { Invoice, InvoiceStatus } from '../../../../typings/Invoice';
 import { sequelize } from '../../utils/pool';
+import { timestamps } from '../timestamps.model';
 
 @singleton()
-export class InvoiceModel extends Model<Invoice, Optional<Invoice, 'id' | 'status'>> {}
+export class InvoiceModel extends Model<
+  Invoice,
+  Optional<Invoice, 'id' | 'status' | 'recieverAccountId'>
+> {}
 
 InvoiceModel.init(
   {
@@ -14,21 +19,51 @@ InvoiceModel.init(
       autoIncrement: true,
       primaryKey: true,
     },
-    message: {
+    to: {
+      defaultValue: 'unknown',
       type: DataTypes.STRING,
-      allowNull: false,
+      validate: {
+        is: regexAlphaNumeric,
+        max: 80,
+        min: 1,
+      },
     },
     from: {
       type: DataTypes.STRING,
       allowNull: false,
+      validate: {
+        is: regexAlphaNumeric,
+        max: 80,
+        min: 1,
+      },
     },
-    to: {
+    message: {
       type: DataTypes.STRING,
       allowNull: false,
+      validate: {
+        is: regexAlphaNumeric,
+        max: 80,
+        min: 1,
+      },
+    },
+    fromIdentifier: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    toIdentifier: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    recieverAccountId: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
     },
     amount: {
       type: DataTypes.INTEGER,
       defaultValue: 0,
+      validate: {
+        min: 0,
+      },
     },
     status: {
       type: DataTypes.STRING,
@@ -37,17 +72,15 @@ InvoiceModel.init(
     expiresAt: {
       type: DataTypes.DATE,
       allowNull: false,
+      get() {
+        return new Date(this.getDataValue('expiresAt') ?? '').getTime();
+      },
       defaultValue: () => new Date(Date.now() + MS_TWO_WEEKS).toString(),
     },
+    ...timestamps,
   },
   {
     sequelize: sequelize,
     tableName: DATABASE_PREFIX + 'invoices',
-    getterMethods: {
-      getDate() {
-        const date = new Date(this.getDataValue('createdAt') ?? '');
-        return date.toDateString();
-      },
-    },
   },
 );

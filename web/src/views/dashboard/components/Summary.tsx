@@ -6,7 +6,7 @@ import { Divider, Stack } from '@mui/material';
 import { red } from '@mui/material/colors';
 import { Box } from '@mui/system';
 import { TransactionEvents } from '@typings/Events';
-import { GetTransactionHistoryResponse } from '@typings/transactions';
+import { GetTransactionHistoryResponse } from '@typings/Transaction';
 import { formatMoney } from '@utils/currency';
 import { fetchNui } from '@utils/fetchNui';
 import theme from '@utils/theme';

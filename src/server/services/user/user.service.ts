@@ -1,11 +1,11 @@
 import { GenericErrors } from '@typings/Errors';
 import { ServerError } from '@utils/errors';
-import { config } from '@utils/server-config';
 import { mainLogger } from '@server/sv_logger';
 import { singleton } from 'tsyringe';
-import { UserDTO } from '../../../../typings/user';
-import { getGameLicense } from '../../utils/misc';
+import { OnlineUser, UserDTO } from '../../../../typings/user';
+import { getPlayerIdentifier, getPlayerName } from '../../utils/misc';
 import { UserModule } from './user.module';
+import { UserEvents } from '@server/../../typings/Events';
 
 const logger = mainLogger.child({ module: 'user' });
 
@@ -34,7 +34,7 @@ export class UserService {
     let user: UserModule | undefined;
 
     this.getAllUsers().forEach((onlineUser) => {
-      user = onlineUser.identifier === identifier ? onlineUser : user;
+      user = onlineUser.getIdentifier() === identifier ? onlineUser : user;
     });
 
     return user;
@@ -48,34 +48,48 @@ export class UserService {
     this.usersBySource.delete(source);
   }
 
-  async savePlayer(userDTO: UserDTO) {
-    if (!userDTO.identifier) {
-      getGameLicense(userDTO.source);
-    }
+  async loadPlayer(data: OnlineUser) {
+    logger.debug('Loading player for pefcl with export');
+    logger.debug(data);
 
-    if (config.debug?.mockLicenses) {
-      userDTO.identifier = `license:${userDTO.source}`;
-    }
+    const user = new UserModule(data);
+    this.usersBySource.set(user.getSource(), user);
 
-    if (!userDTO.name) {
-      userDTO.name = GetPlayerName(userDTO.source.toString());
-    }
+    logger.debug('Player loaded, emitting: ' + UserEvents.Loaded);
+    emit(UserEvents.Loaded, data);
+    emitNet(UserEvents.Loaded, data, data.source, data);
+  }
 
-    if (!userDTO.identifier) {
-      logger.error('User could not be saved. Missing identifier.');
-      logger.error(userDTO);
-      return;
-    }
+  async unloadPlayer(source: number) {
+    logger.debug('Unloading player for pefcl with export');
+    logger.debug(source);
+
+    this.deletePlayer(source);
+
+    logger.debug('Player unloaded, emitting: ' + UserEvents.Unloaded);
+    emit(UserEvents.Unloaded, source);
+    emitNet(UserEvents.Unloaded, source);
+  }
+
+  async loadStandalonePlayer(userDTO: UserDTO) {
+    const identifier = getPlayerIdentifier(userDTO.source);
+    const name = getPlayerName(userDTO.source);
 
     const user = new UserModule({
+      name,
+      identifier,
       source: userDTO.source,
-      identifier: userDTO.identifier,
-      name: userDTO.name,
     });
 
     logger.debug('New user loaded for pe-fcl');
     logger.debug(user);
 
     this.usersBySource.set(userDTO.source, user);
+    emit(UserEvents.Loaded, {
+      name,
+      identifier,
+      source: userDTO.source,
+    });
+    emitNet(UserEvents.Loaded, userDTO.source, user);
   }
 }

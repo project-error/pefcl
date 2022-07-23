@@ -1,36 +1,49 @@
 import { atom } from 'jotai';
 import { mockedInvoices } from '@utils/constants';
 import { InvoiceEvents } from '@typings/Events';
-import { Invoice, InvoiceStatus } from '../../../typings/Invoice';
+import { GetInvoicesInput, GetInvoicesResponse, InvoiceStatus } from '../../../typings/Invoice';
 import { fetchNui } from '../utils/fetchNui';
 import { isEnvBrowser } from '../utils/misc';
 
-const getInvoices = async (): Promise<Invoice[]> => {
+const initialState: GetInvoicesResponse = {
+  total: 0,
+  offset: 0,
+  limit: 10,
+  totalUnpaid: 0,
+  invoices: [],
+};
+
+const getInvoices = async (input: GetInvoicesInput): Promise<GetInvoicesResponse> => {
   try {
-    const res = await fetchNui<Invoice[]>(InvoiceEvents.Get);
-    return res ?? [];
+    const res = await fetchNui<GetInvoicesResponse>(InvoiceEvents.Get, input);
+    return res ?? initialState;
   } catch (e) {
     if (isEnvBrowser()) {
-      return mockedInvoices;
+      return {
+        ...initialState,
+        invoices: mockedInvoices,
+      };
     }
     console.error(e);
-    return [];
+    return initialState;
   }
 };
 
-const invoicesAtomRaw = atom<Invoice[]>([]);
+const invoicesAtomRaw = atom<GetInvoicesResponse>(initialState);
 export const invoicesAtom = atom(
   async (get) => {
-    return get(invoicesAtomRaw).length ? get(invoicesAtomRaw) : await getInvoices();
+    const hasTransactions = get(invoicesAtomRaw).invoices.length > 0;
+    return hasTransactions ? get(invoicesAtomRaw) : await getInvoices({ ...initialState });
   },
-  async (_get, set) => {
-    return set(invoicesAtomRaw, await getInvoices());
+  async (get, set) => {
+    const currentSettings = get(invoicesAtomRaw);
+    return set(invoicesAtomRaw, await getInvoices(currentSettings));
   },
 );
 
 export const pendingInvoicesAtom = atom((get) => {
-  return get(invoicesAtom).filter((invoice) => invoice.status === InvoiceStatus.PENDING);
+  return get(invoicesAtom).invoices.filter((invoice) => invoice.status === InvoiceStatus.PENDING);
 });
 
-export const totalInvoices = atom((get) => get(invoicesAtom).length);
-export const totalPendingInvoices = atom((get) => get(pendingInvoicesAtom).length);
+export const totalInvoices = atom((get) => get(invoicesAtom).total);
+export const totalUnpaidInvoices = atom((get) => get(invoicesAtom).totalUnpaid);

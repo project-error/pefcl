@@ -1,8 +1,9 @@
 import { Op } from 'sequelize';
 import { singleton } from 'tsyringe';
-import { GetTransactionsInput, TransactionInput, TransactionType } from '@typings/transactions';
+import { GetTransactionsInput, TransactionInput, TransactionType } from '@typings/Transaction';
 import { AccountModel } from '../account/account.model';
 import { TransactionModel } from './transaction.model';
+import { Transaction as SequelizeTransaction } from 'sequelize/types';
 
 interface GetTransactionFromAccounts extends GetTransactionsInput {
   accountIds: number[];
@@ -23,13 +24,32 @@ export class TransactionDB {
       where: {
         [Op.or]: [
           {
-            fromAccountId: {
-              [Op.in]: accountIds,
+            [Op.and]: {
+              fromAccountId: {
+                [Op.in]: accountIds,
+              },
+              type: TransactionType.Outgoing,
             },
           },
           {
-            toAccountId: {
-              [Op.in]: accountIds,
+            [Op.and]: {
+              toAccountId: {
+                [Op.in]: accountIds,
+              },
+              type: TransactionType.Incoming,
+            },
+          },
+          {
+            [Op.and]: {
+              [Op.or]: {
+                toAccountId: {
+                  [Op.in]: accountIds,
+                },
+                fromAccountId: {
+                  [Op.in]: accountIds,
+                },
+              },
+              type: TransactionType.Transfer,
             },
           },
         ],
@@ -128,19 +148,29 @@ export class TransactionDB {
     return await TransactionModel.findOne({ where: { id } });
   }
 
-  async create(transaction: TransactionInput): Promise<TransactionModel> {
+  async create(
+    transaction: TransactionInput,
+    sequelizeTransaction: SequelizeTransaction,
+  ): Promise<TransactionModel> {
     const { toAccount, fromAccount, ...dbTransaction } = transaction;
-    const newTransaction = await TransactionModel.create({
-      ...dbTransaction,
-    });
+    const newTransaction = await TransactionModel.create(
+      {
+        ...dbTransaction,
+      },
+      { transaction: sequelizeTransaction },
+    );
 
     const currentMessage = newTransaction.getDataValue('message');
     const currentId = newTransaction.getDataValue('id');
-    await newTransaction.update({ message: `${currentMessage} #${currentId}` });
+    await newTransaction.update(
+      { message: `${currentMessage} #${currentId}` },
+      { transaction: sequelizeTransaction },
+    );
 
-    await newTransaction.setToAccount(toAccount?.id);
-    await newTransaction.setFromAccount(fromAccount?.id);
+    newTransaction.setToAccount(toAccount?.id);
+    newTransaction.setFromAccount(fromAccount?.id);
 
-    return await newTransaction.save();
+    console.log('returning:', newTransaction.toJSON());
+    return newTransaction;
   }
 }

@@ -14,6 +14,7 @@ import Button from '../ui/Button';
 import Checkbox from '../ui/Checkbox';
 import TextField from '../ui/Fields/TextField';
 import { Heading2, Heading6 } from '../ui/Typography/Headings';
+import { regexAlphaNumeric } from '@shared/utils/regexes';
 
 interface CreateAccountForm {
   accountName: string;
@@ -28,7 +29,10 @@ const CreateAccountModal: React.FC<{ onClose(): void }> = ({ onClose }) => {
   const [accounts, updateAccounts] = useAtom(accountsAtom);
   const [, updateTransactions] = useAtom(transactionBaseAtom);
   const [defaultAccount] = useAtom(defaultAccountAtom);
+
   const { control, handleSubmit, watch } = useForm<CreateAccountForm>({
+    mode: 'all',
+    reValidateMode: 'onChange',
     defaultValues: {
       fromAccountId: defaultAccount?.id ?? 0,
     },
@@ -63,29 +67,28 @@ const CreateAccountModal: React.FC<{ onClose(): void }> = ({ onClose }) => {
                     value: true,
                     message: t('Account name is required'),
                   },
+                  maxLength: {
+                    value: 25,
+                    message: t('Account name is too long'),
+                  },
+                  pattern: {
+                    value: regexAlphaNumeric,
+                    message: t('Invalid account name'),
+                  },
                 }}
-                render={({ field }) => (
-                  <TextField
-                    placeholder={t('Account name')}
-                    label={t('Account name')}
-                    {...field}
-                    ref={null}
-                  />
-                )}
-              />
-
-              <div>
-                <Controller
-                  name="isDefault"
-                  control={control}
-                  render={({ field }) => (
-                    <FormControlLabel
-                      control={<Checkbox {...field} ref={null} />}
-                      label={<Heading6>{t('This should be the default account')}</Heading6>}
+                render={({ field, fieldState }) => {
+                  console.log({ fieldState });
+                  return (
+                    <TextField
+                      placeholder={t('Account name')}
+                      label={t('Account name')}
+                      helperText={fieldState.error?.message}
+                      {...field}
+                      ref={null}
                     />
-                  )}
-                />
-              </div>
+                  );
+                }}
+              />
 
               <div>
                 <Controller
@@ -108,6 +111,7 @@ const CreateAccountModal: React.FC<{ onClose(): void }> = ({ onClose }) => {
               control={control}
               render={({ field }) => (
                 <AccountSelect
+                  isFromAccount
                   accounts={accounts}
                   onSelect={field.onChange}
                   selectedId={defaultAccount?.id}

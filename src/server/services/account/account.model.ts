@@ -4,10 +4,12 @@ import { config } from '@utils/server-config';
 import { Account, AccountRole, AccountType } from '@typings/Account';
 import { sequelize } from '@utils/pool';
 import { generateAccountNumber } from '@utils/misc';
+import { timestamps } from '../timestamps.model';
+import { regexAlphaNumeric } from '@shared/utils/regexes';
 
 export class AccountModel extends Model<
   Account,
-  Optional<Account, 'id' | 'number' | 'balance' | 'role'>
+  Optional<Account, 'id' | 'number' | 'balance' | 'role' | 'isDefault'>
 > {}
 
 AccountModel.init(
@@ -24,6 +26,11 @@ AccountModel.init(
     },
     accountName: {
       type: DataTypes.STRING,
+      validate: {
+        is: regexAlphaNumeric,
+        max: 25,
+        min: 1,
+      },
     },
     isDefault: {
       type: DataTypes.BOOLEAN,
@@ -44,6 +51,7 @@ AccountModel.init(
       type: DataTypes.STRING,
       defaultValue: AccountType.Personal,
     },
+    ...timestamps,
   },
   { sequelize: sequelize, tableName: DATABASE_PREFIX + 'accounts', paranoid: true },
 );

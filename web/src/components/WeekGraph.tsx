@@ -3,7 +3,7 @@ import { useConfig } from '@hooks/useConfig';
 import { Divider, Popover, Stack } from '@mui/material';
 import { red } from '@mui/material/colors';
 import { Box } from '@mui/system';
-import { GetTransactionHistoryResponse } from '@typings/transactions';
+import { GetTransactionHistoryResponse } from '@typings/Transaction';
 import { formatMoney } from '@utils/currency';
 import theme from '@utils/theme';
 import React, { useState } from 'react';
@@ -110,11 +110,9 @@ const WeekGraph = ({ data }: WeekGraphProps) => {
   return (
     <Container>
       <Stack direction="row" spacing={2} justifyContent="flex-end">
-        {Object.entries(data)
-          .reverse()
-          .map(([key, value]) => (
-            <Column key={key} {...value} maxHeight={maxHeight} date={new Date(key)} />
-          ))}
+        {Object.entries(data).map(([key, value]) => (
+          <Column key={key} {...value} maxHeight={maxHeight} date={new Date(key)} />
+        ))}
       </Stack>
     </Container>
   );

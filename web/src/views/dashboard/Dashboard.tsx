@@ -4,7 +4,6 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { transactionsTotalAtom } from 'src/data/transactions';
 import Layout from '../../components/Layout';
-import { totalPendingInvoices } from '../../data/invoices';
 import theme from '../../utils/theme';
 import DashboardContainer, { DashboardContainerFallback } from './components/DashboardContainer';
 import PendingInvoices from './components/PendingInvoices';
@@ -14,6 +13,7 @@ import AccountCards, { LoadingCards } from './components/AccountCards';
 import TotalBalance from '@components/TotalBalance';
 import { PreHeading } from '@components/ui/Typography/BodyText';
 import { Heading1 } from '@components/ui/Typography/Headings';
+import { totalUnpaidInvoices } from '@data/invoices';
 
 const Lists = styled.section`
   display: grid;
@@ -67,7 +67,7 @@ const Dashboard = () => {
           <DashboardContainer
             title={t('Unpaid invoices')}
             viewAllRoute="/invoices"
-            totalAtom={totalPendingInvoices}
+            totalAtom={totalUnpaidInvoices}
           >
             <PendingInvoices />
           </DashboardContainer>

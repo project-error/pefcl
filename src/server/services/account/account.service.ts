@@ -11,6 +11,8 @@ import {
   AccountRole,
   RemoveFromSharedAccountInput,
   SharedAccountUser,
+  CreateSharedInput,
+  AddBankBalanceInput,
 } from '@typings/Account';
 import { UserService } from '../user/user.service';
 import { config } from '@utils/server-config';
@@ -19,11 +21,12 @@ import { sequelize } from '../../utils/pool';
 import { TransactionService } from '../transaction/transaction.service';
 import { CashService } from '../cash/cash.service';
 import i18next from '@utils/i18n';
-import { TransactionType } from '@typings/transactions';
+import { TransactionType } from '@typings/Transaction';
 import { AccountModel } from './account.model';
 import { ServerError } from '@utils/errors';
 import { AuthorizationErrors, BalanceErrors, GenericErrors } from '@typings/Errors';
 import { SharedAccountDB } from '@services/accountShared/sharedAccount.db';
+import { Broadcasts } from '@server/../../typings/Events';
 
 const logger = mainLogger.child({ module: 'accounts' });
 
@@ -51,13 +54,15 @@ export class AccountService {
 
   private async getMyAccounts(source: number) {
     const user = this._userService.getUser(source);
-    const accounts = await this._accountDB.getAccountsByIdentifier(user.identifier);
+    const accounts = await this._accountDB.getAccountsByIdentifier(user.getIdentifier());
     return accounts;
   }
 
   private async getMySharedAccounts(source: number): Promise<Account[]> {
     const user = this._userService.getUser(source);
-    const accounts = await this._sharedAccountDB.getSharedAccountsByIdentifier(user.identifier);
+    const accounts = await this._sharedAccountDB.getSharedAccountsByIdentifier(
+      user.getIdentifier(),
+    );
     const mappedAccounts = accounts.map((sharedAccount) => {
       const acc = sharedAccount.getDataValue('account') as unknown as AccountModel;
       const sharedAcc = sharedAccount.toJSON();
@@ -72,9 +77,18 @@ export class AccountService {
     return mappedAccounts;
   }
 
+  async getTotalBankBalance(source: number): Promise<number> {
+    const accounts = await this.getMyAccounts(source);
+    const totalBalance = accounts.reduce((total, account) => {
+      return total + account.getDataValue('balance');
+    }, 0);
+
+    return totalBalance;
+  }
+
   async getDefaultAccountBySource(source: number) {
     const user = this._userService.getUser(source);
-    return await this._accountDB.getDefaultAccountByIdentifier(user.identifier);
+    return await this._accountDB.getDefaultAccountByIdentifier(user.getIdentifier());
   }
 
   async handleGetMyAccounts(source: number): Promise<Account[]> {
@@ -97,37 +111,68 @@ export class AccountService {
   async addUserToShared(req: Request<AddToSharedAccountInput>) {
     logger.silly(`Adding user src: ${req.source} to shared account.`);
 
-    // const existingAccount = await SharedAccountModel.findOne({
-    //   where: { user: req.data.identifier, accountId: req.data.accountId },
-    // });
+    const t = await sequelize.transaction();
+    try {
+      const user = this._userService.getUserByIdentifier(req.data.identifier);
+      const account = await this._sharedAccountDB.createSharedAccount(
+        {
+          name: req.data.name,
+          user: req.data.identifier,
+          role: req.data.role,
+          accountId: req.data.accountId,
+        },
+        t,
+      );
 
-    // if (existingAccount) {
-    //   throw new ServerError(AccountErrors.AlreadyExists);
-    // }
+      t.afterCommit(() => {
+        emit(Broadcasts.NewSharedUser, account.toJSON());
+        emitNet(Broadcasts.NewSharedUser, user?.getSource(), account.toJSON());
+      });
 
-    return this._sharedAccountDB.createSharedAccount({
-      name: req.data.name,
-      user: req.data.identifier,
-      role: req.data.role,
-      accountId: req.data.accountId,
-    });
+      t.commit();
+      return account;
+    } catch (err) {
+      t.rollback();
+      logger.error('Failed to add user to shared account');
+    }
   }
 
   async removeUserFromShared(req: Request<RemoveFromSharedAccountInput>) {
     logger.silly(`Removing user. identifier: ${req.data.identifier} to shared account.`);
     const { identifier, accountId } = req.data;
+    const user = this._userService.getUserByIdentifier(req.data.identifier);
     const mySharedAccounts = await this._sharedAccountDB.getSharedAccountsByIdentifier(identifier);
-    const deletingAccount = mySharedAccounts.find(
+    const account = mySharedAccounts.find(
       (account) => account?.getDataValue('account')?.id === accountId,
     );
 
-    return await deletingAccount?.destroy();
+    if (!account) {
+      throw new ServerError(GenericErrors.NotFound);
+    }
+
+    const t = await sequelize.transaction();
+    try {
+      await account?.destroy({ transaction: t });
+
+      t.afterCommit(() => {
+        emit(Broadcasts.RemovedSharedUser, account.toJSON());
+        emitNet(Broadcasts.RemovedSharedUser, user?.getSource(), account.toJSON());
+      });
+
+      t.commit();
+    } catch (error) {
+      t.rollback();
+      logger.error('Failed to remove user from shared account');
+    }
   }
 
   async createInitialAccount(source: number): Promise<Account> {
-    logger.silly('Checking if default account exists ...');
+    logger.silly(`Checking if default account exists for source: ${source}`);
     const user = this._userService.getUser(source);
-    const defaultAccount = await this._accountDB.getDefaultAccountByIdentifier(user.identifier);
+    const identifier = user.getIdentifier();
+    logger.silly(`Identifier: ${identifier}`);
+
+    const defaultAccount = await this._accountDB.getDefaultAccountByIdentifier(identifier);
 
     if (defaultAccount) {
       logger.silly('Default account exists.');
@@ -136,14 +181,27 @@ export class AccountService {
 
     logger.debug('Creating initial account ...');
     const initialAccount = await this._accountDB.createAccount({
-      accountName: i18next.t('Personal account'),
       isDefault: true,
-      ownerIdentifier: user.identifier,
+      accountName: i18next.t('Personal account'),
+      ownerIdentifier: user.getIdentifier(),
       type: AccountType.Personal,
     });
 
     logger.debug('Successfully created initial account.');
     return initialAccount.toJSON();
+  }
+
+  async createAccount(req: Request<CreateSharedInput>): Promise<Account> {
+    logger.silly('Creating an account ..');
+    logger.silly(req);
+
+    const account = await this._accountDB.createAccount({
+      type: req.data.type,
+      accountName: req.data.name,
+      ownerIdentifier: req.data.identifier,
+    });
+
+    return account.toJSON();
   }
 
   async handleCreateAccount(req: Request<PreDBAccount>): Promise<Account | undefined> {
@@ -154,17 +212,11 @@ export class AccountService {
 
     const t = await sequelize.transaction();
     try {
-      if (req.data.isDefault) {
-        const defaultAccount = await this._accountDB.getDefaultAccountByIdentifier(userIdentifier);
-        defaultAccount?.update({ isDefault: false });
-      }
-
       const userAccounts = await this._accountDB.getAccountsByIdentifier(userIdentifier);
       const fromAccount = await this._accountDB.getAccountById(req.data.fromAccountId);
 
       const isFirstSetup = userAccounts.length === 0;
       const isShared = req.data.isShared && !isFirstSetup;
-      const isDefault = isFirstSetup ?? req.data.isDefault;
 
       if (!fromAccount) {
         throw new ServerError(GenericErrors.NotFound);
@@ -179,30 +231,38 @@ export class AccountService {
         ? i18next.t('Shared account')
         : i18next.t('Personal account');
 
-      const account = await this._accountDB.createAccount({
-        ...req.data,
-        accountName: req.data.accountName ?? defaultAccountName,
-        type: isShared ? AccountType.Shared : AccountType.Personal,
-        isDefault: isShared ? false : isDefault,
-        ownerIdentifier: userIdentifier,
-      });
+      const account = await this._accountDB.createAccount(
+        {
+          ...req.data,
+          accountName: req.data.accountName ?? defaultAccountName,
+          type: isShared ? AccountType.Shared : AccountType.Personal,
+          ownerIdentifier: userIdentifier,
+        },
+        t,
+      );
 
       if (isShared) {
-        await this._sharedAccountDB.createSharedAccount({
-          accountId: account.getDataValue('id') ?? 0,
-          user: userIdentifier,
-          role: AccountRole.Owner,
-        });
+        await this._sharedAccountDB.createSharedAccount(
+          {
+            accountId: account.getDataValue('id') ?? 0,
+            user: userIdentifier,
+            role: AccountRole.Owner,
+          },
+          t,
+        );
       }
 
       if (!isFirstSetup) {
         await fromAccount?.decrement('balance', { by: config?.prices?.newAccount ?? 0 });
-        await this._transactionService.handleCreateTransaction({
-          amount: config?.prices?.newAccount ?? 0,
-          message: i18next.t('Opened a new account'),
-          fromAccount: fromAccount.toJSON(),
-          type: TransactionType.Outgoing,
-        });
+        await this._transactionService.handleCreateTransaction(
+          {
+            amount: config?.prices?.newAccount ?? 0,
+            message: i18next.t('Opened a new account'),
+            fromAccount: fromAccount.toJSON(),
+            type: TransactionType.Outgoing,
+          },
+          t,
+        );
       }
 
       t.commit();
@@ -227,7 +287,7 @@ export class AccountService {
       // TODO #2: Is this the best we can do?
       const deletingAccount = await this._accountDB.getAuthorizedAccountById(
         req.data.accountId,
-        user.identifier,
+        user.getIdentifier(),
       );
 
       // TODO: Implement smarter way of doing this check. Generally you can't access other players accounts.
@@ -244,15 +304,18 @@ export class AccountService {
         throw new Error('The balance of the account is too low. It cannot be deleted!');
       }
 
-      await this._transactionService.handleCreateTransaction({
-        amount: deletingAccountBalance,
-        message: i18next.t('Remaining funds from "{{deletedAccount}}"', {
-          deletedAccount: deletingAccount.getDataValue('accountName'),
-        }),
-        type: TransactionType.Transfer,
-        fromAccount: deletingAccount.toJSON(),
-        toAccount: defaultAccount.toJSON(),
-      });
+      await this._transactionService.handleCreateTransaction(
+        {
+          amount: deletingAccountBalance,
+          message: i18next.t('Remaining funds from "{{deletedAccount}}"', {
+            deletedAccount: deletingAccount.getDataValue('accountName'),
+          }),
+          type: TransactionType.Transfer,
+          fromAccount: deletingAccount.toJSON(),
+          toAccount: defaultAccount.toJSON(),
+        },
+        t,
+      );
 
       await defaultAccount.increment('balance', { by: deletingAccountBalance });
       await deletingAccount.destroy();
@@ -276,7 +339,10 @@ export class AccountService {
 
     const t = await sequelize.transaction();
     try {
-      const fromAccount = await this._accountDB.getAuthorizedAccountById(fromId, user.identifier);
+      const fromAccount = await this._accountDB.getAuthorizedAccountById(
+        fromId,
+        user.getIdentifier(),
+      );
       const toAccount = await this._accountDB.getAccountById(toId);
 
       if (!fromAccount || !toAccount) {
@@ -328,12 +394,15 @@ export class AccountService {
       /* Check this part. - Deposition from. */
       await this._cashService.handleRemoveCash(req.source, depositionAmount);
       await targetAccount.increment({ balance: depositionAmount });
-      await this._transactionService.handleCreateTransaction({
-        amount: depositionAmount,
-        message: req.data.message,
-        type: TransactionType.Incoming,
-        toAccount: targetAccount.toJSON(),
-      });
+      await this._transactionService.handleCreateTransaction(
+        {
+          amount: depositionAmount,
+          message: req.data.message,
+          type: TransactionType.Incoming,
+          toAccount: targetAccount.toJSON(),
+        },
+        t,
+      );
 
       logger.silly(
         `Successfully deposited ${depositionAmount} into account ${targetAccount.getDataValue(
@@ -374,12 +443,15 @@ export class AccountService {
       await this._cashService.handleAddCash(req.source, withdrawAmount);
       await targetAccount.decrement({ balance: withdrawAmount });
 
-      await this._transactionService.handleCreateTransaction({
-        amount: withdrawAmount,
-        message: req.data.message,
-        type: TransactionType.Outgoing,
-        fromAccount: targetAccount.toJSON(),
-      });
+      await this._transactionService.handleCreateTransaction(
+        {
+          amount: withdrawAmount,
+          message: req.data.message,
+          type: TransactionType.Outgoing,
+          fromAccount: targetAccount.toJSON(),
+        },
+        t,
+      );
 
       logger.silly(`Withdrew ${withdrawAmount} from account ${accountId}`);
       logger.silly({ withdrawAmount, currentAccountBalance });
@@ -394,7 +466,9 @@ export class AccountService {
   async handleSetDefaultAccount(req: Request<{ accountId: number }>) {
     const user = this._userService.getUser(req.source);
     logger.silly(
-      `Changing default account for user ${user.identifier} to accountId ${req.data.accountId} ...`,
+      `Changing default account for user ${user.getIdentifier()} to accountId ${
+        req.data.accountId
+      } ...`,
     );
 
     const t = await sequelize.transaction();
@@ -459,17 +533,49 @@ export class AccountService {
     return account;
   }
 
+  async addBalanceByIdentifier(req: Request<AddBankBalanceInput>) {
+    const account = await this._accountDB.getDefaultAccountByIdentifier(req.data.identifier);
+
+    const t = await sequelize.transaction();
+    try {
+      await account?.increment({ balance: req.data.amount });
+      await this._transactionService.handleCreateTransaction(
+        {
+          amount: req.data.amount,
+          message: req.data.message,
+          fromAccount: account?.toJSON(),
+          type: TransactionType.Incoming,
+        },
+        t,
+      );
+      t.commit();
+    } catch (err) {
+      t.rollback();
+    }
+  }
+
   async addMoney(req: Request<{ amount: number; message: string }>) {
-    logger.silly(`Adding money to ${req.source}...`);
+    logger.silly(`Adding money to ${req.source} ..`);
+
     const user = this._userService.getUser(req.source);
     const account = await this._accountDB.getDefaultAccountByIdentifier(user.getIdentifier());
-    await account?.increment({ balance: req.data.amount });
-    await this._transactionService.handleCreateTransaction({
-      amount: req.data.amount,
-      message: req.data.message,
-      fromAccount: account?.toJSON(),
-      type: TransactionType.Incoming,
-    });
+
+    const t = await sequelize.transaction();
+    try {
+      await account?.increment({ balance: req.data.amount });
+      await this._transactionService.handleCreateTransaction(
+        {
+          amount: req.data.amount,
+          message: req.data.message,
+          fromAccount: account?.toJSON(),
+          type: TransactionType.Incoming,
+        },
+        t,
+      );
+      t.commit();
+    } catch (err) {
+      t.rollback();
+    }
   }
 
   async removeMoney(req: Request<{ amount: number; message: string }>) {
@@ -477,11 +583,17 @@ export class AccountService {
     const user = this._userService.getUser(req.source);
     const account = await this._accountDB.getDefaultAccountByIdentifier(user.getIdentifier());
     await account?.decrement({ balance: req.data.amount });
-    await this._transactionService.handleCreateTransaction({
-      amount: req.data.amount,
-      message: req.data.message,
-      fromAccount: account?.toJSON(),
-      type: TransactionType.Outgoing,
-    });
+
+    const t = await sequelize.transaction();
+    await this._transactionService.handleCreateTransaction(
+      {
+        amount: req.data.amount,
+        message: req.data.message,
+        fromAccount: account?.toJSON(),
+        type: TransactionType.Outgoing,
+      },
+      t,
+    );
+    t.commit();
   }
 }

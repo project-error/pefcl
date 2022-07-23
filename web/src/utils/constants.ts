@@ -1,9 +1,9 @@
 import { Account, AccountRole, AccountType } from '@typings/Account';
-import { GetTransactionsResponse, TransactionType } from '../../../typings/transactions';
+import { GetTransactionsResponse, TransactionType } from '../../../typings/Transaction';
 import { Invoice, InvoiceStatus } from '../../../typings/Invoice';
 import dayjs from 'dayjs';
 
-export const resourceDefaultName = 'pe-financial';
+export const resourceDefaultName = 'pefcl';
 
 const now = dayjs();
 
@@ -32,6 +32,26 @@ export const mockedAccounts: Account[] = [
   },
   {
     id: 3,
+    accountName: 'Bennys AB',
+    number: '920, 1000-2000-3004',
+    balance: 1800000,
+    isDefault: false,
+    ownerIdentifier: '',
+    type: AccountType.Shared,
+    role: AccountRole.Owner,
+  },
+  {
+    id: 4,
+    accountName: 'Bennys AB',
+    number: '920, 1000-2000-3004',
+    balance: 1800000,
+    isDefault: false,
+    ownerIdentifier: '',
+    type: AccountType.Shared,
+    role: AccountRole.Owner,
+  },
+  {
+    id: 5,
     accountName: 'Bennys AB',
     number: '920, 1000-2000-3004',
     balance: 1800000,
@@ -72,31 +92,37 @@ export const mockedInvoices: Invoice[] = [
   {
     id: 1,
     amount: 8000,
+    from: 'Repair shop',
+    to: 'John doe',
     message: 'For the car mate',
-    from: 'Cardealer',
-    to: 'You',
+    fromIdentifier: 'license:1',
+    toIdentifier: 'license:2',
     createdAt: now.subtract(1, 'hour').unix().toString(),
-    expiresAt: now.add(7, 'days').unix().toString(),
+    expiresAt: now.add(7, 'days').toString(),
     status: InvoiceStatus.PENDING,
   },
   {
     id: 2,
     amount: 2000,
+    from: 'Repair shop',
+    to: 'John doe',
     message: 'Repairs',
-    from: 'Bennys AB',
-    to: 'You',
+    fromIdentifier: 'license:1',
+    toIdentifier: 'license:2',
     createdAt: now.subtract(4, 'hour').unix().toString(),
-    expiresAt: now.add(3, 'days').unix().toString(),
+    expiresAt: now.add(3, 'days').toString(),
     status: InvoiceStatus.PENDING,
   },
   {
     id: 2,
     amount: 2000,
+    from: 'Repair shop',
+    to: 'John doe',
     message: 'Repairs',
-    from: 'Bennys AB',
-    to: 'You',
+    fromIdentifier: 'license:1',
+    toIdentifier: 'license:2',
     createdAt: now.subtract(21, 'days').unix().toString(),
-    expiresAt: now.subtract(7, 'days').unix().toString(),
+    expiresAt: now.subtract(7, 'days').toString(),
     status: InvoiceStatus.PAID,
   },
 ];

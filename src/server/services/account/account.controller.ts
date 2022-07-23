@@ -3,15 +3,22 @@ import { NetPromise, PromiseEventListener } from '../../decorators/NetPromise';
 import {
   Account,
   AccountRole,
+  AddBankBalanceInput,
   AddToSharedAccountInput,
   ATMInput,
+  CreateSharedInput,
   ExternalAccount,
   PreDBAccount,
   RemoveFromSharedAccountInput,
   RenameAccountInput,
   SharedAccountUser,
 } from '@typings/Account';
-import { AccountEvents, ExternalAccountEvents, SharedAccountEvents } from '@typings/Events';
+import {
+  AccountEvents,
+  ExternalAccountEvents,
+  SharedAccountEvents,
+  UserEvents,
+} from '@typings/Events';
 import { Request, Response } from '@typings/http';
 import { ServerExports } from '@typings/exports/server';
 import { AccountService } from './account.service';
@@ -19,6 +26,7 @@ import { Event, EventListener } from '@decorators/Event';
 import { ExternalAccountService } from '@services/accountExternal/externalAccount.service';
 import { AuthService } from '@services/auth/auth.service';
 import { Export, ExportListener } from '@decorators/Export';
+import { OnlineUser } from '@server/../../typings/user';
 
 @Controller('Account')
 @PromiseEventListener()
@@ -39,10 +47,17 @@ export class AccountController {
     this._externalAccountService = externalAccountService;
   }
 
+  @Export(ServerExports.GetAccounts)
   @NetPromise(AccountEvents.GetAccounts)
   async getAccounts(req: Request<void>, res: Response<Account[]>) {
     const accounts = await this._accountService.handleGetMyAccounts(req.source);
     res({ status: 'ok', data: accounts });
+  }
+
+  @Export(ServerExports.GetTotalBalance)
+  async getTotalBankBalance(req: Request<void>, res: Response<number>) {
+    const balance = await this._accountService.getTotalBankBalance(req.source);
+    res({ status: 'ok', data: balance });
   }
 
   @NetPromise(AccountEvents.CreateAccount)
@@ -62,6 +77,16 @@ export class AccountController {
       await this._auth.isAuthorizedAccount(req.data.accountId, req.source, [AccountRole.Owner]);
       await this._accountService.handleDeleteAccount(req);
       res({ status: 'ok', data: {} });
+    } catch (err) {
+      res({ status: 'error', errorMsg: err.message });
+    }
+  }
+
+  @Export(ServerExports.CreateAccount)
+  async exportCreateAccount(req: Request<CreateSharedInput>, res: Response<Account>) {
+    try {
+      const account = await this._accountService.createAccount(req);
+      res({ status: 'ok', data: account });
     } catch (err) {
       res({ status: 'error', errorMsg: err.message });
     }
@@ -176,7 +201,17 @@ export class AccountController {
   }
 
   @Export(ServerExports.AddBankBalance)
-  async addBankBalance(req: Request<{ amount: number; message: string }>, res: Response<object>) {
+  async addBankBalance(req: Request<{ amount: number; message: string }>, res: Response<unknown>) {
+    try {
+      await this._accountService.addMoney(req);
+      res({ status: 'ok', data: {} });
+    } catch (err) {
+      res({ status: 'error', errorMsg: err.message });
+    }
+  }
+
+  @Export(ServerExports.AddBankBalanceByIdentifier)
+  async addBankBalanceByIdentifier(req: Request<AddBankBalanceInput>, res: Response<unknown>) {
     try {
       await this._accountService.addMoney(req);
       res({ status: 'ok', data: {} });
@@ -188,7 +223,7 @@ export class AccountController {
   @Export(ServerExports.RemoveBankBalance)
   async removeBankBalance(
     req: Request<{ amount: number; message: string }>,
-    res: Response<object>,
+    res: Response<unknown>,
   ) {
     try {
       await this._accountService.removeMoney(req);
@@ -199,22 +234,9 @@ export class AccountController {
   }
 
   /* When starting the resource / new player joining. We should handle the default account. */
-  @Event('onServerResourceStart')
-  async onServerResourceStart(resource: string) {
-    if (resource !== GetCurrentResourceName()) {
-      return;
-    }
-
-    const players = getPlayers();
-    players.forEach((player) => {
-      this._accountService.createInitialAccount(Number(player));
-    });
-  }
-
-  /* When starting the resource / new player joining. We should handle the default account. */
-  @Event('playerJoining')
-  async onPlayerJoining() {
-    const src = global.source;
+  @Event(UserEvents.Loaded)
+  async onUserLoaded(user: OnlineUser) {
+    const src = user.source;
     this._accountService.createInitialAccount(src);
   }
 }

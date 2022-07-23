@@ -1,8 +1,9 @@
 import { DATABASE_PREFIX } from '@utils/constants';
 import { DataTypes, Model, Optional } from 'sequelize';
 import { singleton } from 'tsyringe';
-import { Transaction, TransactionType } from '../../../../typings/transactions';
+import { Transaction, TransactionType } from '../../../../typings/Transaction';
 import { sequelize } from '../../utils/pool';
+import { timestamps } from '../timestamps.model';
 
 @singleton()
 export class TransactionModel extends Model<
@@ -10,7 +11,7 @@ export class TransactionModel extends Model<
   Optional<Transaction, 'id' | 'createdAt' | 'updatedAt'>
 > {}
 
-TransactionModel.init<typeof TransactionModel, TransactionModel>(
+TransactionModel.init(
   {
     id: {
       type: DataTypes.INTEGER,
@@ -28,6 +29,7 @@ TransactionModel.init<typeof TransactionModel, TransactionModel>(
       type: DataTypes.STRING,
       defaultValue: TransactionType.Outgoing,
     },
+    ...timestamps,
   },
   { sequelize: sequelize, tableName: DATABASE_PREFIX + 'transactions' },
 );
