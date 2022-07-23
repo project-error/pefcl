@@ -1,0 +1,34 @@
+{
+  "extends": "nx/presets/npm.json",
+  "tasksRunnerOptions": {
+    "default": {
+      "runner": "nx/tasks-runners/default",
+      "options": {
+        "cacheableOperations": [
+          "dev",
+          "dev:ingame",
+          "build",
+          "lint",
+          "watch",
+          "watch:client",
+          "test",
+          "test:watch",
+          "tsc",
+          "tsc:client",
+          "build:esbuild",
+          "eject"
+        ]
+      }
+    }
+  },
+  "targetDefaults": {
+    "build": {
+      "dependsOn": [
+        "^build"
+      ]
+    }
+  },
+  "affected": {
+    "defaultBase": "main"
+  }
+}

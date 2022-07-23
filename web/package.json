@@ -35,7 +35,9 @@
     "webpack": "^5.70.0"
   },
   "scripts": {
+    "setup": "yarn install",
     "dev": "yarn webpack-dev-server",
+    "dev:ingame": "yarn webpack-dev-server",
     "build": "yarn webpack --mode=production",
     "start": "yarn webpack",
     "start:game": "cross-env IN_GAME_DEV=1 yarn dev",
