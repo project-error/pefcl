@@ -1,9 +1,10 @@
 {
-  "name": "bank-game",
+  "name": "server-and-client",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
   "scripts": {
+    "setup": "yarn install",
     "dev": "yarn concurrently \"yarn nodemon\" \"node ./scripts/watch_server.js\"",
     "dev:ingame": "yarn concurrently \"node ./scripts/watch_client.js\" \"node ./scripts/watch_server.js --mode=ingame\"",
     "build": "node ./scripts/build_server.js && node ./scripts/build_client.js",
