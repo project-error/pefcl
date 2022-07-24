@@ -12,6 +12,9 @@ import { Invoice } from '@typings/Invoice';
 import { Transaction } from '@typings/Transaction';
 import { RegisterNuiProxy } from 'cl_utils';
 import API from './cl_api';
+import config from './cl_config';
+
+const useFrameworkIntegration = config.frameworkIntegration?.enabled;
 
 onNet(Broadcasts.NewTransaction, (result: Transaction) => {
   SendNUIMessage({ type: Broadcasts.NewTransaction, payload: result });
@@ -29,13 +32,17 @@ onNet(Broadcasts.RemovedSharedUser, () => {
   SendNUIMessage({ type: Broadcasts.RemovedSharedUser });
 });
 
-onNet(UserEvents.Loaded, () => {
+onNet(UserEvents.Loaded, async () => {
   // TODO: remove this temp fix
   // This is only issue on resource reload, wait for resource to be loaded, before playerLoad
 
   setTimeout(() => {
     SendNUIMessage({ type: UserEvents.Loaded });
   }, 2000);
+
+  if (!useFrameworkIntegration) {
+    StatSetInt(CASH_BAL_STAT, (await API.getMyCash()) ?? 0, true);
+  }
 });
 
 onNet(UserEvents.Unloaded, () => {
@@ -43,10 +50,6 @@ onNet(UserEvents.Unloaded, () => {
 });
 
 const CASH_BAL_STAT = GetHashKey('MP0_WALLET_BALANCE');
-
-setImmediate(async () => {
-  StatSetInt(CASH_BAL_STAT, (await API.getMyCash()) ?? 0, true);
-});
 
 onNet(BalanceEvents.UpdateCashBalance, (newBalance: number) => {
   StatSetInt(CASH_BAL_STAT, newBalance, true);
