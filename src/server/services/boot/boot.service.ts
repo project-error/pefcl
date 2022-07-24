@@ -36,6 +36,7 @@ export class BootService {
       logger.info('Framework integration is enabled.');
 
       try {
+        logger.debug('Verifying exports ..');
         this.checkExports();
       } catch (error: unknown | Error) {
         logger.error('Stopping resource due to framework integration error. Reason:');

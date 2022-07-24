@@ -78,7 +78,7 @@ type AccountCardProps = {
 };
 
 export const AccountCard = ({ account, selected = false, ...props }: AccountCardProps) => {
-  const { type, id, balance, isDefault, accountName } = account;
+  const { type, id, balance, isDefault, accountName, number } = account;
   const { t } = useTranslation();
   const config = useConfig();
 
@@ -92,7 +92,7 @@ export const AccountCard = ({ account, selected = false, ...props }: AccountCard
         </Type>
       </Row>
 
-      <Heading5>{account.number}</Heading5>
+      <Heading5>{number}</Heading5>
 
       <RowEnd>
         <Col>
