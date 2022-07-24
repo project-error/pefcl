@@ -1,6 +1,7 @@
 import { ServerPromiseResp } from '@project-error/pe-utils';
 import {
   AccountEvents,
+  CashEvents,
   ExternalAccountEvents,
   GeneralEvents,
   InvoiceEvents,
@@ -94,6 +95,7 @@ if (isMocking) {
   app.post(...createEndpoint(SharedAccountEvents.GetUsers));
   app.post(...createEndpoint(ExternalAccountEvents.Add));
   app.post(...createEndpoint(ExternalAccountEvents.Get));
+  app.post(...createEndpoint(CashEvents.GetMyCash));
 
   app.listen(port, async () => {
     mainLogger.child({ module: 'server' }).debug(`[MOCKSERVER]: listening on port: ${port}`);

@@ -10,7 +10,7 @@ import { InvoiceDB } from './invoice.db';
 import i18n from '@utils/i18n';
 import { TransactionType } from '@typings/Transaction';
 import { ServerError } from '@utils/errors';
-import { AccountErrors, GenericErrors } from '@typings/Errors';
+import { AccountErrors, BalanceErrors, GenericErrors } from '@typings/Errors';
 import { TransactionService } from '../transaction/transaction.service';
 import { Broadcasts } from '@server/../../typings/Events';
 
@@ -109,7 +109,7 @@ export class InvoiceService {
       const invoiceAmount = invoice.getDataValue('amount');
 
       if (accountBalance < invoiceAmount) {
-        throw new Error('Insufficent funds');
+        throw new Error(BalanceErrors.InsufficentFunds);
       }
 
       /* TODO: Implement transaction fee if wanted */

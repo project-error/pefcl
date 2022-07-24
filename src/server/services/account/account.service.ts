@@ -388,7 +388,7 @@ export class AccountService {
     try {
       if (userBalance < depositionAmount) {
         logger.debug({ userBalance, depositionAmount, currentAccountBalance });
-        throw new Error('Insufficent funds.');
+        throw new Error(BalanceErrors.InsufficentFunds);
       }
 
       /* Check this part. - Deposition from. */
@@ -415,6 +415,7 @@ export class AccountService {
       logger.error(`Failed to deposit money into account ${targetAccount.getDataValue('id')}`);
       logger.error(err);
       t.rollback();
+      throw err;
     }
   }
 
@@ -437,7 +438,7 @@ export class AccountService {
     try {
       if (currentAccountBalance < withdrawAmount) {
         logger.debug({ withdrawAmount, currentAccountBalance });
-        throw new Error('Insufficent funds.');
+        throw new Error(BalanceErrors.InsufficentFunds);
       }
 
       await this._cashService.handleAddCash(req.source, withdrawAmount);
@@ -460,6 +461,7 @@ export class AccountService {
       logger.error(`Failed to withdraw money from account ${accountId}`);
       logger.error(err);
       t.rollback();
+      throw err;
     }
   }
 

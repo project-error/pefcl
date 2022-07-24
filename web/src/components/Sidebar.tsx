@@ -1,12 +1,19 @@
 import React, { ReactNode } from 'react';
-import { CreditCardRounded, DashboardRounded, Paid, Receipt, SwapHoriz } from '@mui/icons-material';
+import {
+  Add,
+  CreditCardRounded,
+  DashboardRounded,
+  Paid,
+  Receipt,
+  SwapHoriz,
+} from '@mui/icons-material';
 import styled from '@emotion/styled';
 import theme from '@utils/theme';
 import { Badge } from '@mui/material';
 import { Link, useRouteMatch } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAtom } from 'jotai';
-import { invoicesAtom, totalUnpaidInvoices } from '@data/invoices';
+import { totalUnpaidInvoices } from '@data/invoices';
 
 const List = styled.ul`
   margin: 0;
@@ -88,6 +95,7 @@ const Sidebar = () => {
       <ListItem to="/transfer" icon={<SwapHoriz />} label={t('Transfer')} />
       <ListItem to="/transactions" icon={<Paid />} label={t('Transactions')} />
       <ListItem to="/invoices" icon={<Receipt />} label={t('Invoices')} amount={count} />
+      <ListItem to="/deposit" icon={<Add />} label={t('Deposit')} />
     </List>
   );
 };

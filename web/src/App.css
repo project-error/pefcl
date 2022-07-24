@@ -1,3 +1,9 @@
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
 .nui-wrapper {
   text-align: center;
   height: 100%;

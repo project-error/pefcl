@@ -19,6 +19,7 @@ import Transfer from './views/transfer/Transfer';
 import Transactions from './views/transactions/Transactions';
 import Devbar from '@components/DebugBar';
 import { UserEvents } from '@typings/Events';
+import Deposit from './views/Deposit/Deposit';
 
 dayjs.extend(updateLocale);
 
@@ -85,6 +86,7 @@ const App: React.FC = () => {
               <Route path="/transactions" component={Transactions} />
               <Route path="/invoices" component={Invoices} />
               <Route path="/transfer" component={Transfer} />
+              <Route path="/deposit" component={Deposit} />
             </Content>
           </Container>
         )}
