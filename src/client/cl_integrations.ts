@@ -7,7 +7,7 @@ const targetType = cl_config.target?.type ?? 'qtarget';
 const isTargetAvailable = GetResourceState(targetType) === 'started';
 
 if (isTargetEnabled && isTargetAvailable) {
-  const bankZones = cl_config.qtarget?.bankZones ?? [];
+  const bankZones = cl_config.target?.bankZones ?? [];
   const atmModels = cl_config.atms?.props ?? [];
 
   atmModels.forEach((model) => {
