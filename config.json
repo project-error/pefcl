@@ -39,7 +39,8 @@
       7500
     ]
   },
-  "qtarget": {
+  "target": {
+    "type": "qtarget",
     "enabled": true,
     "bankZones": [
       {

@@ -48,9 +48,10 @@ export interface ResourceConfig {
     props: number[];
     withdrawOptions: number[];
   };
-  qtarget: {
+  target: {
     enabled: boolean;
     bankZones: PolyZone[];
+    type: string;
   };
   debug: {
     level: string;

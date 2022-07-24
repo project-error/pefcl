@@ -2,15 +2,16 @@ import { setBankIsOpen, setAtmIsOpen } from 'client';
 import cl_config from 'cl_config';
 const exp = global.exports;
 
-const isQtargetEnabled = cl_config.qtarget?.enabled ?? false;
-const isQtargetAvailable = GetResourceState('qtarget') === 'started';
+const isTargetEnabled = cl_config.target?.enabled ?? false;
+const targetType = cl_config.target?.type ?? 'qtarget';
+const isTargetAvailable = GetResourceState(targetType) === 'started';
 
-if (isQtargetEnabled && isQtargetAvailable) {
+if (isTargetEnabled && isTargetAvailable) {
   const bankZones = cl_config.qtarget?.bankZones ?? [];
   const atmModels = cl_config.atms?.props ?? [];
 
   atmModels.forEach((model) => {
-    exp['qtarget']['AddTargetModel'](model, {
+    exp[targetType]['AddTargetModel'](model, {
       options: [
         {
           event: 'pefcl:open:atm',
@@ -28,7 +29,7 @@ if (isQtargetEnabled && isQtargetAvailable) {
       throw new Error('Missing zone. Check your "qtarget.bankZones" config.');
     }
 
-    exp['qtarget']['AddBoxZone'](
+    exp[targetType]['AddBoxZone'](
       name,
       zone.position,
       zone.length,
