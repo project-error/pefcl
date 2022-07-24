@@ -1,0 +1,63 @@
+import { setBankIsOpen, setAtmIsOpen } from 'client';
+import cl_config from 'cl_config';
+const exp = global.exports;
+
+const isQtargetEnabled = cl_config.qtarget?.enabled ?? false;
+const isQtargetAvailable = GetResourceState('qtarget') === 'started';
+
+if (isQtargetEnabled && isQtargetAvailable) {
+  const bankZones = cl_config.qtarget?.bankZones ?? [];
+  const atmModels = cl_config.atms?.props ?? [];
+
+  atmModels.forEach((model) => {
+    exp['qtarget']['AddTargetModel'](model, {
+      options: [
+        {
+          event: 'pefcl:open:atm',
+          icon: 'fas fa-money-bill-1-wave',
+          label: 'ATM',
+        },
+      ],
+    });
+  });
+
+  bankZones.forEach((zone, index) => {
+    const name = 'bank_' + index;
+
+    if (!zone) {
+      throw new Error('Missing zone. Check your "qtarget.bankZones" config.');
+    }
+
+    exp['qtarget']['AddBoxZone'](
+      name,
+      zone.position,
+      zone.length,
+      zone.width,
+      {
+        name,
+        heading: zone.heading,
+        debugPoly: false,
+        minZ: zone.minZ,
+        maxZ: zone.maxZ,
+      },
+      {
+        options: [
+          {
+            event: 'pefcl:open:bank',
+            icon: 'fas fa-building-columns',
+            label: 'Open bank',
+          },
+        ],
+        distance: 1.5,
+      },
+    );
+  });
+
+  AddEventHandler('pefcl:open:atm', () => {
+    setAtmIsOpen(true);
+  });
+
+  AddEventHandler('pefcl:open:bank', () => {
+    setBankIsOpen(true);
+  });
+}

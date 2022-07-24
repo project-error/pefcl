@@ -13,7 +13,6 @@ export const RegisterNuiProxy = (event: string) => {
   on(`__cfx_nui:${event}`, async (data: unknown, cb: CallableFunction) => {
     try {
       const res = await ClUtils.emitNetPromise(event, data);
-      console.log('sending response:', res);
       cb(res);
     } catch (e) {
       console.error('Error encountered while listening to resp. Error:', e);

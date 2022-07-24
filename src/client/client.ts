@@ -1,5 +1,6 @@
 import './cl_events';
 import './cl_exports';
+import './cl_integrations';
 import { GeneralEvents, UserEvents } from '@typings/Events';
 import { RegisterNuiCB } from '@project-error/pe-utils';
 import { createInvoice, giveCash } from './functions';
