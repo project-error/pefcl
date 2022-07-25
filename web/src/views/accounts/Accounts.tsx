@@ -1,6 +1,5 @@
 import TextField from '@components/ui/Fields/TextField';
 import styled from '@emotion/styled';
-import { SpaceBar } from '@mui/icons-material';
 import { Dialog, DialogActions, DialogContent, DialogTitle, Stack } from '@mui/material';
 import { Box } from '@mui/system';
 import { AccountType } from '@typings/Account';

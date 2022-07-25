@@ -1,3 +1,4 @@
+import './globals.server';
 import { ServerPromiseResp } from '@project-error/pe-utils';
 import {
   AccountEvents,
@@ -9,8 +10,6 @@ import {
   TransactionEvents,
   UserEvents,
 } from '@typings/Events';
-import './globals.server';
-
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import express, { RequestHandler } from 'express';
