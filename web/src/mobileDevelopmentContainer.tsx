@@ -3,9 +3,9 @@ import ReactDOM from 'react-dom';
 
 import { BrowserRouter } from 'react-router-dom';
 import styled from 'styled-components';
-import App from './Mobile';
 import image from './bg.png';
 import { NuiProvider } from 'react-fivem-hooks';
+import MobileApp from './views/Mobile/Mobile';
 
 const Container = styled.div`
   position: relative;
@@ -13,9 +13,9 @@ const Container = styled.div`
   height: 1000px;
 `;
 const Background = styled.div<{ src: string }>`
+  z-index: 10;
   background: url(${({ src }) => src});
   position: absolute;
-  z-index: 1;
   width: 500px;
   height: 1000px;
   pointer-events: none;
@@ -43,7 +43,7 @@ const Root = () => (
         <Background src={image} />
         <React.Suspense fallback="Loading phone">
           <AppContainer>
-            <App />
+            <MobileApp />
           </AppContainer>
         </React.Suspense>
       </Container>
