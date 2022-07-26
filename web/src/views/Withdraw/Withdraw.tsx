@@ -86,8 +86,8 @@ const Withdraw = () => {
         <Stack spacing={1}>
           <Heading6>{t('Select account')}</Heading6>
           <AccountSelect
+            isFromAccount
             accounts={accounts}
-            isFromAccount={false}
             onSelect={setSelectedAccountId}
             selectedId={selectedAccountId}
           />
