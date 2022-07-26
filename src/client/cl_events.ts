@@ -1,3 +1,4 @@
+import { RegisterNuiCB } from '@project-error/pe-utils';
 import {
   AccountEvents,
   ExternalAccountEvents,
@@ -7,6 +8,8 @@ import {
   UserEvents,
   BalanceEvents,
   Broadcasts,
+  NUIEvents,
+  CashEvents,
 } from '@typings/Events';
 import { Invoice } from '@typings/Invoice';
 import { Transaction } from '@typings/Transaction';
@@ -15,6 +18,28 @@ import API from './cl_api';
 import config from './cl_config';
 
 const useFrameworkIntegration = config.frameworkIntegration?.enabled;
+let hasNUILoaded = false;
+
+RegisterNuiCB(NUIEvents.Loaded, () => {
+  console.debug('NUI has loaded.');
+  hasNUILoaded = true;
+});
+
+RegisterNuiCB(NUIEvents.Unloaded, () => {
+  console.debug('NUI has unloaded.');
+  hasNUILoaded = false;
+});
+
+const waitForNUILoaded = (checkInterval = 250): Promise<void> => {
+  return new Promise((resolve) => {
+    const interval = setInterval(() => {
+      if (hasNUILoaded) {
+        resolve();
+        clearInterval(interval);
+      }
+    }, checkInterval);
+  });
+};
 
 onNet(Broadcasts.NewTransaction, (result: Transaction) => {
   SendNUIMessage({ type: Broadcasts.NewTransaction, payload: result });
@@ -33,12 +58,10 @@ onNet(Broadcasts.RemovedSharedUser, () => {
 });
 
 onNet(UserEvents.Loaded, async () => {
-  // TODO: remove this temp fix
-  // This is only issue on resource reload, wait for resource to be loaded, before playerLoad
-
-  setTimeout(() => {
-    SendNUIMessage({ type: UserEvents.Loaded });
-  }, 2000);
+  console.debug('Waiting for NUI to load ..');
+  await waitForNUILoaded();
+  console.debug('Loaded. Emitting data to NUI.');
+  SendNUIMessage({ type: UserEvents.Loaded, payload: true });
 
   if (!useFrameworkIntegration) {
     StatSetInt(CASH_BAL_STAT, (await API.getMyCash()) ?? 0, true);
@@ -77,3 +100,4 @@ RegisterNuiProxy(ExternalAccountEvents.Get);
 
 RegisterNuiProxy(AccountEvents.WithdrawMoney);
 RegisterNuiProxy(AccountEvents.DepositMoney);
+RegisterNuiProxy(CashEvents.GetMyCash);

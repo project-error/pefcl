@@ -85,11 +85,16 @@ export class UserService {
     logger.debug(user);
 
     this.usersBySource.set(userDTO.source, user);
-    emit(UserEvents.Loaded, {
-      name,
-      identifier,
-      source: userDTO.source,
-    });
-    emitNet(UserEvents.Loaded, userDTO.source, user);
+    logger.debug(`Emitting ${UserEvents.Loaded} to server & client, source: ${userDTO.source}`);
+
+    /* This event doesn't ALWAYS get sent on load. */
+    setTimeout(() => {
+      emit(UserEvents.Loaded, {
+        name,
+        identifier,
+        source: userDTO.source,
+      });
+      emitNet(UserEvents.Loaded, userDTO.source, user);
+    }, 100);
   }
 }

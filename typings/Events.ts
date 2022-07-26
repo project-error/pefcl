@@ -10,6 +10,11 @@ export enum UserEvents {
   Unloaded = 'pefcl:userUnloaded',
 }
 
+export enum NUIEvents {
+  Loaded = 'pefcl:nuiHasLoaded',
+  Unloaded = 'pefcl:nuiHasUnloaded',
+}
+
 export enum AccountEvents {
   GetAccounts = 'pefcl:getAccounts',
   CreateAccount = 'pefcl:createAccount',
