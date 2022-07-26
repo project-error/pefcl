@@ -18,6 +18,12 @@ export interface PolyZone {
   minZ: number;
   maxZ: number;
 }
+
+interface BlipCoords {
+  x: number;
+  y: number;
+  z: number;
+}
 export interface ResourceConfig {
   general: {
     language: string;
@@ -47,6 +53,16 @@ export interface ResourceConfig {
     distance: number;
     props: number[];
     withdrawOptions: number[];
+  };
+  blips: {
+    enabled: boolean;
+    name: string;
+    color: number;
+    icon: number;
+    scale: number;
+    displayType: number;
+    shortRange: boolean;
+    coords: BlipCoords[];
   };
   target: {
     enabled: boolean;
