@@ -19,6 +19,7 @@
     "prerelease": "yarn build && sh ./scripts/prerelease.sh"
   },
   "devDependencies": {
+    "@citizenfx/client": "^2.0.5754-1",
     "@commitlint/cli": "^16.0.2",
     "@commitlint/config-conventional": "^16.0.0",
     "@localazy/cli": "^1.6.0",

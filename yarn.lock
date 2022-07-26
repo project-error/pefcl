@@ -30,6 +30,11 @@
   dependencies:
     regenerator-runtime "^0.13.4"
 
+"@citizenfx/client@^2.0.5754-1":
+  version "2.0.5754-1"
+  resolved "https://registry.yarnpkg.com/@citizenfx/client/-/client-2.0.5754-1.tgz#65fd0ec30aa912781481a94e04a71308ac63431f"
+  integrity sha512-QXY1NEzkgWcBs7+DlwxAEO+F4OM3mzAH4CX/VvFmP3TGJK9cJjq80gna1fI5tLgaEgeJtlKY4mMp8NTykV8VVA==
+
 "@commitlint/cli@^16.0.2":
   version "16.0.2"
   resolved "https://registry.yarnpkg.com/@commitlint/cli/-/cli-16.0.2.tgz#393b03793fc59b93e5f4dd7dd535a6cc5a7413ca"
