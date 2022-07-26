@@ -1,4 +1,4 @@
-import App from './src/Mobile';
+import App from './src/views/Mobile/Mobile';
 import BankIcon from './src/BankIcon';
 
 // const defaultLanguage = 'en';
@@ -21,7 +21,7 @@ export default () => ({
 });
 
 if (module.hot) {
-  module.hot.accept('./src/Mobile', function () {
+  module.hot.accept('./src/views/Mobile/Mobile', function () {
     console.log('Accepting the updated app from PEFCL ..');
     window.postMessage({ type: 'RELOAD', payload: 'app:pefcl' }, '*');
   });
