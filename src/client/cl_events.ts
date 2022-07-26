@@ -57,6 +57,17 @@ onNet(Broadcasts.RemovedSharedUser, () => {
   SendNUIMessage({ type: Broadcasts.RemovedSharedUser });
 });
 
+RegisterCommand(
+  'bank-force-load',
+  async () => {
+    console.debug('Waiting for NUI to load ..');
+    await waitForNUILoaded();
+    console.debug('Loaded. Emitting data to NUI.');
+    SendNUIMessage({ type: UserEvents.Loaded, payload: true });
+  },
+  false,
+);
+
 onNet(UserEvents.Loaded, async () => {
   console.debug('Waiting for NUI to load ..');
   await waitForNUILoaded();

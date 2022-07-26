@@ -13,13 +13,13 @@
     "shouldSync": false
   },
   "prices": {
-    "newAccount": 5000
+    "newAccount": 1000
   },
   "cash": {
     "startAmount": 2000
   },
   "accounts": {
-    "startAmount": 25000,
+    "startAmount": 500,
     "clearingNumber": 920,
     "maximumNumberOfAccounts": 3
   },
