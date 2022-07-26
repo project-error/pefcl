@@ -5,6 +5,7 @@ import {
   DashboardRounded,
   Paid,
   Receipt,
+  Remove,
   SwapHoriz,
 } from '@mui/icons-material';
 import styled from '@emotion/styled';
@@ -96,6 +97,7 @@ const Sidebar = () => {
       <ListItem to="/transactions" icon={<Paid />} label={t('Transactions')} />
       <ListItem to="/invoices" icon={<Receipt />} label={t('Invoices')} amount={count} />
       <ListItem to="/deposit" icon={<Add />} label={t('Deposit')} />
+      <ListItem to="/withdraw" icon={<Remove />} label={t('Withdraw')} />
     </List>
   );
 };

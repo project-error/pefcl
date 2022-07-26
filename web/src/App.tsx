@@ -21,6 +21,7 @@ import Devbar from '@components/DebugBar';
 import { NUIEvents, UserEvents } from '@typings/Events';
 import Deposit from './views/Deposit/Deposit';
 import { fetchNui } from '@utils/fetchNui';
+import Withdraw from './views/Withdraw/Withdraw';
 
 dayjs.extend(updateLocale);
 
@@ -99,6 +100,7 @@ const App: React.FC = () => {
               <Route path="/invoices" component={Invoices} />
               <Route path="/transfer" component={Transfer} />
               <Route path="/deposit" component={Deposit} />
+              <Route path="/withdraw" component={Withdraw} />
             </Content>
           </Container>
         )}
