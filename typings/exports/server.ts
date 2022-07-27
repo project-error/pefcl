@@ -4,21 +4,28 @@ type ExportResponse = ServerPromiseResp<unknown>;
 type ExportCallback = (result: ExportResponse) => void;
 
 export enum ServerExports {
-  AddCash = 'addCash',
   GetCash = 'getCash',
+  AddCash = 'addCash',
   RemoveCash = 'removeCash',
-  GetAccounts = 'getAccounts',
-  GetTotalBalance = 'getTotalBalance',
-  GetUnpaidInvoices = 'getUnpaidInvoices',
+  DepositCash = 'depositCash',
+  WithdrawCash = 'withdrawCash',
+
+  GetTotalBankBalance = 'getTotalBankBalance',
+  GetDefaultAccountBalance = 'getDefaultAccountBalance',
   AddBankBalance = 'addBankBalance',
   AddBankBalanceByIdentifier = 'addBankBalanceByIdentifier',
   RemoveBankBalance = 'removeBankBalance',
-  WithdrawMoney = 'withdrawMoney',
-  DepositMoney = 'depositMoney',
-  CreateInvoice = 'createInvoice',
+  RemoveBankBalanceByIdentifier = 'removeBankBalanceByIdentifier',
+
   GetInvoices = 'getInvoices',
+  CreateInvoice = 'createInvoice',
+  GetUnpaidInvoices = 'getUnpaidInvoices',
+
   LoadPlayer = 'loadPlayer',
   UnloadPlayer = 'unloadPlayer',
+
+  GetAccounts = 'getAccounts',
+  GetAccountsByIdentifier = 'getAccountsByIdentifier',
   CreateAccount = 'createAccount',
 }
 

@@ -12,7 +12,7 @@ import {
   RemoveFromSharedAccountInput,
   SharedAccountUser,
   CreateSharedInput,
-  AddBankBalanceInput,
+  UpdateBankBalanceInput,
 } from '@typings/Account';
 import { UserService } from '../user/user.service';
 import { config } from '@utils/server-config';
@@ -77,6 +77,10 @@ export class AccountService {
     return mappedAccounts;
   }
 
+  async getAccountsByIdentifier(identifier: string): Promise<AccountModel[]> {
+    return await this._accountDB.getAccountsByIdentifier(identifier);
+  }
+
   async getTotalBankBalance(source: number): Promise<number> {
     const accounts = await this.getMyAccounts(source);
     const totalBalance = accounts.reduce((total, account) => {
@@ -89,6 +93,11 @@ export class AccountService {
   async getDefaultAccountBySource(source: number) {
     const user = this._userService.getUser(source);
     return await this._accountDB.getDefaultAccountByIdentifier(user.getIdentifier());
+  }
+
+  async getDefaultAccountBalance(req: Request<number>) {
+    const defaultAccount = await this.getDefaultAccountBySource(req.source);
+    return defaultAccount?.getDataValue('balance');
   }
 
   async handleGetMyAccounts(source: number): Promise<Account[]> {
@@ -535,7 +544,7 @@ export class AccountService {
     return account;
   }
 
-  async addBalanceByIdentifier(req: Request<AddBankBalanceInput>) {
+  async addBalanceByIdentifier(req: Request<UpdateBankBalanceInput>) {
     const account = await this._accountDB.getDefaultAccountByIdentifier(req.data.identifier);
 
     const t = await sequelize.transaction();
@@ -584,18 +593,22 @@ export class AccountService {
     logger.silly(`Removing ${req.data.amount} money from ${req.source}...`);
     const user = this._userService.getUser(req.source);
     const account = await this._accountDB.getDefaultAccountByIdentifier(user.getIdentifier());
-    await account?.decrement({ balance: req.data.amount });
 
     const t = await sequelize.transaction();
-    await this._transactionService.handleCreateTransaction(
-      {
-        amount: req.data.amount,
-        message: req.data.message,
-        fromAccount: account?.toJSON(),
-        type: TransactionType.Outgoing,
-      },
-      t,
-    );
-    t.commit();
+    try {
+      await account?.decrement({ balance: req.data.amount }, { transaction: t });
+      await this._transactionService.handleCreateTransaction(
+        {
+          amount: req.data.amount,
+          message: req.data.message,
+          fromAccount: account?.toJSON(),
+          type: TransactionType.Outgoing,
+        },
+        t,
+      );
+      t.commit();
+    } catch {
+      t.rollback();
+    }
   }
 }
