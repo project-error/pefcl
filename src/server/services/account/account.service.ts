@@ -231,7 +231,7 @@ export class AccountService {
         throw new ServerError(GenericErrors.NotFound);
       }
 
-      const canAfford = fromAccount?.getDataValue('balance') > (config?.prices?.newAccount ?? 0);
+      const canAfford = fromAccount?.getDataValue('balance') >= (config?.prices?.newAccount ?? 0);
       if (!canAfford && !isFirstSetup) {
         throw new ServerError(BalanceErrors.InsufficentFunds);
       }
