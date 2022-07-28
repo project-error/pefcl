@@ -201,17 +201,25 @@ export class TransactionService {
     logger.silly(`Broadcasted transaction:`);
     logger.silly(JSON.stringify(transaction));
 
-    const { ownerIdentifier } = transaction.toAccount ?? {};
-    const user = this._userService.getUserByIdentifier(ownerIdentifier ?? '');
+    const { ownerIdentifier: toIdentifier } = transaction.toAccount ?? {};
+    const { ownerIdentifier: fromIdentifier } = transaction.fromAccount ?? {};
 
-    if (!user) {
-      return;
+    const toUser = this._userService.getUserByIdentifier(toIdentifier ?? '');
+    const fromUser = this._userService.getUserByIdentifier(fromIdentifier ?? '');
+
+    if (toUser) {
+      logger.silly(
+        `(toAccount)´Broadcasting new transaction to src: ${toUser.getSource()}, identifier: ${toUser.getIdentifier()}`,
+      );
+      emitNet(Broadcasts.NewTransaction, toUser.getSource(), transaction);
     }
 
-    logger.silly(
-      `Broadcasting new transaction to src: ${user.getSource()}, identifier: ${user.getIdentifier()}`,
-    );
-    emitNet(Broadcasts.NewTransaction, user.getSource(), transaction);
+    if (fromUser) {
+      logger.silly(
+        `(fromAccount) Broadcasting new transaction to src: ${fromUser.getSource()}, identifier: ${fromUser.getIdentifier()}`,
+      );
+      emitNet(Broadcasts.NewTransaction, fromUser.getSource(), transaction);
+    }
   }
 
   async handleGetHistory(req: Request<void>): Promise<GetTransactionHistoryResponse> {
