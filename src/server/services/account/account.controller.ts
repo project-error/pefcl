@@ -272,8 +272,8 @@ export class AccountController {
   @Export(ServerExports.GetDefaultAccountBalance)
   async getDefaultAccountBalance(req: Request<number>, res: Response<unknown>) {
     try {
-      await this._accountService.getDefaultAccountBalance(req);
-      res({ status: 'ok', data: {} });
+      const data = await this._accountService.getDefaultAccountBalance(req);
+      res({ status: 'ok', data });
     } catch (err) {
       res({ status: 'error', errorMsg: err.message });
     }
@@ -282,8 +282,8 @@ export class AccountController {
   @Export(ServerExports.GetAccountsByIdentifier)
   async getAccountsByIdentifier(req: Request<string>, res: Response<unknown>) {
     try {
-      await this._accountService.getAccountsByIdentifier(req.data);
-      res({ status: 'ok', data: {} });
+      const data = await this._accountService.getAccountsByIdentifier(req.data);
+      res({ status: 'ok', data });
     } catch (err) {
       res({ status: 'error', errorMsg: err.message });
     }
