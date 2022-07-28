@@ -556,7 +556,7 @@ export class AccountService {
         {
           amount: req.data.amount,
           message: req.data.message,
-          fromAccount: account?.toJSON(),
+          toAccount: account?.toJSON(),
           type: TransactionType.Incoming,
         },
         t,

@@ -208,6 +208,9 @@ export class TransactionService {
       return;
     }
 
+    logger.silly(
+      `Broadcasting new transaction to src: ${user.getSource()}, identifier: ${user.getIdentifier()}`,
+    );
     emitNet(Broadcasts.NewTransaction, user.getSource(), transaction);
   }
 
