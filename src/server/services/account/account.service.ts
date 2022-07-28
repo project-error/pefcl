@@ -544,30 +544,8 @@ export class AccountService {
     return account;
   }
 
-  async addBalanceByIdentifier(req: Request<UpdateBankBalanceInput>) {
-    const account = await this._accountDB.getDefaultAccountByIdentifier(req.data.identifier);
-
-    const t = await sequelize.transaction();
-    try {
-      await account?.increment({ balance: req.data.amount });
-      await this._transactionService.handleCreateTransaction(
-        {
-          amount: req.data.amount,
-          message: req.data.message,
-          fromAccount: account?.toJSON(),
-          type: TransactionType.Incoming,
-        },
-        t,
-      );
-      t.commit();
-    } catch (err) {
-      t.rollback();
-    }
-  }
-
-  async addMoney(req: Request<{ amount: number; message: string }>) {
+  async addMoney(req: Request<UpdateBankBalanceInput>) {
     logger.silly(`Adding money to ${req.source} ..`);
-
     const user = this._userService.getUser(req.source);
     const account = await this._accountDB.getDefaultAccountByIdentifier(user.getIdentifier());
 
@@ -589,7 +567,29 @@ export class AccountService {
     }
   }
 
-  async removeMoney(req: Request<{ amount: number; message: string }>) {
+  async addMoneyByIdentifier(req: Request<UpdateBankBalanceInput>) {
+    logger.silly(`Adding money by identifier to ${req.data.identifier} ..`);
+    const account = await this._accountDB.getDefaultAccountByIdentifier(req.data.identifier ?? '');
+
+    const t = await sequelize.transaction();
+    try {
+      await account?.increment({ balance: req.data.amount });
+      await this._transactionService.handleCreateTransaction(
+        {
+          amount: req.data.amount,
+          message: req.data.message,
+          fromAccount: account?.toJSON(),
+          type: TransactionType.Incoming,
+        },
+        t,
+      );
+      t.commit();
+    } catch (err) {
+      t.rollback();
+    }
+  }
+
+  async removeMoney(req: Request<UpdateBankBalanceInput>) {
     logger.silly(`Removing ${req.data.amount} money from ${req.source}...`);
     const user = this._userService.getUser(req.source);
     const account = await this._accountDB.getDefaultAccountByIdentifier(user.getIdentifier());
@@ -610,5 +610,40 @@ export class AccountService {
     } catch {
       t.rollback();
     }
+  }
+
+  async removeMoneyByIdentifier(req: Request<UpdateBankBalanceInput>) {
+    logger.silly(`Removing ${req.data.amount} money by identifier from ${req.data.identifier} ..`);
+    const account = await this._accountDB.getDefaultAccountByIdentifier(req.data.identifier ?? '');
+
+    const t = await sequelize.transaction();
+    try {
+      await account?.decrement({ balance: req.data.amount }, { transaction: t });
+      await this._transactionService.handleCreateTransaction(
+        {
+          amount: req.data.amount,
+          message: req.data.message,
+          fromAccount: account?.toJSON(),
+          type: TransactionType.Outgoing,
+        },
+        t,
+      );
+      t.commit();
+    } catch {
+      t.rollback();
+    }
+  }
+
+  async setMoney(req: Request<{ amount: number }>) {
+    logger.silly(`Setting money to ${req.data.amount} for ${req.source} ..`);
+    const user = this._userService.getUser(req.source);
+    const account = await this._accountDB.getDefaultAccountByIdentifier(user.getIdentifier());
+    await account?.update({ balance: req.data.amount });
+  }
+
+  async setMoneyByIdentifier(req: Request<{ amount: number; identifier: string }>) {
+    logger.silly(`Setting money by identifier to ${req.data.amount} for ${req.data.identifier} ..`);
+    const account = await this._accountDB.getDefaultAccountByIdentifier(req.data.identifier);
+    await account?.update({ balance: req.data.amount });
   }
 }

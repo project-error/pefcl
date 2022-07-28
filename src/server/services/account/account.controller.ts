@@ -210,6 +210,29 @@ export class AccountController {
     }
   }
 
+  @Export(ServerExports.SetBankBalance)
+  async setBankBalance(req: Request<{ amount: number }>, res: Response<unknown>) {
+    try {
+      await this._accountService.setMoney(req);
+      res({ status: 'ok', data: {} });
+    } catch (err) {
+      res({ status: 'error', errorMsg: err.message });
+    }
+  }
+
+  @Export(ServerExports.SetBankBalance)
+  async setBankBalanceByIdentifier(
+    req: Request<{ amount: number; identifier: string }>,
+    res: Response<unknown>,
+  ) {
+    try {
+      await this._accountService.setMoneyByIdentifier(req);
+      res({ status: 'ok', data: {} });
+    } catch (err) {
+      res({ status: 'error', errorMsg: err.message });
+    }
+  }
+
   @Export(ServerExports.AddBankBalanceByIdentifier)
   async addBankBalanceByIdentifier(req: Request<UpdateBankBalanceInput>, res: Response<unknown>) {
     try {
