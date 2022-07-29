@@ -1,11 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import { BrowserRouter } from 'react-router-dom';
+import { HashRouter } from 'react-router-dom';
 import styled from 'styled-components';
 import image from './bg.png';
 import { NuiProvider } from 'react-fivem-hooks';
 import MobileApp from './views/Mobile/Mobile';
+import { ThemeProvider } from '@mui/material';
+import theme from '@utils/theme';
 
 const Container = styled.div`
   position: relative;
@@ -37,7 +39,7 @@ const AppContainer = styled.div`
 `;
 
 const Root = () => (
-  <BrowserRouter>
+  <HashRouter>
     <NuiProvider>
       <Container>
         <Background src={image} />
@@ -48,7 +50,7 @@ const Root = () => (
         </React.Suspense>
       </Container>
     </NuiProvider>
-  </BrowserRouter>
+  </HashRouter>
 );
 
 ReactDOM.render(<Root />, document.getElementById('mobile-app'));
