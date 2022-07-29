@@ -6,9 +6,9 @@ import styled from 'styled-components';
 import theme from '@utils/theme';
 import MobileFooter, { FooterHeight } from './Components/MobileFooter';
 import MobileRoutes from './Routes';
+import { ThemeProvider } from '@mui/material';
 
 const Container = styled.div`
-  color: white;
   background: ${theme.palette.background.default};
   overflow: auto;
   height: 100%;
@@ -17,12 +17,14 @@ const Container = styled.div`
 
 const MobileApp = () => {
   return (
-    <I18nextProvider i18n={i18n}>
-      <Container>
-        <MobileRoutes />
-        <MobileFooter />
-      </Container>
-    </I18nextProvider>
+    <ThemeProvider theme={theme}>
+      <I18nextProvider i18n={i18n}>
+        <Container>
+          <MobileRoutes />
+          <MobileFooter />
+        </Container>
+      </I18nextProvider>
+    </ThemeProvider>
   );
 };
 

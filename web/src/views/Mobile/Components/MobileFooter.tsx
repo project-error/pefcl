@@ -1,5 +1,13 @@
 import styled from '@emotion/styled';
-import { AccountBalance } from '@mui/icons-material';
+import {
+  AccountBalance,
+  CreditCardRounded,
+  DashboardRounded,
+  Paid,
+  PaidRounded,
+  ReceiptRounded,
+  SwapHorizRounded,
+} from '@mui/icons-material';
 import { Badge } from '@mui/material';
 import theme from '@utils/theme';
 import React, { ReactNode } from 'react';
@@ -19,7 +27,7 @@ const Container = styled.div`
 
 const List = styled.ul`
   flex: 1;
-  padding: 0 1rem;
+  padding: 0 1.25rem;
 
   display: flex;
   flex-direction: row;
@@ -46,7 +54,8 @@ const ListItemContainer = styled.li<{ isActive: boolean }>`
 
   transition: 250ms;
 
-  width: 4rem;
+  opacity: 0.5;
+  width: 5rem;
   height: 4rem;
 
   :hover {
@@ -61,6 +70,7 @@ const ListItemContainer = styled.li<{ isActive: boolean }>`
   ${({ isActive }) =>
     isActive &&
     `
+      opacity: 1;
       color: ${theme.palette.primary.main};
       background-color: ${theme.palette.background.light4};
   `};
@@ -79,12 +89,12 @@ interface ListItemProps {
   amount?: number;
 }
 const ListItem = ({ to, icon, label, amount }: ListItemProps) => {
-  const match = useRouteMatch();
+  const match = useRouteMatch(to);
   console.log({ match });
 
   return (
     <Link to={to}>
-      <ListItemContainer isActive={match.url === to}>
+      <ListItemContainer isActive={match?.url === to}>
         <Badge color="error" badgeContent={amount}>
           {icon}
         </Badge>
@@ -98,11 +108,10 @@ const MobileFooter = () => {
   return (
     <Container>
       <List>
-        <ListItem icon={<AccountBalance />} label="Accounts" to="/accounts" />
-        <ListItem icon={<AccountBalance />} label="Other" to="/other" />
-        <ListItem icon={<AccountBalance />} label="Dashboard" to="/dashboard" />
-        <ListItem icon={<AccountBalance />} label="Other" to="/other" />
-        <ListItem icon={<AccountBalance />} label="Other" to="/other" />
+        <ListItem icon={<DashboardRounded />} label="Dashboard" to="/dashboard" />
+        <ListItem icon={<CreditCardRounded />} label="Accounts" to="/accounts" />
+        <ListItem icon={<SwapHorizRounded />} label="Transfer" to="/transfer" />
+        <ListItem icon={<ReceiptRounded />} label="Invoices" to="/invoices" />
       </List>
     </Container>
   );
