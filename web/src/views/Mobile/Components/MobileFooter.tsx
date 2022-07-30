@@ -1,10 +1,7 @@
 import styled from '@emotion/styled';
 import {
-  AccountBalance,
   CreditCardRounded,
   DashboardRounded,
-  Paid,
-  PaidRounded,
   ReceiptRounded,
   SwapHorizRounded,
 } from '@mui/icons-material';
@@ -12,6 +9,7 @@ import { Badge } from '@mui/material';
 import theme from '@utils/theme';
 import React, { ReactNode } from 'react';
 import { Link, useRouteMatch } from 'react-router-dom';
+import { externalAppConfig } from 'npwd.config';
 
 export const FooterHeight = '5rem';
 const Container = styled.div`
@@ -20,7 +18,7 @@ const Container = styled.div`
   width: 100%;
   height: ${FooterHeight};
   position: absolute;
-  bottom: 0;
+  bottom: -1px;
   left: 0;
   background-color: #244978;
 `;
@@ -104,14 +102,19 @@ const ListItem = ({ to, icon, label, amount }: ListItemProps) => {
   );
 };
 
-const MobileFooter = () => {
+interface MobileFooterProps {
+  isNpwdLoaded: boolean;
+}
+const MobileFooter = ({ isNpwdLoaded }: MobileFooterProps) => {
+  const prefix = isNpwdLoaded ? externalAppConfig().path : '';
+
   return (
     <Container>
       <List>
-        <ListItem icon={<DashboardRounded />} label="Dashboard" to="/dashboard" />
-        <ListItem icon={<CreditCardRounded />} label="Accounts" to="/accounts" />
-        <ListItem icon={<SwapHorizRounded />} label="Transfer" to="/transfer" />
-        <ListItem icon={<ReceiptRounded />} label="Invoices" to="/invoices" />
+        <ListItem icon={<DashboardRounded />} label="Dashboard" to={`${prefix}/dashboard`} />
+        <ListItem icon={<CreditCardRounded />} label="Accounts" to={`${prefix}/accounts`} />
+        <ListItem icon={<SwapHorizRounded />} label="Transfer" to={`${prefix}/transfer`} />
+        <ListItem icon={<ReceiptRounded />} label="Invoices" to={`${prefix}/invoices`} />
       </List>
     </Container>
   );

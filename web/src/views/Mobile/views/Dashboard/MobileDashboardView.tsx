@@ -37,6 +37,10 @@ const MobileDashboardView = () => {
 
   const { data } = useFetchNui<{ total: number; transactions: Transaction[] }>(
     TransactionEvents.Get,
+    {
+      offset: 0,
+      limit: 5,
+    },
   );
 
   return (

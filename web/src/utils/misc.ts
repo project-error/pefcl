@@ -1,5 +1,3 @@
-import { resourceDefaultName } from './constants';
-
 declare global {
   interface Window {
     invokeNative(): void;
@@ -9,7 +7,7 @@ declare global {
 
 // and not CEF
 export const isEnvBrowser = (): boolean => !window.invokeNative;
-export const getResourceName = () => window.GetParentResourceName?.() ?? resourceDefaultName;
+export const getResourceName = () => 'pefcl';
 
 // Basic no operation function
 export const noop = () => {};

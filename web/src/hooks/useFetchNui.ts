@@ -1,14 +1,14 @@
 import { fetchNui } from '@utils/fetchNui';
 import { useEffect, useState } from 'react';
 
-export const useFetchNui = <T>(event: string) => {
+export const useFetchNui = <T>(event: string, options?: object) => {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState<T>();
 
   useEffect(() => {
     setIsLoading(true);
-    fetchNui<T>(event)
+    fetchNui<T>(event, options)
       .then(setData)
       .catch((error) => {
         setError(error);
@@ -16,7 +16,7 @@ export const useFetchNui = <T>(event: string) => {
       .finally(() => {
         setIsLoading(false);
       });
-  }, [event]);
+  }, [event, options]);
 
   return { isLoading, data, error };
 };

@@ -5,14 +5,19 @@ import MobileDashboardView from './views/Dashboard/MobileDashboardView';
 import MobileInvoicesView from './views/Invoices/MobileInvoicesView';
 import MobileTransferView from './views/Transfer/MobileTransferView';
 
-const MobileRoutes = () => {
+interface MobileRoutesProps {
+  isNpwdLoaded: boolean;
+}
+
+const MobileRoutes = ({ isNpwdLoaded }: MobileRoutesProps) => {
+  const prefix = isNpwdLoaded ? '/bank' : '';
   return (
     <>
-      <Route path="/" exact component={MobileDashboardView} />
-      <Route path="/accounts" component={MobileAccountsView} />
-      <Route path="/dashboard" component={MobileDashboardView} />
-      <Route path="/transfer" component={MobileTransferView} />
-      <Route path="/invoices" component={MobileInvoicesView} />
+      <Route path={`${prefix}/`} exact component={MobileDashboardView} />
+      <Route path={`${prefix}/accounts`} component={MobileAccountsView} />
+      <Route path={`${prefix}/dashboard`} component={MobileDashboardView} />
+      <Route path={`${prefix}/transfer`} component={MobileTransferView} />
+      <Route path={`${prefix}/invoices`} component={MobileInvoicesView} />
     </>
   );
 };
