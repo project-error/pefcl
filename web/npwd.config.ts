@@ -10,7 +10,7 @@ import BankIcon from './src/BankIcon';
 //   language: 'en';
 // }
 
-export default () => ({
+export const externalAppConfig = () => ({
   id: 'BANK',
   nameLocale: 'BANK',
   color: '#fff',
@@ -19,6 +19,8 @@ export default () => ({
   icon: BankIcon,
   app: App,
 });
+
+export default externalAppConfig;
 
 if (module.hot) {
   module.hot.accept('./src/views/Mobile/Mobile', function () {

@@ -6,8 +6,6 @@ import styled from 'styled-components';
 import image from './bg.png';
 import { NuiProvider } from 'react-fivem-hooks';
 import MobileApp from './views/Mobile/Mobile';
-import { ThemeProvider } from '@mui/material';
-import theme from '@utils/theme';
 
 const Container = styled.div`
   position: relative;

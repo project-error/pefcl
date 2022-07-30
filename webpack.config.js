@@ -51,7 +51,7 @@ module.exports = {
   },
   plugins: [
     new ModuleFederationPlugin({
-      name: 'bank',
+      name: 'pefcl',
       filename: 'remoteEntry.js',
       remotes: {
         npwd: 'layout@https://cfx-nui-npwd/phone/dist/remoteEntry.js',

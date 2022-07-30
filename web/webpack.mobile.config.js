@@ -13,7 +13,7 @@ delete deps['@mui/material'];
 delete deps['@mui/styles'];
 
 module.exports = {
-  entry: './src/mobileBootstrap.ts',
+  entry: './src/bootstrapMobile.ts',
   mode: 'development',
   output: {
     publicPath: 'auto',
@@ -65,7 +65,7 @@ module.exports = {
   },
   plugins: [
     new ModuleFederationPlugin({
-      name: 'bank',
+      name: 'pefcl',
       filename: 'remoteEntry.js',
       exposes: {
         './config': './npwd.config.ts',
@@ -84,7 +84,6 @@ module.exports = {
     }),
     new HtmlWebpackPlugin({
       template: './public/index.html',
-      chunks: ['main'],
     }),
     new webpack.DefinePlugin({
       process: { env: {} },

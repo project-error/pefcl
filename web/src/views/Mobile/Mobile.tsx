@@ -20,8 +20,8 @@ const MobileApp = () => {
     <ThemeProvider theme={theme}>
       <I18nextProvider i18n={i18n}>
         <Container>
-          <MobileRoutes />
-          <MobileFooter />
+          <MobileRoutes isNpwdLoaded />
+          <MobileFooter isNpwdLoaded />
         </Container>
       </I18nextProvider>
     </ThemeProvider>
