@@ -18,7 +18,6 @@ export enum ServerExports {
   AddBankBalanceByIdentifier = 'addBankBalanceByIdentifier',
   RemoveBankBalanceByIdentifier = 'removeBankBalanceByIdentifier',
   RemoveBankBalance = 'removeBankBalance',
-  RemoveBankBalanceByIdentifier = 'removeBankBalanceByIdentifier',
 
   GetInvoices = 'getInvoices',
   CreateInvoice = 'createInvoice',
