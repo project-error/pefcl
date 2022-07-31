@@ -1,13 +1,13 @@
 import { singleton } from 'tsyringe';
 import { Request } from '@typings/http';
 import {
+  CreateTransferInput,
   GetTransactionHistoryResponse,
   GetTransactionsInput,
   GetTransactionsResponse,
   Transaction,
   TransactionInput,
   TransactionType,
-  Transfer,
   TransferType,
 } from '@typings/Transaction';
 import { sequelize } from '@server/utils/pool';
@@ -85,7 +85,7 @@ export class TransactionService {
     };
   }
 
-  private async handleInternalTransfer(req: Request<Transfer>) {
+  private async handleInternalTransfer(req: Request<CreateTransferInput>) {
     logger.silly('Creating internal transfer');
     logger.silly(req);
 
@@ -131,7 +131,7 @@ export class TransactionService {
     }
   }
 
-  private async handleExternalTransfer(req: Request<Transfer>) {
+  private async handleExternalTransfer(req: Request<CreateTransferInput>) {
     const t = await sequelize.transaction();
     try {
       const myAccount = await this._accountDB.getAccountById(req.data.fromAccountId);
@@ -170,7 +170,7 @@ export class TransactionService {
     }
   }
 
-  async handleTransfer(req: Request<Transfer>) {
+  async handleTransfer(req: Request<CreateTransferInput>) {
     logger.silly(
       `Transfering ${req.data.amount} from account ${req.data.fromAccountId} to ${req.data.toAccountId} ...`,
     );

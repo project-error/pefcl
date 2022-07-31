@@ -57,10 +57,10 @@ export interface ResourceConfig {
   blips: {
     enabled: boolean;
     name: string;
-    color: number;
+    colour: number;
     icon: number;
     scale: number;
-    displayType: number;
+    display: number;
     shortRange: boolean;
     coords: BlipCoords[];
   };

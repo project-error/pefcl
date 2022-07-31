@@ -4,7 +4,7 @@ import {
   GetTransactionHistoryResponse,
   GetTransactionsInput,
   GetTransactionsResponse,
-  Transfer,
+  CreateTransferInput,
 } from '@typings/Transaction';
 import { Controller } from '../../decorators/Controller';
 import { NetPromise, PromiseEventListener } from '../../decorators/NetPromise';
@@ -33,7 +33,7 @@ export class TransactionController {
   }
 
   @NetPromise(TransactionEvents.CreateTransfer)
-  async createTransfer(req: Request<Transfer>, res: Response<object>) {
+  async createTransfer(req: Request<CreateTransferInput>, res: Response<object>) {
     try {
       await this._transactionService.handleTransfer(req);
       res({ status: 'ok', data: {} });

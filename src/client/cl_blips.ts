@@ -4,11 +4,11 @@ const isBlipsEnabled = cl_config.blips?.enabled ?? false;
 
 if (isBlipsEnabled) {
   const blipName = cl_config.blips?.name ?? 'Bank';
-  const blipColor = cl_config.blips?.color ?? 3;
+  const blipColor = cl_config.blips?.colour ?? 3;
   const blipIcon = cl_config.blips?.icon ?? 4;
   const blipScale = cl_config.blips?.scale ?? 1;
   const blipCoords = cl_config.blips?.coords ?? [];
-  const blipDisplayType = cl_config.blips?.displayType ?? 4;
+  const blipDisplayType = cl_config.blips?.display ?? 4;
   const blipShortRange = cl_config.blips?.shortRange ?? true;
 
   blipCoords.forEach((coord) => {
