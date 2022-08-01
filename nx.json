@@ -38,6 +38,11 @@
         "setup"
       ]
     },
+    "dev:mobile": {
+      "dependsOn": [
+        "setup"
+      ]
+    },
     "build": {
       "dependsOn": [
         "setup",

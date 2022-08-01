@@ -10,7 +10,7 @@ import PriceField from './ui/Fields/PriceField';
 import { fetchNui } from '../utils/fetchNui';
 import { transactionBaseAtom } from 'src/data/transactions';
 import { TransactionEvents } from '@typings/Events';
-import { Transfer, TransferType } from '@typings/Transaction';
+import { CreateTransferInput, TransferType } from '@typings/Transaction';
 import { externalAccountsAtom } from '@data/externalAccounts';
 import { GenericErrors } from '@typings/Errors';
 
@@ -39,7 +39,7 @@ const TransferFunds: React.FC<{ onClose?(): void }> = ({ onClose }) => {
     setError('');
     setSuccess('');
 
-    const payload: Transfer = {
+    const payload: CreateTransferInput = {
       type,
       message,
       amount: parsedAmount,

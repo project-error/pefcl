@@ -1,10 +1,9 @@
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
-const port = process.env.PORT ?? 3007;
-
 const ModuleFederationPlugin = require('webpack/lib/container/ModuleFederationPlugin');
 const deps = require('./package.json').dependencies;
+const port = process.env.PORT ?? 3007;
 
 /* TODO: Fix for real */
 /* Probably bad way of fixing this */
@@ -13,14 +12,12 @@ delete deps['@emotion/styled'];
 delete deps['@mui/material'];
 delete deps['@mui/styles'];
 
-module.exports = (env, options) => ({
-  entry: {
-    main: './src/bootstrapApp.ts',
-  },
+module.exports = {
+  entry: './src/bootstrapMobile.ts',
   mode: 'development',
   output: {
     publicPath: 'auto',
-    filename: '[name].js',
+    filename: 'main.js',
   },
   devServer: {
     port,
@@ -45,6 +42,15 @@ module.exports = (env, options) => ({
         },
       },
       {
+        test: /\.(png|jpe?g|gif)$/i,
+        exclude: /node_modules/,
+        use: [
+          {
+            loader: 'file-loader',
+          },
+        ],
+      },
+      {
         test: /\.(js|jsx)$/,
         exclude: /node_modules/,
         use: {
@@ -54,15 +60,6 @@ module.exports = (env, options) => ({
       {
         test: /\.(css|s[ac]ss)$/i,
         use: ['style-loader', 'css-loader'],
-      },
-      {
-        test: /\.(png|jpe?g|gif)$/i,
-        exclude: /node_modules/,
-        use: [
-          {
-            loader: 'file-loader',
-          },
-        ],
       },
     ],
   },
@@ -87,7 +84,6 @@ module.exports = (env, options) => ({
     }),
     new HtmlWebpackPlugin({
       template: './public/index.html',
-      chunks: ['main'],
     }),
     new webpack.DefinePlugin({
       process: { env: {} },
@@ -97,4 +93,4 @@ module.exports = (env, options) => ({
     extensions: ['.ts', '.tsx', '.js', 'jsx'],
     plugins: [new TsconfigPathsPlugin()],
   },
-});
+};

@@ -114,7 +114,14 @@ const AccountSelect = ({
         onChange={handleChange}
         variant="filled"
         sx={{ width: '100%' }}
-        MenuProps={{ sx: { maxHeight: '25rem', scrollbarColor: '#222', scrollbarWidth: '2px' } }}
+        disableInjectingGlobalStyles
+        MenuProps={{
+          sx: {
+            maxHeight: '25rem',
+            scrollbarColor: '#222',
+            scrollbarWidth: '2px',
+          },
+        }}
       >
         {!isFromAccount && (
           <Box p={2} display="flex">

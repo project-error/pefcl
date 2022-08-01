@@ -25,7 +25,7 @@ const StyledButtonBase = styled(ButtonBase)`
   box-shadow: none;
   border-radius: ${theme.spacing(1)};
   background-color: #1d2a3a;
-  padding: 0.35rem 2rem;
+  padding: 0.4rem 2rem;
 
   ${({ color }) => colors[color ?? 'primary']};
 
