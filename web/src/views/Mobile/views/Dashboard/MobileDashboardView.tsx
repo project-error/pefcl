@@ -35,12 +35,13 @@ const MobileDashboardView = () => {
     });
   }, []);
 
+  const options = {
+    offset: 0,
+    limit: 5,
+  };
   const { data } = useFetchNui<{ total: number; transactions: Transaction[] }>(
     TransactionEvents.Get,
-    {
-      offset: 0,
-      limit: 5,
-    },
+    options,
   );
 
   return (
