@@ -61,7 +61,7 @@ AccountModel.init(
     hooks: {
       afterSave: (instance, options) => {
         if (options.fields?.includes('balance')) {
-          emit(AccountEvents.NewBalance, instance);
+          emit(AccountEvents.NewBalance, instance.toJSON());
         }
       },
     },

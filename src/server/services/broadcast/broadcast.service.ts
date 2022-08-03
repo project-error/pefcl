@@ -4,8 +4,8 @@ import { mainLogger } from '@server/sv_logger';
 import { UserService } from '../user/user.service';
 import { Broadcasts } from '@typings/Events';
 import { TransactionDB } from '../transaction/transaction.db';
-import { AccountModel } from '../account/account.model';
-import { CashModel } from '../cash/cash.model';
+import { Account } from '@server/../../typings/Account';
+import { Cash } from '@server/../../typings/Cash';
 
 const logger = mainLogger.child({ module: 'broadcastService' });
 
@@ -54,15 +54,15 @@ export class BroadcastService {
     }
   }
 
-  async broadcastNewDefaultAccountBalance(account: AccountModel) {
+  async broadcastNewDefaultAccountBalance(account: Account) {
     /* Do not broadcast updated values for none default account */
-    if (!account.getDataValue('isDefault')) {
+    if (!account.isDefault) {
       return;
     }
 
     logger.silly('Broadcasting new balance for default account ..');
 
-    const identifier = account.getDataValue('ownerIdentifier');
+    const identifier = account.ownerIdentifier;
     const user = this._userService.getUserByIdentifier(identifier);
 
     if (!user) {
@@ -70,17 +70,17 @@ export class BroadcastService {
       return;
     }
 
-    const balance = account.getDataValue('balance');
+    const balance = account.balance;
     emitNet(Broadcasts.NewDefaultAccountBalance, user?.getSource(), balance);
 
     logger.silly('Broadcasted new balance for default account!');
     logger.silly({ identifier, source: user.getSource(), balance });
   }
 
-  async broadcastNewCash(cash: CashModel) {
+  async broadcastNewCash(cash: Cash) {
     logger.silly('Broadcasting new cash amount ..');
 
-    const identifier = cash.getDataValue('ownerIdentifier');
+    const identifier = cash.ownerIdentifier;
     const user = this._userService.getUserByIdentifier(identifier);
 
     if (!user) {
@@ -88,7 +88,7 @@ export class BroadcastService {
       return;
     }
 
-    const amount = cash.getDataValue('amount');
+    const amount = cash.amount;
     emitNet(Broadcasts.NewCashAmount, user?.getSource(), amount);
 
     logger.silly('Broadcasted new cash amount!');

@@ -31,7 +31,7 @@ CashModel.init(
     hooks: {
       afterSave: (instance, options) => {
         if (options.fields?.includes('amount')) {
-          emit(CashEvents.NewCash, instance);
+          emit(CashEvents.NewCash, instance.toJSON());
         }
       },
     },
