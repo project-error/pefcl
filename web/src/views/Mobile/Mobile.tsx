@@ -32,10 +32,16 @@ const MobileApp = (props: MobileAppProps) => {
   const lng = props.settings.language.value;
 
   useEffect(() => {
-    const instance = props.i18n.cloneInstance({ lng });
+    if (i18nInstance) {
+      i18nInstance.changeLanguage(lng);
+    }
+  }, [i18nInstance, lng]);
+
+  useEffect(() => {
+    const instance = props.i18n.cloneInstance();
     loadPefclResources(instance);
     setI18nInstance(instance);
-  }, [props.i18n, lng]);
+  }, [props.i18n]);
 
   if (!i18nInstance) {
     return 'No i18n instance created';
