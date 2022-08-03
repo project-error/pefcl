@@ -27,6 +27,7 @@ import { ServerError } from '@utils/errors';
 import { AccountErrors, AuthorizationErrors, BalanceErrors, GenericErrors } from '@typings/Errors';
 import { SharedAccountDB } from '@services/accountShared/sharedAccount.db';
 import { Broadcasts } from '@server/../../typings/Events';
+import { regexExternalNumber } from '@shared/utils/regexes';
 
 const logger = mainLogger.child({ module: 'accounts' });
 
@@ -681,9 +682,13 @@ export class AccountService {
 
   async createUniqueAccount(req: Request<CreateBasicAccountInput>) {
     logger.debug('Creating unique account ..');
-    const { identifier, name, type } = req.data;
+    const { identifier, name, type, number } = req.data;
 
     const existingAccount = await this._accountDB.getAccountsByIdentifier(req.data.identifier);
+
+    if (number && !regexExternalNumber.test(number)) {
+      throw new Error('Invalid format for number, format is: xxx, xxxx-xxxx-xxxx');
+    }
 
     if (existingAccount.length > 0) {
       throw new Error(AccountErrors.AlreadyExists);
@@ -693,7 +698,7 @@ export class AccountService {
       type,
       accountName: name,
       ownerIdentifier: identifier,
-      number: req.data.number,
+      number: number?.trim(),
       isDefault: false,
     });
 
