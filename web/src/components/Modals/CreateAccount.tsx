@@ -77,7 +77,6 @@ const CreateAccountModal: React.FC<{ onClose(): void }> = ({ onClose }) => {
                   },
                 }}
                 render={({ field, fieldState }) => {
-                  console.log({ fieldState });
                   return (
                     <TextField
                       placeholder={t('Account name')}
