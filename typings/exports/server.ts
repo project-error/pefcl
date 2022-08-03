@@ -28,7 +28,7 @@ export enum ServerExports {
 
   GetAccounts = 'getAccounts',
   GetAccountsByIdentifier = 'getAccountsByIdentifier',
-  CreateAccount = 'createAccount',
+  CreateUniqueAccount = 'createUniqueAccount',
 }
 
 export type WithdrawMoneyExport = (

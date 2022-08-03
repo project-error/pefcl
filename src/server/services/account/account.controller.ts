@@ -6,7 +6,7 @@ import {
   UpdateBankBalanceInput,
   AddToSharedAccountInput,
   ATMInput,
-  CreateSharedInput,
+  CreateBasicAccountInput,
   ExternalAccount,
   PreDBAccount,
   RemoveFromSharedAccountInput,
@@ -82,10 +82,10 @@ export class AccountController {
     }
   }
 
-  @Export(ServerExports.CreateAccount)
-  async exportCreateAccount(req: Request<CreateSharedInput>, res: Response<Account>) {
+  @Export(ServerExports.CreateUniqueAccount)
+  async createUniqueAccount(req: Request<CreateBasicAccountInput>, res: Response<Account>) {
     try {
-      const account = await this._accountService.createAccount(req);
+      const account = await this._accountService.createUniqueAccount(req);
       res({ status: 'ok', data: account });
     } catch (err) {
       res({ status: 'error', errorMsg: err.message });

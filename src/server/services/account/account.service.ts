@@ -11,8 +11,8 @@ import {
   AccountRole,
   RemoveFromSharedAccountInput,
   SharedAccountUser,
-  CreateSharedInput,
   UpdateBankBalanceInput,
+  CreateBasicAccountInput,
 } from '@typings/Account';
 import { UserService } from '../user/user.service';
 import { config } from '@utils/server-config';
@@ -24,7 +24,7 @@ import i18next from '@utils/i18n';
 import { TransactionType } from '@typings/Transaction';
 import { AccountModel } from './account.model';
 import { ServerError } from '@utils/errors';
-import { AuthorizationErrors, BalanceErrors, GenericErrors } from '@typings/Errors';
+import { AccountErrors, AuthorizationErrors, BalanceErrors, GenericErrors } from '@typings/Errors';
 import { SharedAccountDB } from '@services/accountShared/sharedAccount.db';
 import { Broadcasts } from '@server/../../typings/Events';
 
@@ -201,8 +201,9 @@ export class AccountService {
     return initialAccount.toJSON();
   }
 
-  async createAccount(req: Request<CreateSharedInput>): Promise<Account> {
+  async createAccount(req: Request<CreateBasicAccountInput>): Promise<Account> {
     const { type, name, identifier } = req.data;
+
     logger.silly('Creating an account ..');
     logger.silly(req);
 
@@ -676,5 +677,29 @@ export class AccountService {
 
     const account = await this._accountDB.getDefaultAccountByIdentifier(identifier);
     await account?.update({ balance: amount });
+  }
+
+  async createUniqueAccount(req: Request<CreateBasicAccountInput>) {
+    logger.debug('Creating unique account ..');
+    const { identifier, name, type } = req.data;
+
+    const existingAccount = await this._accountDB.getAccountsByIdentifier(req.data.identifier);
+
+    if (existingAccount.length > 0) {
+      throw new Error(AccountErrors.AlreadyExists);
+    }
+
+    const account = await this._accountDB.createAccount({
+      type,
+      accountName: name,
+      ownerIdentifier: identifier,
+      number: req.data.number,
+      isDefault: false,
+    });
+
+    const json = account.toJSON();
+    logger.debug('Created unique account!');
+    logger.debug(json);
+    return json;
   }
 }

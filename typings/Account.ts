@@ -16,10 +16,11 @@ export type PreDBAccount = {
   isShared?: boolean;
 };
 
-export type CreateSharedInput = {
+export type CreateBasicAccountInput = {
   name: string;
   type: AccountType;
   identifier: string;
+  number?: string;
 };
 
 export type RenameAccountInput = {
@@ -44,6 +45,7 @@ export interface CreateAccountInput {
   ownerIdentifier: string;
   type: AccountType;
   isDefault?: boolean;
+  number?: string;
 }
 
 export interface SharedAccount {
