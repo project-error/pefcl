@@ -18,6 +18,7 @@
     "@types/react": "^17.0.18",
     "@types/react-dom": "^17.0.9",
     "@types/styled-components": "^5.1.25",
+    "copy-to-clipboard": "^3.3.2",
     "css-loader": "^6.7.1",
     "dayjs": "^1.10.7",
     "emotion": "^11.0.0",

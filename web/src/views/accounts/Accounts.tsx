@@ -2,6 +2,7 @@ import TextField from '@components/ui/Fields/TextField';
 import styled from '@emotion/styled';
 import { Dialog, DialogActions, DialogContent, DialogTitle, Stack } from '@mui/material';
 import { Box } from '@mui/system';
+import copy from 'copy-to-clipboard';
 import { AccountType } from '@typings/Account';
 import { AccountEvents } from '@typings/Events';
 import { getIsAdmin, getIsOwner } from '@utils/account';
@@ -142,6 +143,12 @@ const Accounts = () => {
                   {t('Rename account')}
                 </Button>
                 {!isAdmin && <HelperText>{t('Admin role required')}</HelperText>}
+              </Stack>
+
+              <Stack spacing={0.75}>
+                <Button onClick={() => copy(selectedAccount?.number ?? '')}>
+                  {t('Copy account number')}
+                </Button>
               </Stack>
             </Stack>
           </Stack>
