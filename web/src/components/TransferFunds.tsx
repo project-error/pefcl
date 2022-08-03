@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Alert, Box, FormHelperText, LinearProgress, Stack } from '@mui/material';
+import { Alert, Box, FormHelperText, LinearProgress, Stack, Typography } from '@mui/material';
 import { useAtom } from 'jotai';
 import { accountsAtom, defaultAccountAtom } from '../data/accounts';
 import { Heading5 } from './ui/Typography/Headings';
@@ -10,11 +10,14 @@ import PriceField from './ui/Fields/PriceField';
 import { fetchNui } from '../utils/fetchNui';
 import { transactionBaseAtom } from 'src/data/transactions';
 import { TransactionEvents } from '@typings/Events';
-import { Transfer, TransferType } from '@typings/Transaction';
+import { CreateTransferInput, TransferType } from '@typings/Transaction';
 import { externalAccountsAtom } from '@data/externalAccounts';
 import { GenericErrors } from '@typings/Errors';
+import { formatMoney } from '@utils/currency';
+import { useConfig } from '@hooks/useConfig';
 
 const TransferFunds: React.FC<{ onClose?(): void }> = ({ onClose }) => {
+  const { general } = useConfig();
   const { t } = useTranslation();
   const [amount, setAmount] = useState('');
   const [accounts, updateAccounts] = useAtom(accountsAtom);
@@ -39,7 +42,7 @@ const TransferFunds: React.FC<{ onClose?(): void }> = ({ onClose }) => {
     setError('');
     setSuccess('');
 
-    const payload: Transfer = {
+    const payload: CreateTransferInput = {
       type,
       message,
       amount: parsedAmount,
@@ -71,6 +74,11 @@ const TransferFunds: React.FC<{ onClose?(): void }> = ({ onClose }) => {
   const isSameAccount = toAccountId === fromAccountId;
   const isDisabled =
     isSameAccount || !parsedAmount || !isToAccountSelected || isAmountTooHigh || isAmountTooLow;
+
+  const rawValue = parseInt(amount.replace(/\D/g, ''));
+  const value = isNaN(rawValue) ? 0 : rawValue;
+  const newCash = (fromAccount?.balance ?? 0) - value;
+  const isValidNewBalance = newCash >= 0;
 
   return (
     <>
@@ -104,6 +112,11 @@ const TransferFunds: React.FC<{ onClose?(): void }> = ({ onClose }) => {
               placeholder="amount"
               value={amount}
               onChange={(event) => setAmount(event.target.value)}
+              renderSuffix={() => (
+                <Typography variant="caption" color={isValidNewBalance ? 'primary.main' : 'error'}>
+                  {formatMoney(newCash, general)}
+                </Typography>
+              )}
             />
           </Stack>
 
