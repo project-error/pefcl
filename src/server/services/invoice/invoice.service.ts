@@ -106,20 +106,24 @@ export class InvoiceService {
       }
 
       const accountBalance = fromAccount.getDataValue('balance');
-      const invoiceAmount = invoice.getDataValue('amount');
+      const amount = invoice.getDataValue('amount');
 
-      if (accountBalance < invoiceAmount) {
+      if (accountBalance < amount) {
         throw new Error(BalanceErrors.InsufficentFunds);
       }
 
       /* TODO: Implement transaction fee if wanted */
-      await toAccount.increment('balance', { by: invoiceAmount, transaction: t });
-      await fromAccount.decrement('balance', { by: invoiceAmount, transaction: t });
+      await this._accountDB.transfer({
+        amount,
+        fromAccount,
+        toAccount,
+        transaction: t,
+      });
       await this._invoiceDB.payInvoice(req.data.invoiceId);
 
       await this.transactionService.handleCreateTransaction(
         {
-          amount: invoiceAmount,
+          amount: amount,
           message: i18n.t('Paid outgoing invoice to: {{to}}', {
             to: invoice.getDataValue('to'),
           }),
@@ -132,7 +136,7 @@ export class InvoiceService {
 
       await this.transactionService.handleCreateTransaction(
         {
-          amount: invoiceAmount,
+          amount: amount,
           message: i18n.t('Received incoming invoice from: {{from}}', {
             from: invoice.getDataValue('from'),
           }),

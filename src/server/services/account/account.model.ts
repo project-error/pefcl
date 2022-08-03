@@ -6,6 +6,7 @@ import { sequelize } from '@utils/pool';
 import { generateAccountNumber } from '@utils/misc';
 import { timestamps } from '../timestamps.model';
 import { regexAlphaNumeric } from '@shared/utils/regexes';
+import { AccountEvents } from '@server/../../typings/Events';
 
 export class AccountModel extends Model<
   Account,
@@ -53,5 +54,16 @@ AccountModel.init(
     },
     ...timestamps,
   },
-  { sequelize: sequelize, tableName: DATABASE_PREFIX + 'accounts', paranoid: true },
+  {
+    sequelize: sequelize,
+    tableName: DATABASE_PREFIX + 'accounts',
+    paranoid: true,
+    hooks: {
+      afterSave: (instance, options) => {
+        if (options.fields?.includes('balance')) {
+          emit(AccountEvents.NewBalance, instance);
+        }
+      },
+    },
+  },
 );

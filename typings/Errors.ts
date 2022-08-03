@@ -1,4 +1,5 @@
 export enum GenericErrors {
+  BadInput = 'BadInput',
   NotFound = 'NotFound',
   UserNotFound = 'UserNotFound',
   MissingDefaultAccount = 'MissingDefaultAccount',
