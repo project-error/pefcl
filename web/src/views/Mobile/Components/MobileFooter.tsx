@@ -88,7 +88,6 @@ interface ListItemProps {
 }
 const ListItem = ({ to, icon, label, amount }: ListItemProps) => {
   const match = useRouteMatch(to);
-  console.log({ match });
 
   return (
     <Link to={to}>
