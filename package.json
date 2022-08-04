@@ -10,6 +10,7 @@
     "prepare": "husky install",
     "postinstall": "husky install",
     "translations:generate": "yarn i18next",
+    "translations:generate-index": "node ./scripts/generateLocales.js",
     "translations:download": "localazy download",
     "translations:upload": "localazy upload -w $LOCALAZY_WRITE_KEY -r $LOCALAZY_READ_KEY",
     "setup": "yarn nx run-many --target=setup --all",

@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "setup": "yarn install",
-    "dev": "yarn build && yarn concurrently \"yarn nodemon\" \"node ./scripts/watch_server.js\"",
+    "dev": "yarn concurrently \"yarn nodemon\" \"node ./scripts/watch_server.js\"",
     "dev:ingame": "yarn build:ingame && yarn concurrently \"node ./scripts/watch_client.js\" \"node ./scripts/watch_server.js --mode=ingame\"",
     "dev:mobile": "yarn dev",
     "build": "node ./scripts/build_server.js && node ./scripts/build_client.js",
