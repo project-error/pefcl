@@ -8,7 +8,7 @@
   "scripts": {
     "format": "prettier --write .",
     "prepare": "husky install",
-    "postinstall": "husky install",
+    "postinstall": "husky install && yarn setup",
     "translations:generate": "yarn i18next",
     "translations:generate-index": "node ./scripts/generateLocales.js",
     "translations:download": "localazy download",

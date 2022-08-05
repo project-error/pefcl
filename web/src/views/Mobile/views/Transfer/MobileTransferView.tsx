@@ -108,7 +108,11 @@ const MobileTransferView = () => {
           {t('Transfer funds')}
         </Button>
 
-        {success && <Alert color="info">{success}</Alert>}
+        {success && (
+          <Alert color="info" variant="outlined" sx={{ color: '#fff' }}>
+            {success}
+          </Alert>
+        )}
       </Stack>
     </Box>
   );

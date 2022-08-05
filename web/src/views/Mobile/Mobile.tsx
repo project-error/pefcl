@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import './mobile.module.css';
 import styled from 'styled-components';
 import theme from '@utils/theme';
@@ -7,10 +7,12 @@ import MobileRoutes from './Routes';
 import { ThemeProvider } from '@mui/material';
 import { i18n } from 'i18next';
 import './i18n';
-import { loadPefclResources } from './i18n';
 import { I18nextProvider } from 'react-i18next';
+import { useI18n } from '@hooks/useI18n';
+import { Language } from '@utils/i18nResourceHelpers';
 
 const Container = styled.div`
+  color: #fff;
   background: ${theme.palette.background.default};
   overflow: auto;
   height: 100%;
@@ -22,38 +24,28 @@ interface MobileAppProps {
   settings: {
     language: {
       label: string;
-      value: string;
+      value: Language;
     };
   };
 }
 
 const MobileApp = (props: MobileAppProps) => {
-  const [i18nInstance, setI18nInstance] = useState<i18n>();
   const lng = props.settings.language.value;
+  const { i18n } = useI18n(props.i18n, lng);
 
-  useEffect(() => {
-    if (i18nInstance) {
-      i18nInstance.changeLanguage(lng);
-    }
-  }, [i18nInstance, lng]);
-
-  useEffect(() => {
-    const instance = props.i18n.cloneInstance();
-    loadPefclResources(instance);
-    setI18nInstance(instance);
-  }, [props.i18n]);
-
-  if (!i18nInstance) {
-    return 'No i18n instance created';
+  if (!i18n) {
+    return null;
   }
 
   return (
     <ThemeProvider theme={theme}>
-      <I18nextProvider i18n={i18nInstance} defaultNS="pefcl">
-        <Container>
-          <MobileRoutes isNpwdLoaded />
-          <MobileFooter isNpwdLoaded />
-        </Container>
+      <I18nextProvider i18n={i18n} defaultNS="pefcl">
+        <React.Suspense fallback="Loading PEFCL ..">
+          <Container>
+            <MobileRoutes isNpwdLoaded />
+            <MobileFooter isNpwdLoaded />
+          </Container>
+        </React.Suspense>
       </I18nextProvider>
     </ThemeProvider>
   );

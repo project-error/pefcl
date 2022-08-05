@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import image from './bg.png';
 import { NuiProvider } from 'react-fivem-hooks';
 import MobileApp from './views/Mobile/Mobile';
+import i18n from '@utils/i18n';
 
 const Container = styled.div`
   position: relative;
@@ -43,7 +44,7 @@ const Root = () => (
         <Background src={image} />
         <React.Suspense fallback="Loading phone">
           <AppContainer>
-            <MobileApp />
+            <MobileApp settings={{ language: { label: 'Svenska', value: 'sv' } }} i18n={i18n} />
           </AppContainer>
         </React.Suspense>
       </Container>

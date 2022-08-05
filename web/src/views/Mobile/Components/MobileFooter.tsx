@@ -10,6 +10,7 @@ import theme from '@utils/theme';
 import React, { ReactNode } from 'react';
 import { Link, useRouteMatch } from 'react-router-dom';
 import { externalAppConfig } from 'npwd.config';
+import { useTranslation } from 'react-i18next';
 
 export const FooterHeight = '5rem';
 const Container = styled.div`
@@ -105,15 +106,16 @@ interface MobileFooterProps {
   isNpwdLoaded: boolean;
 }
 const MobileFooter = ({ isNpwdLoaded }: MobileFooterProps) => {
+  const { t } = useTranslation();
   const prefix = isNpwdLoaded ? externalAppConfig().path : '';
 
   return (
     <Container>
       <List>
-        <ListItem icon={<DashboardRounded />} label="Dashboard" to={`${prefix}/dashboard`} />
-        <ListItem icon={<CreditCardRounded />} label="Accounts" to={`${prefix}/accounts`} />
-        <ListItem icon={<SwapHorizRounded />} label="Transfer" to={`${prefix}/transfer`} />
-        <ListItem icon={<ReceiptRounded />} label="Invoices" to={`${prefix}/invoices`} />
+        <ListItem icon={<DashboardRounded />} label={t('Dashboard')} to={`${prefix}/dashboard`} />
+        <ListItem icon={<CreditCardRounded />} label={t('Accounts')} to={`${prefix}/accounts`} />
+        <ListItem icon={<SwapHorizRounded />} label={t('Transfer')} to={`${prefix}/transfer`} />
+        <ListItem icon={<ReceiptRounded />} label={t('Invoices')} to={`${prefix}/invoices`} />
       </List>
     </Container>
   );

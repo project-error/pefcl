@@ -6,7 +6,7 @@ import { initReactI18next } from 'react-i18next';
 import { getConfig } from '@utils/api';
 import updateLocale from 'dayjs/plugin/updateLocale';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
-import { getI18nResources } from './i18nResourceHelpers';
+import { getI18nResourcesNamespaced } from './i18nResourceHelpers';
 
 dayjs.extend(updateLocale);
 dayjs.extend(localizedFormat);
@@ -14,7 +14,7 @@ dayjs.extend(localizedFormat);
 const load = async () => {
   const config = await getConfig();
   const language = config.general.language ?? 'en';
-  const resources = getI18nResources();
+  const resources = getI18nResourcesNamespaced('translation');
 
   await i18n
     .use(initReactI18next)

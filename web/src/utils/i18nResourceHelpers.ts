@@ -7,11 +7,15 @@ export type Locale = Record<Language, LanguageContent>;
 export type Resource = Record<Language, Record<Namespace, LanguageContent>>;
 
 export const getI18nResources = () => {
+  return languages;
+};
+
+export const getI18nResourcesNamespaced = (namespace: Namespace) => {
   return Object.keys(languages).reduce((prev, key) => {
     return {
       ...prev,
       [key]: {
-        translation: languages[key as Language],
+        [namespace]: languages[key as Language],
       },
     };
   }, {} as Resource);
