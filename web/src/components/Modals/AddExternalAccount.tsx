@@ -1,6 +1,6 @@
 import Button from '@components/ui/Button';
 import TextField from '@components/ui/Fields/TextField';
-import { Box, Dialog, DialogContent, DialogTitle, FormHelperText, Stack } from '@mui/material';
+import { Box, DialogContent, DialogTitle, FormHelperText, Stack } from '@mui/material';
 import { ExternalAccountEvents } from '@typings/Events';
 import { AccountErrors, ExternalAccountErrors, GenericErrors } from '@typings/Errors';
 import { fetchNui } from '@utils/fetchNui';
@@ -10,6 +10,7 @@ import { useTranslation } from 'react-i18next';
 import { useAtom } from 'jotai';
 import { externalAccountsAtom } from '@data/externalAccounts';
 import { regexExternalNumber } from '@shared/utils/regexes';
+import BaseDialog from './BaseDialog';
 
 interface FormValues {
   name: string;
@@ -72,79 +73,82 @@ const AddExternalAccountModal = ({ isOpen, onClose }: AddExternalAccountModalPro
   };
 
   return (
-    <Dialog open={isOpen} onClose={handleClose} fullWidth hideBackdrop maxWidth="xs">
-      <DialogTitle>
-        <span>{t('Add external account')}</span>
-      </DialogTitle>
+    <BaseDialog open={isOpen} onClose={handleClose} maxWidth="xs">
+      <Box p={2}>
+        <DialogTitle>
+          <span>{t('Add external account')}</span>
+        </DialogTitle>
 
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <DialogContent>
-          <Stack spacing={4}>
-            <Stack spacing={1}>
-              <Controller
-                name="number"
-                control={control}
-                rules={{
-                  required: {
-                    value: true,
-                    message: t('Clearing- & account number is required'),
-                  },
-                  pattern: {
-                    value: regexExternalNumber,
-                    message: t('Invalid number, format is: xxx, xxxx-xxxx-xxxx'),
-                  },
-                }}
-                render={({ field }) => (
-                  <TextField
-                    label={t('Clearing- & account number')}
-                    placeholder={'xxx, xxxx-xxxx-xxxx'} // TODO: Generate from numberformatting func
-                    {...field}
-                    ref={null}
-                  />
-                )}
-              />
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <DialogContent>
+            <Stack spacing={4}>
+              <Stack spacing={1}>
+                <Controller
+                  name="number"
+                  control={control}
+                  rules={{
+                    required: {
+                      value: true,
+                      message: t('Clearing- & account number is required'),
+                    },
+                    pattern: {
+                      value: regexExternalNumber,
+                      message: t('Invalid number, format is: xxx, xxxx-xxxx-xxxx'),
+                    },
+                  }}
+                  render={({ field }) => (
+                    <TextField
+                      label={t('Clearing- & account number')}
+                      placeholder={'xxx, xxxx-xxxx-xxxx'} // TODO: Generate from numberformatting func
+                      {...field}
+                      ref={null}
+                    />
+                  )}
+                />
 
-              <FormHelperText>{formState.errors.number?.message}</FormHelperText>
+                <FormHelperText>{formState.errors.number?.message}</FormHelperText>
+              </Stack>
+
+              <Stack spacing={1}>
+                <Controller
+                  name="name"
+                  control={control}
+                  rules={{
+                    required: {
+                      value: true,
+                      message: t('Account name is required'),
+                    },
+                  }}
+                  render={({ field }) => (
+                    <TextField
+                      placeholder={t('Account name')}
+                      label={t('External account name')}
+                      {...field}
+                      ref={null}
+                    />
+                  )}
+                />
+
+                <FormHelperText>{formState.errors.name?.message}</FormHelperText>
+              </Stack>
             </Stack>
-            <Stack spacing={1}>
-              <Controller
-                name="name"
-                control={control}
-                rules={{
-                  required: {
-                    value: true,
-                    message: t('Account name is required'),
-                  },
-                }}
-                render={({ field }) => (
-                  <TextField
-                    placeholder={t('Account name')}
-                    label={t('External account name')}
-                    {...field}
-                    ref={null}
-                  />
-                )}
-              />
 
-              <FormHelperText>{formState.errors.name?.message}</FormHelperText>
+            <FormHelperText>{error}</FormHelperText>
+          </DialogContent>
+
+          <Box p="0.5rem 1.5rem 1.5rem">
+            <Stack justifyContent="flex-end" spacing={1}>
+              <Button type="submit" disabled={isLoading}>
+                {t('Add external account')}
+              </Button>
+              <Button color="error" onClick={handleClose} disabled={isLoading}>
+                {t('Cancel')}
+              </Button>
             </Stack>
-          </Stack>
-
-          <FormHelperText>{error}</FormHelperText>
-        </DialogContent>
-
-        <Box p="0.5rem 1.5rem 1.5rem">
-          <Stack direction="row" justifyContent="flex-end" spacing={4}>
-            <Button color="error" onClick={handleClose} disabled={isLoading}>
-              {t('Cancel')}
-            </Button>
-            <Button type="submit" disabled={isLoading}>
-              {t('Add external account')}
-            </Button>
-          </Stack>
-        </Box>
-      </form>
-    </Dialog>
+          </Box>
+        </form>
+      </Box>
+    </BaseDialog>
   );
 };
 

@@ -85,6 +85,7 @@ const AccountSelect = ({
   externalAccounts = [],
 }: AccountSelectProps) => {
   const config = useConfig();
+  const [isOpen, setIsOpen] = useState(false);
   const [isExternalOpen, setIsExternalOpen] = useState(false);
   const [selected, setSelected] = useState<number>(0);
 
@@ -104,12 +105,20 @@ const AccountSelect = ({
     onSelect(value);
   };
 
+  const handleAddExternalAccount = () => {
+    setIsOpen(false);
+    setIsExternalOpen(true);
+  };
+
   return (
     <div>
       <React.Suspense fallback={null}>
         <AddExternalAccountModal isOpen={isExternalOpen} onClose={() => setIsExternalOpen(false)} />
       </React.Suspense>
       <Select
+        open={isOpen}
+        onClose={() => setIsOpen(false)}
+        onClick={() => !isOpen && setIsOpen(true)}
         value={selected.toString()}
         onChange={handleChange}
         variant="filled"
@@ -125,7 +134,7 @@ const AccountSelect = ({
       >
         {!isFromAccount && (
           <Box p={2} display="flex">
-            <Button fullWidth onClick={() => setIsExternalOpen(true)}>
+            <Button fullWidth onClick={handleAddExternalAccount}>
               {t('Add external account')}
             </Button>
           </Box>

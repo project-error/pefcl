@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { Dialog, Stack } from '@mui/material';
+import { Stack } from '@mui/material';
 import styled from '@emotion/styled';
 import calendar from 'dayjs/plugin/calendar';
 import relative from 'dayjs/plugin/relativeTime';
@@ -15,6 +15,7 @@ import { BodyText } from './ui/Typography/BodyText';
 import { formatMoney } from '@utils/currency';
 import Button from './ui/Button';
 import Status from './ui/Status';
+import BaseDialog from './Modals/BaseDialog';
 
 dayjs.extend(calendar);
 dayjs.extend(relative);
@@ -60,9 +61,9 @@ const InvoiceItem: React.FC<{ invoice: Invoice }> = ({ invoice, ...props }) => {
 
   return (
     <div {...props} key={id}>
-      <Dialog open={isPayOpen} onClose={handleCloseModal} maxWidth="md" fullWidth hideBackdrop>
+      <BaseDialog open={isPayOpen} onClose={handleCloseModal} maxWidth="md">
         <PayInvoiceModal onClose={handleCloseModal} invoice={invoice} />
-      </Dialog>
+      </BaseDialog>
 
       <Stack spacing={0}>
         <Stack flexDirection="row" justifyContent="space-between">

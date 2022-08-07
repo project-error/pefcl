@@ -19,6 +19,7 @@ import Summary from '../Summary';
 import Button from '../ui/Button';
 import { BodyText } from '../ui/Typography/BodyText';
 import { Heading2, Heading3, Heading5, Heading6 } from '../ui/Typography/Headings';
+import { useGlobalSettings } from '@hooks/useGlobalSettings';
 
 dayjs.extend(calendar);
 
@@ -32,6 +33,7 @@ interface PayInvoiceModalProps {
 }
 
 const PayInvoiceModal = ({ onClose, invoice }: PayInvoiceModalProps) => {
+  const { isMobile } = useGlobalSettings();
   const [accounts, updateAccounts] = useAtom(accountsAtom);
   const [defaultAccount] = useAtom(defaultAccountAtom);
   const [, updateInvoices] = useAtom(invoicesAtom);
@@ -62,7 +64,7 @@ const PayInvoiceModal = ({ onClose, invoice }: PayInvoiceModalProps) => {
 
   return (
     <Paper>
-      <Stack p={8} direction="row" spacing={12} justifyContent="space-between">
+      <Stack p={4} spacing={isMobile ? 4 : 8} direction={isMobile ? 'column' : 'row'}>
         <Stack spacing={4} flex={1}>
           <Stack>
             <Stack direction="row" justifyContent="space-between">
@@ -73,7 +75,7 @@ const PayInvoiceModal = ({ onClose, invoice }: PayInvoiceModalProps) => {
             <Heading5>{invoice.from}</Heading5>
           </Stack>
 
-          <Stack>
+          <Stack spacing={0.25}>
             <Heading6>{t('Message')}</Heading6>
             <BodyText>{invoice.message}</BodyText>
           </Stack>
@@ -87,12 +89,15 @@ const PayInvoiceModal = ({ onClose, invoice }: PayInvoiceModalProps) => {
         </Stack>
 
         <Stack spacing={4} flex={1}>
-          <AccountSelect
-            isFromAccount
-            accounts={accounts}
-            onSelect={setSelectedAccountId}
-            selectedId={selectedAccountId}
-          />
+          <Stack spacing={0.5}>
+            <Heading6>{t('Account')}</Heading6>
+            <AccountSelect
+              isFromAccount
+              accounts={accounts}
+              onSelect={setSelectedAccountId}
+              selectedId={selectedAccountId}
+            />
+          </Stack>
 
           <Summary balance={selectedAccount?.balance ?? 0} payment={invoice.amount} />
 
