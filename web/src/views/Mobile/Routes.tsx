@@ -1,3 +1,4 @@
+import { useGlobalSettings } from '@hooks/useGlobalSettings';
 import React from 'react';
 import { Route } from 'react-router-dom';
 import MobileAccountsView from './views/Accounts/MobileAccountsView';
@@ -5,12 +6,12 @@ import MobileDashboardView from './views/Dashboard/MobileDashboardView';
 import MobileInvoicesView from './views/Invoices/MobileInvoicesView';
 import MobileTransferView from './views/Transfer/MobileTransferView';
 
-interface MobileRoutesProps {
-  isNpwdLoaded: boolean;
-}
+const MobileRoutes = () => {
+  const settings = useGlobalSettings();
+  const prefix = settings.isMobile ? '/bank' : '';
 
-const MobileRoutes = ({ isNpwdLoaded }: MobileRoutesProps) => {
-  const prefix = isNpwdLoaded ? '/bank' : '';
+  console.log({ settings });
+
   return (
     <>
       <Route path={`${prefix}/`} exact component={MobileDashboardView} />

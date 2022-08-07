@@ -11,6 +11,7 @@ import React, { ReactNode } from 'react';
 import { Link, useRouteMatch } from 'react-router-dom';
 import { externalAppConfig } from 'npwd.config';
 import { useTranslation } from 'react-i18next';
+import { useGlobalSettings } from '@hooks/useGlobalSettings';
 
 export const FooterHeight = '5rem';
 const Container = styled.div`
@@ -102,12 +103,10 @@ const ListItem = ({ to, icon, label, amount }: ListItemProps) => {
   );
 };
 
-interface MobileFooterProps {
-  isNpwdLoaded: boolean;
-}
-const MobileFooter = ({ isNpwdLoaded }: MobileFooterProps) => {
+const MobileFooter = () => {
   const { t } = useTranslation();
-  const prefix = isNpwdLoaded ? externalAppConfig().path : '';
+  const settings = useGlobalSettings();
+  const prefix = settings.isMobile ? externalAppConfig().path : '';
 
   return (
     <Container>
