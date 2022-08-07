@@ -54,4 +54,8 @@ export class SharedAccountDB {
   async deleteSharedAccount(id: number) {
     return await SharedAccountModel.findOne({ where: { id } });
   }
+
+  async deleteSharedAccountsByAccountId(accountId: number) {
+    return await SharedAccountModel.destroy({ where: { accountId } });
+  }
 }

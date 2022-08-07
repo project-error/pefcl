@@ -293,6 +293,8 @@ export class AccountService {
     logger.silly('Trying to DELETE account ...');
     logger.silly(req);
 
+    const { accountId } = req.data;
+
     const t = await sequelize.transaction();
     try {
       const user = this._userService.getUser(req.source);
@@ -300,7 +302,7 @@ export class AccountService {
 
       // TODO #2: Is this the best we can do?
       const deletingAccount = await this._accountDB.getAuthorizedAccountById(
-        req.data.accountId,
+        accountId,
         user.getIdentifier(),
       );
 
@@ -332,7 +334,11 @@ export class AccountService {
       );
 
       await this._accountDB.increment(defaultAccount, deletingAccountBalance, t);
-      await deletingAccount.destroy({ transaction: t });
+      await deletingAccount.destroy({ transaction: t, hooks: true });
+
+      /* Delete matching shared accounts */
+      /* TODO: This should not be needed via CASCADE .. */
+      await this._sharedAccountDB.deleteSharedAccountsByAccountId(accountId);
 
       t.commit();
     } catch (e) {
@@ -342,7 +348,7 @@ export class AccountService {
       return;
     }
 
-    logger.silly('Successfullt deleted account!');
+    logger.silly('Successfully deleted account!');
     logger.silly(req);
     return;
   }
