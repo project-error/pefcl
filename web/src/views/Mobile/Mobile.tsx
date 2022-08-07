@@ -9,10 +9,10 @@ import { i18n } from 'i18next';
 import './i18n';
 import { I18nextProvider } from 'react-i18next';
 import { useI18n } from '@hooks/useI18n';
-import { Language } from '@utils/i18nResourceHelpers';
 import { Box } from '@mui/system';
 import { Heading6 } from '@components/ui/Typography/Headings';
 import { GlobalSettingsProvider } from '@hooks/useGlobalSettings';
+import { IPhoneSettings } from '@project-error/npwd-types';
 
 const Container = styled.div`
   color: #fff;
@@ -21,16 +21,6 @@ const Container = styled.div`
   height: 100%;
   padding-bottom: ${FooterHeight};
 `;
-
-interface MobileAppProps {
-  i18n: i18n;
-  settings: {
-    language: {
-      label: string;
-      value: Language;
-    };
-  };
-}
 
 interface LoadingFallbackProps {
   message: string;
@@ -52,6 +42,11 @@ const LoadingFallback = (props: LoadingFallbackProps) => (
     </Stack>
   </Box>
 );
+
+interface MobileAppProps {
+  i18n: i18n;
+  settings: IPhoneSettings;
+}
 
 const MobileApp = (props: MobileAppProps) => {
   const lng = props.settings.language.value;
