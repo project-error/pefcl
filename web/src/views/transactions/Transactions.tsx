@@ -7,7 +7,6 @@ import theme from '@utils/theme';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Heading2, Heading5, Heading6 } from '../../components/ui/Typography/Headings';
-import TransactionFilters, { TransactionFilter } from './Filters';
 import { fetchNui } from '@utils/fetchNui';
 import { GetTransactionsResponse, Transaction } from '@typings/Transaction';
 import { TransactionEvents } from '@typings/Events';
@@ -42,7 +41,6 @@ const Transactions = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [total, setTotal] = useState(0);
   const [limit, setLimit] = useState(10);
-  const [activeFilters, setActiveFilters] = useState<TransactionFilter[]>([]);
   const pages = Math.ceil(total / limit);
   const [page, setPage] = useState(1);
 
@@ -65,16 +63,6 @@ const Transactions = () => {
     });
   }, [page, limit]);
 
-  const chipFilteredTransactions =
-    activeFilters.length === 0
-      ? transactions
-      : transactions.filter((transaction) => {
-          const anyPassed: boolean[] = activeFilters.map((filterFunc) =>
-            filterFunc.sort(transaction),
-          );
-          return anyPassed.some(Boolean);
-        });
-
   return (
     <Layout>
       <Heading2>{t('Transactions')}</Heading2>
@@ -82,25 +70,20 @@ const Transactions = () => {
       <Container spacing={4} direction="row" marginTop={4}>
         <Stack spacing={2} flex="4">
           <Stack direction="row" justifyContent="space-between">
-            <Heading5>{t('Filters')}</Heading5>
+            <Heading5>{t('Transactions')}</Heading5>
             <Stack direction="row" spacing={2} alignItems="center">
               <Heading6>{t('Total')}</Heading6>
               <Count amount={total} />
             </Stack>
           </Stack>
 
-          <TransactionFilters updateActiveFilters={setActiveFilters} />
-
-          <Stack direction="row" spacing={2} alignItems="center" justifyContent="space-between">
-            <Heading5>{t('Transactions')}</Heading5>
-          </Stack>
           <TransactionsContainer spacing={2}>
-            {chipFilteredTransactions.map((transaction) => (
+            {transactions.map((transaction) => (
               <TransactionItem transaction={transaction} key={transaction.id} />
             ))}
           </TransactionsContainer>
 
-          <Stack sx={{ marginTop: 'auto', alignSelf: 'flex-end' }}>
+          <Stack sx={{ marginTop: 'auto !important', alignSelf: 'flex-end' }}>
             <Pagination
               count={pages}
               shape="rounded"
