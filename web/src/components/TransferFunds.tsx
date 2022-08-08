@@ -15,6 +15,7 @@ import { externalAccountsAtom } from '@data/externalAccounts';
 import { GenericErrors } from '@typings/Errors';
 import { formatMoney } from '@utils/currency';
 import { useConfig } from '@hooks/useConfig';
+import NewBalance from './ui/NewBalance';
 
 const TransferFunds: React.FC<{ onClose?(): void }> = ({ onClose }) => {
   const { general } = useConfig();
@@ -77,8 +78,8 @@ const TransferFunds: React.FC<{ onClose?(): void }> = ({ onClose }) => {
 
   const rawValue = parseInt(amount.replace(/\D/g, ''));
   const value = isNaN(rawValue) ? 0 : rawValue;
-  const newCash = (fromAccount?.balance ?? 0) - value;
-  const isValidNewBalance = newCash >= 0;
+  const newBalance = (fromAccount?.balance ?? 0) - value;
+  const isValidNewBalance = newBalance >= 0;
 
   return (
     <>
@@ -112,12 +113,8 @@ const TransferFunds: React.FC<{ onClose?(): void }> = ({ onClose }) => {
               placeholder="amount"
               value={amount}
               onChange={(event) => setAmount(event.target.value)}
-              renderSuffix={() => (
-                <Typography variant="caption" color={isValidNewBalance ? 'primary.main' : 'error'}>
-                  {formatMoney(newCash, general)}
-                </Typography>
-              )}
             />
+            <NewBalance amount={newBalance} isValid={isValidNewBalance} />
           </Stack>
 
           <FormHelperText>{error}</FormHelperText>

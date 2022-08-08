@@ -2,6 +2,7 @@ import AccountSelect from '@components/AccountSelect';
 import Layout from '@components/Layout';
 import Button from '@components/ui/Button';
 import PriceField from '@components/ui/Fields/PriceField';
+import NewBalance from '@components/ui/NewBalance';
 import { Heading2, Heading6 } from '@components/ui/Typography/Headings';
 import { accountsAtom } from '@data/accounts';
 import { useConfig } from '@hooks/useConfig';
@@ -30,8 +31,8 @@ const Withdraw = () => {
 
   const rawValue = parseInt(amount.replace(/\D/g, ''));
   const value = isNaN(rawValue) ? 0 : rawValue;
-  const newCash = (selectedAccount?.balance ?? 0) - value;
-  const isValidNewBalance = newCash >= 0;
+  const newBalance = (selectedAccount?.balance ?? 0) - value;
+  const isValidNewBalance = newBalance >= 0;
   const isValidTransaction = Boolean(amount) && value > 0 && selectedAccountId;
   const isButtonDisabled = !isValidNewBalance || !isValidTransaction || isLoading;
 
@@ -53,7 +54,7 @@ const Withdraw = () => {
       .then(() => {
         updateAccounts();
         setAmount('');
-        setCurrentCash(newCash);
+        setCurrentCash(newBalance);
         setSuccess(
           t('Successfully withdrew {{amount}}.', {
             amount: formatMoney(value, general),
@@ -96,15 +97,11 @@ const Withdraw = () => {
         <Stack spacing={1}>
           <Heading6>{t('Amount')}</Heading6>
           <PriceField
-            renderSuffix={() => (
-              <Typography variant="caption" color={isValidNewBalance ? 'primary.main' : 'error'}>
-                {selectedAccountId && formatMoney(newCash, general)}
-              </Typography>
-            )}
             placeholder={t('Amount')}
             value={amount}
             onChange={(event) => setAmount(event.target.value)}
           />
+          <NewBalance amount={newBalance} isValid={isValidNewBalance} />
         </Stack>
 
         <Button size="large" disabled={isButtonDisabled} onClick={handleWithdrawal}>

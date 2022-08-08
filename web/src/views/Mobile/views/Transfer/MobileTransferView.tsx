@@ -1,11 +1,12 @@
 import AccountSelect from '@components/AccountSelect';
 import Button from '@components/ui/Button';
 import PriceField from '@components/ui/Fields/PriceField';
+import NewBalance from '@components/ui/NewBalance';
 import { Heading2, Heading5 } from '@components/ui/Typography/Headings';
 import { accountsAtom } from '@data/accounts';
 import { transactionBaseAtom } from '@data/transactions';
 import { useConfig } from '@hooks/useConfig';
-import { Alert, Stack, Typography } from '@mui/material';
+import { Alert, Stack } from '@mui/material';
 import { Box } from '@mui/system';
 import { TransactionEvents } from '@typings/Events';
 import { CreateTransferInput, TransferType } from '@typings/Transaction';
@@ -93,15 +94,8 @@ const MobileTransferView = () => {
 
         <Stack spacing={1}>
           <Heading5>{t('Amount')}</Heading5>
-          <PriceField
-            value={amount}
-            onChange={(event) => setAmount(event.target.value)}
-            renderSuffix={() => (
-              <Typography variant="caption" color={isValidNewBalance ? 'primary.main' : 'error'}>
-                {formatMoney(newBalance, general)}
-              </Typography>
-            )}
-          />
+          <PriceField value={amount} onChange={(event) => setAmount(event.target.value)} />
+          <NewBalance amount={newBalance} isValid={isValidNewBalance} />
         </Stack>
 
         <Button size="large" onClick={handleTransfer} disabled={isButtonDisabled}>

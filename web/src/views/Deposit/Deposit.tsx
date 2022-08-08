@@ -2,6 +2,7 @@ import AccountSelect from '@components/AccountSelect';
 import Layout from '@components/Layout';
 import Button from '@components/ui/Button';
 import PriceField from '@components/ui/Fields/PriceField';
+import NewBalance from '@components/ui/NewBalance';
 import { Heading2, Heading6 } from '@components/ui/Typography/Headings';
 import { accountsAtom } from '@data/accounts';
 import { useConfig } from '@hooks/useConfig';
@@ -85,15 +86,11 @@ const Deposit = () => {
         <Stack spacing={1}>
           <Heading6>{t('Amount')}</Heading6>
           <PriceField
-            renderSuffix={() => (
-              <Typography variant="caption" color={isValidNewBalance ? 'primary.main' : 'error'}>
-                {formatMoney(newCash, general)}
-              </Typography>
-            )}
             placeholder={t('Amount')}
             value={amount}
             onChange={(event) => setAmount(event.target.value)}
           />
+          <NewBalance amount={newCash} isValid={isValidNewBalance} newBalanceText={t('New cash')} />
         </Stack>
         <Stack spacing={1}>
           <Heading6>{t('Select account')}</Heading6>
