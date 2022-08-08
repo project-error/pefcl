@@ -12,6 +12,9 @@ import { Link, useRouteMatch } from 'react-router-dom';
 import { externalAppConfig } from 'npwd.config';
 import { useTranslation } from 'react-i18next';
 import { useGlobalSettings } from '@hooks/useGlobalSettings';
+import { Atom } from 'jotai';
+import { totalUnpaidInvoicesAtom } from '@data/invoices';
+import BadgeAtom from '@components/ui/BadgeAtom';
 
 export const FooterHeight = '5rem';
 const Container = styled.div`
@@ -55,11 +58,13 @@ const ListItemContainer = styled.li<{ isActive: boolean }>`
   transition: 250ms;
 
   opacity: 0.5;
+
   width: 5rem;
   height: 4rem;
 
   :hover {
-    background-color: ${theme.palette.background.light2};
+    opacity: 0.8;
+    background-color: ${theme.palette.background.light8};
   }
 
   :active {
@@ -87,16 +92,24 @@ interface ListItemProps {
   label: string;
   icon: ReactNode;
   amount?: number;
+  countAtom?: Atom<number>;
 }
-const ListItem = ({ to, icon, label, amount }: ListItemProps) => {
+const ListItem = ({ to, icon, label, amount, countAtom }: ListItemProps) => {
   const match = useRouteMatch(to);
 
   return (
     <Link to={to}>
       <ListItemContainer isActive={match?.url === to}>
-        <Badge color="error" badgeContent={amount}>
-          {icon}
-        </Badge>
+        {countAtom ? (
+          <BadgeAtom color="error" countAtom={countAtom}>
+            {icon}
+          </BadgeAtom>
+        ) : (
+          <Badge color="error" badgeContent={amount}>
+            {icon}
+          </Badge>
+        )}
+
         <span>{label}</span>
       </ListItemContainer>
     </Link>
@@ -114,7 +127,12 @@ const MobileFooter = () => {
         <ListItem icon={<DashboardRounded />} label={t('Dashboard')} to={`${prefix}/dashboard`} />
         <ListItem icon={<CreditCardRounded />} label={t('Accounts')} to={`${prefix}/accounts`} />
         <ListItem icon={<SwapHorizRounded />} label={t('Transfer')} to={`${prefix}/transfer`} />
-        <ListItem icon={<ReceiptRounded />} label={t('Invoices')} to={`${prefix}/invoices`} />
+        <ListItem
+          icon={<ReceiptRounded />}
+          label={t('Invoices')}
+          to={`${prefix}/invoices`}
+          countAtom={totalUnpaidInvoicesAtom}
+        />
       </List>
     </Container>
   );
