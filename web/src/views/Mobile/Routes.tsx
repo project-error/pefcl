@@ -10,8 +10,6 @@ const MobileRoutes = () => {
   const settings = useGlobalSettings();
   const prefix = settings.isMobile ? '/bank' : '';
 
-  console.log({ settings });
-
   return (
     <>
       <Route path={`${prefix}/`} exact component={MobileDashboardView} />

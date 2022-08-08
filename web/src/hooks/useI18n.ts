@@ -41,7 +41,6 @@ export const useI18n = (initialI18n: i18n, language: Language) => {
 
   useEffect(() => {
     if (i18n) {
-      console.log('changing language to', language);
       changeLanguage(language);
     }
   }, [changeLanguage, i18n, language]);
