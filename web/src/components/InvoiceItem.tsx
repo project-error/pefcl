@@ -89,7 +89,7 @@ const InvoiceItem: React.FC<{ invoice: Invoice }> = ({ invoice, ...props }) => {
 
         {invoice.status === InvoiceStatus.PAID && (
           <PaidStatusContainer>
-            <Status label={InvoiceStatus.PAID} color="success" />
+            <Status label={t('Paid')} color="success" />
           </PaidStatusContainer>
         )}
       </Stack>
