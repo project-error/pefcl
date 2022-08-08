@@ -1,6 +1,5 @@
 import styled from '@emotion/styled';
 import { ListSubheader, MenuItem, SelectChangeEvent, Stack, Typography } from '@mui/material';
-import { t } from 'i18next';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Account, AccountRole, AccountType, ExternalAccount } from '@typings/Account';
@@ -84,6 +83,7 @@ const AccountSelect = ({
   isFromAccount = false,
   externalAccounts = [],
 }: AccountSelectProps) => {
+  const { t } = useTranslation();
   const config = useConfig();
   const [isOpen, setIsOpen] = useState(false);
   const [isExternalOpen, setIsExternalOpen] = useState(false);
@@ -123,7 +123,6 @@ const AccountSelect = ({
         onChange={handleChange}
         variant="filled"
         sx={{ width: '100%' }}
-        disableInjectingGlobalStyles
         MenuProps={{
           sx: {
             maxHeight: '25rem',

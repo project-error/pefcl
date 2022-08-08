@@ -3,7 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const ModuleFederationPlugin = require('webpack/lib/container/ModuleFederationPlugin');
 const deps = require('./package.json').dependencies;
-const port = process.env.PORT ?? 3007;
+const port = process.env.PORT ?? 3002;
 
 /* TODO: Fix for real */
 /* Probably bad way of fixing this */
