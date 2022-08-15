@@ -90,11 +90,11 @@ export class InvoiceService {
       const invoice = await this._invoiceDB.getInvoiceById(req.data.invoiceId);
 
       /* Should we insert money to a specific account? */
-      const recieverAccountId = invoice?.getDataValue('recieverAccountId');
+      const receiverAccountId = invoice?.getDataValue('receiverAccountId');
       const toAccountIdentifier = invoice?.getDataValue('fromIdentifier');
 
-      const toAccount = recieverAccountId
-        ? await this._accountDB.getAccountById(recieverAccountId)
+      const toAccount = receiverAccountId
+        ? await this._accountDB.getAccountById(receiverAccountId)
         : await this._accountDB.getDefaultAccountByIdentifier(toAccountIdentifier ?? '');
 
       if (!invoice || !fromAccount || !toAccount) {
