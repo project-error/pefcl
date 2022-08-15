@@ -55,7 +55,7 @@ CREATE TABLE `pefcl_invoices` (
   `to` varchar(255) NOT NULL,
   `fromIdentifier` varchar(255) NOT NULL,
   `toIdentifier` varchar(255) NOT NULL,
-  `receiverAccountId` int,
+  `receiverAccountId` int DEFAULT NULL,
   `amount` int DEFAULT '0',
   `status` varchar(255) DEFAULT 'PENDING',
   `expiresAt` datetime NOT NULL,
