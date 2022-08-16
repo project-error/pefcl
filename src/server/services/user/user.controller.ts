@@ -27,7 +27,7 @@ export class UserController {
 
   @Export(ServerExports.UnloadPlayer)
   async unloadPlayer(req: Request<number>) {
-    this._userService.unloadPlayer(req.data);
+    this._userService.unloadPlayer(req.source);
   }
 
   @NetPromise(UserEvents.GetUsers)
