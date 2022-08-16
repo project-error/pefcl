@@ -48,8 +48,8 @@ const PaidStatusContainer = styled(ExpiresAndButton)`
 `;
 
 const InvoiceItem: React.FC<{ invoice: Invoice }> = ({ invoice, ...props }) => {
-  const { message, amount, id, createdAt, expiresAt, from } = invoice;
   const { t } = useTranslation();
+  const { message, amount, id, createdAt, expiresAt, from } = invoice;
   const config = useConfig();
   const expiresDate = dayjs(expiresAt);
   const createdDate = dayjs(createdAt);
@@ -80,7 +80,7 @@ const InvoiceItem: React.FC<{ invoice: Invoice }> = ({ invoice, ...props }) => {
           <ExpiresAndButton>
             <Stack>
               <Heading6>{t('Expires')}</Heading6>
-              <ExpireDate>{expiresDate.format('YYYY/MM/DD')}</ExpireDate>
+              <ExpireDate>{expiresDate.format(t('DATE_FORMAT'))}</ExpireDate>
             </Stack>
 
             <Button onClick={() => setIsPayOpen(true)}>{t('Pay invoice')}</Button>

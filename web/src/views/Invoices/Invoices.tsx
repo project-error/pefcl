@@ -2,13 +2,14 @@ import InvoiceItem from '@components/InvoiceItem';
 import Layout from '@components/Layout';
 import React, { useEffect, useState } from 'react';
 import { Heading3, Heading6 } from '@components/ui/Typography/Headings';
-import { Pagination, Stack } from '@mui/material';
+import { Pagination, Stack, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import theme from '@utils/theme';
 import styled from '@emotion/styled';
 import { GetInvoicesResponse, Invoice } from '@typings/Invoice';
 import { InvoiceEvents } from '@typings/Events';
 import { fetchNui } from '@utils/fetchNui';
+import { DEFAULT_PAGINATION_LIMIT } from '@utils/constants';
 
 const NoInvoicesText = styled(Heading3)`
   padding-top: 4rem;
@@ -19,6 +20,7 @@ const NoInvoicesText = styled(Heading3)`
 const InvoicesContainer = styled(Stack)`
   overflow: auto;
   max-height: calc(100% - 4.5rem);
+  height: 100%;
   padding-right: 1rem;
 `;
 
@@ -26,9 +28,12 @@ const Invoices = () => {
   const { t } = useTranslation();
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [total, setTotal] = useState(0);
-  const [limit, setLimit] = useState(10);
+  const [limit, setLimit] = useState(DEFAULT_PAGINATION_LIMIT);
   const pages = Math.ceil(total / limit);
   const [page, setPage] = useState(1);
+
+  const offset = limit * (page - 1);
+  const to = offset + limit > total ? total : offset + limit;
 
   const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
@@ -37,7 +42,7 @@ const Invoices = () => {
   useEffect(() => {
     fetchNui<GetInvoicesResponse>(InvoiceEvents.Get, {
       limit,
-      offset: limit * (page - 1),
+      offset,
     }).then((res) => {
       if (!res) {
         return;
@@ -47,7 +52,7 @@ const Invoices = () => {
       setTotal(res.total);
       setInvoices(res.invoices);
     });
-  }, [page, limit]);
+  }, [limit, offset]);
 
   return (
     <Layout title={t('Invoices')}>
@@ -59,7 +64,15 @@ const Invoices = () => {
         {invoices.map((invoice) => (
           <InvoiceItem key={invoice.id} invoice={invoice} />
         ))}
-        <Stack sx={{ marginTop: 'auto', alignSelf: 'flex-end' }}>
+        <Stack
+          pt={2}
+          sx={{ marginTop: 'auto !important', alignSelf: 'flex-end' }}
+          direction="row"
+          alignItems="center"
+        >
+          <Typography variant="caption">
+            {t('{{from}}-{{to}} of {{total}}', { from: offset, to, total })}
+          </Typography>
           <Pagination
             count={pages}
             shape="rounded"

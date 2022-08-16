@@ -90,7 +90,7 @@ const TransactionItem: React.FC<{ transaction: Transaction; isLimitedSpace?: boo
           </Stack>
 
           {!isLimitedSpace && (
-            <TransactionDate>{createdAtDate.format('YYYY/MM/DD')}</TransactionDate>
+            <TransactionDate>{createdAtDate.format(t('DATE_FORMAT'))}</TransactionDate>
           )}
         </Stack>
       </Stack>

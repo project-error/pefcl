@@ -13,12 +13,9 @@ import { TransactionEvents } from '@typings/Events';
 import { CreateTransferInput, TransferType } from '@typings/Transaction';
 import { externalAccountsAtom } from '@data/externalAccounts';
 import { GenericErrors } from '@typings/Errors';
-import { formatMoney } from '@utils/currency';
-import { useConfig } from '@hooks/useConfig';
 import NewBalance from './ui/NewBalance';
 
 const TransferFunds: React.FC<{ onClose?(): void }> = ({ onClose }) => {
-  const { general } = useConfig();
   const { t } = useTranslation();
   const [amount, setAmount] = useState('');
   const [accounts, updateAccounts] = useAtom(accountsAtom);
@@ -110,7 +107,7 @@ const TransferFunds: React.FC<{ onClose?(): void }> = ({ onClose }) => {
           <Stack spacing={1}>
             <Heading5>{t('Amount')}</Heading5>
             <PriceField
-              placeholder="amount"
+              placeholder={t('Amount')}
               value={amount}
               onChange={(event) => setAmount(event.target.value)}
             />

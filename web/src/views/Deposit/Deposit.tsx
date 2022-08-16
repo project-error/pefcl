@@ -107,7 +107,7 @@ const Deposit = () => {
         </Button>
 
         <Typography variant="caption">
-          This will take cash from your person and insert into selected bank account.
+          {t('This will take cash from your person and insert into selected bank account')}
         </Typography>
 
         {success && <Alert color="info">{success}</Alert>}

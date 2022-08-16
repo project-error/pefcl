@@ -83,7 +83,7 @@ const PayInvoiceModal = ({ onClose, invoice }: PayInvoiceModalProps) => {
           <Stack spacing={0.25}>
             <Heading6>{t('Expires')}</Heading6>
             <BodyText>
-              {expiresDate.format('YYYY/MM/DD HH:mm')} ({expiresDate.fromNow()})
+              {expiresDate.format(t('DATE_TIME_FORMAT'))} ({expiresDate.fromNow()})
             </BodyText>
           </Stack>
         </Stack>
