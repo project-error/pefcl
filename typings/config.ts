@@ -54,7 +54,17 @@ export interface ResourceConfig {
     props: number[];
     withdrawOptions: number[];
   };
-  blips: {
+  bankBlips: {
+    enabled: boolean;
+    name: string;
+    colour: number;
+    icon: number;
+    scale: number;
+    display: number;
+    shortRange: boolean;
+    coords: BlipCoords[];
+  };
+  atmBlips: {
     enabled: boolean;
     name: string;
     colour: number;
