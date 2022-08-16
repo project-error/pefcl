@@ -64,6 +64,9 @@ const Invoices = () => {
         {invoices.map((invoice) => (
           <InvoiceItem key={invoice.id} invoice={invoice} />
         ))}
+
+        {invoices.length === 0 && <NoInvoicesText>{t('No invoices, yet.')}</NoInvoicesText>}
+
         <Stack
           pt={2}
           sx={{ marginTop: 'auto !important', alignSelf: 'flex-end' }}
@@ -82,8 +85,6 @@ const Invoices = () => {
           />
         </Stack>
       </InvoicesContainer>
-
-      {invoices.length === 0 && <NoInvoicesText>{t('No invoices, yet.')}</NoInvoicesText>}
     </Layout>
   );
 };
