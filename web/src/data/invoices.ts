@@ -41,7 +41,7 @@ export const invoicesAtom = atom(
   },
 );
 
-export const pendingInvoicesAtom = atom((get) => {
+export const unpaidInvoicesAtom = atom((get) => {
   return get(invoicesAtom).invoices.filter((invoice) => invoice.status === InvoiceStatus.PENDING);
 });
 

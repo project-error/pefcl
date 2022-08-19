@@ -2,31 +2,24 @@ import { AccountCard } from '@components/Card';
 import InvoiceItem from '@components/InvoiceItem';
 import TotalBalance from '@components/TotalBalance';
 import TransactionItem from '@components/TransactionItem';
-import { Heading4 } from '@components/ui/Typography/Headings';
+import { Heading4, Heading5 } from '@components/ui/Typography/Headings';
+import { unpaidInvoicesAtom } from '@data/invoices';
 import { useFetchNui } from '@hooks/useFetchNui';
 import { Stack } from '@mui/material';
 import { Box } from '@mui/system';
 import { Account } from '@typings/Account';
-import { AccountEvents, InvoiceEvents, TransactionEvents } from '@typings/Events';
-import { GetInvoicesResponse, Invoice } from '@typings/Invoice';
+import { AccountEvents, TransactionEvents } from '@typings/Events';
 import { Transaction } from '@typings/Transaction';
 import { fetchNui } from '@utils/fetchNui';
+import { useAtom } from 'jotai';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 const MobileDashboardView = () => {
   const { t } = useTranslation();
-  const [defaultAccount, setDefaultAccount] = React.useState<Account>();
-  const [invoices, setInvoices] = useState<Invoice[]>([]);
+  const [defaultAccount, setDefaultAccount] = useState<Account>();
 
-  useEffect(() => {
-    fetchNui<GetInvoicesResponse>(InvoiceEvents.Get, {
-      limit: 2,
-      offset: 0,
-    }).then((res) => {
-      setInvoices(res?.invoices ?? []);
-    });
-  }, []);
+  const [invoices] = useAtom(unpaidInvoicesAtom);
 
   useEffect(() => {
     fetchNui<Account[]>(AccountEvents.GetAccounts).then((accounts) => {
@@ -66,6 +59,10 @@ const MobileDashboardView = () => {
           {invoices.map((invoice) => (
             <InvoiceItem key={invoice.id} invoice={invoice} />
           ))}
+
+          {invoices.length <= 0 && (
+            <Heading5>{t('There are currently no unpaid invoices!')}</Heading5>
+          )}
         </Stack>
       </Stack>
     </Box>

@@ -1,11 +1,11 @@
 import { useAtom } from 'jotai';
 import React from 'react';
-import { pendingInvoicesAtom } from '../../../data/invoices';
+import { unpaidInvoicesAtom } from '../../../data/invoices';
 import InvoiceItem from '@components/InvoiceItem';
 import { Stack } from '@mui/material';
 
 const PendingInvoices: React.FC = () => {
-  const [invoices] = useAtom(pendingInvoicesAtom);
+  const [invoices] = useAtom(unpaidInvoicesAtom);
 
   return (
     <Stack spacing={2}>
