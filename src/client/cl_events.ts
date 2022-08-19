@@ -17,6 +17,8 @@ import { RegisterNuiProxy } from 'cl_utils';
 import API from './cl_api';
 import config from './cl_config';
 
+const npwdExports = global.exports['npwd'];
+
 const useFrameworkIntegration = config.frameworkIntegration?.enabled;
 let hasNUILoaded = false;
 
@@ -41,38 +43,32 @@ const waitForNUILoaded = (checkInterval = 250): Promise<void> => {
   });
 };
 
+const SendBankUIMessage = (data: object) => {
+  SendNUIMessage(data);
+  npwdExports.sendUIMessage(data);
+};
+
 onNet(Broadcasts.NewTransaction, (result: Transaction) => {
-  SendNUIMessage({ type: Broadcasts.NewTransaction, payload: result });
+  SendBankUIMessage({ type: Broadcasts.NewTransaction, payload: result });
 });
 
 onNet(Broadcasts.NewInvoice, (result: Invoice) => {
-  SendNUIMessage({ type: Broadcasts.NewInvoice, payload: result });
+  SendBankUIMessage({ type: Broadcasts.NewInvoice, payload: result });
 });
 
 onNet(Broadcasts.NewSharedUser, () => {
-  SendNUIMessage({ type: Broadcasts.NewSharedUser });
+  SendBankUIMessage({ type: Broadcasts.NewSharedUser });
 });
 
 onNet(Broadcasts.RemovedSharedUser, () => {
-  SendNUIMessage({ type: Broadcasts.RemovedSharedUser });
+  SendBankUIMessage({ type: Broadcasts.RemovedSharedUser });
 });
-
-RegisterCommand(
-  'bank-force-load',
-  async () => {
-    console.debug('Waiting for NUI to load ..');
-    await waitForNUILoaded();
-    console.debug('Loaded. Emitting data to NUI.');
-    SendNUIMessage({ type: UserEvents.Loaded, payload: true });
-  },
-  false,
-);
 
 onNet(UserEvents.Loaded, async () => {
   console.debug('Waiting for NUI to load ..');
   await waitForNUILoaded();
   console.debug('Loaded. Emitting data to NUI.');
-  SendNUIMessage({ type: UserEvents.Loaded, payload: true });
+  SendBankUIMessage({ type: UserEvents.Loaded, payload: true });
 
   if (!useFrameworkIntegration) {
     StatSetInt(CASH_BAL_STAT, (await API.getMyCash()) ?? 0, true);
@@ -80,11 +76,10 @@ onNet(UserEvents.Loaded, async () => {
 });
 
 onNet(UserEvents.Unloaded, () => {
-  SendNUIMessage({ type: UserEvents.Unloaded });
+  SendBankUIMessage({ type: UserEvents.Unloaded });
 });
 
 const CASH_BAL_STAT = GetHashKey('MP0_WALLET_BALANCE');
-
 onNet(BalanceEvents.UpdateCashBalance, (newBalance: number) => {
   StatSetInt(CASH_BAL_STAT, newBalance, true);
 });
@@ -112,3 +107,14 @@ RegisterNuiProxy(ExternalAccountEvents.Get);
 RegisterNuiProxy(AccountEvents.WithdrawMoney);
 RegisterNuiProxy(AccountEvents.DepositMoney);
 RegisterNuiProxy(CashEvents.GetMyCash);
+
+RegisterCommand(
+  'bank-force-load',
+  async () => {
+    console.debug('Waiting for NUI to load ..');
+    await waitForNUILoaded();
+    console.debug('Loaded. Emitting data to NUI.');
+    SendBankUIMessage({ type: UserEvents.Loaded, payload: true });
+  },
+  false,
+);
