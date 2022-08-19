@@ -60,7 +60,7 @@ const PayInvoiceModal = ({ onClose, invoice }: PayInvoiceModalProps) => {
       .finally(onClose);
   };
 
-  const hasEnoughFunds = (selectedAccount?.balance ?? 0) > invoice.amount;
+  const hasEnoughFunds = (selectedAccount?.balance ?? 0) >= invoice.amount;
 
   return (
     <Paper>
