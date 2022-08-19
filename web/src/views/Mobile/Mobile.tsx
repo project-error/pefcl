@@ -13,6 +13,7 @@ import { Box } from '@mui/system';
 import { Heading6 } from '@components/ui/Typography/Headings';
 import { GlobalSettingsProvider } from '@hooks/useGlobalSettings';
 import { IPhoneSettings } from '@project-error/npwd-types';
+import { BroadcastsWrapper } from '@hooks/useBroadcasts';
 
 const Container = styled.div`
   color: #fff;
@@ -66,6 +67,9 @@ const MobileApp = (props: MobileAppProps) => {
             </React.Suspense>
             <MobileFooter />
           </Container>
+
+          {/* We don't need to show any fallback for the update component since it doesn't render anything anyway. */}
+          <React.Suspense fallback={null}>{<BroadcastsWrapper />}</React.Suspense>
         </I18nextProvider>
       </ThemeProvider>
     </GlobalSettingsProvider>
