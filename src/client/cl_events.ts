@@ -1,4 +1,5 @@
 import { RegisterNuiCB } from '@project-error/pe-utils';
+import { Account } from '@typings/Account';
 import {
   AccountEvents,
   ExternalAccountEvents,
@@ -48,12 +49,16 @@ const SendBankUIMessage = (data: object) => {
   npwdExports.sendUIMessage(data);
 };
 
-onNet(Broadcasts.NewTransaction, (result: Transaction) => {
-  SendBankUIMessage({ type: Broadcasts.NewTransaction, payload: result });
+onNet(Broadcasts.NewTransaction, (payload: Transaction) => {
+  SendBankUIMessage({ type: Broadcasts.NewTransaction, payload });
 });
 
-onNet(Broadcasts.NewInvoice, (result: Invoice) => {
-  SendBankUIMessage({ type: Broadcasts.NewInvoice, payload: result });
+onNet(Broadcasts.UpdatedAccount, (payload: Account) => {
+  SendBankUIMessage({ type: Broadcasts.UpdatedAccount, payload });
+});
+
+onNet(Broadcasts.NewInvoice, (payload: Invoice) => {
+  SendBankUIMessage({ type: Broadcasts.NewInvoice, payload });
 });
 
 onNet(Broadcasts.NewSharedUser, () => {

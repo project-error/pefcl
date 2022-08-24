@@ -25,6 +25,8 @@ export enum AccountEvents {
   DepositMoney = 'pefcl:depositMoney',
   WithdrawMoney = 'pefcl:withdrawMoney',
   NewBalance = 'pefcl:newAccountBalance',
+  NewAccountCreated = 'pefcl:newAccountCreated',
+  AccountDeleted = 'pefcl:accountDeleted',
 }
 
 export enum SharedAccountEvents {
@@ -39,6 +41,7 @@ export enum ExternalAccountEvents {
 }
 
 export enum Broadcasts {
+  UpdatedAccount = 'pefcl:updatedAccountBroadcast',
   NewTransaction = 'pefcl:newTransactionBroadcast',
   NewInvoice = 'pefcl:newInvoiceBroadcast',
   NewSharedUser = 'pefcl:newSharedUser',

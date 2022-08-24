@@ -1,9 +1,9 @@
+import { Account } from '@server/../../typings/Account';
+import { Cash } from '@server/../../typings/Cash';
 import { AccountEvents, CashEvents, TransactionEvents } from '@server/../../typings/Events';
 import { Transaction } from '@server/../../typings/Transaction';
 import { Controller } from '@server/decorators/Controller';
 import { Event, EventListener } from '@server/decorators/Event';
-import { AccountModel } from '../account/account.model';
-import { CashModel } from '../cash/cash.model';
 import { BroadcastService } from './broadcast.service';
 
 @Controller('Broadcast')
@@ -15,12 +15,22 @@ export class BroadcastController {
   }
 
   @Event(AccountEvents.NewBalance)
-  async onNewBalance(account: AccountModel) {
+  async onNewBalance(account: Account) {
     this.broadcastService.broadcastNewDefaultAccountBalance(account);
   }
 
+  @Event(AccountEvents.NewAccountCreated)
+  async onNewAccountCreation(account: Account) {
+    this.broadcastService.broadcastUpdatedAccount(account);
+  }
+
+  @Event(AccountEvents.AccountDeleted)
+  async onAccountDeleted(account: Account) {
+    this.broadcastService.broadcastUpdatedAccount(account);
+  }
+
   @Event(CashEvents.NewCash)
-  async onNewCash(cash: CashModel) {
+  async onNewCash(cash: Cash) {
     this.broadcastService.broadcastNewCash(cash);
   }
 

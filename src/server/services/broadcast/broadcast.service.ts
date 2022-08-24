@@ -19,6 +19,16 @@ export class BroadcastService {
     this._userService = userService;
   }
 
+  async broadcastUpdatedAccount(account: Account) {
+    logger.silly(`Broadcasted updated account:`);
+    logger.silly(JSON.stringify(account));
+
+    const user = this._userService.getUserByIdentifier(account.ownerIdentifier);
+    if (!user) return;
+
+    emitNet(Broadcasts.UpdatedAccount, user?.getSource(), account);
+  }
+
   async broadcastTransaction(transaction: Transaction) {
     logger.silly(`Broadcasted transaction:`);
     logger.silly(JSON.stringify(transaction));
