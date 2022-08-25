@@ -77,6 +77,8 @@ if (!useFrameworkIntegration) {
 RegisterNuiCB<void>(GeneralEvents.CloseUI, async () => {
   setBankIsOpen(false);
   setAtmIsOpen(false);
+
+  emit('pefcl:closedUI');
 });
 
 if (!useFrameworkIntegration) {
