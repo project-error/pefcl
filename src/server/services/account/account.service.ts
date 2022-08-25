@@ -26,7 +26,7 @@ import { AccountModel } from './account.model';
 import { ServerError } from '@utils/errors';
 import { AccountErrors, AuthorizationErrors, BalanceErrors, GenericErrors } from '@typings/Errors';
 import { SharedAccountDB } from '@services/accountShared/sharedAccount.db';
-import { Broadcasts } from '@server/../../typings/Events';
+import { AccountEvents, Broadcasts } from '@server/../../typings/Events';
 import { regexExternalNumber } from '@shared/utils/regexes';
 
 const logger = mainLogger.child({ module: 'accounts' });
@@ -288,6 +288,8 @@ export class AccountService {
         );
       }
 
+      emit(AccountEvents.NewAccountCreated, account.toJSON());
+
       t.commit();
       return account.toJSON();
     } catch (e) {
@@ -349,6 +351,8 @@ export class AccountService {
       /* TODO: This should not be needed via CASCADE .. */
       await this._sharedAccountDB.deleteSharedAccountsByAccountId(accountId);
 
+      emit(AccountEvents.AccountDeleted, deletingAccount.toJSON());
+      logger.silly('Successfully deleted account!');
       t.commit();
     } catch (e) {
       t.rollback();
@@ -357,7 +361,6 @@ export class AccountService {
       return;
     }
 
-    logger.silly('Successfully deleted account!');
     logger.silly(req);
     return;
   }

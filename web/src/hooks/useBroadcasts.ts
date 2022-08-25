@@ -19,6 +19,13 @@ export const useBroadcasts = () => {
   });
 
   useNuiEvent({
+    event: Broadcasts.UpdatedAccount,
+    callback: () => {
+      updateAccounts();
+    },
+  });
+
+  useNuiEvent({
     event: Broadcasts.NewInvoice,
     callback: () => {
       updateInvoices();

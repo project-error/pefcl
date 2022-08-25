@@ -226,7 +226,7 @@ export class AccountController {
     }
   }
 
-  @Export(ServerExports.SetBankBalance)
+  @Export(ServerExports.SetBankBalanceByIdentifier)
   async setBankBalanceByIdentifier(
     req: Request<{ amount: number; identifier: string }>,
     res: Response<unknown>,
