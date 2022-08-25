@@ -60,6 +60,12 @@ export class AccountController {
     res({ status: 'ok', data: balance });
   }
 
+  @Export(ServerExports.GetTotalBankBalanceByIdentifier)
+  async getTotalBankBalanceByIdentifier(req: Request<string>, res: Response<number>) {
+    const balance = await this._accountService.getTotalBankBalanceByIdentifier(req.data);
+    res({ status: 'ok', data: balance });
+  }
+
   @NetPromise(AccountEvents.CreateAccount)
   async createAccount(req: Request<PreDBAccount>, res: Response<Account>) {
     try {
