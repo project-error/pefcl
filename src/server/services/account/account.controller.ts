@@ -255,7 +255,7 @@ export class AccountController {
     res: Response<unknown>,
   ) {
     try {
-      await this._accountService.removeMoney(req);
+      await this._accountService.removeMoneyByIdentifier(req);
       res({ status: 'ok', data: {} });
     } catch (err) {
       res({ status: 'error', errorMsg: err.message });
