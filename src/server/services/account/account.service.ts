@@ -91,6 +91,15 @@ export class AccountService {
     return totalBalance;
   }
 
+  async getTotalBankBalanceByIdentifier(identifier: string): Promise<number> {
+    const accounts = await this.getAccountsByIdentifier(identifier);
+    const totalBalance = accounts.reduce((total, account) => {
+      return total + account.getDataValue('balance');
+    }, 0);
+
+    return totalBalance;
+  }
+
   async getDefaultAccountBySource(source: number) {
     const user = this._userService.getUser(source);
     return await this._accountDB.getDefaultAccountByIdentifier(user.getIdentifier());

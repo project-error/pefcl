@@ -11,6 +11,7 @@ export enum ServerExports {
   WithdrawCash = 'withdrawCash',
 
   GetTotalBankBalance = 'getTotalBankBalance',
+  GetTotalBankBalanceByIdentifier = 'getTotalBankBalanceByIdentifier',
   GetDefaultAccountBalance = 'getDefaultAccountBalance',
   SetBankBalance = 'setBankBalance',
   SetBankBalanceByIdentifier = 'setBankBalanceByIdentifier',
