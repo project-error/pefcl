@@ -55,7 +55,7 @@ CREATE TABLE `pefcl_invoices` (
   `to` varchar(255) NOT NULL,
   `fromIdentifier` varchar(255) NOT NULL,
   `toIdentifier` varchar(255) NOT NULL,
-  `receiverAccountId` int DEFAULT NULL,
+  `receiverAccountIdentifier` varchar(255) DEFAULT NULL,
   `amount` int DEFAULT '0',
   `status` varchar(255) DEFAULT 'PENDING',
   `expiresAt` datetime NOT NULL,
@@ -69,7 +69,7 @@ CREATE TABLE `pefcl_invoices` (
 
 CREATE TABLE `pefcl_shared_accounts` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `user` varchar(255) DEFAULT NULL,
+  `userIdentifier` varchar(255) DEFAULT NULL,
   `name` varchar(255) DEFAULT NULL,
   `role` varchar(255) DEFAULT 'contributor',
   `createdAt` datetime NOT NULL,
