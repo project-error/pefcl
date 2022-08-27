@@ -10,8 +10,13 @@ export enum ExternalAccountErrors {
 }
 
 export enum AccountErrors {
+  NotFound = 'AccountNotFound',
   AlreadyExists = 'AccountAlreadyExists',
   SameAccount = 'SameAccount',
+}
+
+export enum UserErrors {
+  NotFound = 'UserNotFound',
 }
 
 export enum BalanceErrors {

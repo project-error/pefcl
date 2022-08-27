@@ -50,16 +50,16 @@ export interface CreateAccountInput {
 
 export interface SharedAccount {
   id: number;
-  user: string;
+  userIdentifier: string;
   role: AccountRole;
   name?: string;
   account?: Account;
   accountId?: number;
   setAccount?(): void;
 }
-export type SharedAccountUser = Pick<SharedAccount, 'user' | 'role' | 'name'>;
+export type SharedAccountUser = Pick<SharedAccount, 'userIdentifier' | 'role' | 'name'>;
 export interface SharedAccountInput {
-  user: string;
+  userIdentifier: string;
   name?: string;
   accountId: number;
   role?: AccountRole;
@@ -69,6 +69,19 @@ export interface AddToSharedAccountInput {
   identifier: string;
   accountId: number;
   role?: AccountRole;
+}
+
+export interface AddToUniqueAccountInput {
+  role?: AccountRole;
+  source?: number;
+  userIdentifier?: string;
+  accountIdentifier: string;
+}
+
+export interface RemoveFromUniqueAccountInput {
+  source?: number;
+  userIdentifier?: string;
+  accountIdentifier: string;
 }
 
 export interface RemoveFromSharedAccountInput {

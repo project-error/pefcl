@@ -34,7 +34,7 @@ export interface Invoice {
   fromIdentifier: string;
 
   /* Optional to insert balance to specific account. */
-  receiverAccountId?: number;
+  receiverAccountIdentifier?: string;
 
   status: InvoiceStatus;
   expiresAt?: string;

@@ -7,7 +7,6 @@ const port = process.env.PORT ?? 3002;
 
 /* TODO: Fix for real */
 /* Probably bad way of fixing this */
-delete deps['@emotion/react'];
 delete deps['@emotion/styled'];
 delete deps['@mui/material'];
 delete deps['@mui/styles'];
@@ -75,6 +74,10 @@ module.exports = {
         react: {
           singleton: true,
           requiredVersion: deps.react,
+        },
+        '@emotion/react': {
+          singleton: true,
+          requiredVersion: deps['@emotion/react'],
         },
         'react-dom': {
           singleton: true,

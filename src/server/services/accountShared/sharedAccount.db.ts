@@ -19,7 +19,7 @@ export class SharedAccountDB {
 
   async getSharedAccountsByIdentifier(identifier: string): Promise<SharedAccountModel[]> {
     return await SharedAccountModel.findAll({
-      where: { user: identifier },
+      where: { userIdentifier: identifier },
       include,
     });
   }
@@ -30,7 +30,7 @@ export class SharedAccountDB {
     roles: AccountRole[],
   ): Promise<AccountModel | null> {
     const sharedAccount = await SharedAccountModel.findOne({
-      where: { accountId: id, user: identifier },
+      where: { accountId: id, userIdentifier: identifier },
       include,
     });
 
@@ -53,6 +53,10 @@ export class SharedAccountDB {
 
   async deleteSharedAccount(id: number) {
     return await SharedAccountModel.findOne({ where: { id } });
+  }
+
+  async getSharedAccountByIds(userIdentifier: string, accountId: number) {
+    return await SharedAccountModel.findOne({ where: { userIdentifier, accountId } });
   }
 
   async deleteSharedAccountsByAccountId(accountId: number) {

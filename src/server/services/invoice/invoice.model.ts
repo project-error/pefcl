@@ -9,7 +9,7 @@ import { timestamps } from '../timestamps.model';
 @singleton()
 export class InvoiceModel extends Model<
   Invoice,
-  Optional<Invoice, 'id' | 'status' | 'receiverAccountId'>
+  Optional<Invoice, 'id' | 'status' | 'receiverAccountIdentifier'>
 > {}
 
 InvoiceModel.init(
@@ -54,8 +54,8 @@ InvoiceModel.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    receiverAccountId: {
-      type: DataTypes.INTEGER,
+    receiverAccountIdentifier: {
+      type: DataTypes.STRING,
       allowNull: true,
     },
     amount: {

@@ -776,6 +776,11 @@
   resolved "https://registry.yarnpkg.com/@opentelemetry/api/-/api-1.0.4.tgz#a167e46c10d05a07ab299fc518793b0cff8f6924"
   integrity sha512-BuJuXRSJNQ3QoKA6GWWDyuLpOUck+9hAXNMCnrloc1aWVoy6Xq6t9PUV08aBZ4Lutqq2LEHM486bpZqoViScog==
 
+"@project-error/npwd-types@^1.3.4":
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/@project-error/npwd-types/-/npwd-types-1.5.0.tgz#0e7ada6fe37d6b1f2ecda4457b145cace1af1297"
+  integrity sha512-XEcoBQgbPOMVQeFu6ZV+eoDZ/mpjJudT90a5SAky0taK2V4K1oX/7Bz2uhwWdZ3Rp0cO3EU/ZGYwOraJCTdYXg==
+
 "@project-error/pe-utils@^0.2.7":
   version "0.2.7"
   resolved "https://registry.yarnpkg.com/@project-error/pe-utils/-/pe-utils-0.2.7.tgz#2060c3494c15908e653351378f3376aafa064d6a"
