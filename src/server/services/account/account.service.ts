@@ -231,6 +231,7 @@ export class AccountService {
     logger.silly(req);
 
     const userIdentifier = this._userService.getUser(req.source).getIdentifier();
+    const userName = this._userService.getUser(req.source).name;
 
     const t = await sequelize.transaction();
     try {
@@ -266,6 +267,7 @@ export class AccountService {
       if (isShared) {
         await this._sharedAccountDB.createSharedAccount(
           {
+            name: userName,
             accountId: account.getDataValue('id') ?? 0,
             user: userIdentifier,
             role: AccountRole.Owner,
