@@ -23,7 +23,6 @@ InvoiceModel.init(
       defaultValue: 'unknown',
       type: DataTypes.STRING,
       validate: {
-        is: regexAlphaNumeric,
         max: 80,
         min: 1,
       },
@@ -32,7 +31,6 @@ InvoiceModel.init(
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
-        is: regexAlphaNumeric,
         max: 80,
         min: 1,
       },
@@ -41,7 +39,6 @@ InvoiceModel.init(
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
-        is: regexAlphaNumeric,
         max: 80,
         min: 1,
       },
