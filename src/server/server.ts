@@ -28,6 +28,7 @@ import { mockedResourceName } from './globals.server';
 import { config } from './utils/server-config';
 import { UserService } from './services/user/user.service';
 import { container } from 'tsyringe';
+// import { InvoiceController } from './services/invoice/invoice.controller';
 
 const hotReloadConfig = {
   resourceName: GetCurrentResourceName(),
@@ -141,6 +142,21 @@ const debug = async () => {
   //
   //
   //
+  // const invoiceController = container.resolve(InvoiceController);
+  // invoiceController.createInvoice(
+  //   {
+  //     data: {
+  //       amount: 200,
+  //       to: 'John Doe',
+  //       from: 'Repair Company',
+  //       fromIdentifier: 'license:2',
+  //       toIdentifier: 'license:1',
+  //       message: 'Another one',
+  //     },
+  //     source: 0,
+  //   },
+  //   () => {},
+  // );
   // const invoiceService = container.resolve(InvoiceService);
   // const invoice = await invoiceService.createInvoice({
   //   amount: 200,

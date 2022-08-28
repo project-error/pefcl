@@ -12,6 +12,7 @@ import {
   RemoveFromSharedAccountInput,
   RenameAccountInput,
   SharedAccountUser,
+  AddToUniqueAccountInput,
 } from '@typings/Account';
 import {
   AccountEvents,
@@ -89,9 +90,19 @@ export class AccountController {
   }
 
   @Export(ServerExports.CreateUniqueAccount)
-  async createUniqueAccount(req: Request<CreateBasicAccountInput>, res: Response<Account>) {
+  async createDefaultAccount(req: Request<CreateBasicAccountInput>, res: Response<Account>) {
     try {
       const account = await this._accountService.createUniqueAccount(req);
+      res({ status: 'ok', data: account });
+    } catch (err) {
+      res({ status: 'error', errorMsg: err.message });
+    }
+  }
+
+  @Export(ServerExports.GetUniqueAccount)
+  async getUniqueAccount(req: Request<string>, res: Response<Account>) {
+    try {
+      const account = await this._accountService.getUniqueAccount(req.data);
       res({ status: 'ok', data: account });
     } catch (err) {
       res({ status: 'error', errorMsg: err.message });
@@ -289,6 +300,26 @@ export class AccountController {
   async getAccountsByIdentifier(req: Request<string>, res: Response<unknown>) {
     try {
       const data = await this._accountService.getAccountsByIdentifier(req.data);
+      res({ status: 'ok', data });
+    } catch (err) {
+      res({ status: 'error', errorMsg: err.message });
+    }
+  }
+
+  @Export(ServerExports.AddUserToUniqueAccount)
+  async addUserToUniqueAccount(req: Request<AddToUniqueAccountInput>, res: Response<unknown>) {
+    try {
+      const data = await this._accountService.addUserToUniqueAccount(req);
+      res({ status: 'ok', data });
+    } catch (err) {
+      res({ status: 'error', errorMsg: err.message });
+    }
+  }
+
+  @Export(ServerExports.RemoveUserFromUniqueAccount)
+  async removeUserFromUniqueAccount(req: Request<AddToUniqueAccountInput>, res: Response<unknown>) {
+    try {
+      const data = await this._accountService.removeUserFromUniqueAccount(req);
       res({ status: 'ok', data });
     } catch (err) {
       res({ status: 'error', errorMsg: err.message });

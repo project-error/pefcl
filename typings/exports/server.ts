@@ -29,7 +29,12 @@ export enum ServerExports {
 
   GetAccounts = 'getAccounts',
   GetAccountsByIdentifier = 'getAccountsByIdentifier',
+
+  /* Can be utilised by jobs or similar */
   CreateUniqueAccount = 'createUniqueAccount',
+  GetUniqueAccount = 'getUniqueAccount',
+  AddUserToUniqueAccount = 'addUserToUniqueAccount',
+  RemoveUserFromUniqueAccount = 'removeUserFromUniqueAccount',
 }
 
 export type WithdrawMoneyExport = (

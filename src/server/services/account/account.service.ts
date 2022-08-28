@@ -13,6 +13,8 @@ import {
   SharedAccountUser,
   UpdateBankBalanceInput,
   CreateBasicAccountInput,
+  AddToUniqueAccountInput,
+  RemoveFromUniqueAccountInput,
 } from '@typings/Account';
 import { UserService } from '../user/user.service';
 import { config } from '@utils/server-config';
@@ -24,10 +26,15 @@ import i18next from '@utils/i18n';
 import { TransactionType } from '@typings/Transaction';
 import { AccountModel } from './account.model';
 import { ServerError } from '@utils/errors';
-import { AccountErrors, AuthorizationErrors, BalanceErrors, GenericErrors } from '@typings/Errors';
+import {
+  AccountErrors,
+  AuthorizationErrors,
+  BalanceErrors,
+  GenericErrors,
+  UserErrors,
+} from '@typings/Errors';
 import { SharedAccountDB } from '@services/accountShared/sharedAccount.db';
 import { AccountEvents, Broadcasts } from '@server/../../typings/Events';
-import { regexExternalNumber } from '@shared/utils/regexes';
 
 const logger = mainLogger.child({ module: 'accounts' });
 
@@ -100,6 +107,11 @@ export class AccountService {
     return totalBalance;
   }
 
+  async getUniqueAccount(identifier: string) {
+    const account = await this._accountDB.getUniqueAccountByIdentifier(identifier);
+    return account?.toJSON();
+  }
+
   async getDefaultAccountBySource(source: number) {
     const user = this._userService.getUser(source);
     return await this._accountDB.getDefaultAccountByIdentifier(user.getIdentifier());
@@ -137,7 +149,7 @@ export class AccountService {
       const account = await this._sharedAccountDB.createSharedAccount(
         {
           name,
-          user: identifier,
+          userIdentifier: identifier,
           role,
           accountId,
         },
@@ -167,7 +179,7 @@ export class AccountService {
     );
 
     if (!account) {
-      throw new ServerError(GenericErrors.NotFound);
+      throw new ServerError(AccountErrors.NotFound);
     }
 
     const t = await sequelize.transaction();
@@ -231,6 +243,7 @@ export class AccountService {
     logger.silly(req);
 
     const userIdentifier = this._userService.getUser(req.source).getIdentifier();
+    const userName = this._userService.getUser(req.source).name;
 
     const t = await sequelize.transaction();
     try {
@@ -266,8 +279,9 @@ export class AccountService {
       if (isShared) {
         await this._sharedAccountDB.createSharedAccount(
           {
+            name: userName,
             accountId: account.getDataValue('id') ?? 0,
-            user: userIdentifier,
+            userIdentifier: userIdentifier,
             role: AccountRole.Owner,
           },
           t,
@@ -530,8 +544,8 @@ export class AccountService {
     const sharedAccounts = await this._sharedAccountDB.getSharedAccountsById(req.data.accountId);
     return sharedAccounts.map((account) => ({
       name: account.getDataValue('name'),
-      user: account.getDataValue('user'),
       role: account.getDataValue('role'),
+      userIdentifier: account.getDataValue('userIdentifier'),
     }));
   }
 
@@ -700,29 +714,123 @@ export class AccountService {
 
   async createUniqueAccount(req: Request<CreateBasicAccountInput>) {
     logger.debug('Creating unique account ..');
-    const { identifier, name, type, number } = req.data;
+
+    const { identifier, name, type } = req.data;
 
     const existingAccount = await this._accountDB.getAccountsByIdentifier(req.data.identifier);
 
-    if (number && !regexExternalNumber.test(number)) {
-      throw new Error('Invalid format for number, format is: xxx, xxxx-xxxx-xxxx');
-    }
-
     if (existingAccount.length > 0) {
-      throw new Error(AccountErrors.AlreadyExists);
+      logger.debug('Unique account already exists, not creating another one.');
+      throw new ServerError(AccountErrors.AlreadyExists);
     }
 
     const account = await this._accountDB.createAccount({
       type,
       accountName: name,
       ownerIdentifier: identifier,
-      number: number?.trim(),
-      isDefault: false,
+      isDefault: true,
     });
 
     const json = account.toJSON();
     logger.debug('Created unique account!');
     logger.debug(json);
     return json;
+  }
+
+  async addUserToUniqueAccount(req: Request<AddToUniqueAccountInput>) {
+    logger.debug('Adding user to unique account ..');
+
+    const { accountIdentifier: identifier, source, userIdentifier, role } = req.data;
+
+    if (!userIdentifier && !source) {
+      logger.error('Missing userIdentifier or source. Cannot remove user.');
+      throw new ServerError(GenericErrors.BadInput);
+    }
+
+    const user = userIdentifier
+      ? this._userService.getUserByIdentifier(userIdentifier)
+      : this._userService.getUser(source ?? 0);
+
+    if (!user) {
+      throw new ServerError(UserErrors.NotFound);
+    }
+
+    const existingAccount = await this._accountDB.getUniqueAccountByIdentifier(identifier);
+    if (!existingAccount) {
+      throw new ServerError(AccountErrors.NotFound);
+    }
+
+    const t = await sequelize.transaction();
+    try {
+      const account = await this._sharedAccountDB.createSharedAccount(
+        {
+          role,
+          name: user?.name ?? 'Unknown',
+          userIdentifier: userIdentifier ?? '',
+          accountId: existingAccount.getDataValue('id'),
+        },
+        t,
+      );
+
+      t.afterCommit(() => {
+        emit(Broadcasts.NewSharedUser, account.toJSON());
+        emitNet(Broadcasts.NewSharedUser, user?.getSource(), account.toJSON());
+      });
+
+      t.commit();
+      return account;
+    } catch (err) {
+      t.rollback();
+      logger.error('Failed to add user to unique account');
+    }
+  }
+
+  async removeUserFromUniqueAccount(req: Request<RemoveFromUniqueAccountInput>) {
+    logger.debug('Removing user from unique account ..');
+
+    const { accountIdentifier, source, userIdentifier } = req.data;
+
+    if (!userIdentifier && !source) {
+      logger.error('Missing userIdentifier or source. Cannot remove user.');
+      throw new ServerError(GenericErrors.BadInput);
+    }
+
+    const user = userIdentifier
+      ? this._userService.getUserByIdentifier(userIdentifier)
+      : this._userService.getUser(source ?? 0);
+
+    if (!user) {
+      throw new ServerError(UserErrors.NotFound);
+    }
+
+    const existingAccount = await this._accountDB.getUniqueAccountByIdentifier(accountIdentifier);
+    if (!existingAccount) {
+      logger.error('Missing account');
+      throw new ServerError(AccountErrors.NotFound);
+    }
+
+    const t = await sequelize.transaction();
+    try {
+      const sharedAccount = await this._sharedAccountDB.getSharedAccountByIds(
+        userIdentifier ?? '',
+        existingAccount.getDataValue('id'),
+      );
+
+      if (!sharedAccount) {
+        logger.error('Missing shared account.');
+        throw new ServerError(AccountErrors.NotFound);
+      }
+
+      t.afterCommit(() => {
+        emit(Broadcasts.RemovedSharedUser, sharedAccount?.toJSON());
+        emitNet(Broadcasts.RemovedSharedUser, user?.getSource(), sharedAccount.toJSON());
+      });
+
+      t.commit();
+      return sharedAccount;
+    } catch (err) {
+      t.rollback();
+      logger.error('Failed to add user to unique account');
+    }
   }
 }

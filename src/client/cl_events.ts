@@ -46,7 +46,10 @@ const waitForNUILoaded = (checkInterval = 250): Promise<void> => {
 
 const SendBankUIMessage = (data: object) => {
   SendNUIMessage(data);
-  npwdExports.sendUIMessage(data);
+
+  if (GetResourceState('npwd') === 'started') {
+    npwdExports.sendUIMessage(data);
+  }
 };
 
 onNet(Broadcasts.NewTransaction, (payload: Transaction) => {
