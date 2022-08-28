@@ -766,7 +766,7 @@ export class AccountService {
         {
           role,
           name: user?.name ?? 'Unknown',
-          userIdentifier: identifier,
+          userIdentifier: userIdentifier ?? '',
           accountId: existingAccount.getDataValue('id'),
         },
         t,
