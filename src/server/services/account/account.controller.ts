@@ -13,6 +13,7 @@ import {
   RenameAccountInput,
   SharedAccountUser,
   AddToUniqueAccountInput,
+  RemoveFromUniqueAccountInput,
 } from '@typings/Account';
 import {
   AccountEvents,
@@ -317,7 +318,10 @@ export class AccountController {
   }
 
   @Export(ServerExports.RemoveUserFromUniqueAccount)
-  async removeUserFromUniqueAccount(req: Request<AddToUniqueAccountInput>, res: Response<unknown>) {
+  async removeUserFromUniqueAccount(
+    req: Request<RemoveFromUniqueAccountInput>,
+    res: Response<unknown>,
+  ) {
     try {
       const data = await this._accountService.removeUserFromUniqueAccount(req);
       res({ status: 'ok', data });
