@@ -9,8 +9,7 @@
     "resource": "your-resource"
   },
   "database": {
-    "profileQueries": true,
-    "shouldSync": false
+    "profileQueries": true
   },
   "prices": {
     "newAccount": 1000
