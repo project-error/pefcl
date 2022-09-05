@@ -762,6 +762,16 @@ export class AccountService {
 
     const t = await sequelize.transaction();
     try {
+      const sharedAccount = await this._sharedAccountDB.getSharedAccountByIds(
+        userIdentifier ?? user.getIdentifier(),
+        existingAccount.getDataValue('id'),
+      );
+
+      if (sharedAccount) {
+        logger.error('User already exists in shared account.');
+        throw new ServerError(AccountErrors.UserAlreadyExists);
+      }
+
       const account = await this._sharedAccountDB.createSharedAccount(
         {
           role,
@@ -812,7 +822,7 @@ export class AccountService {
     const t = await sequelize.transaction();
     try {
       const sharedAccount = await this._sharedAccountDB.getSharedAccountByIds(
-        userIdentifier ?? '',
+        userIdentifier ?? user.getIdentifier(),
         existingAccount.getDataValue('id'),
       );
 
@@ -820,6 +830,14 @@ export class AccountService {
         logger.error('Missing shared account.');
         throw new ServerError(AccountErrors.NotFound);
       }
+
+      this.removeUserFromShared({
+        source: source ?? 0,
+        data: {
+          identifier: userIdentifier ?? user.getIdentifier(),
+          accountId: sharedAccount?.getDataValue('accountId') ?? 0,
+        },
+      });
 
       t.afterCommit(() => {
         emit(Broadcasts.RemovedSharedUser, sharedAccount?.toJSON());
