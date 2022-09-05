@@ -4,26 +4,61 @@ on:
     tags:
       - 'v*'
 jobs:
-  create-tagged-release:
-    name: Create Release
+  pre-release-build:
+    name: 'Build & Create Release'
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout source
+      - name: Checkout source code
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
           ref: ${{ github.ref }}
-      - name: Get tag
-        run: echo ::set-output name=VERSION_TAG::${GITHUB_REF/refs\/tags\//}
-        id: get_tag
-      - name: 'Setup Node.js'
-        uses: 'actions/setup-node@v1'
+
+      - name: Setup Node and Yarn Cache
+        uses: actions/setup-node@v2
         with:
-          node-version: 14.x
+          node-version: 16.x
+          cache: 'yarn'
+
+      - name: Get variables
+        id: get_vars
+        run: |
+          echo "GITHUB_SHA_SHORT=$(echo $GITHUB_SHA | cut -c 1-7)" >> $GITHUB_ENV
+          echo "::set-output name=SHORT_SHA::$(git rev-parse --short HEAD)"
+          echo "::set-output name=BRANCH_NAME::$(echo ${GITHUB_REF#refs/heads/})"
+          echo "::set-output name=VERSION_TAG::$(echo ${GITHUB_REF/refs\/tags\//})"
+
+      - name: Install main deps
+        run: yarn --frozen-lockfile
+
+      - name: Translations
+        env:
+          LOCALAZY_READ_KEY: a8269809765126758267-f01743c76d6e9e434d7b4c6322938eefce8d82a559b57efc2acfcf4531d46089
+        run: yarn translations:download
+
+      - name: Install src deps
+        working-directory: src
+        run: yarn --frozen-lockfile
+
+      - name: Install web deps
+        working-directory: web
+        run: yarn --frozen-lockfile
+
       - name: Create release
-        uses: marvinpinto/action-automatic-releases@latest
+        run: |
+          chmod +x "./scripts/release.sh"
+          yarn release
+
+      - name: Create Release & Changelog
+        uses: 'marvinpinto/action-automatic-releases@v1.2.1'
         with:
-          title: React/Lua Boilerplate - ${{ steps.get_tag.outputs.VERSION_TAG }}
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          repo_token: '${{ secrets.GITHUB_TOKEN }}'
+          title: PEFCL Release | (${{ steps.get_vars.outputs.VERSION_TAG }})
           prerelease: false
-        id: auto_release
+          automatic_release_tag: ${{ steps.get_vars.outputs.BRANCH_NAME }}
+          files: ./temp/pefcl.zip
+
+        env:
+          CI: false
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
