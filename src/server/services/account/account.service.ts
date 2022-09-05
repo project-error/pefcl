@@ -184,7 +184,7 @@ export class AccountService {
 
     const t = await sequelize.transaction();
     try {
-      await account?.destroy({ transaction: t });
+      await account?.destroy({ transaction: t, force: true });
 
       t.afterCommit(() => {
         emit(Broadcasts.RemovedSharedUser, account.toJSON());
