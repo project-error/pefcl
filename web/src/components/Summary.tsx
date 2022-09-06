@@ -43,7 +43,7 @@ const Summary: React.FC<SummaryProps> = ({ balance, payment }) => {
 
   return (
     <div>
-      <Heading6>Summary</Heading6>
+      <Heading6>{t('Summary')}</Heading6>
       <SummaryRow label={t('Balance')} amount={balance}></SummaryRow>
       <SummaryRow label={t('Cost')} amount={-payment}></SummaryRow>
       <Divider sx={{ m: '0.5rem 0' }} />

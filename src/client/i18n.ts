@@ -1,12 +1,4 @@
-import 'dayjs/locale/sv';
-import dayjs from 'dayjs';
-import i18next from 'i18next';
-import { config } from '@utils/server-config';
-import { mainLogger } from '@server/sv_logger';
 import languages from '@locales/index';
-
-const language = config?.general?.language ?? 'en';
-const logger = mainLogger.child({ module: 'i18n' });
 
 export type Namespace = 'translation' | 'pefcl';
 export type LanguageContent = typeof languages['en'];
@@ -14,9 +6,8 @@ export type Language = keyof typeof languages;
 export type Locale = Record<Language, LanguageContent>;
 export type Resource = Record<Language, Record<Namespace, LanguageContent>>;
 
-export const getI18nResources = () => {
-  return languages;
-};
+import cl_config from 'cl_config';
+import i18next from 'i18next';
 
 export const getI18nResourcesNamespaced = (namespace: Namespace) => {
   return Object.keys(languages).reduce((prev, key) => {
@@ -29,10 +20,9 @@ export const getI18nResourcesNamespaced = (namespace: Namespace) => {
   }, {} as Resource);
 };
 
-dayjs.locale(language);
-
+const language = cl_config.general?.language;
 export const load = async () => {
-  logger.debug('Loading language from config: ' + language);
+  console.debug('Loading language from config: ' + language);
   const resources = getI18nResourcesNamespaced('translation');
 
   await i18next
@@ -43,7 +33,5 @@ export const load = async () => {
     })
     .catch((r) => console.error(r));
 };
-
-export type TranslateFunction = typeof i18next['t'];
 
 export default i18next;

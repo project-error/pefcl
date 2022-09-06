@@ -12,7 +12,8 @@
     "esModuleInterop": true,
     "moduleResolution": "node",
     "paths": {
-      "@typings/*": ["../../typings/*"]
+      "@typings/*": ["../../typings/*"],
+      "@locales/*": ["../../locales/*"]
     }
   },
   "include": ["./**/*", "../../typings/*"],
