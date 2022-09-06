@@ -38,7 +38,7 @@ const RemoveUserModal = ({ isOpen, onSelect, onClose, accountId }: SelectUserMod
   const filteredUsers = users
     .map((user) => ({
       name: user.name ?? '',
-      identifier: user.user,
+      identifier: user.userIdentifier,
       isDisabled: [AccountRole.Owner].includes(user.role),
     }))
     .filter((user) => !user.isDisabled);
