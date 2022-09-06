@@ -30,7 +30,7 @@ jobs:
           echo "::set-output name=VERSION_TAG::$(echo ${GITHUB_REF/refs\/tags\//})"
 
       - name: Install main deps
-        run: yarn --frozen-lockfile
+        run: yarn --frozen-lockfile --ignore-scripts
 
       - name: Translations
         env:
