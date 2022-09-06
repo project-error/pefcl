@@ -41,7 +41,9 @@ const AddUserModal = ({
   };
 
   const filteredUsers = users.filter((user) => {
-    const exists = existingUsers.find((existingUser) => existingUser.user === user.identifier);
+    const exists = existingUsers.find(
+      (existingUser) => existingUser.userIdentifier === user.identifier,
+    );
     return !exists;
   });
 

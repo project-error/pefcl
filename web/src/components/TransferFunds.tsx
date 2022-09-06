@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Alert, Box, FormHelperText, LinearProgress, Stack, Typography } from '@mui/material';
+import { Alert, Box, FormHelperText, LinearProgress, Stack } from '@mui/material';
 import { useAtom } from 'jotai';
 import { accountsAtom, defaultAccountAtom } from '../data/accounts';
 import { Heading5 } from './ui/Typography/Headings';

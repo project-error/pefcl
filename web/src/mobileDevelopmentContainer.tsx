@@ -7,6 +7,7 @@ import image from './bg.png';
 import { NuiProvider } from 'react-fivem-hooks';
 import MobileApp from './views/Mobile/Mobile';
 import i18n from '@utils/i18n';
+import { IPhoneSettings } from '@project-error/npwd-types';
 
 const Container = styled.div`
   position: relative;
@@ -37,6 +38,28 @@ const AppContainer = styled.div`
   border-radius: 20px;
 `;
 
+const mockedSetting = {
+  label: 'idk',
+  value: 'idk',
+};
+const mockedSettings: IPhoneSettings = {
+  language: mockedSetting,
+  iconSet: mockedSetting,
+  wallpaper: mockedSetting,
+  frame: mockedSetting,
+  theme: mockedSetting,
+  zoom: mockedSetting,
+  streamerMode: false,
+  ringtone: mockedSetting,
+  callVolume: 0,
+  notiSound: mockedSetting,
+  TWITTER_notiFilter: mockedSetting,
+  TWITTER_notiSound: mockedSetting,
+  TWITTER_notiSoundVol: 0,
+  TWITTER_notifyNewFeedTweet: false,
+  MARKETPLACE_notifyNewListing: false,
+};
+
 const Root = () => (
   <HashRouter>
     <NuiProvider>
@@ -44,7 +67,7 @@ const Root = () => (
         <Background src={image} />
         <React.Suspense fallback="Loading phone">
           <AppContainer>
-            <MobileApp settings={{ language: { label: 'Svenska', value: 'sv' } }} i18n={i18n} />
+            <MobileApp i18n={i18n} settings={mockedSettings} />
           </AppContainer>
         </React.Suspense>
       </Container>

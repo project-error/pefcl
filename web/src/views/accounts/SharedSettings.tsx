@@ -109,7 +109,7 @@ const SharedSettings = ({ accountId, isAdmin }: Props) => {
                 {users.map((user) => (
                   <TableRow
                     hover
-                    key={user.user}
+                    key={user.userIdentifier}
                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                   >
                     {/* TODO: Add (You) to yourself. */}
