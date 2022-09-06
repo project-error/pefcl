@@ -13,7 +13,7 @@ import AccountCards, { LoadingCards } from './components/AccountCards';
 import TotalBalance from '@components/TotalBalance';
 import { PreHeading } from '@components/ui/Typography/BodyText';
 import { Heading1 } from '@components/ui/Typography/Headings';
-import { totalUnpaidInvoices } from '@data/invoices';
+import { totalUnpaidInvoicesAtom } from '@data/invoices';
 
 const Lists = styled.section`
   display: grid;
@@ -67,7 +67,7 @@ const Dashboard = () => {
           <DashboardContainer
             title={t('Unpaid invoices')}
             viewAllRoute="/invoices"
-            totalAtom={totalUnpaidInvoices}
+            totalAtom={totalUnpaidInvoicesAtom}
           >
             <PendingInvoices />
           </DashboardContainer>

@@ -3,11 +3,10 @@ import i18n from 'i18next';
 import 'dayjs/locale/sv';
 import { initReactI18next } from 'react-i18next';
 
-import en from '@locales/en/default.json';
-import sv from '@locales/sv/default.json';
 import { getConfig } from '@utils/api';
 import updateLocale from 'dayjs/plugin/updateLocale';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
+import { getI18nResourcesNamespaced } from './i18nResourceHelpers';
 
 dayjs.extend(updateLocale);
 dayjs.extend(localizedFormat);
@@ -15,18 +14,12 @@ dayjs.extend(localizedFormat);
 const load = async () => {
   const config = await getConfig();
   const language = config.general.language ?? 'en';
+  const resources = getI18nResourcesNamespaced('translation');
 
   await i18n
     .use(initReactI18next)
     .init({
-      resources: {
-        en: {
-          translation: en,
-        },
-        sv: {
-          translation: sv,
-        },
-      },
+      resources,
       lng: config.general.language,
       fallbackLng: 'en',
     })

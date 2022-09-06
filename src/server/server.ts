@@ -1,6 +1,8 @@
+import './globals.server';
 import { ServerPromiseResp } from '@project-error/pe-utils';
 import {
   AccountEvents,
+  CashEvents,
   ExternalAccountEvents,
   GeneralEvents,
   InvoiceEvents,
@@ -8,8 +10,6 @@ import {
   TransactionEvents,
   UserEvents,
 } from '@typings/Events';
-import './globals.server';
-
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import express, { RequestHandler } from 'express';
@@ -28,6 +28,7 @@ import { mockedResourceName } from './globals.server';
 import { config } from './utils/server-config';
 import { UserService } from './services/user/user.service';
 import { container } from 'tsyringe';
+// import { InvoiceController } from './services/invoice/invoice.controller';
 
 const hotReloadConfig = {
   resourceName: GetCurrentResourceName(),
@@ -94,6 +95,7 @@ if (isMocking) {
   app.post(...createEndpoint(SharedAccountEvents.GetUsers));
   app.post(...createEndpoint(ExternalAccountEvents.Add));
   app.post(...createEndpoint(ExternalAccountEvents.Get));
+  app.post(...createEndpoint(CashEvents.GetMyCash));
 
   app.listen(port, async () => {
     mainLogger.child({ module: 'server' }).debug(`[MOCKSERVER]: listening on port: ${port}`);
@@ -140,6 +142,21 @@ const debug = async () => {
   //
   //
   //
+  // const invoiceController = container.resolve(InvoiceController);
+  // invoiceController.createInvoice(
+  //   {
+  //     data: {
+  //       amount: 200,
+  //       to: 'John Doe',
+  //       from: 'Repair Company',
+  //       fromIdentifier: 'license:2',
+  //       toIdentifier: 'license:1',
+  //       message: 'Another one',
+  //     },
+  //     source: 0,
+  //   },
+  //   () => {},
+  // );
   // const invoiceService = container.resolve(InvoiceService);
   // const invoice = await invoiceService.createInvoice({
   //   amount: 200,

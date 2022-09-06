@@ -3,15 +3,17 @@ import { NetPromise, PromiseEventListener } from '../../decorators/NetPromise';
 import {
   Account,
   AccountRole,
-  AddBankBalanceInput,
+  UpdateBankBalanceInput,
   AddToSharedAccountInput,
   ATMInput,
-  CreateSharedInput,
+  CreateBasicAccountInput,
   ExternalAccount,
   PreDBAccount,
   RemoveFromSharedAccountInput,
   RenameAccountInput,
   SharedAccountUser,
+  AddToUniqueAccountInput,
+  RemoveFromUniqueAccountInput,
 } from '@typings/Account';
 import {
   AccountEvents,
@@ -54,9 +56,15 @@ export class AccountController {
     res({ status: 'ok', data: accounts });
   }
 
-  @Export(ServerExports.GetTotalBalance)
+  @Export(ServerExports.GetTotalBankBalance)
   async getTotalBankBalance(req: Request<void>, res: Response<number>) {
     const balance = await this._accountService.getTotalBankBalance(req.source);
+    res({ status: 'ok', data: balance });
+  }
+
+  @Export(ServerExports.GetTotalBankBalanceByIdentifier)
+  async getTotalBankBalanceByIdentifier(req: Request<string>, res: Response<number>) {
+    const balance = await this._accountService.getTotalBankBalanceByIdentifier(req.data);
     res({ status: 'ok', data: balance });
   }
 
@@ -82,17 +90,27 @@ export class AccountController {
     }
   }
 
-  @Export(ServerExports.CreateAccount)
-  async exportCreateAccount(req: Request<CreateSharedInput>, res: Response<Account>) {
+  @Export(ServerExports.CreateUniqueAccount)
+  async createDefaultAccount(req: Request<CreateBasicAccountInput>, res: Response<Account>) {
     try {
-      const account = await this._accountService.createAccount(req);
+      const account = await this._accountService.createUniqueAccount(req);
       res({ status: 'ok', data: account });
     } catch (err) {
       res({ status: 'error', errorMsg: err.message });
     }
   }
 
-  @Export(ServerExports.DepositMoney)
+  @Export(ServerExports.GetUniqueAccount)
+  async getUniqueAccount(req: Request<string>, res: Response<Account>) {
+    try {
+      const account = await this._accountService.getUniqueAccount(req.data);
+      res({ status: 'ok', data: account });
+    } catch (err) {
+      res({ status: 'error', errorMsg: err.message });
+    }
+  }
+
+  @Export(ServerExports.DepositCash)
   @NetPromise(AccountEvents.DepositMoney)
   async depositMoney(req: Request<ATMInput>, res: Response<any>) {
     try {
@@ -103,7 +121,7 @@ export class AccountController {
     }
   }
 
-  @Export(ServerExports.WithdrawMoney)
+  @Export(ServerExports.WithdrawCash)
   @NetPromise(AccountEvents.WithdrawMoney)
   async withdrawMoney(req: Request<ATMInput>, res: Response<any>) {
     const accountId = req.data.accountId;
@@ -210,10 +228,46 @@ export class AccountController {
     }
   }
 
-  @Export(ServerExports.AddBankBalanceByIdentifier)
-  async addBankBalanceByIdentifier(req: Request<AddBankBalanceInput>, res: Response<unknown>) {
+  @Export(ServerExports.SetBankBalance)
+  async setBankBalance(req: Request<{ amount: number }>, res: Response<unknown>) {
     try {
-      await this._accountService.addMoney(req);
+      await this._accountService.setMoney(req);
+      res({ status: 'ok', data: {} });
+    } catch (err) {
+      res({ status: 'error', errorMsg: err.message });
+    }
+  }
+
+  @Export(ServerExports.SetBankBalanceByIdentifier)
+  async setBankBalanceByIdentifier(
+    req: Request<{ amount: number; identifier: string }>,
+    res: Response<unknown>,
+  ) {
+    try {
+      await this._accountService.setMoneyByIdentifier(req);
+      res({ status: 'ok', data: {} });
+    } catch (err) {
+      res({ status: 'error', errorMsg: err.message });
+    }
+  }
+
+  @Export(ServerExports.AddBankBalanceByIdentifier)
+  async addBankBalanceByIdentifier(req: Request<UpdateBankBalanceInput>, res: Response<unknown>) {
+    try {
+      await this._accountService.addMoneyByIdentifier(req);
+      res({ status: 'ok', data: {} });
+    } catch (err) {
+      res({ status: 'error', errorMsg: err.message });
+    }
+  }
+
+  @Export(ServerExports.RemoveBankBalanceByIdentifier)
+  async removeBankBalanceByIdentifier(
+    req: Request<UpdateBankBalanceInput>,
+    res: Response<unknown>,
+  ) {
+    try {
+      await this._accountService.removeMoneyByIdentifier(req);
       res({ status: 'ok', data: {} });
     } catch (err) {
       res({ status: 'error', errorMsg: err.message });
@@ -228,6 +282,49 @@ export class AccountController {
     try {
       await this._accountService.removeMoney(req);
       res({ status: 'ok', data: {} });
+    } catch (err) {
+      res({ status: 'error', errorMsg: err.message });
+    }
+  }
+
+  @Export(ServerExports.GetDefaultAccountBalance)
+  async getDefaultAccountBalance(req: Request<number>, res: Response<unknown>) {
+    try {
+      const data = await this._accountService.getDefaultAccountBalance(req);
+      res({ status: 'ok', data });
+    } catch (err) {
+      res({ status: 'error', errorMsg: err.message });
+    }
+  }
+
+  @Export(ServerExports.GetAccountsByIdentifier)
+  async getAccountsByIdentifier(req: Request<string>, res: Response<unknown>) {
+    try {
+      const data = await this._accountService.getAccountsByIdentifier(req.data);
+      res({ status: 'ok', data });
+    } catch (err) {
+      res({ status: 'error', errorMsg: err.message });
+    }
+  }
+
+  @Export(ServerExports.AddUserToUniqueAccount)
+  async addUserToUniqueAccount(req: Request<AddToUniqueAccountInput>, res: Response<unknown>) {
+    try {
+      const data = await this._accountService.addUserToUniqueAccount(req);
+      res({ status: 'ok', data });
+    } catch (err) {
+      res({ status: 'error', errorMsg: err.message });
+    }
+  }
+
+  @Export(ServerExports.RemoveUserFromUniqueAccount)
+  async removeUserFromUniqueAccount(
+    req: Request<RemoveFromUniqueAccountInput>,
+    res: Response<unknown>,
+  ) {
+    try {
+      const data = await this._accountService.removeUserFromUniqueAccount(req);
+      res({ status: 'ok', data });
     } catch (err) {
       res({ status: 'error', errorMsg: err.message });
     }

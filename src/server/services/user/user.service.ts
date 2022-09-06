@@ -49,15 +49,18 @@ export class UserService {
   }
 
   async loadPlayer(data: OnlineUser) {
-    logger.debug('Loading player for pefcl with export');
+    logger.debug('Loading player for pefcl.');
     logger.debug(data);
 
     const user = new UserModule(data);
     this.usersBySource.set(user.getSource(), user);
 
-    logger.debug('Player loaded, emitting: ' + UserEvents.Loaded);
-    emit(UserEvents.Loaded, data);
-    emitNet(UserEvents.Loaded, data, data.source, data);
+    logger.debug(`Player loaded. Emitting: ${UserEvents.Loaded}`);
+
+    setImmediate(() => {
+      emit(UserEvents.Loaded, data);
+      emitNet(UserEvents.Loaded, data.source, data);
+    });
   }
 
   async unloadPlayer(source: number) {
@@ -75,21 +78,12 @@ export class UserService {
     const identifier = getPlayerIdentifier(userDTO.source);
     const name = getPlayerName(userDTO.source);
 
-    const user = new UserModule({
+    const user = {
       name,
       identifier,
       source: userDTO.source,
-    });
+    };
 
-    logger.debug('New user loaded for pe-fcl');
-    logger.debug(user);
-
-    this.usersBySource.set(userDTO.source, user);
-    emit(UserEvents.Loaded, {
-      name,
-      identifier,
-      source: userDTO.source,
-    });
-    emitNet(UserEvents.Loaded, userDTO.source, user);
+    return this.loadPlayer(user);
   }
 }

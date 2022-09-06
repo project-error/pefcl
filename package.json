@@ -8,27 +8,32 @@
   "scripts": {
     "format": "prettier --write .",
     "prepare": "husky install",
-    "postinstall": "husky install",
+    "postinstall": "husky install && yarn setup",
     "translations:generate": "yarn i18next",
+    "translations:generate-index": "node ./scripts/generateLocales.js",
     "translations:download": "localazy download",
     "translations:upload": "localazy upload -w $LOCALAZY_WRITE_KEY -r $LOCALAZY_READ_KEY",
     "setup": "yarn nx run-many --target=setup --all",
     "build": "yarn nx run-many --target=build --all",
+    "lint": "yarn nx run-many --target=lint --all",
     "dev": "yarn nx run-many --target=dev --all",
     "dev:ingame": "yarn nx run-many --target=dev:ingame --all",
+    "dev:mobile": "yarn nx run-many --target=dev:mobile --all",
     "prerelease": "yarn build && sh ./scripts/prerelease.sh",
     "release": "yarn build && sh ./scripts/release.sh"
   },
   "devDependencies": {
+    "@citizenfx/client": "^2.0.5754-1",
     "@commitlint/cli": "^16.0.2",
     "@commitlint/config-conventional": "^16.0.0",
     "@localazy/cli": "^1.6.0",
+    "@types/node": "^18.6.1",
     "axios": "^0.26.1",
     "husky": "^7.0.4",
     "nodemon": "^2.0.15",
+    "nx": "14.4.3",
     "prettier": "^2.5.1",
-    "pretty-quick": "^3.1.3",
-    "nx": "14.4.3"
+    "pretty-quick": "^3.1.3"
   },
   "dependencies": {
     "i18next-parser": "^6.0.0"

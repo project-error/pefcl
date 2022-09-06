@@ -170,7 +170,6 @@ export class TransactionDB {
     newTransaction.setToAccount(toAccount?.id);
     newTransaction.setFromAccount(fromAccount?.id);
 
-    console.log('returning:', newTransaction.toJSON());
     return newTransaction;
   }
 }

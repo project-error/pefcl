@@ -21,13 +21,15 @@ export class UserController {
   }
 
   @Export(ServerExports.LoadPlayer)
-  async loadPlayer(req: Request<OnlineUser>) {
+  async loadPlayer(req: Request<OnlineUser>, res: Response<void>) {
     this._userService.loadPlayer(req.data);
+    res({ status: 'ok' });
   }
 
   @Export(ServerExports.UnloadPlayer)
-  async unloadPlayer(req: Request<number>) {
-    this._userService.unloadPlayer(req.data);
+  async unloadPlayer(req: Request<number>, res: Response<void>) {
+    this._userService.unloadPlayer(req.source);
+    res({ status: 'ok' });
   }
 
   @NetPromise(UserEvents.GetUsers)

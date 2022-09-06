@@ -1,12 +1,21 @@
 import React, { ReactNode } from 'react';
-import { CreditCardRounded, DashboardRounded, Paid, Receipt, SwapHoriz } from '@mui/icons-material';
+import {
+  Add,
+  CreditCardRounded,
+  DashboardRounded,
+  Paid,
+  Receipt,
+  Remove,
+  SwapHoriz,
+} from '@mui/icons-material';
 import styled from '@emotion/styled';
 import theme from '@utils/theme';
 import { Badge } from '@mui/material';
 import { Link, useRouteMatch } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { useAtom } from 'jotai';
-import { invoicesAtom, totalUnpaidInvoices } from '@data/invoices';
+import { Atom } from 'jotai';
+import { totalUnpaidInvoicesAtom } from '@data/invoices';
+import BadgeAtom from './ui/BadgeAtom';
 
 const List = styled.ul`
   margin: 0;
@@ -61,16 +70,24 @@ interface ListItemProps {
   label: string;
   icon: ReactNode;
   amount?: number;
+  countAtom?: Atom<number>;
 }
-const ListItem = ({ to, icon, label, amount }: ListItemProps) => {
+const ListItem = ({ to, icon, label, amount, countAtom }: ListItemProps) => {
   const match = useRouteMatch();
 
   return (
     <Link to={to}>
       <ListItemContainer isActive={match.url === to}>
-        <Badge color="error" badgeContent={amount}>
-          {icon}
-        </Badge>
+        {countAtom ? (
+          <BadgeAtom color="error" countAtom={countAtom}>
+            {icon}
+          </BadgeAtom>
+        ) : (
+          <Badge color="error" badgeContent={amount}>
+            {icon}
+          </Badge>
+        )}
+
         <span>{label}</span>
       </ListItemContainer>
     </Link>
@@ -79,7 +96,6 @@ const ListItem = ({ to, icon, label, amount }: ListItemProps) => {
 
 const Sidebar = () => {
   const { t } = useTranslation();
-  const [count] = useAtom(totalUnpaidInvoices);
 
   return (
     <List>
@@ -87,7 +103,14 @@ const Sidebar = () => {
       <ListItem to="/accounts" icon={<CreditCardRounded />} label={t('Accounts')} />
       <ListItem to="/transfer" icon={<SwapHoriz />} label={t('Transfer')} />
       <ListItem to="/transactions" icon={<Paid />} label={t('Transactions')} />
-      <ListItem to="/invoices" icon={<Receipt />} label={t('Invoices')} amount={count} />
+      <ListItem
+        to="/invoices"
+        icon={<Receipt />}
+        label={t('Invoices')}
+        countAtom={totalUnpaidInvoicesAtom}
+      />
+      <ListItem to="/deposit" icon={<Add />} label={t('Deposit')} />
+      <ListItem to="/withdraw" icon={<Remove />} label={t('Withdraw')} />
     </List>
   );
 };

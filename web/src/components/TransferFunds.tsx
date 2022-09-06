@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Alert, Box, FormHelperText, LinearProgress, Stack } from '@mui/material';
+import { Alert, Box, FormHelperText, LinearProgress, Stack, Typography } from '@mui/material';
 import { useAtom } from 'jotai';
 import { accountsAtom, defaultAccountAtom } from '../data/accounts';
 import { Heading5 } from './ui/Typography/Headings';
@@ -10,9 +10,10 @@ import PriceField from './ui/Fields/PriceField';
 import { fetchNui } from '../utils/fetchNui';
 import { transactionBaseAtom } from 'src/data/transactions';
 import { TransactionEvents } from '@typings/Events';
-import { Transfer, TransferType } from '@typings/Transaction';
+import { CreateTransferInput, TransferType } from '@typings/Transaction';
 import { externalAccountsAtom } from '@data/externalAccounts';
 import { GenericErrors } from '@typings/Errors';
+import NewBalance from './ui/NewBalance';
 
 const TransferFunds: React.FC<{ onClose?(): void }> = ({ onClose }) => {
   const { t } = useTranslation();
@@ -39,7 +40,7 @@ const TransferFunds: React.FC<{ onClose?(): void }> = ({ onClose }) => {
     setError('');
     setSuccess('');
 
-    const payload: Transfer = {
+    const payload: CreateTransferInput = {
       type,
       message,
       amount: parsedAmount,
@@ -72,6 +73,11 @@ const TransferFunds: React.FC<{ onClose?(): void }> = ({ onClose }) => {
   const isDisabled =
     isSameAccount || !parsedAmount || !isToAccountSelected || isAmountTooHigh || isAmountTooLow;
 
+  const rawValue = parseInt(amount.replace(/\D/g, ''));
+  const value = isNaN(rawValue) ? 0 : rawValue;
+  const newBalance = (fromAccount?.balance ?? 0) - value;
+  const isValidNewBalance = newBalance >= 0;
+
   return (
     <>
       <Box p="2rem 0 0" display="flex" flexDirection="column">
@@ -101,10 +107,11 @@ const TransferFunds: React.FC<{ onClose?(): void }> = ({ onClose }) => {
           <Stack spacing={1}>
             <Heading5>{t('Amount')}</Heading5>
             <PriceField
-              placeholder="amount"
+              placeholder={t('Amount')}
               value={amount}
               onChange={(event) => setAmount(event.target.value)}
             />
+            <NewBalance amount={newBalance} isValid={isValidNewBalance} />
           </Stack>
 
           <FormHelperText>{error}</FormHelperText>

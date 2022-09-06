@@ -15,7 +15,10 @@ export const Heading2 = styled(BaseHeading)`
 `;
 
 export const Heading3 = styled(BaseHeading)`
-  font-size: 1.75rem;
+  font-size: 1.5rem;
+`;
+export const Heading4 = styled(BaseHeading)`
+  font-size: 1.25rem;
 `;
 
 export const Heading5 = styled(BaseHeading)`

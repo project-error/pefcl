@@ -5,6 +5,7 @@
       "runner": "nx/tasks-runners/default",
       "options": {
         "cacheableOperations": [
+          "setup",
           "dev",
           "dev:ingame",
           "build",
@@ -22,8 +23,29 @@
     }
   },
   "targetDefaults": {
+    "setup": {
+      "dependsOn": [
+        "^setup"
+      ]
+    },
+    "dev": {
+      "dependsOn": [
+        "setup"
+      ]
+    },
+    "dev:ingame": {
+      "dependsOn": [
+        "setup"
+      ]
+    },
+    "dev:mobile": {
+      "dependsOn": [
+        "setup"
+      ]
+    },
     "build": {
       "dependsOn": [
+        "setup",
         "^build"
       ]
     }

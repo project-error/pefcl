@@ -8,7 +8,7 @@ import { CashModel } from './cash.model';
 import { Request } from '@typings/http';
 import { ServerError } from '@utils/errors';
 import { BalanceEvents } from '@typings/Events';
-import { BalanceErrors } from '@typings/Errors';
+import { BalanceErrors, GenericErrors } from '@typings/Errors';
 import { getFrameworkExports } from '@server/utils/frameworkIntegration';
 
 const logger = mainLogger.child({ module: 'cash' });
@@ -49,14 +49,20 @@ export class CashService {
 
   async giveCash(req: Request<ChangeCashInput>) {
     logger.debug(`source ${req.source}: Giving ${req.data.amount} to ${req.data.source}.`);
+
+    const { amount } = req.data;
     const myCashAmount = await this.getMyCash(req.source);
 
-    if (myCashAmount < req.data.amount) {
+    if (amount <= 0) {
+      throw new ServerError(GenericErrors.BadInput);
+    }
+
+    if (myCashAmount < amount) {
       throw new ServerError(BalanceErrors.InsufficentFunds);
     }
 
-    await this.handleAddCash(req.data.source, req.data.amount);
-    await this.handleRemoveCash(req.source, req.data.amount);
+    await this.handleAddCash(source, amount);
+    await this.handleRemoveCash(req.source, amount);
 
     return true;
   }
@@ -73,10 +79,12 @@ export class CashService {
     }
 
     const cash = await this._cashDB.getCashByIdentifier(identifier);
-    await cash?.decrement({ amount });
+    if (!cash) {
+      throw new Error(GenericErrors.NotFound);
+    }
+    await this._cashDB.decrement(cash, amount);
 
     emitNet(BalanceEvents.UpdateCashBalance, source, cash?.getDataValue('amount'));
-
     return null;
   }
 
@@ -92,10 +100,12 @@ export class CashService {
     }
 
     const cash = await this._cashDB.getCashByIdentifier(identifier);
-    await cash?.increment({ amount });
+    if (!cash) {
+      throw new Error(GenericErrors.NotFound);
+    }
+    await this._cashDB.increment(cash, amount);
 
     emitNet(BalanceEvents.UpdateCashBalance, source, cash?.getDataValue('amount'));
-
     return cash;
   }
 }

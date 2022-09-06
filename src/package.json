@@ -6,8 +6,10 @@
   "scripts": {
     "setup": "yarn install",
     "dev": "yarn concurrently \"yarn nodemon\" \"node ./scripts/watch_server.js\"",
-    "dev:ingame": "yarn concurrently \"node ./scripts/watch_client.js\" \"node ./scripts/watch_server.js --mode=ingame\"",
+    "dev:ingame": "yarn build:ingame && yarn concurrently \"node ./scripts/watch_client.js\" \"node ./scripts/watch_server.js --mode=ingame\"",
+    "dev:mobile": "yarn dev",
     "build": "node ./scripts/build_server.js && node ./scripts/build_client.js",
+    "build:ingame": "node ./scripts/build_server.js && node ./scripts/build_client.js",
     "lint": "eslint server && eslint client",
     "watch": "concurrently \"yarn watch:server\" \"yarn watch:client\"",
     "watch:client": "esbuild client/client.ts --bundle --target=es6 --watch --outfile=dist/client.js",
@@ -43,6 +45,7 @@
     "typescript": "^4.5.4"
   },
   "dependencies": {
+    "@project-error/npwd-types": "^1.3.4",
     "@project-error/pe-utils": "^0.2.7",
     "body-parser": "^1.19.2",
     "dayjs": "^1.10.8",

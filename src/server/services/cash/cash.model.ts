@@ -4,6 +4,7 @@ import { Cash } from '@typings/Cash';
 import { sequelize } from '../../utils/pool';
 import { config } from '@utils/server-config';
 import { timestamps } from '../timestamps.model';
+import { CashEvents } from '@server/../../typings/Events';
 
 export class CashModel extends Model<Cash, Optional<Cash, 'id' | 'amount'>> {}
 
@@ -24,5 +25,15 @@ CashModel.init(
     },
     ...timestamps,
   },
-  { sequelize: sequelize, tableName: DATABASE_PREFIX + 'cash' },
+  {
+    sequelize: sequelize,
+    tableName: DATABASE_PREFIX + 'cash',
+    hooks: {
+      afterSave: (instance, options) => {
+        if (options.fields?.includes('amount')) {
+          emit(CashEvents.NewCash, instance.toJSON());
+        }
+      },
+    },
+  },
 );

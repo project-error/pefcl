@@ -30,6 +30,11 @@
   dependencies:
     regenerator-runtime "^0.13.4"
 
+"@citizenfx/client@^2.0.5754-1":
+  version "2.0.5754-1"
+  resolved "https://registry.yarnpkg.com/@citizenfx/client/-/client-2.0.5754-1.tgz#65fd0ec30aa912781481a94e04a71308ac63431f"
+  integrity sha512-QXY1NEzkgWcBs7+DlwxAEO+F4OM3mzAH4CX/VvFmP3TGJK9cJjq80gna1fI5tLgaEgeJtlKY4mMp8NTykV8VVA==
+
 "@commitlint/cli@^16.0.2":
   version "16.0.2"
   resolved "https://registry.yarnpkg.com/@commitlint/cli/-/cli-16.0.2.tgz#393b03793fc59b93e5f4dd7dd535a6cc5a7413ca"
@@ -292,6 +297,11 @@
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/@types/minimist/-/minimist-1.2.2.tgz#ee771e2ba4b3dc5b372935d549fd9617bf345b8c"
   integrity sha512-jhuKLIRrhvCPLqwPcx6INqmKeiA5EWrsCOPhrlFSrbrmU4ZMPjj5Ul/oLCMDO98XRUIwVm78xICz4EPCektzeQ==
+
+"@types/node@^18.6.1":
+  version "18.6.1"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-18.6.1.tgz#828e4785ccca13f44e2fb6852ae0ef11e3e20ba5"
+  integrity sha512-z+2vB6yDt1fNwKOeGbckpmirO+VBDuQqecXkgeIqDlaOtmKn6hPR/viQ8cxCfqLU4fTlvM3+YjM367TukWdxpg==
 
 "@types/normalize-package-data@^2.4.0":
   version "2.4.1"

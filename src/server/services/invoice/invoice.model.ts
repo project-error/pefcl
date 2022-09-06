@@ -9,7 +9,7 @@ import { timestamps } from '../timestamps.model';
 @singleton()
 export class InvoiceModel extends Model<
   Invoice,
-  Optional<Invoice, 'id' | 'status' | 'recieverAccountId'>
+  Optional<Invoice, 'id' | 'status' | 'receiverAccountIdentifier'>
 > {}
 
 InvoiceModel.init(
@@ -23,7 +23,6 @@ InvoiceModel.init(
       defaultValue: 'unknown',
       type: DataTypes.STRING,
       validate: {
-        is: regexAlphaNumeric,
         max: 80,
         min: 1,
       },
@@ -32,7 +31,6 @@ InvoiceModel.init(
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
-        is: regexAlphaNumeric,
         max: 80,
         min: 1,
       },
@@ -41,7 +39,6 @@ InvoiceModel.init(
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
-        is: regexAlphaNumeric,
         max: 80,
         min: 1,
       },
@@ -54,8 +51,8 @@ InvoiceModel.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    recieverAccountId: {
-      type: DataTypes.INTEGER,
+    receiverAccountIdentifier: {
+      type: DataTypes.STRING,
       allowNull: true,
     },
     amount: {

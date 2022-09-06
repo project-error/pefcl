@@ -41,7 +41,7 @@ export interface TransactionInput {
   fromAccount?: Transaction['fromAccount'];
 }
 
-export interface Transfer {
+export interface CreateTransferInput {
   number?: string;
   toAccountId: number;
   fromAccountId: number;

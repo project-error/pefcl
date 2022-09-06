@@ -1,3 +1,5 @@
+import { RegisterNuiCB } from '@project-error/pe-utils';
+import { Account } from '@typings/Account';
 import {
   AccountEvents,
   ExternalAccountEvents,
@@ -7,47 +9,85 @@ import {
   UserEvents,
   BalanceEvents,
   Broadcasts,
+  NUIEvents,
+  CashEvents,
 } from '@typings/Events';
 import { Invoice } from '@typings/Invoice';
 import { Transaction } from '@typings/Transaction';
 import { RegisterNuiProxy } from 'cl_utils';
 import API from './cl_api';
+import config from './cl_config';
 
-onNet(Broadcasts.NewTransaction, (result: Transaction) => {
-  SendNUIMessage({ type: Broadcasts.NewTransaction, payload: result });
+const npwdExports = global.exports['npwd'];
+
+const useFrameworkIntegration = config.frameworkIntegration?.enabled;
+let hasNUILoaded = false;
+
+RegisterNuiCB(NUIEvents.Loaded, () => {
+  console.debug('NUI has loaded.');
+  hasNUILoaded = true;
 });
 
-onNet(Broadcasts.NewInvoice, (result: Invoice) => {
-  SendNUIMessage({ type: Broadcasts.NewInvoice, payload: result });
+RegisterNuiCB(NUIEvents.Unloaded, () => {
+  console.debug('NUI has unloaded.');
+  hasNUILoaded = false;
+});
+
+const waitForNUILoaded = (checkInterval = 250): Promise<void> => {
+  return new Promise((resolve) => {
+    const interval = setInterval(() => {
+      if (hasNUILoaded) {
+        resolve();
+        clearInterval(interval);
+      }
+    }, checkInterval);
+  });
+};
+
+const SendBankUIMessage = (data: object) => {
+  SendNUIMessage(data);
+
+  if (GetResourceState('npwd') === 'started') {
+    npwdExports.sendUIMessage(data);
+  }
+};
+
+onNet(Broadcasts.NewTransaction, (payload: Transaction) => {
+  SendBankUIMessage({ type: Broadcasts.NewTransaction, payload });
+});
+
+onNet(Broadcasts.UpdatedAccount, (payload: Account) => {
+  SendBankUIMessage({ type: Broadcasts.UpdatedAccount, payload });
+});
+
+onNet(Broadcasts.NewInvoice, (payload: Invoice) => {
+  SendBankUIMessage({ type: Broadcasts.NewInvoice, payload });
 });
 
 onNet(Broadcasts.NewSharedUser, () => {
-  SendNUIMessage({ type: Broadcasts.NewSharedUser });
+  SendBankUIMessage({ type: Broadcasts.NewSharedUser });
 });
 
 onNet(Broadcasts.RemovedSharedUser, () => {
-  SendNUIMessage({ type: Broadcasts.RemovedSharedUser });
+  SendBankUIMessage({ type: Broadcasts.RemovedSharedUser });
 });
 
-onNet(UserEvents.Loaded, () => {
-  // TODO: remove this temp fix
-  // This is only issue on resource reload, wait for resource to be loaded, before playerLoad
+onNet(UserEvents.Loaded, async () => {
+  console.debug('Waiting for NUI to load ..');
+  await waitForNUILoaded();
+  console.debug('Loaded. Emitting data to NUI.');
+  SendBankUIMessage({ type: UserEvents.Loaded, payload: true });
 
-  setTimeout(() => {
-    SendNUIMessage({ type: UserEvents.Loaded });
-  }, 2000);
+  if (!useFrameworkIntegration) {
+    StatSetInt(CASH_BAL_STAT, (await API.getMyCash()) ?? 0, true);
+  }
 });
 
 onNet(UserEvents.Unloaded, () => {
-  SendNUIMessage({ type: UserEvents.Unloaded });
+  SendBankUIMessage({ type: UserEvents.Unloaded });
 });
 
 const CASH_BAL_STAT = GetHashKey('MP0_WALLET_BALANCE');
-
-setImmediate(async () => {
-  StatSetInt(CASH_BAL_STAT, (await API.getMyCash()) ?? 0, true);
-});
-
 onNet(BalanceEvents.UpdateCashBalance, (newBalance: number) => {
   StatSetInt(CASH_BAL_STAT, newBalance, true);
 });
@@ -74,3 +114,15 @@ RegisterNuiProxy(ExternalAccountEvents.Get);
 
 RegisterNuiProxy(AccountEvents.WithdrawMoney);
 RegisterNuiProxy(AccountEvents.DepositMoney);
+RegisterNuiProxy(CashEvents.GetMyCash);
+
+RegisterCommand(
+  'bank-force-load',
+  async () => {
+    console.debug('Waiting for NUI to load ..');
+    await waitForNUILoaded();
+    console.debug('Loaded. Emitting data to NUI.');
+    SendBankUIMessage({ type: UserEvents.Loaded, payload: true });
+  },
+  false,
+);

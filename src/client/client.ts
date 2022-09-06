@@ -1,6 +1,8 @@
 import './cl_events';
 import './cl_exports';
-import { GeneralEvents, UserEvents } from '@typings/Events';
+import './cl_integrations';
+import './cl_blips';
+import { GeneralEvents } from '@typings/Events';
 import { RegisterNuiCB } from '@project-error/pe-utils';
 import { createInvoice, giveCash } from './functions';
 import config from './cl_config';
@@ -28,14 +30,6 @@ export const setAtmIsOpen = (bool: boolean) => {
   SendNUIMessage({ type: 'setVisibleATM', payload: bool });
   SetNuiFocus(bool, bool);
 };
-
-RegisterCommand(
-  'bank-force-load',
-  () => {
-    SendNUIMessage({ type: UserEvents.Loaded });
-  },
-  false,
-);
 
 if (!useFrameworkIntegration) {
   RegisterCommand(
@@ -83,6 +77,8 @@ if (!useFrameworkIntegration) {
 RegisterNuiCB<void>(GeneralEvents.CloseUI, async () => {
   setBankIsOpen(false);
   setAtmIsOpen(false);
+
+  emit('pefcl:closedUI');
 });
 
 if (!useFrameworkIntegration) {

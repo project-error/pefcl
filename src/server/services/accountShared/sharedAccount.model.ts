@@ -16,7 +16,7 @@ SharedAccountModel.init(
       autoIncrement: true,
       primaryKey: true,
     },
-    user: {
+    userIdentifier: {
       type: DataTypes.STRING,
     },
     name: {

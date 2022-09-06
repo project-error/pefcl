@@ -10,7 +10,7 @@ import { InvoiceDB } from './invoice.db';
 import i18n from '@utils/i18n';
 import { TransactionType } from '@typings/Transaction';
 import { ServerError } from '@utils/errors';
-import { AccountErrors, GenericErrors } from '@typings/Errors';
+import { AccountErrors, BalanceErrors, GenericErrors } from '@typings/Errors';
 import { TransactionService } from '../transaction/transaction.service';
 import { Broadcasts } from '@server/../../typings/Events';
 
@@ -90,11 +90,11 @@ export class InvoiceService {
       const invoice = await this._invoiceDB.getInvoiceById(req.data.invoiceId);
 
       /* Should we insert money to a specific account? */
-      const recieverAccountId = invoice?.getDataValue('recieverAccountId');
+      const receiverAccountIdentifier = invoice?.getDataValue('receiverAccountIdentifier');
       const toAccountIdentifier = invoice?.getDataValue('fromIdentifier');
 
-      const toAccount = recieverAccountId
-        ? await this._accountDB.getAccountById(recieverAccountId)
+      const toAccount = receiverAccountIdentifier
+        ? await this._accountDB.getUniqueAccountByIdentifier(receiverAccountIdentifier)
         : await this._accountDB.getDefaultAccountByIdentifier(toAccountIdentifier ?? '');
 
       if (!invoice || !fromAccount || !toAccount) {
@@ -106,20 +106,24 @@ export class InvoiceService {
       }
 
       const accountBalance = fromAccount.getDataValue('balance');
-      const invoiceAmount = invoice.getDataValue('amount');
+      const amount = invoice.getDataValue('amount');
 
-      if (accountBalance < invoiceAmount) {
-        throw new Error('Insufficent funds');
+      if (accountBalance < amount) {
+        throw new Error(BalanceErrors.InsufficentFunds);
       }
 
       /* TODO: Implement transaction fee if wanted */
-      await toAccount.increment('balance', { by: invoiceAmount, transaction: t });
-      await fromAccount.decrement('balance', { by: invoiceAmount, transaction: t });
+      await this._accountDB.transfer({
+        amount,
+        fromAccount,
+        toAccount,
+        transaction: t,
+      });
       await this._invoiceDB.payInvoice(req.data.invoiceId);
 
       await this.transactionService.handleCreateTransaction(
         {
-          amount: invoiceAmount,
+          amount: amount,
           message: i18n.t('Paid outgoing invoice to: {{to}}', {
             to: invoice.getDataValue('to'),
           }),
@@ -132,7 +136,7 @@ export class InvoiceService {
 
       await this.transactionService.handleCreateTransaction(
         {
-          amount: invoiceAmount,
+          amount: amount,
           message: i18n.t('Received incoming invoice from: {{from}}', {
             from: invoice.getDataValue('from'),
           }),

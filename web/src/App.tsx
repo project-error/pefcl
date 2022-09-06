@@ -18,7 +18,10 @@ import { BroadcastsWrapper } from '@hooks/useBroadcasts';
 import Transfer from './views/transfer/Transfer';
 import Transactions from './views/transactions/Transactions';
 import Devbar from '@components/DebugBar';
-import { UserEvents } from '@typings/Events';
+import { NUIEvents, UserEvents } from '@typings/Events';
+import Deposit from './views/Deposit/Deposit';
+import { fetchNui } from '@utils/fetchNui';
+import Withdraw from './views/Withdraw/Withdraw';
 
 dayjs.extend(updateLocale);
 
@@ -44,8 +47,19 @@ const Content = styled.div`
 const App: React.FC = () => {
   const config = useConfig();
   const [hasLoaded, setHasLoaded] = useState(process.env.NODE_ENV === 'development');
-  useNuiEvent({ event: UserEvents.Loaded, callback: () => setHasLoaded(true) });
+  useNuiEvent({
+    event: UserEvents.Loaded,
+    callback: () => setHasLoaded(true),
+  });
+
   useNuiEvent({ event: UserEvents.Unloaded, callback: () => setHasLoaded(false) });
+
+  useEffect(() => {
+    fetchNui(NUIEvents.Loaded);
+    return () => {
+      fetchNui(NUIEvents.Unloaded);
+    };
+  }, []);
 
   const { data: isVisible } = useNuiEvent<boolean>({
     event: 'setVisible',
@@ -85,17 +99,19 @@ const App: React.FC = () => {
               <Route path="/transactions" component={Transactions} />
               <Route path="/invoices" component={Invoices} />
               <Route path="/transfer" component={Transfer} />
+              <Route path="/deposit" component={Deposit} />
+              <Route path="/withdraw" component={Withdraw} />
             </Content>
           </Container>
         )}
       </React.Suspense>
 
-      <React.Suspense fallback={'Opening atm'}>
+      <React.Suspense fallback={null}>
         <ATM />
       </React.Suspense>
 
       {/* We don't need to show any fallback for the update component since it doesn't render anything anyway. */}
-      <React.Suspense fallback={'Broadcast wrapper'}>{<BroadcastsWrapper />}</React.Suspense>
+      <React.Suspense fallback={null}>{<BroadcastsWrapper />}</React.Suspense>
     </>
   );
 };

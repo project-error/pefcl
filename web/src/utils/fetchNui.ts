@@ -3,9 +3,9 @@ import { ServerPromiseResp } from '@typings/http';
 
 const isDevelopment = process.env.NODE_ENV === 'development';
 
-export const fetchNui = async <T = object>(
+export const fetchNui = async <T = object, I = object>(
   eventName: string,
-  data?: object,
+  data?: I,
 ): Promise<T | undefined> => {
   const resourceName = getResourceName();
   const url = isDevelopment

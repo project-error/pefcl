@@ -112,8 +112,11 @@ const SharedSettings = ({ accountId, isAdmin }: Props) => {
                     key={user.user}
                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                   >
-                    <TableCell>{user.role === AccountRole.Owner ? 'You' : user.name}</TableCell>
-                    <TableCell>{user.role}</TableCell>
+                    {/* TODO: Add (You) to yourself. */}
+                    <TableCell>
+                      {user.name ?? t('owner')} {/* isUserMe(user) ? t('You') : '' */}
+                    </TableCell>
+                    <TableCell>{t(user.role)}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

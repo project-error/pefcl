@@ -1,0 +1,2 @@
+import('./mobileDevelopmentContainer');
+export {};

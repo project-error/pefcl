@@ -16,10 +16,11 @@ export type PreDBAccount = {
   isShared?: boolean;
 };
 
-export type CreateSharedInput = {
+export type CreateBasicAccountInput = {
   name: string;
   type: AccountType;
   identifier: string;
+  number?: string;
 };
 
 export type RenameAccountInput = {
@@ -44,20 +45,21 @@ export interface CreateAccountInput {
   ownerIdentifier: string;
   type: AccountType;
   isDefault?: boolean;
+  number?: string;
 }
 
 export interface SharedAccount {
   id: number;
-  user: string;
+  userIdentifier: string;
   role: AccountRole;
   name?: string;
   account?: Account;
   accountId?: number;
   setAccount?(): void;
 }
-export type SharedAccountUser = Pick<SharedAccount, 'user' | 'role' | 'name'>;
+export type SharedAccountUser = Pick<SharedAccount, 'userIdentifier' | 'role' | 'name'>;
 export interface SharedAccountInput {
-  user: string;
+  userIdentifier: string;
   name?: string;
   accountId: number;
   role?: AccountRole;
@@ -67,6 +69,19 @@ export interface AddToSharedAccountInput {
   identifier: string;
   accountId: number;
   role?: AccountRole;
+}
+
+export interface AddToUniqueAccountInput {
+  role?: AccountRole;
+  source?: number;
+  userIdentifier?: string;
+  accountIdentifier: string;
+}
+
+export interface RemoveFromUniqueAccountInput {
+  source?: number;
+  userIdentifier?: string;
+  accountIdentifier: string;
 }
 
 export interface RemoveFromSharedAccountInput {
@@ -95,8 +110,8 @@ export interface ExternalAccountInput {
   userId: string;
 }
 
-export interface AddBankBalanceInput {
+export interface UpdateBankBalanceInput {
   amount: number;
   message: string;
-  identifier: string;
+  identifier?: string;
 }

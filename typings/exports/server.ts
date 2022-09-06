@@ -4,22 +4,37 @@ type ExportResponse = ServerPromiseResp<unknown>;
 type ExportCallback = (result: ExportResponse) => void;
 
 export enum ServerExports {
-  AddCash = 'addCash',
   GetCash = 'getCash',
+  AddCash = 'addCash',
   RemoveCash = 'removeCash',
-  GetAccounts = 'getAccounts',
-  GetTotalBalance = 'getTotalBalance',
-  GetUnpaidInvoices = 'getUnpaidInvoices',
+  DepositCash = 'depositCash',
+  WithdrawCash = 'withdrawCash',
+
+  GetTotalBankBalance = 'getTotalBankBalance',
+  GetTotalBankBalanceByIdentifier = 'getTotalBankBalanceByIdentifier',
+  GetDefaultAccountBalance = 'getDefaultAccountBalance',
+  SetBankBalance = 'setBankBalance',
+  SetBankBalanceByIdentifier = 'setBankBalanceByIdentifier',
   AddBankBalance = 'addBankBalance',
   AddBankBalanceByIdentifier = 'addBankBalanceByIdentifier',
+  RemoveBankBalanceByIdentifier = 'removeBankBalanceByIdentifier',
   RemoveBankBalance = 'removeBankBalance',
-  WithdrawMoney = 'withdrawMoney',
-  DepositMoney = 'depositMoney',
-  CreateInvoice = 'createInvoice',
+
   GetInvoices = 'getInvoices',
+  CreateInvoice = 'createInvoice',
+  GetUnpaidInvoices = 'getUnpaidInvoices',
+
   LoadPlayer = 'loadPlayer',
   UnloadPlayer = 'unloadPlayer',
-  CreateAccount = 'createAccount',
+
+  GetAccounts = 'getAccounts',
+  GetAccountsByIdentifier = 'getAccountsByIdentifier',
+
+  /* Can be utilised by jobs or similar */
+  CreateUniqueAccount = 'createUniqueAccount',
+  GetUniqueAccount = 'getUniqueAccount',
+  AddUserToUniqueAccount = 'addUserToUniqueAccount',
+  RemoveUserFromUniqueAccount = 'removeUserFromUniqueAccount',
 }
 
 export type WithdrawMoneyExport = (

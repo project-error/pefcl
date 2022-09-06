@@ -1,13 +1,12 @@
 import { singleton } from 'tsyringe';
 import { Request } from '@typings/http';
 import {
+  CreateTransferInput,
   GetTransactionHistoryResponse,
   GetTransactionsInput,
   GetTransactionsResponse,
-  Transaction,
   TransactionInput,
   TransactionType,
-  Transfer,
   TransferType,
 } from '@typings/Transaction';
 import { sequelize } from '@server/utils/pool';
@@ -18,10 +17,10 @@ import { TransactionDB } from './transaction.db';
 import { TransactionModel } from './transaction.model';
 import { ExternalAccountService } from '@services/accountExternal/externalAccount.service';
 import { ServerError } from '@utils/errors';
-import { GenericErrors } from '@typings/Errors';
+import { BalanceErrors, GenericErrors } from '@typings/Errors';
 import { AccountRole } from '@typings/Account';
 import { MS_ONE_WEEK } from '@utils/constants';
-import { Broadcasts } from '@typings/Events';
+import { TransactionEvents } from '@typings/Events';
 import { SharedAccountDB } from '../accountShared/sharedAccount.db';
 import { Transaction as SequelizeTransaction } from 'sequelize/types';
 
@@ -85,13 +84,17 @@ export class TransactionService {
     };
   }
 
-  private async handleInternalTransfer(req: Request<Transfer>) {
+  private async handleInternalTransfer(req: Request<CreateTransferInput>) {
     logger.silly('Creating internal transfer');
     logger.silly(req);
 
     const user = this._userService.getUser(req.source);
     const identifier = user.getIdentifier();
     const { fromAccountId, toAccountId, amount, message } = req.data;
+
+    if (amount <= 0) {
+      throw new ServerError(GenericErrors.BadInput);
+    }
 
     const t = await sequelize.transaction();
     try {
@@ -109,8 +112,11 @@ export class TransactionService {
         throw new ServerError(GenericErrors.NotFound);
       }
 
-      await toAccount.increment('balance', { by: amount });
-      await fromAccount.decrement('balance', { by: amount });
+      if (fromAccount.getDataValue('balance') < amount) {
+        throw new ServerError(BalanceErrors.InsufficentFunds);
+      }
+
+      await this._accountDB.transfer({ amount, fromAccount, toAccount, transaction: t });
       await this.handleCreateTransaction(
         {
           amount: amount,
@@ -131,20 +137,29 @@ export class TransactionService {
     }
   }
 
-  private async handleExternalTransfer(req: Request<Transfer>) {
+  private async handleExternalTransfer(req: Request<CreateTransferInput>) {
+    const amount = req.data.amount;
+
+    if (amount <= 0) {
+      throw new ServerError(GenericErrors.BadInput);
+    }
+
     const t = await sequelize.transaction();
     try {
-      const myAccount = await this._accountDB.getAccountById(req.data.fromAccountId);
+      const fromAccount = await this._accountDB.getAccountById(req.data.fromAccountId);
       const toAccount = await this._externalAccountService.getAccountFromExternalAccount(
         req.data.toAccountId,
       );
 
-      if (!toAccount || !myAccount) {
+      if (!toAccount || !fromAccount) {
         throw new ServerError(GenericErrors.NotFound);
       }
 
-      await myAccount.decrement('balance', { by: req.data.amount, transaction: t });
-      await toAccount.increment('balance', { by: req.data.amount, transaction: t });
+      if (fromAccount.getDataValue('balance') < amount) {
+        throw new ServerError(BalanceErrors.InsufficentFunds);
+      }
+
+      await this._accountDB.transfer({ amount, fromAccount, toAccount, transaction: t });
 
       /*  Since this is a external "transfer", it's not actually a TransactionType.Transfer.
           But a seperate TransactionType.Incoming & TransactionType.Outgoing.
@@ -156,7 +171,7 @@ export class TransactionService {
         amount: req.data.amount,
         message: req.data.message,
         toAccount: toAccount.toJSON(),
-        fromAccount: myAccount.toJSON(),
+        fromAccount: fromAccount.toJSON(),
       };
       await this.handleCreateTransaction({ ...data, type: TransactionType.Outgoing }, t);
       await this.handleCreateTransaction({ ...data, type: TransactionType.Incoming }, t);
@@ -170,14 +185,16 @@ export class TransactionService {
     }
   }
 
-  async handleTransfer(req: Request<Transfer>) {
-    logger.silly(
+  async handleTransfer(req: Request<CreateTransferInput>) {
+    logger.debug(
       `Transfering ${req.data.amount} from account ${req.data.fromAccountId} to ${req.data.toAccountId} ...`,
     );
+
     const isExternalTransfer = req.data.type === TransferType.External;
     if (isExternalTransfer) {
       return await this.handleExternalTransfer(req);
     }
+
     return await this.handleInternalTransfer(req);
   }
 
@@ -191,24 +208,11 @@ export class TransactionService {
     const transaction = await this._transactionDB.create(input, sequelizeTransaction);
 
     sequelizeTransaction.afterCommit(() => {
-      this.broadcastTransaction({ ...input, ...transaction.toJSON() });
+      logger.silly(`Emitting ${TransactionEvents.NewTransaction}`);
+      emit(TransactionEvents.NewTransaction, { ...input, ...transaction.toJSON() });
     });
 
     return transaction;
-  }
-
-  async broadcastTransaction(transaction: Transaction) {
-    logger.silly(`Broadcasted transaction:`);
-    logger.silly(JSON.stringify(transaction));
-
-    const { ownerIdentifier } = transaction.toAccount ?? {};
-    const user = this._userService.getUserByIdentifier(ownerIdentifier ?? '');
-
-    if (!user) {
-      return;
-    }
-
-    emitNet(Broadcasts.NewTransaction, user.getSource(), transaction);
   }
 
   async handleGetHistory(req: Request<void>): Promise<GetTransactionHistoryResponse> {

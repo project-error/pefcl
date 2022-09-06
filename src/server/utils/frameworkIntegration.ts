@@ -37,6 +37,8 @@ export const getFrameworkExports = (): FrameworkIntegrationExports => {
   const resourceName = config?.frameworkIntegration?.resource;
   const resourceExports: FrameworkIntegrationExports = exps[resourceName ?? ''];
 
+  log.debug(`Checking exports from resource: ${resourceName}`);
+
   if (!resourceName) {
     log.error(`Missing resourceName in the config for framework integration`);
     throw new Error('Framework integration failed');

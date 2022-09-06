@@ -1,6 +1,5 @@
 import styled from '@emotion/styled';
 import { ListSubheader, MenuItem, SelectChangeEvent, Stack, Typography } from '@mui/material';
-import { t } from 'i18next';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Account, AccountRole, AccountType, ExternalAccount } from '@typings/Account';
@@ -84,7 +83,9 @@ const AccountSelect = ({
   isFromAccount = false,
   externalAccounts = [],
 }: AccountSelectProps) => {
+  const { t } = useTranslation();
   const config = useConfig();
+  const [isOpen, setIsOpen] = useState(false);
   const [isExternalOpen, setIsExternalOpen] = useState(false);
   const [selected, setSelected] = useState<number>(0);
 
@@ -104,21 +105,35 @@ const AccountSelect = ({
     onSelect(value);
   };
 
+  const handleAddExternalAccount = () => {
+    setIsOpen(false);
+    setIsExternalOpen(true);
+  };
+
   return (
     <div>
       <React.Suspense fallback={null}>
         <AddExternalAccountModal isOpen={isExternalOpen} onClose={() => setIsExternalOpen(false)} />
       </React.Suspense>
       <Select
+        open={isOpen}
+        onClose={() => setIsOpen(false)}
+        onClick={() => !isOpen && setIsOpen(true)}
         value={selected.toString()}
         onChange={handleChange}
         variant="filled"
         sx={{ width: '100%' }}
-        MenuProps={{ sx: { maxHeight: '25rem', scrollbarColor: '#222', scrollbarWidth: '2px' } }}
+        MenuProps={{
+          sx: {
+            maxHeight: '25rem',
+            scrollbarColor: '#222',
+            scrollbarWidth: '2px',
+          },
+        }}
       >
         {!isFromAccount && (
           <Box p={2} display="flex">
-            <Button fullWidth onClick={() => setIsExternalOpen(true)}>
+            <Button fullWidth onClick={handleAddExternalAccount}>
               {t('Add external account')}
             </Button>
           </Box>

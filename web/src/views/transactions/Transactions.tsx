@@ -2,15 +2,15 @@ import Layout from '@components/Layout';
 import TransactionItem from '@components/TransactionItem';
 import Count from '@components/ui/Count';
 import styled from '@emotion/styled';
-import { Pagination, Stack } from '@mui/material';
+import { Pagination, Stack, Typography } from '@mui/material';
 import theme from '@utils/theme';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Heading2, Heading5, Heading6 } from '../../components/ui/Typography/Headings';
-import TransactionFilters, { TransactionFilter } from './Filters';
 import { fetchNui } from '@utils/fetchNui';
 import { GetTransactionsResponse, Transaction } from '@typings/Transaction';
 import { TransactionEvents } from '@typings/Events';
+import { DEFAULT_PAGINATION_LIMIT } from '@utils/constants';
 
 const Container = styled(Stack)`
   height: calc(100% - 5rem);
@@ -41,10 +41,12 @@ const Transactions = () => {
   const { t } = useTranslation();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [total, setTotal] = useState(0);
-  const [limit, setLimit] = useState(10);
-  const [activeFilters, setActiveFilters] = useState<TransactionFilter[]>([]);
+  const [limit, setLimit] = useState(DEFAULT_PAGINATION_LIMIT);
   const pages = Math.ceil(total / limit);
   const [page, setPage] = useState(1);
+
+  const offset = limit * (page - 1);
+  const to = offset + limit > total ? total : offset + limit;
 
   const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
@@ -53,7 +55,7 @@ const Transactions = () => {
   useEffect(() => {
     fetchNui<GetTransactionsResponse>(TransactionEvents.Get, {
       limit,
-      offset: limit * (page - 1),
+      offset,
     }).then((res) => {
       if (!res) {
         return;
@@ -63,17 +65,7 @@ const Transactions = () => {
       setTotal(res.total);
       setTransactions(res.transactions);
     });
-  }, [page, limit]);
-
-  const chipFilteredTransactions =
-    activeFilters.length === 0
-      ? transactions
-      : transactions.filter((transaction) => {
-          const anyPassed: boolean[] = activeFilters.map((filterFunc) =>
-            filterFunc.sort(transaction),
-          );
-          return anyPassed.some(Boolean);
-        });
+  }, [offset, limit]);
 
   return (
     <Layout>
@@ -82,25 +74,28 @@ const Transactions = () => {
       <Container spacing={4} direction="row" marginTop={4}>
         <Stack spacing={2} flex="4">
           <Stack direction="row" justifyContent="space-between">
-            <Heading5>{t('Filters')}</Heading5>
+            <Heading5>{t('Transactions')}</Heading5>
             <Stack direction="row" spacing={2} alignItems="center">
               <Heading6>{t('Total')}</Heading6>
               <Count amount={total} />
             </Stack>
           </Stack>
 
-          <TransactionFilters updateActiveFilters={setActiveFilters} />
-
-          <Stack direction="row" spacing={2} alignItems="center" justifyContent="space-between">
-            <Heading5>{t('Transactions')}</Heading5>
-          </Stack>
           <TransactionsContainer spacing={2}>
-            {chipFilteredTransactions.map((transaction) => (
+            {transactions.map((transaction) => (
               <TransactionItem transaction={transaction} key={transaction.id} />
             ))}
           </TransactionsContainer>
 
-          <Stack sx={{ marginTop: 'auto', alignSelf: 'flex-end' }}>
+          <Stack
+            pt={2}
+            sx={{ marginTop: 'auto !important', alignSelf: 'flex-end' }}
+            direction="row"
+            alignItems="center"
+          >
+            <Typography variant="caption">
+              {t('{{from}}-{{to}} of {{total}}', { from: offset, to, total })}
+            </Typography>
             <Pagination
               count={pages}
               shape="rounded"

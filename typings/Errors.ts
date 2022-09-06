@@ -1,4 +1,5 @@
 export enum GenericErrors {
+  BadInput = 'BadInput',
   NotFound = 'NotFound',
   UserNotFound = 'UserNotFound',
   MissingDefaultAccount = 'MissingDefaultAccount',
@@ -9,8 +10,14 @@ export enum ExternalAccountErrors {
 }
 
 export enum AccountErrors {
+  NotFound = 'AccountNotFound',
   AlreadyExists = 'AccountAlreadyExists',
+  UserAlreadyExists = 'UserAlreadyExists',
   SameAccount = 'SameAccount',
+}
+
+export enum UserErrors {
+  NotFound = 'UserNotFound',
 }
 
 export enum BalanceErrors {

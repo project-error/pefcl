@@ -5,6 +5,25 @@ export type DeepPartial<T> = T extends object
   : T;
 
 export type IdentifierType = 'license' | 'xbox' | 'discord' | 'steam';
+
+export interface PolyZone {
+  position: {
+    x: number;
+    y: number;
+    z: number;
+  };
+  length: number;
+  width: number;
+  heading: number;
+  minZ: number;
+  maxZ: number;
+}
+
+interface BlipCoords {
+  x: number;
+  y: number;
+  z: number;
+}
 export interface ResourceConfig {
   general: {
     language: string;
@@ -34,6 +53,31 @@ export interface ResourceConfig {
     distance: number;
     props: number[];
     withdrawOptions: number[];
+  };
+  bankBlips: {
+    enabled: boolean;
+    name: string;
+    colour: number;
+    icon: number;
+    scale: number;
+    display: number;
+    shortRange: boolean;
+    coords: BlipCoords[];
+  };
+  atmBlips: {
+    enabled: boolean;
+    name: string;
+    colour: number;
+    icon: number;
+    scale: number;
+    display: number;
+    shortRange: boolean;
+    coords: BlipCoords[];
+  };
+  target: {
+    enabled: boolean;
+    bankZones: PolyZone[];
+    type: string;
   };
   debug: {
     level: string;
