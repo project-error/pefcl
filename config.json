@@ -91,6 +91,7 @@
   },
   "target": {
     "type": "qtarget",
+    "debug": false,
     "enabled": true,
     "bankZones": [
       {

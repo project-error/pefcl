@@ -4,6 +4,7 @@ const exp = global.exports;
 
 const isTargetEnabled = cl_config.target?.enabled ?? false;
 const targetType = cl_config.target?.type ?? 'qtarget';
+const isTargetDebugEnabled = cl_config.target?.debug ?? false;
 const isTargetAvailable = GetResourceState(targetType) === 'started';
 
 if (isTargetEnabled && isTargetAvailable) {
@@ -37,7 +38,7 @@ if (isTargetEnabled && isTargetAvailable) {
       {
         name,
         heading: zone.heading,
-        debugPoly: false,
+        debugPoly: isTargetDebugEnabled,
         minZ: zone.minZ,
         maxZ: zone.maxZ,
       },
