@@ -36,6 +36,7 @@ export interface ResourceConfig {
   };
   database: {
     profileQueries: boolean;
+    shouldSync?: boolean;
   };
   prices: {
     newAccount: number;

@@ -1,4 +1,3 @@
-import { regexAlphaNumeric } from '@shared/utils/regexes';
 import { DATABASE_PREFIX, MS_TWO_WEEKS } from '@utils/constants';
 import { DataTypes, Model, Optional } from 'sequelize';
 import { singleton } from 'tsyringe';
