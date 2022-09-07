@@ -8,7 +8,9 @@ import { formatMoney } from '../utils/currency';
 import theme from '../utils/theme';
 import { BodyText } from './ui/Typography/BodyText';
 import { Heading3, Heading5, Heading6 } from './ui/Typography/Headings';
-import { Skeleton } from '@mui/material';
+import { IconButton, Skeleton, Stack } from '@mui/material';
+import { ContentCopyRounded } from '@mui/icons-material';
+import copy from 'copy-to-clipboard';
 
 const Container = styled.div<{ accountType: AccountType; selected: boolean }>`
   user-select: none;
@@ -92,7 +94,17 @@ export const AccountCard = ({ account, selected = false, ...props }: AccountCard
         </Type>
       </Row>
 
-      <Heading5>{number}</Heading5>
+      <Stack direction="row" alignItems="center">
+        <Heading5>{number}</Heading5>
+        <IconButton
+          onClick={() => copy(number)}
+          size="small"
+          color="inherit"
+          style={{ opacity: '0.45', marginTop: 0, marginLeft: '0.25rem' }}
+        >
+          <ContentCopyRounded color="inherit" fontSize="small" />
+        </IconButton>
+      </Stack>
 
       <RowEnd>
         <Col>
