@@ -1,5 +1,8 @@
 name: Tests - Web, UI
-on: [push]
+on:
+  push:
+    branches:
+      - '**'
 
 jobs:
   test:
