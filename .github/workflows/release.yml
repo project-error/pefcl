@@ -35,7 +35,7 @@ jobs:
       - name: Translations
         env:
           LOCALAZY_READ_KEY: a8269809765126758267-f01743c76d6e9e434d7b4c6322938eefce8d82a559b57efc2acfcf4531d46089
-        run: yarn translations:download
+        run: yarn translations:pull
 
       - name: Generate translations
         run: yarn translations:generate-index
