@@ -29,4 +29,4 @@ https://projecterror.dev/docs/pefcl/developers/introduction
 
 ## Additional Notes
 
-Need further support? Join our [Discord](https://discord.com/invite/HYwBjTbAY5)!
+Need further support? Join our [Discord](https://discord.gg/DwKrMwCHX3)!
