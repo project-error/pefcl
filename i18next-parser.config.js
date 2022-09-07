@@ -55,7 +55,7 @@ module.exports = {
   // Where to write the locale files relative to process.cwd()
 
   // input: ['src/**/*.ts?'],
-  input: ['./web/src/**/*', './src/server/**/*'],
+  input: ['./web/src/**/*', './src/server/**/*', './src/client/**/*'],
   // An array of globs that describe where to look for source files
   // relative to the location of the configuration file
 

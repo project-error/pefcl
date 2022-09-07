@@ -29,4 +29,4 @@ jobs:
         env:
           LOCALAZY_WRITE_KEY: ${{ secrets.LOCALAZY_WRITE_KEY }}
           LOCALAZY_READ_KEY: ${{ secrets.LOCALAZY_READ_KEY }}
-        run: yarn translations:generate && yarn translations:upload
+        run: yarn translations:generate && yarn translations:push

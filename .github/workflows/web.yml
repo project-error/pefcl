@@ -31,7 +31,9 @@ jobs:
         run: yarn --frozen-lockfile
       - name: Generate translations
         working-directory: .
-        run: yarn translations:generate
+        run: |
+          yarn translations:generate
+          yarn translations:generate-index
       - name: Install deps
         run: yarn --frozen-lockfile
       - name: Linting
