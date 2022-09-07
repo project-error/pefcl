@@ -11,7 +11,7 @@ end
 CreateThread(function ()
   local player_id = PlayerPedId()
 
-  if (config.target.enabled == false ) then
+  if config.target.enabled == false then
     while true do
       local player_coords = GetEntityCoords(player_id)
       local sleep = 1000
