@@ -9,10 +9,10 @@ function display_help_text()
 end
 
 CreateThread(function ()
-  local player_id = PlayerPedId()
-
-  if config.target.enabled == false then
+    
+  if not config.target.enabled then
     while true do
+      local player_id = PlayerPedId()
       local player_coords = GetEntityCoords(player_id)
       local sleep = 1000
 
