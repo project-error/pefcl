@@ -1,3 +1,4 @@
+import './i18n';
 import './cl_events';
 import './cl_exports';
 import './cl_integrations';
