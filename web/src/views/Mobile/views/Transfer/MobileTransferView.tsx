@@ -4,6 +4,7 @@ import PriceField from '@components/ui/Fields/PriceField';
 import NewBalance from '@components/ui/NewBalance';
 import { Heading2, Heading5 } from '@components/ui/Typography/Headings';
 import { accountsAtom } from '@data/accounts';
+import { externalAccountsAtom } from '@data/externalAccounts';
 import { transactionBaseAtom } from '@data/transactions';
 import { useConfig } from '@hooks/useConfig';
 import { Alert, Stack } from '@mui/material';
@@ -26,6 +27,7 @@ const MobileTransferView = () => {
   const [selectedFromAccountId, setSelectedFromAccountId] = useState<number>();
   const [selectedToAccountId, setSelectedToAccountId] = useState<number>();
   const [accounts, updateAccounts] = useAtom(accountsAtom);
+  const [externalAccounts, updateExternalAccounts] = useAtom(externalAccountsAtom);
   const [, updateTransactions] = useAtom(transactionBaseAtom);
 
   const selectedFromAccount = accounts.find((account) => account.id === selectedFromAccountId);
@@ -61,6 +63,7 @@ const MobileTransferView = () => {
     setSuccess(t('Successfully transferred {{amount}}.', { amount: formatMoney(value, general) }));
     setIsLoading(false);
     updateAccounts();
+    updateExternalAccounts();
     updateTransactions();
     setAmount('');
   };
@@ -87,6 +90,7 @@ const MobileTransferView = () => {
           <Heading5>{t('To account')}</Heading5>
           <AccountSelect
             accounts={accounts}
+            externalAccounts={externalAccounts}
             onSelect={setSelectedToAccountId}
             selectedId={selectedToAccountId}
           />
