@@ -115,3 +115,9 @@ export interface UpdateBankBalanceInput {
   message: string;
   identifier?: string;
 }
+
+export interface UpdateBankBalanceByNumberInput {
+  amount: number;
+  message: string;
+  accountNumber: string;
+}
