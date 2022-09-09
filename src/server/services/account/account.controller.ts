@@ -252,6 +252,16 @@ export class AccountController {
     }
   }
 
+  @Export(ServerExports.GetBankBalanceByIdentifier)
+  async getBankBalanceByIdentifier(req: Request<string>, res: Response<unknown>) {
+    try {
+      const data = await this._accountService.getBankBalanceByIdentifier(req.data);
+      res({ status: 'ok', data });
+    } catch (err) {
+      res({ status: 'error', errorMsg: err.message });
+    }
+  }
+
   @Export(ServerExports.AddBankBalanceByIdentifier)
   async addBankBalanceByIdentifier(req: Request<UpdateBankBalanceInput>, res: Response<unknown>) {
     try {

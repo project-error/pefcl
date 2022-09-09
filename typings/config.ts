@@ -78,6 +78,7 @@ export interface ResourceConfig {
     enabled: boolean;
     bankZones: PolyZone[];
     type: string;
+    debug: boolean;
   };
   debug: {
     level: string;

@@ -916,4 +916,12 @@ export class AccountService {
       logger.error('Failed to add user to unique account');
     }
   }
+
+  async getBankBalanceByIdentifier(identifier: string) {
+    const account = await this._accountDB.getDefaultAccountByIdentifier(identifier ?? '');
+    if (!account) {
+      throw new ServerError(GenericErrors.NotFound);
+    }
+    return account.getDataValue('balance');
+  }
 }

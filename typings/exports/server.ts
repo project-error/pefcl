@@ -13,6 +13,7 @@ export enum ServerExports {
   GetTotalBankBalance = 'getTotalBankBalance',
   GetTotalBankBalanceByIdentifier = 'getTotalBankBalanceByIdentifier',
   GetDefaultAccountBalance = 'getDefaultAccountBalance',
+  GetBankBalanceByIdentifier = 'getBankBalanceByIdentifier',
   SetBankBalance = 'setBankBalance',
   SetBankBalanceByIdentifier = 'setBankBalanceByIdentifier',
   AddBankBalance = 'addBankBalance',
