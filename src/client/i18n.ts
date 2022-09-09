@@ -34,4 +34,8 @@ export const load = async () => {
     .catch((r) => console.error(r));
 };
 
+load();
+
+export const translations = i18next;
+
 export default i18next;
