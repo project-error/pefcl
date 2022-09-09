@@ -14,6 +14,7 @@ import {
   SharedAccountUser,
   AddToUniqueAccountInput,
   RemoveFromUniqueAccountInput,
+  UpdateBankBalanceByNumberInput,
 } from '@typings/Account';
 import {
   AccountEvents,
@@ -261,6 +262,19 @@ export class AccountController {
     }
   }
 
+  @Export(ServerExports.AddBankBalanceByNumber)
+  async addBankBalanceByNumber(
+    req: Request<UpdateBankBalanceByNumberInput>,
+    res: Response<unknown>,
+  ) {
+    try {
+      await this._accountService.addMoneyByNumber(req);
+      res({ status: 'ok', data: {} });
+    } catch (err) {
+      res({ status: 'error', errorMsg: err.message });
+    }
+  }
+
   @Export(ServerExports.RemoveBankBalanceByIdentifier)
   async removeBankBalanceByIdentifier(
     req: Request<UpdateBankBalanceInput>,
@@ -281,6 +295,19 @@ export class AccountController {
   ) {
     try {
       await this._accountService.removeMoney(req);
+      res({ status: 'ok', data: {} });
+    } catch (err) {
+      res({ status: 'error', errorMsg: err.message });
+    }
+  }
+
+  @Export(ServerExports.RemoveBankBalanceByNumber)
+  async removeBankBalanceByNumber(
+    req: Request<{ amount: number; message: string; accountNumber: string }>,
+    res: Response<unknown>,
+  ) {
+    try {
+      this._accountService.removeMoneyByAccountNumber(req);
       res({ status: 'ok', data: {} });
     } catch (err) {
       res({ status: 'error', errorMsg: err.message });

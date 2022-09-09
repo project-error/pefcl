@@ -15,6 +15,7 @@ import {
   CreateBasicAccountInput,
   AddToUniqueAccountInput,
   RemoveFromUniqueAccountInput,
+  UpdateBankBalanceByNumberInput,
 } from '@typings/Account';
 import { UserService } from '../user/user.service';
 import { config } from '@utils/server-config';
@@ -625,6 +626,37 @@ export class AccountService {
     }
   }
 
+  async addMoneyByNumber(req: Request<UpdateBankBalanceByNumberInput>) {
+    const { amount, accountNumber, message } = req.data;
+    logger.silly(`Adding money by account number to ${accountNumber} ..`);
+    if (amount <= 0) {
+      throw new ServerError(GenericErrors.BadInput);
+    }
+
+    const t = await sequelize.transaction();
+    try {
+      const account = await this._accountDB.getAccountByNumber(accountNumber ?? '');
+
+      if (!account) {
+        throw new ServerError(GenericErrors.NotFound);
+      }
+
+      await this._accountDB.increment(account, amount, t);
+      await this._transactionService.handleCreateTransaction(
+        {
+          amount,
+          message,
+          fromAccount: account?.toJSON(),
+          type: TransactionType.Incoming,
+        },
+        t,
+      );
+      t.commit();
+    } catch (err) {
+      t.rollback();
+    }
+  }
+
   async removeMoney(req: Request<UpdateBankBalanceInput>) {
     const { amount, message } = req.data;
     logger.silly(`Removing ${amount} money from ${req.source}...`);
@@ -675,6 +707,39 @@ export class AccountService {
     const t = await sequelize.transaction();
     try {
       const account = await this._accountDB.getDefaultAccountByIdentifier(identifier ?? '');
+      if (!account) {
+        throw new ServerError(GenericErrors.NotFound);
+      }
+
+      await this._accountDB.decrement(account, amount, t);
+      await this._transactionService.handleCreateTransaction(
+        {
+          amount,
+          message,
+          fromAccount: account?.toJSON(),
+          type: TransactionType.Outgoing,
+        },
+        t,
+      );
+      t.commit();
+    } catch {
+      t.rollback();
+    }
+  }
+
+  async removeMoneyByAccountNumber(req: Request<UpdateBankBalanceByNumberInput>) {
+    const { amount, accountNumber, message } = req.data;
+    logger.silly(
+      `Removing ${req.data.amount} money by account number from ${req.data.accountNumber} ..`,
+    );
+
+    if (amount <= 0) {
+      throw new ServerError(GenericErrors.BadInput);
+    }
+
+    const t = await sequelize.transaction();
+    try {
+      const account = await this._accountDB.getAccountByNumber(accountNumber ?? '');
       if (!account) {
         throw new ServerError(GenericErrors.NotFound);
       }
