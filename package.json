@@ -13,7 +13,7 @@
     "translations:generate-index": "node ./scripts/generateLocales.js",
     "translations:pull": "localazy download",
     "translations:push": "localazy upload -w $LOCALAZY_WRITE_KEY -r $LOCALAZY_READ_KEY",
-    "setup": "yarn nx run-many --target=setup --all",
+    "setup": "yarn nx run-many --target=setup --all && yarn translations:pull && yarn translations:generate-index",
     "build": "yarn nx run-many --target=build --all",
     "lint": "yarn nx run-many --target=lint --all",
     "dev": "yarn nx run-many --target=dev --all",
