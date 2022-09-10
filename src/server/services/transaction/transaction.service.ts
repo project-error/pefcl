@@ -102,7 +102,7 @@ export class TransactionService {
       const sharedAccount = await this._sharedAccountDB.getAuthorizedSharedAccountById(
         fromAccountId,
         identifier,
-        [AccountRole.Admin, AccountRole.Owner],
+        [AccountRole.Admin],
       );
 
       const fromAccount = myAccount ?? sharedAccount;
