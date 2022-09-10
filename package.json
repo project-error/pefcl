@@ -19,7 +19,7 @@
     "dev": "yarn nx run-many --target=dev --all",
     "dev:ingame": "yarn nx run-many --target=dev:ingame --all",
     "dev:mobile": "yarn nx run-many --target=dev:mobile --all",
-    "prerelease": "yarn build && sh ./scripts/prerelease.sh",
+    "pre-release": "yarn build && sh ./scripts/prerelease.sh",
     "release": "yarn build && sh ./scripts/release.sh"
   },
   "devDependencies": {

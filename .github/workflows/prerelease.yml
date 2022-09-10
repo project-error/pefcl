@@ -49,7 +49,7 @@ jobs:
         working-directory: web
         run: yarn --frozen-lockfile
 
-      - name: Create release
+      - name: Create pre-release
         run: |
           chmod +x "./scripts/prerelease.sh"
           yarn prerelease
