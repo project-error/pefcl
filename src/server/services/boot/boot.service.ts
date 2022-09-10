@@ -41,6 +41,13 @@ export class BootService {
       } catch (error: unknown | Error) {
         logger.error('Stopping resource due to framework integration error. Reason:');
         logger.error(error);
+
+        if (error instanceof Error && error.message.includes('No such export')) {
+          logger.error(
+            'Check your starting order. The framework integration library needs to be started before PEFCL!',
+          );
+        }
+
         this.handleResourceStop();
         return;
       }
