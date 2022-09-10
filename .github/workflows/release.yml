@@ -55,11 +55,11 @@ jobs:
 
       - name: Create Release & Changelog
         uses: 'marvinpinto/action-automatic-releases@v1.2.1'
+        id: auto_release
         with:
           repo_token: '${{ secrets.GITHUB_TOKEN }}'
           title: PEFCL Release | (${{ steps.get_vars.outputs.VERSION_TAG }})
           prerelease: false
-          automatic_release_tag: ${{ steps.get_vars.outputs.BRANCH_NAME }}
           files: ./temp/pefcl.zip
 
         env:
