@@ -35,7 +35,7 @@ export class SharedAccountDB {
     });
 
     const role = sharedAccount?.getDataValue('role');
-    if (role && !roles.includes(role)) {
+    if (role && !roles.includes(role) && role !== 'owner') {
       throw new ServerError(AuthorizationErrors.Forbidden);
     }
 
