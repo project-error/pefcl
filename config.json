@@ -24,6 +24,10 @@
     "clearingNumber": 920,
     "maximumNumberOfAccounts": 3
   },
+  "cards": {
+    "cost": 4500,
+    "maxCardsPerAccount": 2
+  },
   "atms": {
     "distance": 5.0,
     "props": [-870868698, -1126237515, 506770882],

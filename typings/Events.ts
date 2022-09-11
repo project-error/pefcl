@@ -77,3 +77,11 @@ export enum CashEvents {
 export enum BalanceEvents {
   UpdateCashBalance = 'pefcl:updateCashBalance',
 }
+
+export enum CardEvents {
+  Get = 'pefcl:getCards',
+  OrderShared = 'pefcl:orderSharedCard',
+  OrderPersonal = 'pefcl:orderPersonalCard',
+  Block = 'pefcl:blockCard',
+  UpdatePin = 'pefcl:updatePin',
+}

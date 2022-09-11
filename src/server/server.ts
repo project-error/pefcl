@@ -2,6 +2,7 @@ import './globals.server';
 import { ServerPromiseResp } from '@project-error/pe-utils';
 import {
   AccountEvents,
+  CardEvents,
   CashEvents,
   ExternalAccountEvents,
   GeneralEvents,
@@ -95,6 +96,12 @@ if (isMocking) {
   app.post(...createEndpoint(ExternalAccountEvents.Add));
   app.post(...createEndpoint(ExternalAccountEvents.Get));
   app.post(...createEndpoint(CashEvents.GetMyCash));
+
+  // Cards
+  app.post(...createEndpoint(CardEvents.Get));
+  app.post(...createEndpoint(CardEvents.OrderPersonal));
+  app.post(...createEndpoint(CardEvents.UpdatePin));
+  app.post(...createEndpoint(CardEvents.Block));
 
   app.listen(port, async () => {
     mainLogger.child({ module: 'server' }).debug(`[MOCKSERVER]: listening on port: ${port}`);

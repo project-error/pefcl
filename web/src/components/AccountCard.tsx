@@ -40,7 +40,7 @@ const Container = styled.div<{ accountType: AccountType; selected: boolean }>`
   ${({ selected }) =>
     selected &&
     `
-    border: 2px solid ${theme.palette.background.light8};
+    border: 2px solid ${theme.palette.primary.light};
   `};
 `;
 
@@ -77,9 +77,15 @@ const DefaultText = styled(Heading6)`
 type AccountCardProps = {
   account: Account;
   selected?: boolean;
+  withCopy?: boolean;
 };
 
-export const AccountCard = ({ account, selected = false, ...props }: AccountCardProps) => {
+export const AccountCard = ({
+  account,
+  selected = false,
+  withCopy = false,
+  ...props
+}: AccountCardProps) => {
   const { type, id, balance, isDefault, accountName, number } = account;
   const { t } = useTranslation();
   const config = useConfig();
@@ -96,14 +102,16 @@ export const AccountCard = ({ account, selected = false, ...props }: AccountCard
 
       <Stack direction="row" alignItems="center">
         <Heading5>{number}</Heading5>
-        <IconButton
-          onClick={() => copy(number)}
-          size="small"
-          color="inherit"
-          style={{ opacity: '0.45', marginTop: 0, marginLeft: '0.25rem' }}
-        >
-          <ContentCopyRounded color="inherit" fontSize="small" />
-        </IconButton>
+        {withCopy && (
+          <IconButton
+            onClick={() => copy(number)}
+            size="small"
+            color="inherit"
+            style={{ opacity: '0.45', marginTop: 0, marginLeft: '0.25rem' }}
+          >
+            <ContentCopyRounded color="inherit" fontSize="small" />
+          </IconButton>
+        )}
       </Stack>
 
       <RowEnd>
@@ -111,8 +119,6 @@ export const AccountCard = ({ account, selected = false, ...props }: AccountCard
           <Heading6>{t('Account name')}</Heading6>
           <BodyText>{accountName}</BodyText>
         </Col>
-
-        <StyledIcon />
       </RowEnd>
     </Container>
   );
