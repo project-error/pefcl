@@ -61,7 +61,7 @@ export class CashService {
       throw new ServerError(BalanceErrors.InsufficentFunds);
     }
 
-    await this.handleAddCash(source, amount);
+    await this.handleAddCash(req.data.source, amount);
     await this.handleRemoveCash(req.source, amount);
 
     return true;
