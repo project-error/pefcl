@@ -19,12 +19,12 @@ exp('closeAtm', async () => {
   setAtmIsOpen(false);
 });
 
-exp('giveNearestPlayerCash', (amount: string) => {
-  giveCash(0, [amount]);
+exp('giveNearestPlayerCash', (amount: number) => {
+  giveCash(0, [amount.toString()]);
 });
 
-exp('createInvoiceForNearestPlayer', (amount: string, message: string) => {
-  createInvoice(0, [amount, message]);
+exp('createInvoiceForNearestPlayer', (amount: number, message: string) => {
+  createInvoice(0, [amount.toString(), message]);
 });
 
 exp('depositMoney', (amount: number) => {
