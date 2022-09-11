@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { InputBaseProps, Stack, Typography } from '@mui/material';
-import { PIN_CODE_LENGTH } from '@utils/constants';
+import { PIN_CODE_LENGTH } from '@shared/constants';
 import React, { ChangeEvent, useState } from 'react';
 import Count from '../Count';
 
