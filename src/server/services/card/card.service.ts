@@ -15,7 +15,7 @@ import {
   UpdateCardPinInput,
 } from '@server/../../typings/BankCard';
 import { AccountDB } from '../account/account.db';
-import { PIN_CODE_LENGTH } from '@server/utils/constants';
+import { PIN_CODE_LENGTH } from '@shared/constants';
 
 const logger = mainLogger.child({ module: 'card' });
 
