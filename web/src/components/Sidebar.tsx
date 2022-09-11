@@ -1,5 +1,6 @@
 import React, { ReactNode } from 'react';
 import {
+  AccountBalanceRounded,
   Add,
   CreditCardRounded,
   DashboardRounded,
@@ -100,7 +101,7 @@ const Sidebar = () => {
   return (
     <List>
       <ListItem to="/" icon={<DashboardRounded />} label={t('Dashboard')} />
-      <ListItem to="/accounts" icon={<CreditCardRounded />} label={t('Accounts')} />
+      <ListItem to="/accounts" icon={<AccountBalanceRounded />} label={t('Accounts')} />
       <ListItem to="/transfer" icon={<SwapHoriz />} label={t('Transfer')} />
       <ListItem to="/transactions" icon={<Paid />} label={t('Transactions')} />
       <ListItem
@@ -111,6 +112,7 @@ const Sidebar = () => {
       />
       <ListItem to="/deposit" icon={<Add />} label={t('Deposit')} />
       <ListItem to="/withdraw" icon={<Remove />} label={t('Withdraw')} />
+      <ListItem to="/cards" icon={<CreditCardRounded />} label={t('Cards')} />
     </List>
   );
 };

@@ -25,6 +25,7 @@ import Accounts from './views/accounts/Accounts';
 import Dashboard from './views/dashboard/Dashboard';
 import Transactions from './views/transactions/Transactions';
 import Transfer from './views/transfer/Transfer';
+import CardsView from './views/Cards/CardsView';
 
 dayjs.extend(updateLocale);
 
@@ -106,6 +107,7 @@ const App: React.FC = () => {
               <Route path="/transfer" component={Transfer} />
               <Route path="/deposit" component={Deposit} />
               <Route path="/withdraw" component={Withdraw} />
+              <Route path="/cards" component={CardsView} />
             </Content>
           </Container>
         )}

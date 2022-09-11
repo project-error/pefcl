@@ -1,4 +1,4 @@
-import { AccountCard, LoadingAccountCard } from '@components/Card';
+import { AccountCard, LoadingAccountCard } from '@components/AccountCard';
 import CreateAccountModal from '@components/Modals/CreateAccount';
 import { orderedAccountsAtom } from '@data/accounts';
 import styled from '@emotion/styled';
@@ -89,7 +89,7 @@ const AccountCards = ({ onSelectAccount, selectedAccountId }: AccountCardsProps)
       <Cards>
         {orderedAccounts.map((account) => (
           <CardContainer key={account.id} onClick={() => onSelectAccount?.(account.id)}>
-            <AccountCard account={account} selected={account.id === selectedAccountId} />
+            <AccountCard account={account} selected={account.id === selectedAccountId} withCopy />
           </CardContainer>
         ))}
 

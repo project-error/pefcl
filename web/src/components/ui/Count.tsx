@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import theme from '@utils/theme';
 import React from 'react';
 
-const Total = styled.div`
+const Total = styled.div<{ focus: boolean }>`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -14,15 +14,22 @@ const Total = styled.div`
   border-radius: ${theme.spacing(1)};
   font-weight: ${theme.typography.fontWeightBold};
   background-color: ${theme.palette.background.light4};
+
+  ${({ focus }) =>
+    focus &&
+    `
+      background-color: ${theme.palette.background.light8};
+  `}
 `;
 
 interface CountProps extends React.HTMLAttributes<HTMLDivElement> {
   amount: string | number;
+  focus?: boolean;
 }
-const Count = ({ amount, ...props }: CountProps) => {
+const Count = ({ amount, focus = false, ...props }: CountProps) => {
   return (
     <div {...props}>
-      <Total>{amount}</Total>
+      <Total focus={focus}>{amount}</Total>
     </div>
   );
 };

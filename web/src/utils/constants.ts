@@ -7,6 +7,7 @@ export const resourceDefaultName = 'pefcl';
 
 const now = dayjs();
 
+export const PIN_CODE_LENGTH = 5;
 export const DEFAULT_PAGINATION_LIMIT = 5;
 export const defaultWithdrawOptions = [500, 1000, 1500, 3000, 5000, 7500];
 
