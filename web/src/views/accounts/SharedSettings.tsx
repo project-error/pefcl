@@ -91,7 +91,7 @@ const SharedSettings = ({ accountId, isAdmin }: Props) => {
       />
 
       <Stack spacing={5} alignItems="flex-start">
-        <Stack spacing={1.5}>
+        <Stack spacing={1.5} sx={{ maxHeight: 250 }}>
           <Heading5>{t('Account users')}</Heading5>
           <TableContainer component={Paper}>
             <Table sx={{ minWidth: 400 }}>
