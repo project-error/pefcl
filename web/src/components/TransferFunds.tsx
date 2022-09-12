@@ -45,7 +45,9 @@ const TransferFunds: React.FC<{ onClose?(): void }> = ({ onClose }) => {
       message,
       amount: parsedAmount,
       fromAccountId,
-      toAccountId: isExternalTransfer ? toAccountId * 10 : toAccountId,
+      toAccountId: isExternalTransfer
+        ? toAccountId * Math.pow(10, toAccountId.toString().split('.')[1].length)
+        : toAccountId,
     };
 
     try {
