@@ -31,7 +31,7 @@ const TransferFunds: React.FC<{ onClose?(): void }> = ({ onClose }) => {
   const parsedAmount = Number(amount.replace(/\D/g, ''));
   const fromAccount = accounts.find((account) => account.id === fromAccountId);
 
-  const isExternalTransfer = Boolean(toAccountId && toAccountId < 1);
+  const isExternalTransfer = externalAccounts.some((e) => e.id === toAccountId);
   const message = isExternalTransfer ? t('External transfer') : t('Internal transfer');
   const type = isExternalTransfer ? TransferType.External : TransferType.Internal;
 
@@ -45,9 +45,7 @@ const TransferFunds: React.FC<{ onClose?(): void }> = ({ onClose }) => {
       message,
       amount: parsedAmount,
       fromAccountId,
-      toAccountId: isExternalTransfer
-        ? toAccountId * Math.pow(10, toAccountId.toString().split('.')[1].length)
-        : toAccountId,
+      toAccountId: toAccountId,
     };
 
     try {
