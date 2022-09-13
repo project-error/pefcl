@@ -10,7 +10,7 @@ export interface CreateInvoiceInput {
   message: string;
   toIdentifier: string;
   fromIdentifier: string;
-  receiverAccountId?: number;
+  receiverAccountIdentifier?: string;
   expiresAt?: string;
 }
 
