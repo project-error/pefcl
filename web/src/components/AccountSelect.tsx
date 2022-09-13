@@ -169,7 +169,7 @@ const AccountSelect = ({
 
         {externalAccounts.length > 0 && <ListSubheader>{t('External accounts')}</ListSubheader>}
         {externalAccounts.map((account) => (
-          <StyledMenuItem key={account.id} value={`0.${account.id}`}>
+          <StyledMenuItem key={account.id} value={account.id.toString()}>
             <ListItem>
               <Stack p="0rem 0.5rem">
                 <BodyText>{account.name}</BodyText>
