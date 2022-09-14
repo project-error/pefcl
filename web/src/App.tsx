@@ -6,7 +6,6 @@ import 'dayjs/locale/sv';
 import React, { useEffect, useState } from 'react';
 import { useNuiEvent } from 'react-fivem-hooks';
 import { useTranslation } from 'react-i18next';
-import { useAtom } from 'jotai';
 import { Route } from 'react-router-dom';
 import './App.css';
 import { useConfig } from './hooks/useConfig';
@@ -23,8 +22,6 @@ import { NUIEvents, UserEvents } from '@typings/Events';
 import Deposit from './views/Deposit/Deposit';
 import { fetchNui } from '@utils/fetchNui';
 import Withdraw from './views/Withdraw/Withdraw';
-import { accountsAtom } from '@data/accounts';
-import { transactionBaseAtom } from '@data/transactions';
 
 dayjs.extend(updateLocale);
 
@@ -50,15 +47,9 @@ const Content = styled.div`
 const App: React.FC = () => {
   const config = useConfig();
   const [hasLoaded, setHasLoaded] = useState(process.env.NODE_ENV === 'development');
-  const [, updateAccounts] = useAtom(accountsAtom);
-  const [, updateTransactions] = useAtom(transactionBaseAtom);
   useNuiEvent({
     event: UserEvents.Loaded,
-    callback: () => {
-      setHasLoaded(true);
-      updateAccounts();
-      updateTransactions();
-    },
+    callback: () => setHasLoaded(true),
   });
 
   useNuiEvent({ event: UserEvents.Unloaded, callback: () => setHasLoaded(false) });
