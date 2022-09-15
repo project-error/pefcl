@@ -6,18 +6,23 @@ import { Request } from '@typings/http';
 import { CardDB } from './card.db';
 import { sequelize } from '@server/utils/pool';
 import { AccountService } from '../account/account.service';
-import { CardErrors, GenericErrors } from '@server/../../typings/Errors';
+import { CardErrors, GenericErrors, UserErrors } from '@server/../../typings/Errors';
 import i18next from '@utils/i18n';
 import {
   BlockCardInput,
   Card,
   CreateCardInput,
+  InventoryCard,
   UpdateCardPinInput,
 } from '@server/../../typings/BankCard';
 import { AccountDB } from '../account/account.db';
 import { PIN_CODE_LENGTH } from '@shared/constants';
+import { GetATMAccountResponse, GetATMAccountInput } from '@server/../../typings/Account';
+import { CardEvents } from '@server/../../typings/Events';
+import { getFrameworkExports } from '@server/utils/frameworkIntegration';
 
 const logger = mainLogger.child({ module: 'card' });
+const isFrameworkIntegrationEnabled = config?.frameworkIntegration?.enabled;
 
 @singleton()
 export class CardService {
@@ -41,6 +46,65 @@ export class CardService {
   async getCards(req: Request<{ accountId: number }>) {
     const cards = await this.cardDB.getByAccountId(req.data.accountId);
     return cards.map((card) => card.toJSON());
+  }
+
+  async getInventoryCards(req: Request): Promise<InventoryCard[]> {
+    const user = this.userService.getUser(req.source);
+
+    if (!user) {
+      throw new Error(UserErrors.NotFound);
+    }
+
+    if (!isFrameworkIntegrationEnabled) {
+      logger.error('Phsyical cards are not available without FrameworkIntegration enabled.');
+      return [];
+    }
+
+    const exports = getFrameworkExports();
+    return exports.getCards(user.getSource());
+  }
+
+  async getAccountByCard(req: Request<GetATMAccountInput>): Promise<GetATMAccountResponse> {
+    logger.silly('Getting account by card.');
+
+    const { cardId, pin } = req.data;
+    const card = await this.cardDB.getById(cardId);
+
+    if (!card) {
+      logger.error('Card not found');
+      throw new Error(GenericErrors.NotFound);
+    }
+
+    if (card.getDataValue('isBlocked')) {
+      logger.error('The card is blocked');
+      throw new Error(CardErrors.Blocked);
+    }
+
+    if (pin !== card.getDataValue('pin')) {
+      logger.error('Invalid pin');
+      throw new Error(CardErrors.InvalidPin);
+    }
+
+    const account = await this.accountDB.getAccountById(card.getDataValue('accountId') ?? -1);
+
+    if (!account) {
+      logger.error('Card is not bound to any account');
+      throw new Error(GenericErrors.NotFound);
+    }
+
+    logger.error('Returning account!');
+    return { account: account?.toJSON(), card: card.toJSON() };
+  }
+
+  async giveCard(src: number, card: Card) {
+    if (!isFrameworkIntegrationEnabled) {
+      logger.error('Could not give card to player.');
+      logger.error('Phsyical cards are not available without FrameworkIntegration enabled.');
+      return;
+    }
+
+    const exports = getFrameworkExports();
+    return exports.giveCard(src, card);
   }
 
   async blockCard(req: Request<BlockCardInput>) {
@@ -122,6 +186,7 @@ export class CardService {
         {
           pin: pin,
           holder: user.name,
+          holderCitizenId: user.getIdentifier(),
           accountId: account.getDataValue('id'),
         },
         t,
@@ -135,6 +200,13 @@ export class CardService {
           accountNumber: paymentAccount.getDataValue('number'),
         },
       });
+
+      t.afterCommit(() => {
+        logger.silly(`Emitting ${CardEvents.NewCard}`);
+        emit(CardEvents.NewCard, { ...card.toJSON() });
+      });
+
+      this.giveCard(req.source, card.toJSON());
 
       t.commit();
       return card.toJSON();

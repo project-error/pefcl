@@ -93,7 +93,7 @@ const App: React.FC = () => {
   });
 
   const { i18n } = useTranslation();
-  useExitListener();
+  useExitListener(isVisible);
 
   useEffect(() => {
     i18n.changeLanguage(config?.general?.language).catch((e) => console.error(e));

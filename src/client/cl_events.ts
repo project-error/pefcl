@@ -11,6 +11,7 @@ import {
   Broadcasts,
   NUIEvents,
   CashEvents,
+  CardEvents,
 } from '@typings/Events';
 import { Invoice } from '@typings/Invoice';
 import { Transaction } from '@typings/Transaction';
@@ -121,9 +122,18 @@ RegisterNuiProxy(SharedAccountEvents.GetUsers);
 RegisterNuiProxy(ExternalAccountEvents.Add);
 RegisterNuiProxy(ExternalAccountEvents.Get);
 
+RegisterNuiProxy(AccountEvents.GetAtmAccount);
 RegisterNuiProxy(AccountEvents.WithdrawMoney);
 RegisterNuiProxy(AccountEvents.DepositMoney);
 RegisterNuiProxy(CashEvents.GetMyCash);
+
+// Cards
+RegisterNuiProxy(CardEvents.Get);
+RegisterNuiProxy(CardEvents.Block);
+RegisterNuiProxy(CardEvents.OrderPersonal);
+RegisterNuiProxy(CardEvents.OrderShared);
+RegisterNuiProxy(CardEvents.UpdatePin);
+RegisterNuiProxy(CardEvents.GetInventoryCards);
 
 RegisterCommand(
   'bank-force-load',

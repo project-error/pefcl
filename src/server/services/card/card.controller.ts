@@ -1,12 +1,14 @@
 import { NetPromise, PromiseEventListener } from '@decorators/NetPromise';
+import { GetATMAccountInput, GetATMAccountResponse } from '@server/../../typings/Account';
 import {
   BlockCardInput,
   Card,
   CreateCardInput,
   GetCardInput,
+  InventoryCard,
   UpdateCardPinInput,
 } from '@server/../../typings/BankCard';
-import { CardEvents } from '@typings/Events';
+import { AccountEvents, CardEvents } from '@typings/Events';
 import { Request, Response } from '@typings/http';
 import { Controller } from '../../decorators/Controller';
 import { EventListener } from '../../decorators/Event';
@@ -19,6 +21,16 @@ export class CardController {
   cardService: CardService;
   constructor(cardService: CardService) {
     this.cardService = cardService;
+  }
+
+  @NetPromise(AccountEvents.GetAtmAccount)
+  async getAtmAccount(req: Request<GetATMAccountInput>, res: Response<GetATMAccountResponse>) {
+    try {
+      const result = await this.cardService.getAccountByCard(req);
+      res({ status: 'ok', data: result });
+    } catch (error) {
+      res({ status: 'error', errorMsg: error.message });
+    }
   }
 
   @NetPromise(CardEvents.OrderPersonal)
@@ -55,6 +67,17 @@ export class CardController {
   async getCards(req: Request<GetCardInput>, res: Response<Card[]>) {
     try {
       const result = await this.cardService.getCards(req);
+      res({ status: 'ok', data: result });
+    } catch (error) {
+      res({ status: 'error', errorMsg: error.message });
+    }
+  }
+
+  /* Return cards from player inventory to be selected at ATM */
+  @NetPromise(CardEvents.GetInventoryCards)
+  async getInventoryCards(req: Request, res: Response<InventoryCard[]>) {
+    try {
+      const result = await this.cardService.getInventoryCards(req);
       res({ status: 'ok', data: result });
     } catch (error) {
       res({ status: 'error', errorMsg: error.message });

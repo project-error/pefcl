@@ -1,5 +1,5 @@
 import { Stack } from '@mui/material';
-import { Card } from '@typings/BankCard';
+import { Card, InventoryCard } from '@typings/BankCard';
 import theme from '@utils/theme';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -41,14 +41,15 @@ const StyledIcon = styled(MasterCardIcon)`
 `;
 
 interface BankCardProps {
-  card: Card;
+  card: Card | InventoryCard;
+  isBlocked?: boolean;
   selected?: boolean;
 }
-const BankCard = ({ card, selected = false }: BankCardProps) => {
+const BankCard = ({ card, selected = false, isBlocked = false }: BankCardProps) => {
   const { t } = useTranslation();
 
   return (
-    <Container selected={selected} blocked={card.isBlocked}>
+    <Container selected={selected} blocked={isBlocked}>
       <Stack spacing={3}>
         <Heading4>{card.number}</Heading4>
         <Stack direction="row" justifyContent="space-between" alignItems="center">

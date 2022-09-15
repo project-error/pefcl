@@ -1,3 +1,5 @@
+import { Card } from '@typings/BankCard';
+import { NUIEvents } from '@typings/Events';
 import { setBankIsOpen, setAtmIsOpen } from 'client';
 import cl_config from 'cl_config';
 import { translations } from 'i18n';

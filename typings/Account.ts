@@ -1,3 +1,5 @@
+import { Card } from './BankCard';
+
 export enum AccountType {
   Personal = 'personal',
   Shared = 'shared',
@@ -40,6 +42,15 @@ export interface Account {
   createdAt?: string;
 }
 
+export interface GetATMAccountInput {
+  pin: number;
+  cardId: number;
+}
+
+export interface GetATMAccountResponse {
+  card: Card;
+  account: Account;
+}
 export interface CreateAccountInput {
   accountName: string;
   ownerIdentifier: string;
@@ -95,7 +106,9 @@ export type TransactionAccount = Pick<Account, 'id' | 'accountName'>;
 export interface ATMInput {
   amount: number;
   message: string;
-  accountId?: number;
+  accountId: number;
+  cardId?: number;
+  cardPin?: number;
 }
 
 export interface ExternalAccount {

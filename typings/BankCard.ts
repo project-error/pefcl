@@ -11,12 +11,15 @@ export interface Card {
 
   // Static
   holder: string;
+  holderCitizenId: string;
   number: string;
 
   // Timestamps
   updatedAt?: string | number | Date;
   createdAt?: string | number | Date;
 }
+
+export type InventoryCard = Pick<Card, 'holder' | 'number' | 'accountId' | 'id'>;
 
 export interface GetCardInput {
   accountId: number;
