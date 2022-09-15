@@ -23,6 +23,9 @@ CardModel.init(
     holder: {
       type: DataTypes.STRING,
     },
+    holderCitizenId: {
+      type: DataTypes.STRING,
+    },
     isBlocked: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,

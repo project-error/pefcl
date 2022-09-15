@@ -13,9 +13,12 @@ export enum UserEvents {
 export enum NUIEvents {
   Loaded = 'pefcl:nuiHasLoaded',
   Unloaded = 'pefcl:nuiHasUnloaded',
+  SetCardId = 'pefcl:nuiSetCardId',
+  SetCards = 'pefcl:nuiSetCards',
 }
 
 export enum AccountEvents {
+  GetAtmAccount = 'pefcl:getAtmAccount',
   GetAccounts = 'pefcl:getAccounts',
   CreateAccount = 'pefcl:createAccount',
   RenameAccount = 'pefcl:renameAccount',
@@ -51,6 +54,7 @@ export enum Broadcasts {
   NewAccountBalance = 'pefcl:newAccountBalanceBroadcast',
   NewDefaultAccountBalance = 'pefcl:newDefaultAccountBalance',
   NewCashAmount = 'pefcl:newCashAmount',
+  NewCard = 'pefcl:newCardBroadcast',
 }
 
 export enum TransactionEvents {
@@ -84,4 +88,6 @@ export enum CardEvents {
   OrderPersonal = 'pefcl:orderPersonalCard',
   Block = 'pefcl:blockCard',
   UpdatePin = 'pefcl:updatePin',
+  NewCard = 'pefcl:newCard',
+  GetInventoryCards = 'pefcl:getInventoryCards',
 }

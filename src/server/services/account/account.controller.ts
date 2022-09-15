@@ -15,6 +15,7 @@ import {
   AddToUniqueAccountInput,
   RemoveFromUniqueAccountInput,
   UpdateBankBalanceByNumberInput,
+  GetATMAccountInput,
 } from '@typings/Account';
 import {
   AccountEvents,
@@ -125,11 +126,7 @@ export class AccountController {
   @Export(ServerExports.WithdrawCash)
   @NetPromise(AccountEvents.WithdrawMoney)
   async withdrawMoney(req: Request<ATMInput>, res: Response<any>) {
-    const accountId = req.data.accountId;
-
     try {
-      accountId &&
-        (await this._auth.isAuthorizedAccount(accountId, req.source, [AccountRole.Admin]));
       await this._accountService.handleWithdrawMoney(req);
       res({ status: 'ok', data: {} });
     } catch (err) {

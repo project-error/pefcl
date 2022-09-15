@@ -20,6 +20,7 @@ export enum CardErrors {
   MissingConfigCost = 'MissingConfigCost',
   FailedToCreate = 'FailedToCreate',
   InvalidPin = 'InvalidPin',
+  Blocked = 'Blocked',
 }
 
 export enum UserErrors {

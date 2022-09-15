@@ -1,10 +1,12 @@
+import { NUIEvents } from '@typings/Events';
 import { setBankIsOpen, setAtmIsOpen } from 'client';
 import { createInvoice, depositMoney, giveCash, withdrawMoney } from 'functions';
 
 const exp = global.exports;
 
-exp('openBank', async () => {
+exp('openBank', async (accountId: number) => {
   setBankIsOpen(true);
+  SendNUIMessage({ type: NUIEvents.SetCardId, payload: accountId });
 });
 
 exp('closeBank', async () => {

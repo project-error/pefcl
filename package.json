@@ -16,6 +16,7 @@
     "setup": "yarn nx run-many --target=setup --all && yarn translations:pull && yarn translations:generate-index",
     "build": "yarn nx run-many --target=build --all",
     "lint": "yarn nx run-many --target=lint --all",
+    "tsc": "yarn nx run-many --target=tsc --all",
     "dev": "yarn nx run-many --target=dev --all",
     "tsc": "yarn nx run-many --target=tsc --all",
     "dev:ingame": "yarn nx run-many --target=dev:ingame --all",

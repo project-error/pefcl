@@ -136,6 +136,7 @@ const BankCards = ({ onSelectCardId, selectedCardId, accountId }: BankCardsProps
   };
 
   const selectedAccount = accounts.find((acc) => acc.id === selectedAccountId);
+  const isAffordable = (selectedAccount?.balance ?? 0) > cost;
 
   return (
     <Stack direction="row" spacing={4} height="100%">
@@ -234,10 +235,7 @@ const BankCards = ({ onSelectCardId, selectedCardId, accountId }: BankCardsProps
           <Button color="inherit" onClick={handleClose}>
             {t('Cancel')}
           </Button>
-          <Button
-            onClick={handleOrderCard}
-            disabled={isLoading || !(selectedAccount?.balance ?? 0 > cost)}
-          >
+          <Button onClick={handleOrderCard} disabled={isLoading || !isAffordable}>
             {t('Order new card')}
           </Button>
         </DialogActions>
