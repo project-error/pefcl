@@ -46,7 +46,7 @@ export enum Broadcasts {
   NewInvoice = 'pefcl:newInvoiceBroadcast',
   NewSharedUser = 'pefcl:newSharedUser',
   RemovedSharedUser = 'pefcl:removedSharedUser',
-  NewAccountBalance = 'pefcl:newAccountBalance',
+  NewAccountBalance = 'pefcl:newAccountBalanceBroadcast',
   NewDefaultAccountBalance = 'pefcl:newDefaultAccountBalance',
   NewCashAmount = 'pefcl:newCashAmount',
 }
