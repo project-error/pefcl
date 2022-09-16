@@ -218,10 +218,10 @@ export class AccountService {
 
     let balance = firstAccountStartBalance;
     if (isFrameworkIntegrationEnabled && syncInitialBankBalance) {
-      logger.info('Syncing initial bank balance from framework!');
+      logger.info('Syncing initial bank balance from framework.');
 
       const exports = getFrameworkExports();
-      balance = exports.moveBankBalance(source);
+      balance = exports.getBank(source);
 
       logger.info('Moving bank balance from export to initial account.');
       logger.info({ identifier, balance });
@@ -534,8 +534,12 @@ export class AccountService {
         throw new Error('This is already the default account');
       }
 
-      await defaultAccount?.update({ isDefault: false });
-      await newDefaultAccount.update({ isDefault: true });
+      await defaultAccount?.update({ isDefault: false }, { transaction: t });
+      await newDefaultAccount.update({ isDefault: true }, { transaction: t });
+
+      t.afterCommit(() => {
+        emit(AccountEvents.UpdatedDefaultAccount, newDefaultAccount.toJSON());
+      });
 
       t.commit();
       return newDefaultAccount;

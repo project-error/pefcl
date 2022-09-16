@@ -14,7 +14,7 @@ export interface FrameworkIntegrationExports {
    *
    *  This export should probably remove old bank balance as well.
    */
-  moveBankBalance: (source: number) => number;
+  getBank: (source: number) => number;
 }
 
 export type FrameworkIntegrationFunction = keyof FrameworkIntegrationExports;

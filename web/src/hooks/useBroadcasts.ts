@@ -20,6 +20,13 @@ export const useBroadcasts = () => {
   });
 
   useNuiEvent({
+    event: Broadcasts.NewAccount,
+    callback: (account: Account) => {
+      updateAccounts([...accounts, account]);
+    },
+  });
+
+  useNuiEvent({
     event: Broadcasts.UpdatedAccount,
     callback: () => {
       updateAccounts();

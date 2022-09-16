@@ -26,7 +26,7 @@ interface CreateAccountForm {
 const CreateAccountModal: React.FC<{ onClose(): void }> = ({ onClose }) => {
   const { t } = useTranslation();
   const config = useConfig();
-  const [accounts, updateAccounts] = useAtom(accountsAtom);
+  const [accounts] = useAtom(accountsAtom);
   const [, updateTransactions] = useAtom(transactionBaseAtom);
   const [defaultAccount] = useAtom(defaultAccountAtom);
 
@@ -46,7 +46,6 @@ const CreateAccountModal: React.FC<{ onClose(): void }> = ({ onClose }) => {
 
   const onSubmit = async (values: CreateAccountForm) => {
     await fetchNui(AccountEvents.CreateAccount, values);
-    await updateAccounts();
     await updateTransactions();
     onClose();
   };
