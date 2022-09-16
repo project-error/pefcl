@@ -21,6 +21,7 @@ import { PIN_CODE_LENGTH } from '@shared/constants';
 import BankCard from '@components/BankCard';
 import { ErrorRounded } from '@mui/icons-material';
 import PinField from '@components/ui/Fields/PinField';
+import { useExitListener } from '@hooks/useExitListener';
 
 const AnimationContainer = styled.div`
   position: absolute;
@@ -75,6 +76,8 @@ const ATM = () => {
   const [cards, setCards] = useState<InventoryCard[]>([]);
   const [state, setState] = useState<BankState>('select-card');
   const [pin, setPin] = useState('');
+
+  useExitListener(state !== 'enter-pin');
 
   const withdrawOptions = config?.atms?.withdrawOptions ?? defaultWithdrawOptions;
 
