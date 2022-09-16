@@ -33,6 +33,7 @@ export interface ResourceConfig {
   frameworkIntegration: {
     enabled: boolean;
     resource: string;
+    syncInitialBankBalance: boolean;
   };
   database: {
     profileQueries: boolean;
@@ -42,7 +43,8 @@ export interface ResourceConfig {
     newAccount: number;
   };
   accounts: {
-    startAmount: number;
+    firstAccountStartBalance: number;
+    otherAccountStartBalance: number;
     clearingNumber: string | number;
     maximumNumberOfAccounts: number;
   };

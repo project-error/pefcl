@@ -39,7 +39,9 @@ import { AccountEvents, Broadcasts } from '@server/../../typings/Events';
 import { getFrameworkExports } from '@server/utils/frameworkIntegration';
 
 const logger = mainLogger.child({ module: 'accounts' });
-const isFrameworkIntegrationEnabled = config.frameworkIntegration?.enabled;
+const { enabled = false, syncInitialBankBalance = false } = config.frameworkIntegration ?? {};
+const { firstAccountStartBalance } = config.accounts ?? {};
+const isFrameworkIntegrationEnabled = enabled;
 
 @singleton()
 export class AccountService {
@@ -214,10 +216,11 @@ export class AccountService {
       return defaultAccount.toJSON();
     }
 
-    let balance = 0;
-    if (isFrameworkIntegrationEnabled) {
+    let balance = firstAccountStartBalance;
+    if (isFrameworkIntegrationEnabled && syncInitialBankBalance) {
+      logger.info('Syncing initial bank balance from framework!');
+
       const exports = getFrameworkExports();
-      logger.silly('Retrieving initial bank balance from export.');
       balance = exports.moveBankBalance(source);
 
       logger.info('Moving bank balance from export to initial account.');
