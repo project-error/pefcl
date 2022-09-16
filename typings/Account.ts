@@ -46,6 +46,7 @@ export interface CreateAccountInput {
   type: AccountType;
   isDefault?: boolean;
   number?: string;
+  balance?: number;
 }
 
 export interface SharedAccount {
