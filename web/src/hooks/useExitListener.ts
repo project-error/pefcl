@@ -16,5 +16,5 @@ export const useExitListener = (enabled: boolean) => {
     window.addEventListener('keydown', keyHandler);
 
     return () => window.removeEventListener('keydown', keyHandler);
-  }, []);
+  }, [enabled]);
 };

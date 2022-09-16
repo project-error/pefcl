@@ -21,6 +21,7 @@ import { ErrorRounded } from '@mui/icons-material';
 import { Card, InventoryCard } from '@typings/BankCard';
 import BankCard from '@components/BankCard';
 import { useKeyDown } from '@hooks/useKeyPress';
+import { useExitListener } from '@hooks/useExitListener';
 
 const AnimationContainer = styled.div`
   position: absolute;
@@ -74,6 +75,8 @@ const ATM = () => {
   const [cards, setCards] = useState<InventoryCard[]>([]);
   const [state, setState] = useState<BankState>('select-card');
   const [pin, setPin] = useState('');
+
+  useExitListener(state !== 'enter-pin');
 
   const withdrawOptions = config?.atms?.withdrawOptions ?? defaultWithdrawOptions;
 
