@@ -74,8 +74,9 @@ const ATM = () => {
     };
 
     setIsLoading(true);
+    // TODO: Update this with cards implementation
     fetchNui(AccountEvents.WithdrawMoney, payload)
-      .then(updateAccounts)
+      .then(() => updateAccounts())
       .finally(() => setIsLoading(false));
   };
 

@@ -25,7 +25,7 @@ const Withdraw = () => {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [selectedAccountId, setSelectedAccountId] = useState<number>();
-  const [accounts, updateAccounts] = useAtom(accountsAtom);
+  const [accounts] = useAtom(accountsAtom);
   const { general } = useConfig();
   const selectedAccount = accounts.find((account) => account.id === selectedAccountId);
 
@@ -52,7 +52,6 @@ const Withdraw = () => {
     setIsLoading(true);
     fetchNui<ATMInput>(AccountEvents.WithdrawMoney, payload)
       .then(() => {
-        updateAccounts();
         setAmount('');
         setCurrentCash(newBalance);
         setSuccess(

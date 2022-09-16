@@ -4,8 +4,9 @@ import { mainLogger } from '@server/sv_logger';
 import { UserService } from '../user/user.service';
 import { Broadcasts } from '@typings/Events';
 import { TransactionDB } from '../transaction/transaction.db';
-import { Account } from '@server/../../typings/Account';
+import { Account, AccountType } from '@server/../../typings/Account';
 import { Cash } from '@server/../../typings/Cash';
+import { AccountService } from '../account/account.service';
 
 const logger = mainLogger.child({ module: 'broadcastService' });
 
@@ -13,10 +14,16 @@ const logger = mainLogger.child({ module: 'broadcastService' });
 export class BroadcastService {
   _transactionDB: TransactionDB;
   _userService: UserService;
+  _accountService: AccountService;
 
-  constructor(transactionDB: TransactionDB, userService: UserService) {
+  constructor(
+    transactionDB: TransactionDB,
+    userService: UserService,
+    accountService: AccountService,
+  ) {
     this._transactionDB = transactionDB;
     this._userService = userService;
+    this._accountService = accountService;
   }
 
   async broadcastUpdatedAccount(account: Account) {
@@ -62,6 +69,46 @@ export class BroadcastService {
       );
       emitNet(Broadcasts.NewTransaction, fromUser.getSource(), transaction);
     }
+  }
+
+  async broadcastNewAccountBalance(account: Account) {
+    logger.silly('Broadcasting new balance for account ..');
+
+    const isShared = account.type === AccountType.Shared;
+    const identifier = account.ownerIdentifier;
+    const user = this._userService.getUserByIdentifier(identifier);
+    const onlineUsers = this._userService.getAllUsers();
+
+    if (isShared) {
+      const users = await this._accountService.getUsersFromShared({
+        data: { accountId: account.id },
+        source: 0,
+      });
+
+      const identifiers = users.map((user) => user.userIdentifier);
+
+      onlineUsers.forEach((user) => {
+        if (!identifiers.includes(user.getIdentifier())) {
+          return;
+        }
+
+        emitNet(Broadcasts.NewAccountBalance, user.getSource(), account);
+
+        logger.silly('Broadcasted new balance for shared account:');
+        logger.silly({ identifier, source: user.getSource(), balance: account.balance });
+      });
+      return;
+    }
+
+    if (!user) {
+      /* User is probably offline */
+      return;
+    }
+
+    emitNet(Broadcasts.NewAccountBalance, user?.getSource(), account);
+
+    logger.silly('Broadcasted new balance for personal account:');
+    logger.silly({ identifier, source: user.getSource(), balance: account.balance });
   }
 
   async broadcastNewDefaultAccountBalance(account: Account) {

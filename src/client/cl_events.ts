@@ -52,6 +52,10 @@ const SendBankUIMessage = (data: object) => {
   }
 };
 
+onNet(Broadcasts.NewAccountBalance, (balance: number) => {
+  SendBankUIMessage({ type: Broadcasts.NewAccountBalance, payload: balance });
+});
+
 onNet(Broadcasts.NewTransaction, (payload: Transaction) => {
   SendBankUIMessage({ type: Broadcasts.NewTransaction, payload });
 });

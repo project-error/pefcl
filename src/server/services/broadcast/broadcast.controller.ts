@@ -19,6 +19,11 @@ export class BroadcastController {
     this.broadcastService.broadcastNewDefaultAccountBalance(account);
   }
 
+  @Event(AccountEvents.NewBalance)
+  async onNewAccountBalance(account: Account) {
+    this.broadcastService.broadcastNewAccountBalance(account);
+  }
+
   @Event(AccountEvents.NewAccountCreated)
   async onNewAccountCreation(account: Account) {
     this.broadcastService.broadcastUpdatedAccount(account);
