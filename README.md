@@ -6,7 +6,7 @@
 <div align="center">
 
 [![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC_BY--NC--SA_4.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
-![Discord](https://img.shields.io/discord/791854454760013827?label=Our%20Discord)
+[![Discord](https://img.shields.io/discord/791854454760013827?label=Our%20Discord)](https://discord.gg/HYwBjTbAY5)
 
 </div>
 
