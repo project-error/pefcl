@@ -538,7 +538,7 @@ export class AccountService {
       await newDefaultAccount.update({ isDefault: true }, { transaction: t });
 
       t.afterCommit(() => {
-        emit(AccountEvents.UpdatedDefaultAccount, newDefaultAccount.toJSON());
+        emit(AccountEvents.ChangedDefaultAccount, newDefaultAccount.toJSON());
       });
 
       t.commit();
