@@ -11,3 +11,16 @@ export const getIsOwner = (account: Account) => {
 export const getIsShared = (account: Account) => {
   return account.type === AccountType.Shared;
 };
+
+export const updateAccount = (accounts: Account[], updatedAccount: Account): Account[] => {
+  const existingAccount = accounts.find((acc) => acc.id === updatedAccount.id);
+  if (!existingAccount) {
+    return accounts;
+  }
+
+  const newAccounts = [...accounts];
+  const index = accounts.findIndex((acc) => acc.id === existingAccount.id);
+  newAccounts.splice(index, 1, updatedAccount);
+
+  return newAccounts;
+};

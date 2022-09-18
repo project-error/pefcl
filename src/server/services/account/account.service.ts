@@ -36,8 +36,12 @@ import {
 } from '@typings/Errors';
 import { SharedAccountDB } from '@services/accountShared/sharedAccount.db';
 import { AccountEvents, Broadcasts } from '@server/../../typings/Events';
+import { getFrameworkExports } from '@server/utils/frameworkIntegration';
 
 const logger = mainLogger.child({ module: 'accounts' });
+const { enabled = false, syncInitialBankBalance = false } = config.frameworkIntegration ?? {};
+const { firstAccountStartBalance } = config.accounts ?? {};
+const isFrameworkIntegrationEnabled = enabled;
 
 @singleton()
 export class AccountService {
@@ -212,12 +216,24 @@ export class AccountService {
       return defaultAccount.toJSON();
     }
 
-    logger.debug('Creating initial account ...');
+    let balance = firstAccountStartBalance;
+    if (isFrameworkIntegrationEnabled && syncInitialBankBalance) {
+      logger.info('Syncing initial bank balance from framework.');
+
+      const exports = getFrameworkExports();
+      balance = exports.getBank(source);
+
+      logger.info('Moving bank balance from export to initial account.');
+      logger.info({ identifier, balance });
+    }
+
+    logger.debug('Creating initial account .. ');
     const initialAccount = await this._accountDB.createAccount({
       isDefault: true,
       accountName: i18next.t('Personal account'),
       ownerIdentifier: user.getIdentifier(),
       type: AccountType.Personal,
+      balance,
     });
 
     logger.debug('Successfully created initial account.');
@@ -518,8 +534,12 @@ export class AccountService {
         throw new Error('This is already the default account');
       }
 
-      await defaultAccount?.update({ isDefault: false });
-      await newDefaultAccount.update({ isDefault: true });
+      await defaultAccount?.update({ isDefault: false }, { transaction: t });
+      await newDefaultAccount.update({ isDefault: true }, { transaction: t });
+
+      t.afterCommit(() => {
+        emit(AccountEvents.UpdatedDefaultAccount, newDefaultAccount.toJSON());
+      });
 
       t.commit();
       return newDefaultAccount;

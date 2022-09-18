@@ -28,7 +28,6 @@ import { mockedResourceName } from './globals.server';
 import { config } from './utils/server-config';
 import { UserService } from './services/user/user.service';
 import { container } from 'tsyringe';
-// import { InvoiceController } from './services/invoice/invoice.controller';
 
 const hotReloadConfig = {
   resourceName: GetCurrentResourceName(),
@@ -125,6 +124,20 @@ if (isMocking) {
 }
 
 const debug = async () => {
+  // RegisterCommand(
+  //   'giveBankBalance',
+  //   (src: number) => {
+  //     const accountService = container.resolve(AccountService);
+  //     const amount = Math.ceil(Math.random() * 1000);
+  //     console.log('---------------');
+  //     console.log('---------------');
+  //     console.log({ amount });
+  //     console.log('---------------');
+  //     console.log('---------------');
+  //     accountService.setMoney({ data: { amount }, source: src });
+  //   },
+  //   false,
+  // );
   //
   //
   //

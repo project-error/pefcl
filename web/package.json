@@ -52,7 +52,8 @@
     "eject": "react-scripts eject",
     "test": "jest --silent",
     "test:watch": "jest --watch",
-    "lint": "eslint src"
+    "lint": "eslint src",
+    "tsc": "tsc"
   },
   "eslintConfig": {
     "extends": [

@@ -18,14 +18,14 @@ const getAccounts = async (): Promise<Account[]> => {
   }
 };
 
-const rawAccountAtom = atom<Account[]>([]);
-export const accountsAtom = atom(
+export const rawAccountAtom = atom<Account[]>([]);
+export const accountsAtom = atom<Promise<Account[]>, Account[] | undefined, Promise<void>>(
   async (get) => {
     const accounts = get(rawAccountAtom).length === 0 ? await getAccounts() : get(rawAccountAtom);
     return accounts;
   },
-  async (_get, set) => {
-    return set(rawAccountAtom, await getAccounts());
+  async (_get, set, by) => {
+    return set(rawAccountAtom, by ?? (await getAccounts()));
   },
 );
 

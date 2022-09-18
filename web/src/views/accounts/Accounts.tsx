@@ -44,9 +44,13 @@ const Accounts = () => {
   const [isRenameOpen, setIsRenameOpen] = useState(false);
   const [renameInput, setRenameInput] = useState('');
 
+  const handleUpdateAccounts = () => {
+    updateAccounts();
+  };
+
   const handleSetDefault = () => {
     fetchNui(AccountEvents.SetDefaultAccount, { accountId: selectedAccountId })
-      .then(updateAccounts)
+      .then(handleUpdateAccounts)
       .catch((err) => {
         console.log({ err });
       });
@@ -61,7 +65,7 @@ const Accounts = () => {
   const handleRename = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     fetchNui(AccountEvents.RenameAccount, { accountId: selectedAccountId, name: renameInput }).then(
-      updateAccounts,
+      handleUpdateAccounts,
     );
     setIsRenameOpen(false);
   };

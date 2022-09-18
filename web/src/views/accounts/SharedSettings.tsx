@@ -44,6 +44,10 @@ const SharedSettings = ({ accountId, isAdmin }: Props) => {
     );
   }, [accountId]);
 
+  const handleUpdateAccounts = () => {
+    updateAccounts();
+  };
+
   useEffect(() => {
     handleUpdateUsers();
   }, [handleUpdateUsers]);
@@ -57,7 +61,7 @@ const SharedSettings = ({ accountId, isAdmin }: Props) => {
     };
 
     fetchNui(SharedAccountEvents.AddUser, payload)
-      .then(updateAccounts)
+      .then(handleUpdateAccounts)
       .then(handleUpdateUsers)
       .finally(() => setIsAddUserOpen(false));
   };
@@ -69,7 +73,7 @@ const SharedSettings = ({ accountId, isAdmin }: Props) => {
     };
 
     fetchNui(SharedAccountEvents.RemoveUser, payload)
-      .then(updateAccounts)
+      .then(handleUpdateAccounts)
       .then(handleUpdateUsers)
       .finally(() => setIsRemoveUserOpen(false));
   };

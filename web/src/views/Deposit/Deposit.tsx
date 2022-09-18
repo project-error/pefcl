@@ -25,7 +25,7 @@ const Deposit = () => {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [selectedAccountId, setSelectedAccountId] = useState<number>();
-  const [accounts, updateAccounts] = useAtom(accountsAtom);
+  const [accounts] = useAtom(accountsAtom);
   const { general } = useConfig();
 
   const rawValue = parseInt(amount.replace(/\D/g, ''));
@@ -51,7 +51,6 @@ const Deposit = () => {
     setIsLoading(true);
     fetchNui<ATMInput>(AccountEvents.DepositMoney, payload)
       .then(() => {
-        updateAccounts();
         setAmount('');
         setCurrentCash(newCash);
         setSuccess(
