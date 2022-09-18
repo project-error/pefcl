@@ -52,7 +52,7 @@ jobs:
       - name: Create pre-release
         run: |
           chmod +x "./scripts/prerelease.sh"
-          yarn prerelease
+          yarn pre-release
 
       - name: Create Release & Changelog
         uses: 'marvinpinto/action-automatic-releases@v1.2.1'
