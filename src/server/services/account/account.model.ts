@@ -5,7 +5,6 @@ import { Account, AccountRole, AccountType } from '@typings/Account';
 import { sequelize } from '@utils/pool';
 import { generateAccountNumber } from '@utils/misc';
 import { timestamps } from '../timestamps.model';
-import { regexAlphaNumeric } from '@shared/utils/regexes';
 import { AccountEvents } from '@server/../../typings/Events';
 
 export class AccountModel extends Model<
@@ -28,7 +27,6 @@ AccountModel.init(
     accountName: {
       type: DataTypes.STRING,
       validate: {
-        is: regexAlphaNumeric,
         max: 25,
         min: 1,
       },
