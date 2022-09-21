@@ -74,6 +74,7 @@ export class InvoiceController {
     return res({ status: 'ok', data: data.toJSON() });
   }
 
+  @Export(ServerExports.PayInvoice)
   @NetPromise(InvoiceEvents.PayInvoice)
   async payInvoice(req: Request<PayInvoiceInput>, res: Response<any>) {
     await this._InvoiceService.payInvoice(req);
