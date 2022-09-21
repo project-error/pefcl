@@ -4,6 +4,7 @@ export class UserModule {
   private readonly _source: number;
   private readonly _identifier: string;
   public readonly name: string;
+  public isClientLoaded: boolean;
 
   constructor(user: OnlineUser) {
     this._source = user.source;
@@ -17,5 +18,9 @@ export class UserModule {
 
   getIdentifier() {
     return this._identifier;
+  }
+
+  loadClient() {
+    this.isClientLoaded = true;
   }
 }

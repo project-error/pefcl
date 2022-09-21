@@ -876,7 +876,6 @@ export class AccountService {
       type,
       accountName: name,
       ownerIdentifier: identifier,
-      isDefault: true,
     });
 
     const json = account.toJSON();
