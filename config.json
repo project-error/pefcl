@@ -7,7 +7,8 @@
   "frameworkIntegration": {
     "enabled": false,
     "resource": "your-resource",
-    "syncInitialBankBalance": true
+    "syncInitialBankBalance": true,
+    "isCardsEnabled": false
   },
   "database": {
     "profileQueries": true
@@ -85,7 +86,7 @@
     ]
   },
   "target": {
-    "type": "qb-target",
+    "type": "qtarget",
     "debug": false,
     "enabled": true,
     "bankZones": [

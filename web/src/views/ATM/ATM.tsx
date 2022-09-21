@@ -22,6 +22,8 @@ import BankCard from '@components/BankCard';
 import { ErrorRounded } from '@mui/icons-material';
 import PinField from '@components/ui/Fields/PinField';
 import { useExitListener } from '@hooks/useExitListener';
+import { useAtomValue } from 'jotai';
+import { defaultAccountAtom } from '@data/accounts';
 
 const AnimationContainer = styled.div`
   position: absolute;
@@ -66,18 +68,22 @@ type BankState = 'select-card' | 'enter-pin' | 'withdraw';
 const ATM = () => {
   const { t } = useTranslation();
   const config = useConfig();
+  const { isCardsEnabled } = config.frameworkIntegration;
+  const defaultAccount = useAtomValue(defaultAccountAtom);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [account, setAccount] = useState<Account>();
   const [isOpen, setIsOpen] = useState(false);
 
   useNuiEvent('PEFCL', 'setVisibleATM', (data) => setIsOpen(data));
+  const initialStatus: BankState = isCardsEnabled ? 'select-card' : 'withdraw';
+
   const [selectedCard, setSelectedCard] = useState<InventoryCard>();
   const [cards, setCards] = useState<InventoryCard[]>([]);
-  const [state, setState] = useState<BankState>('select-card');
+  const [state, setState] = useState<BankState>(initialStatus);
   const [pin, setPin] = useState('');
 
-  useExitListener(state !== 'enter-pin');
+  useExitListener(state === 'withdraw' || state === initialStatus);
 
   const withdrawOptions = config?.atms?.withdrawOptions ?? defaultWithdrawOptions;
 
@@ -85,7 +91,7 @@ const ATM = () => {
     setError('');
     setPin('');
     setAccount(undefined);
-    setState('select-card');
+    setState(initialStatus);
   };
 
   const handleBack = () => {
@@ -123,8 +129,8 @@ const ATM = () => {
       }
     };
 
-    updateCards();
-  }, [t]);
+    isCardsEnabled && updateCards();
+  }, [t, isCardsEnabled]);
 
   const input = {
     cardId: selectedCard?.id ?? 0,
@@ -148,20 +154,31 @@ const ATM = () => {
   };
 
   const handleWithdraw = async (amount: number) => {
-    if (!account) {
+    const withdrawAccount = isCardsEnabled ? account : defaultAccount;
+    if (!withdrawAccount) {
       return;
     }
 
-    const payload: ATMInput = {
-      amount,
-      cardId: selectedCard?.id,
-      cardPin: parseInt(pin, 10),
-      accountId: account?.id,
-      message: t('Withdrew {{amount}} from an ATM with card {{cardNumber}}.', {
-        amount,
-        cardNumber: selectedCard?.number ?? 'unknown',
-      }),
-    };
+    const accountId = withdrawAccount.id;
+
+    const payload: ATMInput = isCardsEnabled
+      ? {
+          amount,
+          cardId: selectedCard?.id,
+          cardPin: parseInt(pin, 10),
+          accountId,
+          message: t('Withdrew {{amount}} from an ATM with card {{cardNumber}}.', {
+            amount,
+            cardNumber: selectedCard?.number ?? 'unknown',
+          }),
+        }
+      : {
+          amount,
+          accountId,
+          message: t('Withdrew {{amount}} from an ATM.', {
+            amount,
+          }),
+        };
 
     setIsLoading(true);
 
@@ -192,6 +209,10 @@ const ATM = () => {
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
+
+    if (!isCardsEnabled) {
+      return;
+    }
 
     if (pin.length === PIN_CODE_LENGTH && selectedCard?.id) {
       try {
@@ -234,6 +255,7 @@ const ATM = () => {
     setState('enter-pin');
   };
 
+  const accountBalance = isCardsEnabled ? account?.balance ?? 0 : defaultAccount?.balance ?? 0;
   return (
     <>
       <AnimatePresence>
@@ -324,7 +346,7 @@ const ATM = () => {
               <Container elevation={4}>
                 <Header>
                   <AccountBalance>{t('Account balance')}</AccountBalance>
-                  <Heading2>{formatMoney(account?.balance ?? 0, config.general)}</Heading2>
+                  <Heading2>{formatMoney(accountBalance, config.general)}</Heading2>
                 </Header>
 
                 <WithdrawText>{t('Quick withdraw')}</WithdrawText>
@@ -334,7 +356,7 @@ const ATM = () => {
                       key={value}
                       onClick={() => handleWithdraw(value)}
                       data-value={value}
-                      disabled={value > (account?.balance ?? 0) || isLoading}
+                      disabled={value > accountBalance || isLoading}
                     >
                       {formatMoney(value, config.general)}
                     </Button>

@@ -17,6 +17,7 @@ import { useTranslation } from 'react-i18next';
 import { Atom } from 'jotai';
 import { totalUnpaidInvoicesAtom } from '@data/invoices';
 import BadgeAtom from './ui/BadgeAtom';
+import { useConfig } from '@hooks/useConfig';
 
 const List = styled.ul`
   margin: 0;
@@ -97,6 +98,7 @@ const ListItem = ({ to, icon, label, amount, countAtom }: ListItemProps) => {
 
 const Sidebar = () => {
   const { t } = useTranslation();
+  const config = useConfig();
 
   return (
     <List>
@@ -112,7 +114,10 @@ const Sidebar = () => {
       />
       <ListItem to="/deposit" icon={<Add />} label={t('Deposit')} />
       <ListItem to="/withdraw" icon={<Remove />} label={t('Withdraw')} />
-      <ListItem to="/cards" icon={<CreditCardRounded />} label={t('Cards')} />
+
+      {config.frameworkIntegration.isCardsEnabled && (
+        <ListItem to="/cards" icon={<CreditCardRounded />} label={t('Cards')} />
+      )}
     </List>
   );
 };
