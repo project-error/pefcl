@@ -8,6 +8,7 @@ export enum UserEvents {
   GetUsers = 'pefcl:userEventsGetUsers',
   Loaded = 'pefcl:userLoaded',
   Unloaded = 'pefcl:userUnloaded',
+  LoadClient = 'pefcl:loadClient',
 }
 
 export enum NUIEvents {

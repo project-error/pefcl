@@ -1,5 +1,5 @@
 import { Controller } from '@decorators/Controller';
-import { EventListener, Event } from '@decorators/Event';
+import { EventListener, Event, NetEvent } from '@decorators/Event';
 import { NetPromise, PromiseEventListener } from '@decorators/NetPromise';
 import { ServerExports } from '@server/../../typings/exports/server';
 import { Export, ExportListener } from '@server/decorators/Export';
@@ -46,6 +46,12 @@ export class UserController {
     }));
 
     res({ status: 'ok', data: list });
+  }
+
+  @NetEvent(UserEvents.LoadClient)
+  async loadClient() {
+    const src = source;
+    this._userService.loadClient(src);
   }
 
   @Event('playerJoining')

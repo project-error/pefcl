@@ -25,6 +25,8 @@ const npwdExports = global.exports['npwd'];
 const useFrameworkIntegration = config.frameworkIntegration?.enabled;
 let hasNUILoaded = false;
 
+emitNet(UserEvents.LoadClient);
+
 RegisterNuiCB(NUIEvents.Loaded, () => {
   console.debug('NUI has loaded.');
   hasNUILoaded = true;
