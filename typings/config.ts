@@ -34,6 +34,7 @@ export interface ResourceConfig {
     enabled: boolean;
     resource: string;
     syncInitialBankBalance: boolean;
+    isCardsEnabled: boolean;
   };
   database: {
     profileQueries: boolean;

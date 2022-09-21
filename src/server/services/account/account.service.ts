@@ -42,7 +42,11 @@ import { Transaction } from 'sequelize/types';
 import { CardDB } from '../card/card.db';
 
 const logger = mainLogger.child({ module: 'accounts' });
-const { enabled = false, syncInitialBankBalance = false } = config.frameworkIntegration ?? {};
+const {
+  enabled = false,
+  syncInitialBankBalance = false,
+  isCardsEnabled = false,
+} = config.frameworkIntegration ?? {};
 const { firstAccountStartBalance } = config.accounts ?? {};
 const isFrameworkIntegrationEnabled = enabled;
 
@@ -474,7 +478,7 @@ export class AccountService {
     const t = await sequelize.transaction();
     try {
       /* If framework is enabled, do a card check, otherwise continue. */
-      if (isFrameworkIntegrationEnabled) {
+      if (isFrameworkIntegrationEnabled && isCardsEnabled) {
         const exports = getFrameworkExports();
         const cards = exports.getCards(req.source);
         const selectedCard = cards.find((card) => card.id === cardId);
