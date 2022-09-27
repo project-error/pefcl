@@ -494,7 +494,9 @@ export class AccountService {
         }
       }
 
-      const targetAccount = await this._accountDB.getAccountById(accountId);
+      const targetAccount = accountId
+        ? await this._accountDB.getAccountById(accountId)
+        : await this.getDefaultAccountBySource(req.source);
 
       if (!targetAccount) {
         throw new ServerError(GenericErrors.NotFound);

@@ -51,7 +51,6 @@ export interface ResourceConfig {
   };
   cards: {
     cost: number;
-    pinLength: number;
     maxCardsPerAccount: number;
   };
   cash: {

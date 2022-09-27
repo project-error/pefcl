@@ -14,6 +14,7 @@ const mockedCards: Card[] = [
     number: '4242 4220 1234 9000',
     holder: 'Charles Carlsberg',
     pin: 1234,
+    holderCitizenId: '1',
   },
   {
     id: 2,
@@ -22,6 +23,7 @@ const mockedCards: Card[] = [
     number: '4242 4220 1234 9002',
     holder: 'Charles Carlsberg',
     pin: 1234,
+    holderCitizenId: '2',
   },
   {
     id: 3,
@@ -30,6 +32,7 @@ const mockedCards: Card[] = [
     number: '4242 4220 1234 9003',
     holder: 'Charles Carlsberg',
     pin: 1234,
+    holderCitizenId: '3',
   },
 ];
 

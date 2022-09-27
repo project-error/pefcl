@@ -15,7 +15,6 @@ import {
   AddToUniqueAccountInput,
   RemoveFromUniqueAccountInput,
   UpdateBankBalanceByNumberInput,
-  GetATMAccountInput,
 } from '@typings/Account';
 import {
   AccountEvents,
