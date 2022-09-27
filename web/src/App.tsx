@@ -22,6 +22,9 @@ import { NUIEvents, UserEvents } from '@typings/Events';
 import Deposit from './views/Deposit/Deposit';
 import { fetchNui } from '@utils/fetchNui';
 import Withdraw from './views/Withdraw/Withdraw';
+import { useSetAtom } from 'jotai';
+import { accountsAtom } from '@data/accounts';
+import { transactionBaseAtom } from '@data/transactions';
 
 dayjs.extend(updateLocale);
 
@@ -46,13 +49,27 @@ const Content = styled.div`
 
 const App: React.FC = () => {
   const config = useConfig();
+  const setAccounts = useSetAtom(accountsAtom);
+  const setTransactions = useSetAtom(transactionBaseAtom);
   const [hasLoaded, setHasLoaded] = useState(process.env.NODE_ENV === 'development');
+
   useNuiEvent({
     event: UserEvents.Loaded,
-    callback: () => setHasLoaded(true),
+    callback: () => {
+      console.debug('Loaded user.');
+      setHasLoaded(true);
+    },
   });
 
-  useNuiEvent({ event: UserEvents.Unloaded, callback: () => setHasLoaded(false) });
+  useNuiEvent({
+    event: UserEvents.Unloaded,
+    callback: () => {
+      setAccounts([]);
+      setTransactions();
+      console.debug('Unloaded user.');
+      setHasLoaded(false);
+    },
+  });
 
   useEffect(() => {
     fetchNui(NUIEvents.Loaded);
