@@ -3,6 +3,7 @@ import { ATMInput } from '@typings/Account';
 import { AccountEvents, CashEvents, InvoiceEvents } from '@typings/Events';
 import { ServerPromiseResp } from '@typings/http';
 import { Invoice, InvoiceOnlineInput } from '@typings/Invoice';
+import { translations } from 'i18n';
 
 export class Api {
   utils: ClientUtils;
@@ -83,7 +84,9 @@ export class Api {
     try {
       const payload: ATMInput = {
         amount,
-        message: 'Deposition',
+        message: translations.t('Successfully deposited {{amount}} into selected account.', {
+          amount,
+        }),
       };
       const response = await this.utils.emitNetPromise(AccountEvents.DepositMoney, payload);
       console.log({ response });
@@ -97,7 +100,9 @@ export class Api {
     try {
       const payload: ATMInput = {
         amount,
-        message: 'Withdrawal',
+        message: translations.t('Withdrew {{amount}} from an ATM.', {
+          amount,
+        }),
       };
 
       const response = await this.utils.emitNetPromise(AccountEvents.WithdrawMoney, payload);
