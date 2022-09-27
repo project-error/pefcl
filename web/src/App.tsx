@@ -1,27 +1,30 @@
+import Devbar from '@components/DebugBar';
+import { accountsAtom } from '@data/accounts';
+import { transactionBaseAtom } from '@data/transactions';
 import styled from '@emotion/styled';
+import { BroadcastsWrapper } from '@hooks/useBroadcasts';
 import { useExitListener } from '@hooks/useExitListener';
+import { useNuiEvent } from '@hooks/useNuiEvent';
+import { NUIEvents, UserEvents } from '@typings/Events';
+import { fetchNui } from '@utils/fetchNui';
 import dayjs from 'dayjs';
-import updateLocale from 'dayjs/plugin/updateLocale';
 import 'dayjs/locale/sv';
+import updateLocale from 'dayjs/plugin/updateLocale';
+import { useSetAtom } from 'jotai';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Route } from 'react-router-dom';
 import './App.css';
 import { useConfig } from './hooks/useConfig';
 import theme from './utils/theme';
+import ATM from './views/ATM/ATM';
+import Deposit from './views/Deposit/Deposit';
+import Invoices from './views/Invoices/Invoices';
+import Withdraw from './views/Withdraw/Withdraw';
 import Accounts from './views/accounts/Accounts';
 import Dashboard from './views/dashboard/Dashboard';
-import Invoices from './views/Invoices/Invoices';
-import ATM from './views/ATM/ATM';
-import { BroadcastsWrapper } from '@hooks/useBroadcasts';
-import Transfer from './views/transfer/Transfer';
 import Transactions from './views/transactions/Transactions';
-import Devbar from '@components/DebugBar';
-import { NUIEvents, UserEvents } from '@typings/Events';
-import Deposit from './views/Deposit/Deposit';
-import { fetchNui } from '@utils/fetchNui';
-import Withdraw from './views/Withdraw/Withdraw';
-import { useNuiEvent } from '@hooks/useNuiEvent';
+import Transfer from './views/transfer/Transfer';
 
 dayjs.extend(updateLocale);
 
@@ -46,12 +49,18 @@ const Content = styled.div`
 
 const App: React.FC = () => {
   const config = useConfig();
+  const setAccounts = useSetAtom(accountsAtom);
+  const setTransactions = useSetAtom(transactionBaseAtom);
   const [hasLoaded, setHasLoaded] = useState(process.env.NODE_ENV === 'development');
   const [isAtmVisible, setIsAtmVisible] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
 
   useNuiEvent('PEFCL', UserEvents.Loaded, () => setHasLoaded(true));
-  useNuiEvent('PEFCL', UserEvents.Unloaded, () => setHasLoaded(false));
+  useNuiEvent('PEFCL', UserEvents.Unloaded, () => {
+    setAccounts([]);
+    setTransactions();
+    setHasLoaded(false);
+  });
 
   useEffect(() => {
     fetchNui(NUIEvents.Loaded);

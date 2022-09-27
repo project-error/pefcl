@@ -14,6 +14,7 @@ import {
 } from '@typings/Events';
 import { Invoice } from '@typings/Invoice';
 import { Transaction } from '@typings/Transaction';
+import { OnlineUser } from '@typings/user';
 import { RegisterNuiProxy } from 'cl_utils';
 import API from './cl_api';
 import config from './cl_config';
@@ -84,7 +85,7 @@ onNet(Broadcasts.RemovedSharedUser, () => {
   SendBankUIMessage('PEFCL', Broadcasts.RemovedSharedUser, {});
 });
 
-onNet(UserEvents.Loaded, async () => {
+onNet(UserEvents.Loaded, async (user: OnlineUser) => {
   console.debug('Waiting for NUI to load ..');
   await waitForNUILoaded();
   console.debug('Loaded. Emitting data to NUI.');
