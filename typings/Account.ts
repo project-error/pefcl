@@ -106,7 +106,7 @@ export type TransactionAccount = Pick<Account, 'id' | 'accountName'>;
 export interface ATMInput {
   amount: number;
   message: string;
-  accountId: number;
+  accountId?: number;
   cardId?: number;
   cardPin?: number;
 }
