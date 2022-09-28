@@ -25,6 +25,7 @@ const Withdraw = () => {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [selectedAccountId, setSelectedAccountId] = useState<number>();
+  const [, updateAccounts] = useAtom(accountsAtom);
   const [accounts] = useAtom(accountsAtom);
   const { general } = useConfig();
   const selectedAccount = accounts.find((account) => account.id === selectedAccountId);
@@ -54,6 +55,7 @@ const Withdraw = () => {
       .then(() => {
         setAmount('');
         setCurrentCash(newBalance);
+        updateAccounts();
         setSuccess(
           t('Successfully withdrew {{amount}}.', {
             amount: formatMoney(value, general),
