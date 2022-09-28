@@ -24,6 +24,7 @@ const Deposit = () => {
   const [success, setSuccess] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [, updateAccounts] = useAtom(accountsAtom);
   const [selectedAccountId, setSelectedAccountId] = useState<number>();
   const [accounts] = useAtom(accountsAtom);
   const { general } = useConfig();
@@ -53,6 +54,7 @@ const Deposit = () => {
       .then(() => {
         setAmount('');
         setCurrentCash(newCash);
+        updateAccounts();
         setSuccess(
           t('Successfully deposited {{amount}} into selected account.', {
             amount: formatMoney(value, general),
