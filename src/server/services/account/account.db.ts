@@ -2,7 +2,7 @@ import { CreateAccountInput } from '@typings/Account';
 import { ExternalAccountDB } from '@services/accountExternal/externalAccount.db';
 import { singleton } from 'tsyringe';
 import { AccountModel } from './account.model';
-import { Transaction } from 'sequelize/types';
+import { LOCK, Transaction } from 'sequelize/types';
 
 export interface RemoveFromSharedAccountInput {
   accountId: number;
@@ -21,8 +21,8 @@ export class AccountDB {
     return await AccountModel.findAll();
   }
 
-  async getAccountById(id: number): Promise<AccountModel | null> {
-    return await AccountModel.findOne({ where: { id } });
+  async getAccountById(id: number, transaction?: Transaction): Promise<AccountModel | null> {
+    return await AccountModel.findOne({ where: { id }, transaction, lock: Boolean(transaction) });
   }
 
   async getAccountsByIdentifier(identifier: string): Promise<AccountModel[]> {
@@ -33,18 +33,38 @@ export class AccountDB {
     return await AccountModel.findOne({ where: { ownerIdentifier: identifier } });
   }
 
-  async getDefaultAccountByIdentifier(identifier: string): Promise<AccountModel | null> {
+  async getDefaultAccountByIdentifier(
+    identifier: string,
+    transaction?: Transaction,
+  ): Promise<AccountModel | null> {
     return await AccountModel.findOne({
       where: { isDefault: true, ownerIdentifier: identifier },
+      transaction,
+      lock: Boolean(transaction),
     });
   }
 
-  async getAuthorizedAccountById(id: number, identifier: string): Promise<AccountModel | null> {
-    return await AccountModel.findOne({ where: { id, ownerIdentifier: identifier } });
+  async getAuthorizedAccountById(
+    id: number,
+    identifier: string,
+    transaction?: Transaction,
+  ): Promise<AccountModel | null> {
+    return await AccountModel.findOne({
+      where: { id, ownerIdentifier: identifier },
+      transaction,
+      lock: Boolean(transaction),
+    });
   }
 
-  async getAccountByNumber(number: string): Promise<AccountModel | null> {
-    return await AccountModel.findOne({ where: { number } });
+  async getAccountByNumber(
+    number: string,
+    transaction?: Transaction,
+  ): Promise<AccountModel | null> {
+    return await AccountModel.findOne({
+      where: { number },
+      transaction,
+      lock: Boolean(transaction),
+    });
   }
 
   async createAccount(

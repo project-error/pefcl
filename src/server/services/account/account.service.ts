@@ -37,6 +37,7 @@ import {
 import { SharedAccountDB } from '@services/accountShared/sharedAccount.db';
 import { AccountEvents, Broadcasts } from '@server/../../typings/Events';
 import { getFrameworkExports } from '@server/utils/frameworkIntegration';
+import { Transaction } from 'sequelize/types';
 
 const logger = mainLogger.child({ module: 'accounts' });
 const { enabled = false, syncInitialBankBalance = false } = config.frameworkIntegration ?? {};
@@ -117,9 +118,9 @@ export class AccountService {
     return account?.toJSON();
   }
 
-  async getDefaultAccountBySource(source: number) {
+  async getDefaultAccountBySource(source: number, t?: Transaction) {
     const user = this._userService.getUser(source);
-    return await this._accountDB.getDefaultAccountByIdentifier(user.getIdentifier());
+    return await this._accountDB.getDefaultAccountByIdentifier(user.getIdentifier(), t);
   }
 
   async getDefaultAccountBalance(req: Request<number>) {
@@ -346,6 +347,7 @@ export class AccountService {
       const deletingAccount = await this._accountDB.getAuthorizedAccountById(
         accountId,
         user.getIdentifier(),
+        t,
       );
 
       // TODO: Implement smarter way of doing this check. Generally you can't access other players accounts.
