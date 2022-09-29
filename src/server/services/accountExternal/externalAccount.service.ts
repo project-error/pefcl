@@ -7,6 +7,7 @@ import { ExternalAccountDB } from './externalAccount.db';
 import { AccountErrors, ExternalAccountErrors, GenericErrors } from '@typings/Errors';
 import { ServerError } from '@utils/errors';
 import { AccountDB } from '@services/account/account.db';
+import { Transaction } from 'sequelize/types';
 
 const logger = mainLogger.child({ module: 'externalAccounts' });
 
@@ -68,10 +69,11 @@ export class ExternalAccountService {
     return accounts.map((account) => account.toJSON());
   }
 
-  async getAccountFromExternalAccount(accountId: number) {
+  async getAccountFromExternalAccount(accountId: number, t: Transaction) {
     const externalAccount = await this._externalAccountDB.getAccountById(accountId);
     const account = await this._accountDB.getAccountByNumber(
       externalAccount?.getDataValue('number') ?? '',
+      t,
     );
     return account;
   }

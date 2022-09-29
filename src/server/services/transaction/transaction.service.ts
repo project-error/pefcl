@@ -98,11 +98,16 @@ export class TransactionService {
 
     const t = await sequelize.transaction();
     try {
-      const myAccount = await this._accountDB.getAuthorizedAccountById(fromAccountId, identifier);
+      const myAccount = await this._accountDB.getAuthorizedAccountById(
+        fromAccountId,
+        identifier,
+        t,
+      );
       const sharedAccount = await this._sharedAccountDB.getAuthorizedSharedAccountById(
         fromAccountId,
         identifier,
         [AccountRole.Admin],
+        t,
       );
 
       const fromAccount = myAccount ?? sharedAccount;
@@ -146,9 +151,10 @@ export class TransactionService {
 
     const t = await sequelize.transaction();
     try {
-      const fromAccount = await this._accountDB.getAccountById(req.data.fromAccountId);
+      const fromAccount = await this._accountDB.getAccountById(req.data.fromAccountId, t);
       const toAccount = await this._externalAccountService.getAccountFromExternalAccount(
         req.data.toAccountId,
+        t,
       );
 
       if (!toAccount || !fromAccount) {
