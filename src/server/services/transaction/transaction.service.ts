@@ -54,12 +54,18 @@ export class TransactionService {
 
     const user = this._userService.getUser(req.source);
     const accounts = await this._accountDB.getAccountsByIdentifier(user.getIdentifier());
+    const sharedAccounts = await this._sharedAccountDB.getSharedAccountsByIdentifier(
+      user.getIdentifier(),
+    );
 
+    const sharedAccountIds = sharedAccounts.map(
+      (account) => account.getDataValue('accountId') ?? 0,
+    );
     const accountIds = accounts.map((account) => account.getDataValue('id') ?? 0);
 
     const transactions = await this._transactionDB.getTransactionFromAccounts({
       ...req.data,
-      accountIds,
+      accountIds: [...sharedAccountIds, ...accountIds],
     });
 
     const total = await this._transactionDB.getTotalTransactionsFromAccounts(accountIds);
