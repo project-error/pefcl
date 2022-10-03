@@ -31,7 +31,7 @@ export class AccountDB {
 
   async getUniqueAccountByIdentifier(
     identifier: string,
-    transaction: Transaction,
+    transaction?: Transaction,
   ): Promise<AccountModel | null> {
     return await AccountModel.findOne({ where: { ownerIdentifier: identifier }, transaction });
   }
