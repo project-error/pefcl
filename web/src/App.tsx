@@ -18,13 +18,13 @@ import { BroadcastsWrapper } from '@hooks/useBroadcasts';
 import Transfer from './views/transfer/Transfer';
 import Transactions from './views/transactions/Transactions';
 import Devbar from '@components/DebugBar';
-import { NUIEvents, UserEvents } from '@typings/Events';
+import { GeneralEvents, NUIEvents, UserEvents } from '@typings/Events';
 import Deposit from './views/Deposit/Deposit';
 import { fetchNui } from '@utils/fetchNui';
 import Withdraw from './views/Withdraw/Withdraw';
 import { useSetAtom } from 'jotai';
-import { accountsAtom } from '@data/accounts';
-import { transactionBaseAtom } from '@data/transactions';
+import { accountsAtom, rawAccountAtom } from '@data/accounts';
+import { transactionBaseAtom, transactionInitialState } from '@data/transactions';
 
 dayjs.extend(updateLocale);
 
@@ -49,6 +49,7 @@ const Content = styled.div`
 
 const App: React.FC = () => {
   const config = useConfig();
+  const setRawAccounts = useSetAtom(rawAccountAtom);
   const setAccounts = useSetAtom(accountsAtom);
   const setTransactions = useSetAtom(transactionBaseAtom);
   const [hasLoaded, setHasLoaded] = useState(process.env.NODE_ENV === 'development');
@@ -64,10 +65,12 @@ const App: React.FC = () => {
   useNuiEvent({
     event: UserEvents.Unloaded,
     callback: () => {
-      setAccounts([]);
-      setTransactions();
       console.debug('Unloaded user.');
+      fetchNui(GeneralEvents.CloseUI);
       setHasLoaded(false);
+      setRawAccounts([]);
+      setAccounts([]);
+      setTransactions(transactionInitialState);
     },
   });
 

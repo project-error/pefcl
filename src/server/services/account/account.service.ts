@@ -83,7 +83,7 @@ export class AccountService {
 
       /* Override role by the shared one. */
       return {
-        ...acc.toJSON(),
+        ...acc?.toJSON(),
         role: sharedAcc.role,
       };
     });
