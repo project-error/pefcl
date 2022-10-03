@@ -855,8 +855,8 @@ export class AccountService {
       );
 
       if (sharedAccount) {
-        logger.error('User already exists in shared account.');
-        throw new ServerError(AccountErrors.UserAlreadyExists);
+        logger.debug('User already exists in shared account. (You can safely ignore this)');
+        return;
       }
 
       const account = await this._sharedAccountDB.createSharedAccount(
