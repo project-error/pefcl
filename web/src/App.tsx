@@ -1,11 +1,11 @@
 import Devbar from '@components/DebugBar';
-import { accountsAtom } from '@data/accounts';
-import { transactionBaseAtom } from '@data/transactions';
+import { accountsAtom, rawAccountAtom } from '@data/accounts';
+import { transactionBaseAtom, transactionInitialState } from '@data/transactions';
 import styled from '@emotion/styled';
 import { BroadcastsWrapper } from '@hooks/useBroadcasts';
 import { useExitListener } from '@hooks/useExitListener';
 import { useNuiEvent } from '@hooks/useNuiEvent';
-import { NUIEvents, UserEvents } from '@typings/Events';
+import { GeneralEvents, NUIEvents, UserEvents } from '@typings/Events';
 import { fetchNui } from '@utils/fetchNui';
 import dayjs from 'dayjs';
 import 'dayjs/locale/sv';
@@ -49,6 +49,7 @@ const Content = styled.div`
 
 const App: React.FC = () => {
   const config = useConfig();
+  const setRawAccounts = useSetAtom(rawAccountAtom);
   const setAccounts = useSetAtom(accountsAtom);
   const setTransactions = useSetAtom(transactionBaseAtom);
   const [hasLoaded, setHasLoaded] = useState(process.env.NODE_ENV === 'development');
@@ -57,9 +58,12 @@ const App: React.FC = () => {
 
   useNuiEvent('PEFCL', UserEvents.Loaded, () => setHasLoaded(true));
   useNuiEvent('PEFCL', UserEvents.Unloaded, () => {
-    setAccounts([]);
-    setTransactions();
     setHasLoaded(false);
+    setAccounts([]);
+    setRawAccounts([]);
+    setTransactions();
+    fetchNui(GeneralEvents.CloseUI);
+    setTransactions(transactionInitialState);
   });
 
   useEffect(() => {
