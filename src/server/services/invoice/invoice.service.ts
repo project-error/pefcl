@@ -1,6 +1,11 @@
 import { singleton } from 'tsyringe';
 import { Request } from '../../../../typings/http';
-import { CreateInvoiceInput, GetInvoicesInput, PayInvoiceInput } from '../../../../typings/Invoice';
+import {
+  CreateInvoiceInput,
+  GetInvoicesInput,
+  InvoiceStatus,
+  PayInvoiceInput,
+} from '../../../../typings/Invoice';
 import { sequelize } from '../../utils/pool';
 import { mainLogger } from '../../sv_logger';
 import { UserService } from '../user/user.service';
@@ -86,16 +91,20 @@ export class InvoiceService {
 
     const t = await sequelize.transaction();
     try {
-      const fromAccount = await this._accountDB.getAccountById(req.data.fromAccountId);
-      const invoice = await this._invoiceDB.getInvoiceById(req.data.invoiceId);
+      const fromAccount = await this._accountDB.getAccountById(req.data.fromAccountId, t);
+      const invoice = await this._invoiceDB.getInvoiceById(req.data.invoiceId, t);
 
       /* Should we insert money to a specific account? */
       const receiverAccountIdentifier = invoice?.getDataValue('receiverAccountIdentifier');
       const toAccountIdentifier = invoice?.getDataValue('fromIdentifier');
 
       const toAccount = receiverAccountIdentifier
-        ? await this._accountDB.getUniqueAccountByIdentifier(receiverAccountIdentifier)
-        : await this._accountDB.getDefaultAccountByIdentifier(toAccountIdentifier ?? '');
+        ? await this._accountDB.getUniqueAccountByIdentifier(receiverAccountIdentifier, t)
+        : await this._accountDB.getDefaultAccountByIdentifier(toAccountIdentifier ?? '', t);
+
+      if (invoice?.getDataValue('status') === InvoiceStatus.PAID) {
+        throw new ServerError('This invoice is already paid. Tell author of resource to fix UI');
+      }
 
       if (!invoice || !fromAccount || !toAccount) {
         throw new ServerError(GenericErrors.NotFound);
