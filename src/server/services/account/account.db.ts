@@ -29,8 +29,11 @@ export class AccountDB {
     return await AccountModel.findAll({ where: { ownerIdentifier: identifier } });
   }
 
-  async getUniqueAccountByIdentifier(identifier: string): Promise<AccountModel | null> {
-    return await AccountModel.findOne({ where: { ownerIdentifier: identifier } });
+  async getUniqueAccountByIdentifier(
+    identifier: string,
+    transaction?: Transaction,
+  ): Promise<AccountModel | null> {
+    return await AccountModel.findOne({ where: { ownerIdentifier: identifier }, transaction });
   }
 
   async getDefaultAccountByIdentifier(

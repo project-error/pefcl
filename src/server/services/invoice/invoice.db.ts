@@ -2,6 +2,7 @@ import { singleton } from 'tsyringe';
 import { CreateInvoiceInput, GetInvoicesInput, InvoiceStatus } from '@typings/Invoice';
 import { InvoiceModel } from './invoice.model';
 import { MS_TWO_WEEKS } from '@utils/constants';
+import { Transaction } from 'sequelize/types';
 
 @singleton()
 export class InvoiceDB {
@@ -26,8 +27,8 @@ export class InvoiceDB {
     });
   }
 
-  async getInvoiceById(id: number): Promise<InvoiceModel | null> {
-    return await InvoiceModel.findOne({ where: { id } });
+  async getInvoiceById(id: number, transaction: Transaction): Promise<InvoiceModel | null> {
+    return await InvoiceModel.findOne({ where: { id }, transaction });
   }
 
   async createInvoice(input: CreateInvoiceInput): Promise<InvoiceModel> {
