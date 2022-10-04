@@ -128,8 +128,8 @@ const ATM = () => {
       }
     };
 
-    isCardsEnabled && updateCards();
-  }, [t, isCardsEnabled]);
+    isCardsEnabled && isOpen && updateCards();
+  }, [t, isCardsEnabled, isOpen]);
 
   useNuiEvent<boolean>({
     event: 'setVisibleATM',
