@@ -129,8 +129,8 @@ const ATM = () => {
       }
     };
 
-    isCardsEnabled && updateCards();
-  }, [t, isCardsEnabled]);
+    isCardsEnabled && isOpen && updateCards();
+  }, [t, isCardsEnabled, isOpen]);
 
   const input = {
     cardId: selectedCard?.id ?? 0,

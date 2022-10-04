@@ -479,10 +479,10 @@ export class AccountService {
     const t = await sequelize.transaction();
     try {
       /* If framework is enabled, do a card check, otherwise continue. */
-      if (isFrameworkIntegrationEnabled && isCardsEnabled) {
+      if (isFrameworkIntegrationEnabled && isCardsEnabled && cardId) {
         const exports = getFrameworkExports();
         const cards = exports.getCards(req.source);
-        const selectedCard = cards.find((card) => card.id === cardId);
+        const selectedCard = cards?.find((card) => card.id === cardId);
 
         if (!selectedCard) {
           throw new Error('User does not have selected card in inventory.');
