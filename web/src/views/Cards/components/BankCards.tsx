@@ -136,6 +136,7 @@ const BankCards = ({ onSelectCardId, selectedCardId, accountId }: BankCardsProps
   };
 
   const selectedAccount = accounts.find((acc) => acc.id === selectedAccountId);
+  const selectedCard = cards.find((card) => card.id === selectedCardId);
   const isAffordable = (selectedAccount?.balance ?? 0) > cost;
 
   return (
@@ -180,8 +181,13 @@ const BankCards = ({ onSelectCardId, selectedCardId, accountId }: BankCardsProps
         {Boolean(selectedCardId) && (
           <Modal animate={{ x: 0 }} initial={{ x: 100 }} exit={{ x: 200, opacity: 0 }}>
             <CardActions
+              isBlocked={selectedCard?.isBlocked}
               cardId={selectedCardId}
               onBlock={() => {
+                updateCards(accountId);
+                onSelectCardId(0);
+              }}
+              onDelete={() => {
                 updateCards(accountId);
                 onSelectCardId(0);
               }}

@@ -29,13 +29,14 @@ export interface CreateCardInput {
   accountId: number;
   paymentAccountId: number;
 }
+
 export interface BlockCardInput {
   cardId: number;
-  pin: number;
 }
+
+export type DeleteCardInput = BlockCardInput;
 
 export interface UpdateCardPinInput {
   cardId: number;
   newPin: number;
-  oldPin: number;
 }
