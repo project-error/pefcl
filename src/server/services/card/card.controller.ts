@@ -4,6 +4,7 @@ import {
   BlockCardInput,
   Card,
   CreateCardInput,
+  DeleteCardInput,
   GetCardInput,
   InventoryCard,
   UpdateCardPinInput,
@@ -48,6 +49,16 @@ export class CardController {
     try {
       const isUpdated = await this.cardService.blockCard(req);
       res({ status: 'ok', data: isUpdated });
+    } catch (error) {
+      res({ status: 'error', errorMsg: error.message });
+    }
+  }
+
+  @NetPromise(CardEvents.Delete)
+  async deleteCard(req: Request<DeleteCardInput>, res: Response<boolean>) {
+    try {
+      const isDeleted = await this.cardService.blockCard(req);
+      res({ status: 'ok', data: isDeleted });
     } catch (error) {
       res({ status: 'error', errorMsg: error.message });
     }

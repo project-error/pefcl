@@ -12,7 +12,12 @@ import { IconButton, Skeleton, Stack } from '@mui/material';
 import { ContentCopyRounded } from '@mui/icons-material';
 import copy from 'copy-to-clipboard';
 
-const Container = styled.div<{ accountType: AccountType; selected: boolean }>`
+interface ContainerProps {
+  isDisabled: boolean;
+  accountType: AccountType;
+  selected: boolean;
+}
+const Container = styled.div<ContainerProps>`
   user-select: none;
   width: 100%;
   padding: 1rem;
@@ -42,6 +47,12 @@ const Container = styled.div<{ accountType: AccountType; selected: boolean }>`
     `
     border: 2px solid ${theme.palette.primary.light};
   `};
+
+  ${({ isDisabled }) =>
+    isDisabled &&
+    `
+    opacity: 0.5;
+  `}
 `;
 
 const Row = styled.div`
@@ -78,12 +89,14 @@ type AccountCardProps = {
   account: Account;
   selected?: boolean;
   withCopy?: boolean;
+  isDisabled?: boolean;
 };
 
 export const AccountCard = ({
   account,
   selected = false,
   withCopy = false,
+  isDisabled = false,
   ...props
 }: AccountCardProps) => {
   const { type, id, balance, isDefault, accountName, number } = account;
@@ -91,7 +104,7 @@ export const AccountCard = ({
   const config = useConfig();
 
   return (
-    <Container {...props} key={id} accountType={type} selected={selected}>
+    <Container {...props} key={id} accountType={type} selected={selected} isDisabled={isDisabled}>
       <Row>
         <Heading3>{formatMoney(balance, config.general)}</Heading3>
         <Type>
@@ -126,7 +139,7 @@ export const AccountCard = ({
 
 export const LoadingAccountCard = () => {
   return (
-    <Container accountType={AccountType.Personal} selected={false}>
+    <Container accountType={AccountType.Personal} selected={false} isDisabled={false}>
       <Row>
         <Heading3>
           <Skeleton variant="text" width={120} />

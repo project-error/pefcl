@@ -6,7 +6,13 @@ import { Request } from '@typings/http';
 import { CardDB } from './card.db';
 import { sequelize } from '@server/utils/pool';
 import { AccountService } from '../account/account.service';
-import { BalanceErrors, CardErrors, GenericErrors, UserErrors } from '@server/../../typings/Errors';
+import {
+  AuthorizationErrors,
+  BalanceErrors,
+  CardErrors,
+  GenericErrors,
+  UserErrors,
+} from '@server/../../typings/Errors';
 import i18next from '@utils/i18n';
 import {
   BlockCardInput,
@@ -116,45 +122,88 @@ export class CardService {
 
   async blockCard(req: Request<BlockCardInput>) {
     this.validateCardsConfig();
+    logger.silly('Blocking card ..');
+    logger.silly(req.data);
 
-    const { cardId, pin } = req.data;
-    const card = await this.cardDB.getById(cardId);
+    const user = this.userService.getUser(req.source);
+    const { cardId } = req.data;
+
+    const t = await sequelize.transaction();
+    const card = await this.cardDB.getById(cardId, t);
+
+    if (card?.getDataValue('holderCitizenId') !== user.getIdentifier()) {
+      throw new Error(AuthorizationErrors.Forbidden);
+    }
 
     if (!card) {
       throw new Error(GenericErrors.NotFound);
     }
 
-    if (pin !== card.getDataValue('pin')) {
-      throw new Error(CardErrors.InvalidPin);
+    try {
+      await card.update({ isBlocked: true });
+      t.commit();
+      logger.silly('Blocked card.');
+      return true;
+    } catch (error: unknown) {
+      t.rollback();
+      logger.error(error);
+      return false;
+    }
+  }
+
+  async deleteCard(req: Request<BlockCardInput>) {
+    this.validateCardsConfig();
+    logger.silly('Deleting card ..');
+    logger.silly(req.data);
+    const user = this.userService.getUser(req.source);
+    const { cardId } = req.data;
+
+    const t = await sequelize.transaction();
+    const card = await this.cardDB.getById(cardId, t);
+
+    if (card?.getDataValue('holderCitizenId') !== user.getIdentifier()) {
+      throw new Error(AuthorizationErrors.Forbidden);
+    }
+
+    if (!card) {
+      throw new Error(GenericErrors.NotFound);
     }
 
     try {
-      await card.update({ isBlocked: true });
+      await card.destroy();
+      t.commit();
+      logger.silly('Deleted card.');
       return true;
-    } catch (error) {
+    } catch (error: unknown) {
+      t.rollback();
+      logger.error(error);
       return false;
     }
   }
 
   async updateCardPin(req: Request<UpdateCardPinInput>): Promise<boolean> {
     this.validateCardsConfig();
-    logger.silly('Ordering new card for source:' + req.source);
+    logger.silly('Updating pin for card ..');
+    logger.silly(req.data);
 
-    const { cardId, newPin, oldPin } = req.data;
-    const card = await this.cardDB.getById(cardId);
+    const user = this.userService.getUser(req.source);
+    const { cardId, newPin } = req.data;
+
+    const t = await sequelize.transaction();
+    const card = await this.cardDB.getById(cardId, t);
+
+    if (card?.getDataValue('holderCitizenId') !== user.getIdentifier()) {
+      throw new Error(AuthorizationErrors.Forbidden);
+    }
 
     if (!card) {
       throw new Error(GenericErrors.NotFound);
     }
 
-    if (card.getDataValue('pin') !== oldPin) {
-      throw new Error(CardErrors.InvalidPin);
-    }
-
-    const t = await sequelize.transaction();
     try {
       await card.update({ pin: newPin }, { transaction: t });
       t.commit();
+      logger.silly('Updated pin.');
       return true;
     } catch (error) {
       logger.error(error);
@@ -165,10 +214,12 @@ export class CardService {
 
   async orderPersonalCard(req: Request<CreateCardInput>): Promise<Card | null> {
     this.validateCardsConfig();
-    logger.debug('Ordering new card for source:' + req.source);
-    const { accountId, paymentAccountId, pin } = req.data;
+    logger.silly('Ordering new card ..');
+    logger.silly(req.data);
 
     const user = this.userService.getUser(req.source);
+    const { accountId, paymentAccountId, pin } = req.data;
+
     const newCardCost = config.cards?.cost;
 
     if (!newCardCost) {
@@ -224,9 +275,10 @@ export class CardService {
       this.giveCard(req.source, card.toJSON());
 
       t.commit();
+      logger.silly('Ordered new card.');
       return card.toJSON();
-    } catch (err) {
-      logger.error(err);
+    } catch (error: unknown) {
+      logger.error(error);
       t.rollback();
       throw new Error(i18next.t('Failed to create new account'));
     }

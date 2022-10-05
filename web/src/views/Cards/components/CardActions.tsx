@@ -7,7 +7,6 @@ import {
   DialogContentText,
   DialogTitle,
   Stack,
-  Typography,
 } from '@mui/material';
 import { Heading1 } from '@components/ui/Typography/Headings';
 import { PreHeading } from '@components/ui/Typography/BodyText';
@@ -16,33 +15,30 @@ import BaseDialog from '@components/Modals/BaseDialog';
 import { fetchNui } from '@utils/fetchNui';
 import { CardEvents } from '@typings/Events';
 import { CheckRounded, ErrorRounded, InfoRounded } from '@mui/icons-material';
-import { BlockCardInput, UpdateCardPinInput } from '@typings/BankCard';
+import { BlockCardInput, DeleteCardInput, UpdateCardPinInput } from '@typings/BankCard';
 import PinField from '@components/ui/Fields/PinField';
 
 interface CardActionsProps {
   cardId: number;
+  isBlocked?: boolean;
   onBlock?(): void;
+  onDelete?(): void;
 }
 
-const CardActions = ({ cardId, onBlock }: CardActionsProps) => {
+const CardActions = ({ cardId, onBlock, onDelete, isBlocked }: CardActionsProps) => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [isUpdatingPin, setIsUpdatingPin] = useState(false);
-  const [isBlockingCard, setIsBlockingCard] = useState(false);
-  const [pin, setPin] = useState('');
-  const [oldPin, setOldPin] = useState('');
+  const [dialog, setDialog] = useState<'none' | 'block' | 'update' | 'delete'>('none');
   const [newPin, setNewPin] = useState('');
   const [confirmNewPin, setConfirmNewPin] = useState('');
   const { t } = useTranslation();
 
   const handleClose = () => {
     setIsLoading(false);
-    setIsUpdatingPin(false);
-    setIsBlockingCard(false);
+    setDialog('none');
     setError('');
     setNewPin('');
-    setOldPin('');
     setConfirmNewPin('');
 
     setTimeout(() => {
@@ -58,11 +54,31 @@ const CardActions = ({ cardId, onBlock }: CardActionsProps) => {
 
       await fetchNui<unknown, BlockCardInput>(CardEvents.Block, {
         cardId,
-        pin: parseInt(pin, 10),
       });
       setSuccess(t('Successfully blocked the card.'));
       handleClose();
       onBlock?.();
+    } catch (err: unknown | Error) {
+      if (err instanceof Error) {
+        setError(err.message);
+      }
+    }
+
+    setIsLoading(false);
+  };
+
+  const handleDeleteCard = async () => {
+    try {
+      setSuccess('');
+      setError('');
+      setIsLoading(true);
+
+      await fetchNui<unknown, DeleteCardInput>(CardEvents.Delete, {
+        cardId,
+      });
+      setSuccess(t('Successfully deleted the card.'));
+      handleClose();
+      onDelete?.();
     } catch (err: unknown | Error) {
       if (err instanceof Error) {
         setError(err.message);
@@ -83,7 +99,7 @@ const CardActions = ({ cardId, onBlock }: CardActionsProps) => {
       }
 
       setIsLoading(true);
-      const data = { cardId, newPin: parseInt(newPin, 10), oldPin: parseInt(oldPin, 10) };
+      const data = { cardId, newPin: parseInt(newPin, 10) };
       await fetchNui<unknown, UpdateCardPinInput>(CardEvents.UpdatePin, data);
 
       setSuccess(t('Successfully updated pin.'));
@@ -107,9 +123,17 @@ const CardActions = ({ cardId, onBlock }: CardActionsProps) => {
           </Stack>
 
           <Stack spacing={1} marginTop={2}>
-            <Button onClick={() => setIsUpdatingPin(true)}>{t('Update pin')}</Button>
-            <Button color="error" onClick={() => setIsBlockingCard(true)}>
+            <Button onClick={() => setDialog('update')}>{t('Update pin')}</Button>
+            <Button color="error" onClick={() => setDialog('block')}>
               {t('Block the card')}
+            </Button>
+
+            <Button
+              color="error"
+              onClick={() => !isBlocked && setDialog('delete')}
+              disabled={isLoading || !isBlocked}
+            >
+              {t('Delete the card')}
             </Button>
           </Stack>
 
@@ -121,16 +145,11 @@ const CardActions = ({ cardId, onBlock }: CardActionsProps) => {
         </Stack>
       </Stack>
 
-      <BaseDialog open={isUpdatingPin} onClose={handleClose}>
+      <BaseDialog open={dialog === 'update'} onClose={handleClose}>
         <DialogTitle>{t('Update pin')}</DialogTitle>
         <DialogContent>
           <Stack spacing={3}>
             <Stack spacing={1}>
-              <PinField
-                label={t('Old pin')}
-                value={oldPin}
-                onChange={(event) => setOldPin(event.target.value)}
-              />
               <PinField
                 label={t('New pin')}
                 value={newPin}
@@ -164,7 +183,7 @@ const CardActions = ({ cardId, onBlock }: CardActionsProps) => {
         </DialogActions>
       </BaseDialog>
 
-      <BaseDialog open={isBlockingCard} onClose={handleClose}>
+      <BaseDialog open={dialog === 'block'} onClose={handleClose}>
         <DialogTitle>{t('Blocking card')}</DialogTitle>
         <DialogContent>
           <Stack spacing={2}>
@@ -172,12 +191,6 @@ const CardActions = ({ cardId, onBlock }: CardActionsProps) => {
               <DialogContentText>
                 {t('Are you sure you want to block this card? This action cannot be undone.')}
               </DialogContentText>
-              <Typography variant="caption">{t('Enter card pin to block the card.')}</Typography>
-              <PinField
-                label={t('Enter pin')}
-                value={pin}
-                onChange={(event) => setPin(event.target.value)}
-              />
             </Stack>
 
             {error && (
@@ -197,6 +210,37 @@ const CardActions = ({ cardId, onBlock }: CardActionsProps) => {
           </Button>
           <Button color="error" onClick={handleBlockCard} disabled={isLoading}>
             {t('Block the card')}
+          </Button>
+        </DialogActions>
+      </BaseDialog>
+
+      <BaseDialog open={dialog === 'delete'} onClose={handleClose}>
+        <DialogTitle>{t('Deleting card')}</DialogTitle>
+        <DialogContent>
+          <Stack spacing={2}>
+            <Stack spacing={1}>
+              <DialogContentText>
+                {t('Are you sure you want to delete this card? This action cannot be undone.')}
+              </DialogContentText>
+            </Stack>
+
+            {error && (
+              <Alert
+                icon={isLoading ? <InfoRounded /> : <ErrorRounded />}
+                color={isLoading ? 'info' : 'error'}
+              >
+                {error}
+              </Alert>
+            )}
+          </Stack>
+        </DialogContent>
+
+        <DialogActions>
+          <Button color="inherit" onClick={handleClose}>
+            {t('Cancel')}
+          </Button>
+          <Button color="error" onClick={handleDeleteCard} disabled={isLoading}>
+            {t('Delete the card')}
           </Button>
         </DialogActions>
       </BaseDialog>

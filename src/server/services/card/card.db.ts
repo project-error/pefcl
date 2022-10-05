@@ -8,8 +8,8 @@ export class CardDB {
     return await CardModel.findAll();
   }
 
-  async getById(cardId: number): Promise<CardModel | null> {
-    return await CardModel.findOne({ where: { id: cardId } });
+  async getById(cardId: number, transaction?: Transaction): Promise<CardModel | null> {
+    return await CardModel.findOne({ where: { id: cardId }, transaction });
   }
 
   async getByAccountId(accountId: number): Promise<CardModel[]> {

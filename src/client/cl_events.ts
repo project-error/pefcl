@@ -132,6 +132,7 @@ RegisterNuiProxy(CashEvents.GetMyCash);
 // Cards
 RegisterNuiProxy(CardEvents.Get);
 RegisterNuiProxy(CardEvents.Block);
+RegisterNuiProxy(CardEvents.Delete);
 RegisterNuiProxy(CardEvents.OrderPersonal);
 RegisterNuiProxy(CardEvents.OrderShared);
 RegisterNuiProxy(CardEvents.UpdatePin);

@@ -104,6 +104,7 @@ if (isMocking) {
   app.post(...createEndpoint(CardEvents.OrderPersonal));
   app.post(...createEndpoint(CardEvents.UpdatePin));
   app.post(...createEndpoint(CardEvents.Block));
+  app.post(...createEndpoint(CardEvents.Delete));
   app.post(...createEndpoint(CardEvents.GetInventoryCards));
 
   app.listen(port, async () => {
