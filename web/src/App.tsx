@@ -25,6 +25,7 @@ import Withdraw from './views/Withdraw/Withdraw';
 import { useSetAtom } from 'jotai';
 import { accountsAtom, rawAccountAtom } from '@data/accounts';
 import { transactionBaseAtom, transactionInitialState } from '@data/transactions';
+import CardsView from './views/Cards/CardsView';
 
 dayjs.extend(updateLocale);
 
@@ -92,7 +93,7 @@ const App: React.FC = () => {
   });
 
   const { i18n } = useTranslation();
-  useExitListener();
+  useExitListener(isVisible);
 
   useEffect(() => {
     i18n.changeLanguage(config?.general?.language).catch((e) => console.error(e));
@@ -121,6 +122,7 @@ const App: React.FC = () => {
               <Route path="/transfer" component={Transfer} />
               <Route path="/deposit" component={Deposit} />
               <Route path="/withdraw" component={Withdraw} />
+              <Route path="/cards" component={CardsView} />
             </Content>
           </Container>
         )}

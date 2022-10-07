@@ -45,7 +45,7 @@ export const getClearingNumber = (initialConfig = config): string => {
   return confValue;
 };
 
-export const generateAccountNumber = (clearingNumber = getClearingNumber()): string => {
+export const generateClearingNumber = (clearingNumber = getClearingNumber()): string => {
   const initialNumber = clearingNumber;
 
   let uuid = `${initialNumber},`;
@@ -57,6 +57,26 @@ export const generateAccountNumber = (clearingNumber = getClearingNumber()): str
         break;
       case 4:
         uuid += '-';
+        uuid += ((Math.random() * 4) | 0).toString();
+        break;
+      default:
+        uuid += ((Math.random() * 9) | 0).toString(10);
+    }
+  }
+
+  return uuid;
+};
+
+export const generateCardNumber = (): string => {
+  let uuid = `5160 `;
+  for (let i = 0; i < 12; i++) {
+    switch (i) {
+      case 8:
+        uuid += ' ';
+        uuid += ((Math.random() * 4) | 0).toString();
+        break;
+      case 4:
+        uuid += ' ';
         uuid += ((Math.random() * 4) | 0).toString();
         break;
       default:

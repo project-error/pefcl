@@ -1,7 +1,7 @@
 import { Account, AccountRole, AccountType } from '@typings/Account';
-import { GetTransactionsResponse, TransactionType } from '../../../typings/Transaction';
-import { Invoice, InvoiceStatus } from '../../../typings/Invoice';
 import dayjs from 'dayjs';
+import { Invoice, InvoiceStatus } from '@typings/Invoice';
+import { GetTransactionsResponse, TransactionType } from '@typings/Transaction';
 
 export const resourceDefaultName = 'pefcl';
 

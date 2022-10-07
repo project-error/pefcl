@@ -2,6 +2,7 @@ import './globals.server';
 import { ServerPromiseResp } from '@project-error/pe-utils';
 import {
   AccountEvents,
+  CardEvents,
   CashEvents,
   ExternalAccountEvents,
   GeneralEvents,
@@ -28,6 +29,7 @@ import { mockedResourceName } from './globals.server';
 import { config } from './utils/server-config';
 import { UserService } from './services/user/user.service';
 import { container } from 'tsyringe';
+import { CardService } from './services/card/card.service';
 
 const hotReloadConfig = {
   resourceName: GetCurrentResourceName(),
@@ -76,6 +78,7 @@ if (isMocking) {
 
   app.post(...createEndpoint(UserEvents.GetUsers));
   app.post(...createEndpoint(AccountEvents.GetAccounts));
+  app.post(...createEndpoint(AccountEvents.GetAtmAccount));
   app.post(...createEndpoint(AccountEvents.DeleteAccount));
   app.post(...createEndpoint(AccountEvents.SetDefaultAccount));
   app.post(...createEndpoint(AccountEvents.CreateAccount));
@@ -95,6 +98,14 @@ if (isMocking) {
   app.post(...createEndpoint(ExternalAccountEvents.Add));
   app.post(...createEndpoint(ExternalAccountEvents.Get));
   app.post(...createEndpoint(CashEvents.GetMyCash));
+
+  // Cards
+  app.post(...createEndpoint(CardEvents.Get));
+  app.post(...createEndpoint(CardEvents.OrderPersonal));
+  app.post(...createEndpoint(CardEvents.UpdatePin));
+  app.post(...createEndpoint(CardEvents.Block));
+  app.post(...createEndpoint(CardEvents.Delete));
+  app.post(...createEndpoint(CardEvents.GetInventoryCards));
 
   app.listen(port, async () => {
     mainLogger.child({ module: 'server' }).debug(`[MOCKSERVER]: listening on port: ${port}`);
@@ -186,6 +197,33 @@ const debug = async () => {
   //   },
   //   source: 0,
   // });
+
+  RegisterCommand(
+    'card',
+    async (src: number) => {
+      const exps = exports;
+      const QBCore = await exps['qb-core']?.GetCoreObject();
+
+      await exps['qb-core'].RemoveItem('bank_card');
+
+      const item = {
+        name: 'bank_card',
+        label: 'Bank card',
+        weight: 1,
+        type: 'item',
+        image: 'visacard.png',
+      };
+
+      await exps['qb-core'].AddItem('bank_card', item);
+
+      const cardService = container.resolve(CardService);
+
+      const res = await cardService.giveCard(src, QBCore);
+
+      console.log(res);
+    },
+    false,
+  );
 };
 
 on(GeneralEvents.ResourceStarted, debug);

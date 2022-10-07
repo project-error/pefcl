@@ -6,14 +6,23 @@ import { OnlineUser, UserDTO } from '../../../../typings/user';
 import { getPlayerIdentifier, getPlayerName } from '../../utils/misc';
 import { UserModule } from './user.module';
 import { UserEvents } from '@server/../../typings/Events';
+import { CHECK_PLAYER_LOADED_INTERVAL } from '@shared/constants';
 
 const logger = mainLogger.child({ module: 'user' });
 
 @singleton()
 export class UserService {
   private readonly usersBySource: Map<number, UserModule>; // Player class
+  private loadedSources: number[];
+
   constructor() {
+    this.loadedSources = [];
     this.usersBySource = new Map<number, UserModule>();
+  }
+
+  loadClient(source: number) {
+    logger.debug('Loaded client for source: ' + source);
+    this.loadedSources.push(source);
   }
 
   getAllUsers() {
@@ -55,12 +64,8 @@ export class UserService {
     const user = new UserModule(data);
     this.usersBySource.set(user.getSource(), user);
 
-    logger.debug(`Player loaded. Emitting: ${UserEvents.Loaded}`);
-
-    setImmediate(() => {
-      emit(UserEvents.Loaded, data);
-      emitNet(UserEvents.Loaded, data.source, data);
-    });
+    logger.debug('Player loaded on server.');
+    this.emitLoadedPlayer(user, data);
   }
 
   async unloadPlayer(source: number) {
@@ -85,5 +90,17 @@ export class UserService {
     };
 
     return this.loadPlayer(user);
+  }
+
+  emitLoadedPlayer(user: UserModule, data: OnlineUser) {
+    const interval = setInterval(() => {
+      const isLoaded = this.loadedSources.includes(user.getSource());
+      if (isLoaded) {
+        logger.debug(`Player loaded on client. Emitting: ${UserEvents.Loaded}`);
+        emit(UserEvents.Loaded, data);
+        emitNet(UserEvents.Loaded, data.source, data);
+        clearInterval(interval);
+      }
+    }, CHECK_PLAYER_LOADED_INTERVAL);
   }
 }

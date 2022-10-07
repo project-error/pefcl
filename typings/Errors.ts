@@ -16,6 +16,13 @@ export enum AccountErrors {
   SameAccount = 'SameAccount',
 }
 
+export enum CardErrors {
+  MissingConfigCost = 'MissingConfigCost',
+  FailedToCreate = 'FailedToCreate',
+  InvalidPin = 'InvalidPin',
+  Blocked = 'Blocked',
+}
+
 export enum UserErrors {
   NotFound = 'UserNotFound',
 }

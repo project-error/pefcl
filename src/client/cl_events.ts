@@ -11,6 +11,7 @@ import {
   Broadcasts,
   NUIEvents,
   CashEvents,
+  CardEvents,
 } from '@typings/Events';
 import { Invoice } from '@typings/Invoice';
 import { Transaction } from '@typings/Transaction';
@@ -23,6 +24,8 @@ const npwdExports = global.exports['npwd'];
 
 const useFrameworkIntegration = config.frameworkIntegration?.enabled;
 let hasNUILoaded = false;
+
+emitNet(UserEvents.LoadClient);
 
 RegisterNuiCB(NUIEvents.Loaded, () => {
   console.debug('NUI has loaded.');
@@ -121,9 +124,19 @@ RegisterNuiProxy(SharedAccountEvents.GetUsers);
 RegisterNuiProxy(ExternalAccountEvents.Add);
 RegisterNuiProxy(ExternalAccountEvents.Get);
 
+RegisterNuiProxy(AccountEvents.GetAtmAccount);
 RegisterNuiProxy(AccountEvents.WithdrawMoney);
 RegisterNuiProxy(AccountEvents.DepositMoney);
 RegisterNuiProxy(CashEvents.GetMyCash);
+
+// Cards
+RegisterNuiProxy(CardEvents.Get);
+RegisterNuiProxy(CardEvents.Block);
+RegisterNuiProxy(CardEvents.Delete);
+RegisterNuiProxy(CardEvents.OrderPersonal);
+RegisterNuiProxy(CardEvents.OrderShared);
+RegisterNuiProxy(CardEvents.UpdatePin);
+RegisterNuiProxy(CardEvents.GetInventoryCards);
 
 RegisterCommand(
   'bank-force-load',

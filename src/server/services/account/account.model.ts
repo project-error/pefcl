@@ -3,7 +3,7 @@ import { DataTypes, Model, Optional } from 'sequelize';
 import { config } from '@utils/server-config';
 import { Account, AccountRole, AccountType } from '@typings/Account';
 import { sequelize } from '@utils/pool';
-import { generateAccountNumber } from '@utils/misc';
+import { generateClearingNumber } from '@utils/misc';
 import { timestamps } from '../timestamps.model';
 import { AccountEvents } from '@server/../../typings/Events';
 
@@ -22,7 +22,7 @@ AccountModel.init(
     number: {
       type: DataTypes.STRING,
       unique: true,
-      defaultValue: generateAccountNumber,
+      defaultValue: generateClearingNumber,
     },
     accountName: {
       type: DataTypes.STRING,

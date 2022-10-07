@@ -1,5 +1,5 @@
 import { DEFAULT_CLEARING_NUMBER } from '@utils/constants';
-import { generateAccountNumber, getClearingNumber } from '@utils/misc';
+import { generateClearingNumber, getClearingNumber } from '@utils/misc';
 import { createMockedConfig } from '@utils/test';
 import { regexExternalNumber } from '@shared/utils/regexes';
 
@@ -49,7 +49,7 @@ describe('Helper: getClearingNumber', () => {
 describe('Helper: generateAccountNumber', () => {
   test('should pass regex test', () => {
     for (let i = 0; i < 100; i++) {
-      const accountNumber = generateAccountNumber();
+      const accountNumber = generateClearingNumber();
       expect(regexExternalNumber.test(accountNumber)).toBe(true);
     }
   });
