@@ -10,7 +10,7 @@ import { Route } from 'react-router-dom';
 import './App.css';
 import { useConfig } from './hooks/useConfig';
 import theme from './utils/theme';
-import Accounts from './views/accounts/Accounts';
+import AccountsView from './views/Accounts/AccountsView';
 import Dashboard from './views/dashboard/Dashboard';
 import Invoices from './views/Invoices/Invoices';
 import ATM from './views/ATM/ATM';
@@ -116,7 +116,7 @@ const App: React.FC = () => {
           <Container>
             <Content>
               <Route path="/" exact component={Dashboard} />
-              <Route path="/accounts" component={Accounts} />
+              <Route path="/accounts" component={AccountsView} />
               <Route path="/transactions" component={Transactions} />
               <Route path="/invoices" component={Invoices} />
               <Route path="/transfer" component={Transfer} />

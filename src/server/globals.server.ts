@@ -74,6 +74,10 @@ if (isMocking) {
         console.log('global.server.ts: Getting cash ..');
         return 2500;
       },
+      getBank: () => {
+        console.log('global.server.ts: Getting bank ..');
+        return 9000000;
+      },
       removeCash: () => {
         console.log('global.server.ts: Removing cash ..');
         throw new Error('could not remove cash');
