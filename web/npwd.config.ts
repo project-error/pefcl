@@ -17,6 +17,7 @@ export const externalAppConfig = () => ({
   backgroundColor: '#264f82',
   path: '/bank',
   icon: BankIcon,
+  notificationIcon: BankIcon,
   app: App,
 });
 
