@@ -99,3 +99,20 @@ CREATE TABLE `pefcl_transactions` (
   CONSTRAINT `pefcl_transactions_ibfk_1` FOREIGN KEY (`toAccountId`) REFERENCES `pefcl_accounts` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT `pefcl_transactions_ibfk_2` FOREIGN KEY (`fromAccountId`) REFERENCES `pefcl_accounts` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Cards, this is required when using the physical cards feature
+CREATE TABLE IF NOT EXISTS `pefcl_cards` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `holder` varchar(255) DEFAULT NULL,
+  `holderCitizenId` varchar(255) DEFAULT NULL,
+  `isBlocked` tinyint(1) DEFAULT 0,
+  `number` varchar(255) DEFAULT NULL,
+  `pin` int(11) DEFAULT 1234,
+  `createdAt` datetime DEFAULT NULL,
+  `updatedAt` datetime NOT NULL,
+  `accountId` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `accountId` (`accountId`),
+  CONSTRAINT `pefcl_cards_ibfk_1` FOREIGN KEY (`accountId`) REFERENCES `pefcl_accounts` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `pefcl_cards_ibfk_2` FOREIGN KEY (`accountId`) REFERENCES `pefcl_accounts` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb3;
