@@ -1,5 +1,5 @@
 import { Sequelize } from 'sequelize';
-import { CONNECTION_STRING, parseUri } from './dbUtils';
+import { CONNECTION_STRING, getSslParam, parseUri } from './dbUtils';
 
 const mysqlConnectionString = GetConvar(CONNECTION_STRING, 'none');
 
@@ -11,6 +11,8 @@ if (mysqlConnectionString === 'none') {
 
 const config = parseUri(mysqlConnectionString);
 
+const ssl = getSslParam(config.params);
+
 export const sequelize = new Sequelize({
   dialect: 'mysql',
   dialectModule: require('mysql2'),
@@ -20,6 +22,10 @@ export const sequelize = new Sequelize({
   username: config.user,
   password: config.password,
   database: config.database,
+  ssl: !!ssl,
+  dialectOptions: {
+    ssl,
+  },
   pool: {
     max: 5,
     min: 0,
