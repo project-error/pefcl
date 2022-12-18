@@ -935,7 +935,7 @@ export class AccountService {
       return sharedAccount;
     } catch (err) {
       t.rollback();
-      logger.error('Failed to add user to unique account');
+      logger.error('Failed to remove user from unique account');
     }
   }
 
