@@ -7,14 +7,14 @@ import { Transaction } from 'sequelize/types';
 @singleton()
 export class InvoiceDB {
   async getAllInvoices(): Promise<InvoiceModel[]> {
-    return await InvoiceModel.findAll();
+    return await InvoiceModel.findAll({ order: [['status', 'DESC'], ['createdAt', 'DESC']]});
   }
 
   async getAllReceivingInvoices(
     identifier: string,
     pagination: GetInvoicesInput,
   ): Promise<InvoiceModel[]> {
-    return await InvoiceModel.findAll({ where: { toIdentifier: identifier }, ...pagination });
+    return await InvoiceModel.findAll({ order: [["status", "DESC"], ["createdAt", "DESC"]], where: { toIdentifier: identifier }, ...pagination });
   }
 
   async getReceivedInvoicesCount(identifier: string): Promise<number> {
@@ -34,7 +34,7 @@ export class InvoiceDB {
   async createInvoice(input: CreateInvoiceInput): Promise<InvoiceModel> {
     const expiresAt = input.expiresAt
       ? input.expiresAt
-      : new Date(Date.now() + MS_TWO_WEEKS).toString();
+      : new Date(Date.now() + MS_ONE_WEEK).toString();
 
     return await InvoiceModel.create({ ...input, expiresAt });
   }
