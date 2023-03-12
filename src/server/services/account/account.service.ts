@@ -585,7 +585,7 @@ export class AccountService {
 
   async addMoney(req: Request<UpdateBankBalanceInput>) {
     logger.silly(`Adding money to ${req.source} ..`);
-    const { amount, message } = req.data;
+    const { amount, message, fromIdentifier } = req.data;
 
     if (amount <= 0) {
       throw new ServerError(GenericErrors.BadInput);
@@ -595,17 +595,27 @@ export class AccountService {
     const t = await sequelize.transaction();
 
     try {
+      let fromAccount = undefined;
       const account = await this._accountDB.getDefaultAccountByIdentifier(user.getIdentifier());
 
       if (!account) {
         throw new ServerError(GenericErrors.NotFound);
       }
 
+      if (fromIdentifier) {
+        logger.silly(`Adding money from ${fromIdentifier} ..`);
+        fromAccount = await this._accountDB.getDefaultAccountByIdentifier(fromIdentifier);
+        if (!fromAccount) {
+          throw new ServerError(GenericErrors.NotFound);
+        }
+        await this._accountDB.decrement(fromAccount, amount, t);
+      }
       await this._accountDB.increment(account, amount, t);
       await this._transactionService.handleCreateTransaction(
         {
           amount,
           message,
+          fromAccount: fromAccount?.toJSON(),
           toAccount: account?.toJSON(),
           type: TransactionType.Incoming,
         },
