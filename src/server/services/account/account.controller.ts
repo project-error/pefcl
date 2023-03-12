@@ -303,7 +303,7 @@ export class AccountController {
 
   @Export(ServerExports.RemoveBankBalance)
   async removeBankBalance(
-    req: Request<{ amount: number; message: string }>,
+    req: Request<{ amount: number; message: string; toIdentifier?: string }>,
     res: Response<unknown>,
   ) {
     try {
