@@ -31,9 +31,9 @@ export class CashController {
   }
 
   @Export(ServerExports.AddCash)
-  async addCash(req: Request<ChangeCashInput>, res: Response<boolean>) {
+  async addCash(req: Request<number>, res: Response<boolean>) {
     try {
-      await this._cashService.handleAddCash(req.data.source, req.data.amount);
+      await this._cashService.handleAddCash(req.source, req.data);
       res({ status: 'ok', data: true });
     } catch (error) {
       res({ status: 'error', errorMsg: error.message });
@@ -41,9 +41,9 @@ export class CashController {
   }
 
   @Export(ServerExports.RemoveCash)
-  async removeCash(req: Request<ChangeCashInput>, res: Response<boolean>) {
+  async removeCash(req: Request<number>, res: Response<boolean>) {
     try {
-      await this._cashService.handleRemoveCash(req.data.source, req.data.amount);
+      await this._cashService.handleRemoveCash(req.source, req.data);
       res({ status: 'ok', data: true });
     } catch (error) {
       res({ status: 'error', errorMsg: error.message });
