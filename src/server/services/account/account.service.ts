@@ -637,7 +637,7 @@ export class AccountService {
         {
           amount,
           message,
-          fromAccount: account?.toJSON(),
+          toAccount: account?.toJSON(),
           type: TransactionType.Incoming,
         },
         t,
@@ -668,7 +668,7 @@ export class AccountService {
         {
           amount,
           message,
-          fromAccount: account?.toJSON(),
+          toAccount: account?.toJSON(),
           type: TransactionType.Incoming,
         },
         t,
