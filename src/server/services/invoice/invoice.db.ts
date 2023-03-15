@@ -14,7 +14,11 @@ export class InvoiceDB {
     identifier: string,
     pagination: GetInvoicesInput,
   ): Promise<InvoiceModel[]> {
-    return await InvoiceModel.findAll({ where: { toIdentifier: identifier }, ...pagination });
+    return await InvoiceModel.findAll({
+      where: { toIdentifier: identifier },
+      ...pagination,
+      order: [['createdAt', 'DESC']],
+    });
   }
 
   async getReceivedInvoicesCount(identifier: string): Promise<number> {
