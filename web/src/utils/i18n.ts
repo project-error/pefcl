@@ -13,14 +13,14 @@ dayjs.extend(localizedFormat);
 
 const load = async () => {
   const config = await getConfig();
-  const language = config.general.language ?? 'en';
+  const language = config?.general?.language ?? 'en';
   const resources = getI18nResourcesNamespaced('translation');
 
   await i18n
     .use(initReactI18next)
     .init({
       resources,
-      lng: 'en',
+      lng: language,
       fallbackLng: 'en',
     })
     .then(() => {})
@@ -37,8 +37,6 @@ const load = async () => {
       sameElse: i18n.t('calendar.sameElse'),
     },
   });
-
-  console.log('done with i18n init', i18n.t('calendar.lastDay'));
 };
 
 load();

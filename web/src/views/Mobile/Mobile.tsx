@@ -53,18 +53,18 @@ const MobileApp = () => {
   const { i18n } = useTranslation();
   const config = useConfig();
 
+  console.log('Loading mobile app');
+
   useEffect(() => {
-    i18n.changeLanguage(config?.general?.language).catch((e) => console.error(e));
+    i18n.changeLanguage(config?.general?.language ?? 'en').catch((e) => console.error(e));
   }, [i18n, config]);
 
   useEffect(() => {
     dayjs.locale(config?.general?.language ?? 'en');
   }, [i18n, config]);
 
-  // const lng = props.settings.language.value;
-  // const { i18n } = useI18n(props.i18n, 'en');
-
   if (!i18n) {
+    console.log('i18n is null, stopping');
     return null;
   }
 
