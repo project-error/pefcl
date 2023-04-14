@@ -52,7 +52,7 @@ const SendBankUIMessage = (data: object) => {
   //   npwdExports.sendUIMessage(data);
   // }
   if (GetResourceState('lb-phone') === 'started') {
-    lbExports.sendUIMessage(data);
+    lbExports.SendCustomAppMessage('pefcl', data);
   }
 };
 
