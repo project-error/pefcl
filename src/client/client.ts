@@ -116,13 +116,8 @@ const Delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
     defaultApp: false, // OPTIONAL if set to true, app should be added without having to download it,
     size: 59812, // OPTIONAL in kb
     // -- images = { "https://example.com/photo.jpg" }, -- OPTIONAL array of images for the app on the app store
-    ui: GetCurrentResourceName() + '/web/dist/index.html#/mobile/dashboard', // -- this is the path to the HTML file
+    ui: GetCurrentResourceName() + '/web/dist/index.html?mobile=true', // -- this is the path to the HTML file
     icon: 'https://cfx-nui-' + GetCurrentResourceName() + '/web/dist/app-icon.png', // -- OPTIONAL app icon
-    onUse: () => {
-      const lbExports = global.exports['lb-phone'];
-      console.log('pefl mobile app opened');
-      lbExports.SendCustomAppMessage('pefcl', { type: Broadcasts.OpeningMobileApp, payload: true });
-    },
   });
 
   console.log('lb phone response', response);

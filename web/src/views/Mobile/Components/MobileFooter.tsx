@@ -120,7 +120,7 @@ const ListItem = ({ to, icon, label, amount, countAtom }: ListItemProps) => {
 const MobileFooter = () => {
   const { t } = useTranslation();
   const settings = useGlobalSettings();
-  const prefix = '';
+  const prefix = '/mobile';
 
   return (
     <Container>

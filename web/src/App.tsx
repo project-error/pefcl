@@ -6,7 +6,7 @@ import 'dayjs/locale/sv';
 import React, { useEffect, useState } from 'react';
 import { useNuiEvent } from 'react-fivem-hooks';
 import { useTranslation } from 'react-i18next';
-import { Route } from 'react-router-dom';
+import { Route, useHistory } from 'react-router-dom';
 import './App.css';
 import { useConfig } from './hooks/useConfig';
 import theme from './utils/theme';
@@ -18,7 +18,7 @@ import { BroadcastsWrapper } from '@hooks/useBroadcasts';
 import Transfer from './views/transfer/Transfer';
 import Transactions from './views/transactions/Transactions';
 import Devbar from '@components/DebugBar';
-import { Broadcasts, NUIEvents, UserEvents } from '@typings/Events';
+import { NUIEvents, UserEvents } from '@typings/Events';
 import Deposit from './views/Deposit/Deposit';
 import { fetchNui } from '@utils/fetchNui';
 import Withdraw from './views/Withdraw/Withdraw';
@@ -72,10 +72,16 @@ const App: React.FC = () => {
     defaultValue: false,
   });
 
-  const { data: isMobileApp } = useNuiEvent<boolean>({
-    event: Broadcasts.OpeningMobileApp,
-    defaultValue: false,
-  });
+  const history = useHistory();
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const isMobile = urlParams.get('mobile') != null;
+    console.log('IS MOBILE', isMobile, window.location.search);
+    if (isMobile) {
+      history.push('/mobile/dashboard');
+    }
+  }, [history]);
 
   const { i18n } = useTranslation();
   useExitListener();
@@ -97,7 +103,7 @@ const App: React.FC = () => {
       {process.env.NODE_ENV === 'development' && <Devbar />}
 
       <React.Suspense fallback={'Loading bank'}>
-        {!isAtmVisible && !isMobileApp && isVisible && (
+        {!isAtmVisible && isVisible && (
           <Container>
             <Content>
               <Route path="/" exact component={Dashboard} />
@@ -112,10 +118,12 @@ const App: React.FC = () => {
         )}
       </React.Suspense>
 
-      <React.Suspense fallback={null}>{!isMobileApp && <ATM />}</React.Suspense>
+      <React.Suspense fallback={null}>
+        <ATM />
+      </React.Suspense>
 
       <React.Suspense fallback={<div>Fetching app</div>}>
-        {isMobileApp && <Route path="/" component={MobileApp} />}
+        <Route path="/mobile" component={MobileApp} />
       </React.Suspense>
 
       {/* We don't need to show any fallback for the update component since it doesn't render anything anyway. */}
