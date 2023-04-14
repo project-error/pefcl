@@ -18,7 +18,8 @@ import { RegisterNuiProxy } from 'cl_utils';
 import API from './cl_api';
 import config from './cl_config';
 
-const npwdExports = global.exports['npwd'];
+// const npwdExports = global.exports['npwd'];
+const lbExports = global.exports['lb-phone'];
 
 const useFrameworkIntegration = config.frameworkIntegration?.enabled;
 let hasNUILoaded = false;
@@ -47,8 +48,11 @@ const waitForNUILoaded = (checkInterval = 250): Promise<void> => {
 const SendBankUIMessage = (data: object) => {
   SendNUIMessage(data);
 
-  if (GetResourceState('npwd') === 'started') {
-    npwdExports.sendUIMessage(data);
+  // if (GetResourceState('npwd') === 'started') {
+  //   npwdExports.sendUIMessage(data);
+  // }
+  if (GetResourceState('lb-phone') === 'started') {
+    lbExports.sendUIMessage(data);
   }
 };
 

@@ -97,3 +97,28 @@ if (!useFrameworkIntegration) {
   RegisterCommand('giveCash', giveCash, false);
   RegisterCommand('createInvoice', createInvoice, false);
 }
+
+const Delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
+
+(async () => {
+  while (GetResourceState('lb-phone') != 'started') {
+    await Delay(10);
+  }
+  const lbPhone = global.exports['lb-phone'];
+
+  lbPhone.RemoveCustomApp('pefcl');
+
+  const response = lbPhone.AddCustomApp({
+    identifier: 'pefcl',
+    name: 'Banking',
+    description: 'Get your street race on!',
+    developer: 'Fleeca',
+    defaultApp: false, // OPTIONAL if set to true, app should be added without having to download it,
+    size: 59812, // OPTIONAL in kb
+    // -- images = { "https://example.com/photo.jpg" }, -- OPTIONAL array of images for the app on the app store
+    ui: GetCurrentResourceName() + '/web/dist/index.html#/mobile/bank', // -- this is the path to the HTML file
+    icon: 'https://cfx-nui-' + GetCurrentResourceName() + '/web/dist/app-icon.png', // -- OPTIONAL app icon
+  });
+
+  console.log('lb phone response', response);
+})();

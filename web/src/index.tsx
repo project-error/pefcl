@@ -10,6 +10,8 @@ import { SnackbarProvider } from 'notistack';
 import { NuiProvider } from 'react-fivem-hooks';
 import { I18nextProvider } from 'react-i18next';
 import { GlobalSettingsProvider } from '@hooks/useGlobalSettings';
+import MobileApp from './views/Mobile/Mobile';
+import { mockedMobileSettings } from './mobileDevelopmentContainer';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -30,4 +32,15 @@ ReactDOM.render(
     </NuiProvider>
   </React.StrictMode>,
   document.getElementById('root'),
+);
+
+ReactDOM.render(
+  <React.StrictMode>
+    <HashRouter basename="mobile">
+      <NuiProvider>
+        <MobileApp i18n={i18n} settings={mockedMobileSettings} />
+      </NuiProvider>
+    </HashRouter>
+  </React.StrictMode>,
+  document.getElementById('mobile-app'),
 );
