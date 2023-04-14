@@ -8,7 +8,7 @@ import MobileTransferView from './views/Transfer/MobileTransferView';
 
 const MobileRoutes = () => {
   const settings = useGlobalSettings();
-  const prefix = settings.isMobile ? '/bank' : '';
+  const prefix = '/mobile';
 
   return (
     <>

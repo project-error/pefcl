@@ -34,13 +34,21 @@ ReactDOM.render(
   document.getElementById('root'),
 );
 
-ReactDOM.render(
-  <React.StrictMode>
-    <HashRouter basename="mobile">
-      <NuiProvider>
-        <MobileApp i18n={i18n} settings={mockedMobileSettings} />
-      </NuiProvider>
-    </HashRouter>
-  </React.StrictMode>,
-  document.getElementById('mobile-app'),
-);
+// ReactDOM.render(
+//   <React.StrictMode>
+//     <NuiProvider>
+//       <GlobalSettingsProvider isMobile>
+//         <I18nextProvider i18n={i18n}>
+//           <HashRouter>
+//             <ThemeProvider theme={theme}>
+//               <React.Suspense fallback={<div>Fetching app</div>}>
+//                 <MobileApp />
+//               </React.Suspense>
+//             </ThemeProvider>
+//           </HashRouter>
+//         </I18nextProvider>
+//       </GlobalSettingsProvider>
+//     </NuiProvider>
+//   </React.StrictMode>,
+//   document.getElementById('mobile-app'),
+// );

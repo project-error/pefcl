@@ -22,6 +22,7 @@ import { NUIEvents, UserEvents } from '@typings/Events';
 import Deposit from './views/Deposit/Deposit';
 import { fetchNui } from '@utils/fetchNui';
 import Withdraw from './views/Withdraw/Withdraw';
+import MobileApp from './views/Mobile/Mobile';
 
 dayjs.extend(updateLocale);
 
@@ -108,6 +109,10 @@ const App: React.FC = () => {
 
       <React.Suspense fallback={null}>
         <ATM />
+      </React.Suspense>
+
+      <React.Suspense fallback={<div>Fetching app</div>}>
+        <Route path="/mobile" component={MobileApp} />
       </React.Suspense>
 
       {/* We don't need to show any fallback for the update component since it doesn't render anything anyway. */}

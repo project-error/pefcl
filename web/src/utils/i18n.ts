@@ -20,7 +20,7 @@ const load = async () => {
     .use(initReactI18next)
     .init({
       resources,
-      lng: config.general.language,
+      lng: 'en',
       fallbackLng: 'en',
     })
     .then(() => {})
@@ -37,6 +37,8 @@ const load = async () => {
       sameElse: i18n.t('calendar.sameElse'),
     },
   });
+
+  console.log('done with i18n init', i18n.t('calendar.lastDay'));
 };
 
 load();

@@ -111,7 +111,7 @@ const Delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
   const response = lbPhone.AddCustomApp({
     identifier: 'pefcl',
     name: 'Banking',
-    description: 'Get your street race on!',
+    description: 'Manage your financials with Fleeca Banking',
     developer: 'Fleeca',
     defaultApp: false, // OPTIONAL if set to true, app should be added without having to download it,
     size: 59812, // OPTIONAL in kb

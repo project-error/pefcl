@@ -46,9 +46,13 @@ export const useI18n = (initialI18n: i18n, language: Language) => {
   }, [changeLanguage, i18n, language]);
 
   useEffect(() => {
+    console.log('here!', initialI18n);
     const instance = initialI18n.cloneInstance();
+    console.log('we cloned');
     loadPefclResources(instance);
+    console.log('next up...');
     setI18n(instance);
+    console.log('we did it!');
   }, [initialI18n]);
 
   return { i18n: i18n, changeLanguage };
