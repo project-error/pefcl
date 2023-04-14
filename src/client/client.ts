@@ -3,7 +3,7 @@ import './cl_events';
 import './cl_exports';
 import './cl_integrations';
 import './cl_blips';
-import { GeneralEvents } from '@typings/Events';
+import { Broadcasts, GeneralEvents } from '@typings/Events';
 import { RegisterNuiCB } from '@project-error/pe-utils';
 import { createInvoice, giveCash } from './functions';
 import config from './cl_config';
@@ -118,6 +118,11 @@ const Delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
     // -- images = { "https://example.com/photo.jpg" }, -- OPTIONAL array of images for the app on the app store
     ui: GetCurrentResourceName() + '/web/dist/index.html#/mobile/dashboard', // -- this is the path to the HTML file
     icon: 'https://cfx-nui-' + GetCurrentResourceName() + '/web/dist/app-icon.png', // -- OPTIONAL app icon
+    onUse: () => {
+      const lbExports = global.exports['lb-phone'];
+      console.log('pefl mobile app opened');
+      lbExports.SendCustomAppMessage('pefcl', { type: Broadcasts.OpeningMobileApp, payload: true });
+    },
   });
 
   console.log('lb phone response', response);

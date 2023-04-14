@@ -51,6 +51,7 @@ export enum Broadcasts {
   NewAccountBalance = 'pefcl:newAccountBalanceBroadcast',
   NewDefaultAccountBalance = 'pefcl:newDefaultAccountBalance',
   NewCashAmount = 'pefcl:newCashAmount',
+  OpeningMobileApp = 'pefcl:openingMobileApp',
 }
 
 export enum TransactionEvents {

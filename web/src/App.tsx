@@ -18,7 +18,7 @@ import { BroadcastsWrapper } from '@hooks/useBroadcasts';
 import Transfer from './views/transfer/Transfer';
 import Transactions from './views/transactions/Transactions';
 import Devbar from '@components/DebugBar';
-import { NUIEvents, UserEvents } from '@typings/Events';
+import { Broadcasts, NUIEvents, UserEvents } from '@typings/Events';
 import Deposit from './views/Deposit/Deposit';
 import { fetchNui } from '@utils/fetchNui';
 import Withdraw from './views/Withdraw/Withdraw';
@@ -72,6 +72,11 @@ const App: React.FC = () => {
     defaultValue: false,
   });
 
+  const { data: isMobileApp } = useNuiEvent<boolean>({
+    event: Broadcasts.OpeningMobileApp,
+    defaultValue: false,
+  });
+
   const { i18n } = useTranslation();
   useExitListener();
 
@@ -92,7 +97,7 @@ const App: React.FC = () => {
       {process.env.NODE_ENV === 'development' && <Devbar />}
 
       <React.Suspense fallback={'Loading bank'}>
-        {!isAtmVisible && isVisible && (
+        {!isAtmVisible && !isMobileApp && isVisible && (
           <Container>
             <Content>
               <Route path="/" exact component={Dashboard} />
@@ -107,12 +112,10 @@ const App: React.FC = () => {
         )}
       </React.Suspense>
 
-      <React.Suspense fallback={null}>
-        <ATM />
-      </React.Suspense>
+      <React.Suspense fallback={null}>{!isMobileApp && <ATM />}</React.Suspense>
 
       <React.Suspense fallback={<div>Fetching app</div>}>
-        <Route path="/mobile" component={MobileApp} />
+        {isMobileApp && <Route path="/" component={MobileApp} />}
       </React.Suspense>
 
       {/* We don't need to show any fallback for the update component since it doesn't render anything anyway. */}
