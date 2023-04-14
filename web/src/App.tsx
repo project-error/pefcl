@@ -47,8 +47,8 @@ const Content = styled.div`
 
 const App: React.FC = () => {
   const config = useConfig();
-  const urlParams = new URLSearchParams(window.location.search);
-  const isMobile = urlParams.get('mobile') != null;
+  // const isMobile = urlParams.get('mobile') != null;
+  const isMobile = window.location.hash.includes('/mobile');
 
   const [hasLoaded, setHasLoaded] = useState(process.env.NODE_ENV === 'development' || isMobile);
   useNuiEvent({
@@ -75,13 +75,13 @@ const App: React.FC = () => {
     defaultValue: false,
   });
 
-  const history = useHistory();
+  // const history = useHistory();
 
-  useEffect(() => {
-    if (isMobile) {
-      history.push('/mobile/dashboard');
-    }
-  }, [history, isMobile]);
+  // useEffect(() => {
+  //   if (isMobile) {
+  //     history.push('/mobile/dashboard');
+  //   }
+  // }, [history, isMobile]);
 
   const { i18n } = useTranslation();
   useExitListener();
