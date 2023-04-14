@@ -42,7 +42,7 @@ const MobileApp = () => {
   return (
     <>
       <Container>
-        <React.Suspense fallback={<LoadingFallback message={'Getting data..'} />}>
+        <React.Suspense fallback={<LoadingFallback message={'Getting data...'} />}>
           <MobileRoutes />
         </React.Suspense>
         <MobileFooter />

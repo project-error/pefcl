@@ -11,9 +11,14 @@ import { getI18nResourcesNamespaced } from './i18nResourceHelpers';
 dayjs.extend(updateLocale);
 dayjs.extend(localizedFormat);
 
+const getLbPhoneSettings = async () => {
+  return window.GetSettings != null ? await window.GetSettings() : null;
+};
+
 const load = async () => {
   const config = await getConfig();
-  const language = config?.general?.language ?? 'en';
+  const lbPhoneSettings = await getLbPhoneSettings();
+  const language = lbPhoneSettings?.locale ?? config?.general?.language ?? 'en';
   const resources = getI18nResourcesNamespaced('translation');
 
   await i18n

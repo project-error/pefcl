@@ -50,27 +50,6 @@ module.exports = {
     clean: true,
   },
   plugins: [
-    new ModuleFederationPlugin({
-      name: 'pefcl',
-      filename: 'remoteEntry.js',
-      remotes: {
-        npwd: 'layout@https://cfx-nui-npwd/phone/dist/remoteEntry.js',
-      },
-      exposes: {
-        './config': './npwd.config',
-      },
-      shared: {
-        ...deps,
-        react: {
-          singleton: true,
-          requiredVersion: deps.react,
-        },
-        'react-dom': {
-          singleton: true,
-          requiredVersion: deps['react-dom'],
-        },
-      },
-    }),
     new HtmlWebpackPlugin({
       cache: false,
       template: './src/index.html',

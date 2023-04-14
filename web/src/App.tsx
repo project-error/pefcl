@@ -6,7 +6,7 @@ import 'dayjs/locale/sv';
 import React, { useEffect, useState } from 'react';
 import { useNuiEvent } from 'react-fivem-hooks';
 import { useTranslation } from 'react-i18next';
-import { Route, useHistory } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 import './App.css';
 import { useConfig } from './hooks/useConfig';
 import theme from './utils/theme';
@@ -23,6 +23,7 @@ import Deposit from './views/Deposit/Deposit';
 import { fetchNui } from '@utils/fetchNui';
 import Withdraw from './views/Withdraw/Withdraw';
 import MobileApp from './views/Mobile/Mobile';
+import { useLbPhoneSettings } from '@hooks/useLbPhoneSettings';
 
 dayjs.extend(updateLocale);
 
@@ -47,7 +48,9 @@ const Content = styled.div`
 
 const App: React.FC = () => {
   const config = useConfig();
-  // const isMobile = urlParams.get('mobile') != null;
+
+  const lbPhoneSettings = useLbPhoneSettings();
+
   const isMobile = window.location.hash.includes('/mobile');
 
   const [hasLoaded, setHasLoaded] = useState(process.env.NODE_ENV === 'development' || isMobile);
@@ -75,24 +78,18 @@ const App: React.FC = () => {
     defaultValue: false,
   });
 
-  // const history = useHistory();
-
-  // useEffect(() => {
-  //   if (isMobile) {
-  //     history.push('/mobile/dashboard');
-  //   }
-  // }, [history, isMobile]);
-
   const { i18n } = useTranslation();
   useExitListener();
 
   useEffect(() => {
-    i18n.changeLanguage(config?.general?.language ?? 'en').catch((e) => console.error(e));
-  }, [i18n, config]);
+    i18n
+      .changeLanguage(lbPhoneSettings?.locale ?? config?.general?.language ?? 'en')
+      .catch((e) => console.error(e));
+  }, [i18n, config, lbPhoneSettings]);
 
   useEffect(() => {
-    dayjs.locale(config?.general?.language ?? 'en');
-  }, [i18n, config]);
+    dayjs.locale(lbPhoneSettings?.locale ?? config?.general?.language ?? 'en');
+  }, [i18n, config, lbPhoneSettings]);
 
   if (!hasLoaded) {
     return null;
@@ -122,7 +119,7 @@ const App: React.FC = () => {
         <ATM />
       </React.Suspense>
 
-      <React.Suspense fallback={<div>Fetching app</div>}>
+      <React.Suspense fallback={null}>
         <Route path="/mobile" component={MobileApp} />
       </React.Suspense>
 
