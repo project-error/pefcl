@@ -16,10 +16,11 @@ import { Atom } from 'jotai';
 import { totalUnpaidInvoicesAtom } from '@data/invoices';
 import BadgeAtom from '@components/ui/BadgeAtom';
 
-export const FooterHeight = '5rem';
+export const FooterHeight = '8.5rem';
 const Container = styled.div`
   display: flex;
-  align-items: center;
+  padding-top: 1rem;
+  align-items: flex-start;
   width: 100%;
   height: ${FooterHeight};
   position: absolute;
