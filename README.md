@@ -14,8 +14,7 @@
 2. Export the pefcl folder and drag it into your resources folder. Replace your existing installation if needed but be sure to not overwrite your config.
 
 ## Additional Notes
-I am not able to actively maintain this fork or keep it caught up with upstream changes from PE. For general support with PEFCL please go to the Project Error discord:
-[Discord](https://discord.gg/DwKrMwCHX3)!
+I am not able to actively maintain this fork or keep it caught up with upstream changes from PE. For general support with PEFCL please go to the Project Error [discord](https://discord.gg/DwKrMwCHX3).
 
 <img href="https://projecterror.dev" width="400" src="https://cdn.discordapp.com/attachments/428739555429187585/1096644101186801734/image.png" alt="Material-UI logo" />
 
