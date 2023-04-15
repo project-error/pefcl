@@ -12,6 +12,7 @@
 ## Install instructions
 1. Download latest release zip
 2. Export the pefcl folder and drag it into your resources folder. Replace your existing installation if needed but be sure to not overwrite your config.
+3. Start resource. App should automatically be available in LB Phone without any further configuration.
 
 ## Additional Notes
 I am not able to actively maintain this fork or keep it caught up with upstream changes from PE. This is intended as a proof of concept for porting NPWD apps to LB Phone. For general support with PEFCL please go to the Project Error [discord](https://discord.gg/DwKrMwCHX3).
