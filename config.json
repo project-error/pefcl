@@ -1,12 +1,12 @@
 {
   "general": {
     "language": "en",
-    "currency": "USD",
+    "currency": "EUR",
     "identifierType": "license"
   },
   "frameworkIntegration": {
-    "enabled": false,
-    "resource": "your-resource",
+    "enabled": true,
+    "resource": "qb-pefcl",
     "syncInitialBankBalance": true
   },
   "database": {
@@ -184,7 +184,7 @@
     ]
   },
   "debug": {
-    "level": "silly",
+    "level": "none",
     "mockLicenses": false
   },
   "atmBlips": {
