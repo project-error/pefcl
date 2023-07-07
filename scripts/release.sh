@@ -11,6 +11,7 @@ cp LICENSE README.md config.json import.sql fxmanifest.lua ./temp/$RESOURCE
 cp -r ./src/dist ./temp/$RESOURCE/src/dist # Copy resource files
 cp -r ./src/client/lua/ ./temp/$RESOURCE/src/client/lua # Copy Lua files
 cp -r ./web/dist ./temp/$RESOURCE/web/dist # Copy web files
+cp app-icon.png ./temp/$RESOURCE/web/dist
 
 echo "$PREFIX Zipping it up: $RESOURCE.zip"
 

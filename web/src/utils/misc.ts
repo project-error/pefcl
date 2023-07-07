@@ -1,7 +1,10 @@
+import { LbPhoneSettings } from '@typings/LbPhone';
+
 declare global {
   interface Window {
     invokeNative(): void;
     GetParentResourceName?: () => string;
+    GetSettings?(): Promise<LbPhoneSettings>;
   }
 }
 
