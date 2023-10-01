@@ -194,7 +194,8 @@ export class AccountService {
 
       t.afterCommit(() => {
         emit(Broadcasts.RemovedSharedUser, account.toJSON());
-        emitNet(Broadcasts.RemovedSharedUser, user?.getSource(), account.toJSON());
+        if (user?.getSource())
+          emitNet(Broadcasts.RemovedSharedUser, user?.getSource(), account.toJSON());
       });
 
       t.commit();

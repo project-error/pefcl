@@ -14,6 +14,7 @@ import { Heading6 } from '@components/ui/Typography/Headings';
 import { GlobalSettingsProvider } from '@hooks/useGlobalSettings';
 import { IPhoneSettings } from '@project-error/npwd-types';
 import { BroadcastsWrapper } from '@hooks/useBroadcasts';
+import { MemoryRouter } from 'react-router-dom';
 
 const Container = styled.div`
   color: #fff;
@@ -62,10 +63,20 @@ const MobileApp = (props: MobileAppProps) => {
       <ThemeProvider theme={theme}>
         <I18nextProvider i18n={i18n} defaultNS="pefcl">
           <Container>
-            <React.Suspense fallback={<LoadingFallback message={i18n.t('Fetching data ..')} />}>
-              <MobileRoutes />
-            </React.Suspense>
-            <MobileFooter />
+            <MemoryRouter
+              initialEntries={[
+                '/bank/dashboard',
+                '/bank/accounts',
+                '/bank/transfer',
+                '/bank/invoices',
+              ]}
+              initialIndex={0}
+            >
+              <React.Suspense fallback={<LoadingFallback message={i18n.t('Fetching data ..')} />}>
+                <MobileRoutes />
+              </React.Suspense>
+              <MobileFooter />
+            </MemoryRouter>
           </Container>
 
           {/* We don't need to show any fallback for the update component since it doesn't render anything anyway. */}
