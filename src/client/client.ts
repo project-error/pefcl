@@ -3,7 +3,7 @@ import './cl_events';
 import './cl_exports';
 import './cl_integrations';
 import './cl_blips';
-import { GeneralEvents } from '@typings/Events';
+import { Broadcasts, GeneralEvents } from '@typings/Events';
 import { RegisterNuiCB } from '@project-error/pe-utils';
 import { createInvoice, giveCash } from './functions';
 import config from './cl_config';
@@ -97,3 +97,24 @@ if (!useFrameworkIntegration) {
   RegisterCommand('giveCash', giveCash, false);
   RegisterCommand('createInvoice', createInvoice, false);
 }
+
+const Delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
+
+(async () => {
+  while (GetResourceState('lb-phone') != 'started') {
+    await Delay(10);
+  }
+  const lbPhone = global.exports['lb-phone'];
+
+  await lbPhone.AddCustomApp({
+    identifier: 'pefcl',
+    name: 'Banking',
+    description: 'Manage your financials with Fleeca Banking',
+    developer: 'Fleeca',
+    defaultApp: false, // OPTIONAL if set to true, app should be added without having to download it,
+    size: 59812, // OPTIONAL in kb
+    // -- images = { "https://example.com/photo.jpg" }, -- OPTIONAL array of images for the app on the app store
+    ui: GetCurrentResourceName() + '/web/dist/index.html#/mobile/dashboard', // -- this is the path to the HTML file
+    icon: 'https://cfx-nui-' + GetCurrentResourceName() + '/web/dist/app-icon.png', // -- OPTIONAL app icon
+  });
+})();

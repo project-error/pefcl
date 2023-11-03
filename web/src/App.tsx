@@ -22,6 +22,8 @@ import { NUIEvents, UserEvents } from '@typings/Events';
 import Deposit from './views/Deposit/Deposit';
 import { fetchNui } from '@utils/fetchNui';
 import Withdraw from './views/Withdraw/Withdraw';
+import MobileApp from './views/Mobile/Mobile';
+import { useLbPhoneSettings } from '@hooks/useLbPhoneSettings';
 
 dayjs.extend(updateLocale);
 
@@ -46,7 +48,13 @@ const Content = styled.div`
 
 const App: React.FC = () => {
   const config = useConfig();
-  const [hasLoaded, setHasLoaded] = useState(process.env.NODE_ENV === 'development');
+
+  const lbPhoneSettings = useLbPhoneSettings();
+
+  const isMobile = window.location.hash.includes('/mobile');
+
+  const [hasLoaded, setHasLoaded] = useState(process.env.NODE_ENV === 'development' || isMobile);
+
   useNuiEvent({
     event: UserEvents.Loaded,
     callback: () => setHasLoaded(true),
@@ -75,12 +83,14 @@ const App: React.FC = () => {
   useExitListener();
 
   useEffect(() => {
-    i18n.changeLanguage(config?.general?.language).catch((e) => console.error(e));
-  }, [i18n, config]);
+    i18n
+      .changeLanguage(lbPhoneSettings?.locale ?? config?.general?.language ?? 'en')
+      .catch((e) => console.error(e));
+  }, [i18n, config, lbPhoneSettings]);
 
   useEffect(() => {
-    dayjs.locale(config?.general?.language ?? 'en');
-  }, [i18n, config]);
+    dayjs.locale(lbPhoneSettings?.locale ?? config?.general?.language ?? 'en');
+  }, [i18n, config, lbPhoneSettings]);
 
   if (!hasLoaded) {
     return null;
@@ -108,6 +118,10 @@ const App: React.FC = () => {
 
       <React.Suspense fallback={null}>
         <ATM />
+      </React.Suspense>
+
+      <React.Suspense fallback={null}>
+        <Route path="/mobile" component={MobileApp} />
       </React.Suspense>
 
       {/* We don't need to show any fallback for the update component since it doesn't render anything anyway. */}

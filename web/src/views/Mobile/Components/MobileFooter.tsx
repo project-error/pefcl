@@ -9,17 +9,16 @@ import { Badge } from '@mui/material';
 import theme from '@utils/theme';
 import React, { ReactNode } from 'react';
 import { Link, useRouteMatch } from 'react-router-dom';
-import { externalAppConfig } from 'npwd.config';
 import { useTranslation } from 'react-i18next';
-import { useGlobalSettings } from '@hooks/useGlobalSettings';
 import { Atom } from 'jotai';
 import { totalUnpaidInvoicesAtom } from '@data/invoices';
 import BadgeAtom from '@components/ui/BadgeAtom';
 
-export const FooterHeight = '5rem';
+export const FooterHeight = '6.5rem';
 const Container = styled.div`
   display: flex;
-  align-items: center;
+  padding-top: 1rem;
+  align-items: flex-start;
   width: 100%;
   height: ${FooterHeight};
   position: absolute;
@@ -118,8 +117,7 @@ const ListItem = ({ to, icon, label, amount, countAtom }: ListItemProps) => {
 
 const MobileFooter = () => {
   const { t } = useTranslation();
-  const settings = useGlobalSettings();
-  const prefix = settings.isMobile ? externalAppConfig().path : '';
+  const prefix = '/mobile';
 
   return (
     <Container>

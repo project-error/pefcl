@@ -42,7 +42,7 @@ const mockedSetting = {
   label: 'idk',
   value: 'idk',
 };
-const mockedSettings: IPhoneSettings = {
+export const mockedMobileSettings: IPhoneSettings = {
   language: mockedSetting,
   iconSet: mockedSetting,
   wallpaper: mockedSetting,
@@ -67,7 +67,7 @@ const Root = () => (
         <Background src={image} />
         <React.Suspense fallback="Loading phone">
           <AppContainer>
-            <MobileApp i18n={i18n} settings={mockedSettings} />
+            <MobileApp i18n={i18n} settings={mockedMobileSettings} />
           </AppContainer>
         </React.Suspense>
       </Container>
