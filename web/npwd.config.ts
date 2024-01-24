@@ -22,10 +22,3 @@ export const externalAppConfig = () => ({
 });
 
 export default externalAppConfig;
-
-if (module.hot) {
-  module.hot.accept('./src/views/Mobile/Mobile', function () {
-    console.log('Accepting the updated app from PEFCL ..');
-    window.postMessage({ type: 'RELOAD', payload: 'app:pefcl' }, '*');
-  });
-}

@@ -15,7 +15,7 @@ import { useAtom } from 'jotai';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
-import { useNuiEvent } from 'react-fivem-hooks';
+import { useNuiEvent } from '@hooks/useNuiEvent';
 
 const AnimationContainer = styled.div`
   position: absolute;
@@ -61,11 +61,7 @@ const ATM = () => {
 
   const [isOpen, setIsOpen] = useState(false);
 
-  useNuiEvent<boolean>({
-    event: 'setVisibleATM',
-    defaultValue: false,
-    callback: setIsOpen,
-  });
+  useNuiEvent('PEFCL', 'setVisibleATM', (data) => setIsOpen(data));
 
   const handleWithdraw = (amount: number) => {
     const payload: ATMInput = {
