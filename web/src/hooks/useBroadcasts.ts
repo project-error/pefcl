@@ -5,60 +5,39 @@ import { Account } from '@typings/Account';
 import { Broadcasts } from '@typings/Events';
 import { updateAccount } from '@utils/account';
 import { useAtom, useSetAtom } from 'jotai';
-import { useNuiEvent } from 'react-fivem-hooks';
+import { useNuiEvent } from '@hooks/useNuiEvent';
 
 export const useBroadcasts = () => {
   const updateInvoices = useSetAtom(invoicesAtom);
   const updateTransactions = useSetAtom(transactionBaseAtom);
   const [accounts, updateAccounts] = useAtom(accountsAtom);
 
-  useNuiEvent({
-    event: Broadcasts.NewTransaction,
-    callback: () => {
-      updateTransactions();
-    },
+  useNuiEvent('PEFCL', Broadcasts.NewTransaction, () => {
+    updateTransactions();
   });
 
-  useNuiEvent({
-    event: Broadcasts.NewAccount,
-    callback: (account: Account) => {
-      updateAccounts([...accounts, account]);
-    },
+  useNuiEvent('PEFCL', Broadcasts.NewAccount, (account: Account) => {
+    updateAccounts([...accounts, account]);
   });
 
-  useNuiEvent({
-    event: Broadcasts.UpdatedAccount,
-    callback: () => {
-      updateAccounts();
-    },
+  useNuiEvent('PEFCL', Broadcasts.UpdatedAccount, () => {
+    updateAccounts();
   });
 
-  useNuiEvent({
-    event: Broadcasts.NewAccountBalance,
-    callback: (account: Account) => {
-      updateAccounts(updateAccount(accounts, account));
-    },
+  useNuiEvent('PEFCL', Broadcasts.NewAccountBalance, (account: Account) => {
+    updateAccounts(updateAccount(accounts, account));
   });
 
-  useNuiEvent({
-    event: Broadcasts.NewInvoice,
-    callback: () => {
-      updateInvoices();
-    },
+  useNuiEvent('PEFCL', Broadcasts.NewInvoice, () => {
+    updateInvoices();
   });
 
-  useNuiEvent({
-    event: Broadcasts.NewSharedUser,
-    callback: () => {
-      updateAccounts();
-    },
+  useNuiEvent('PEFCL', Broadcasts.NewSharedUser, () => {
+    updateAccounts();
   });
 
-  useNuiEvent({
-    event: Broadcasts.RemovedSharedUser,
-    callback: () => {
-      updateAccounts();
-    },
+  useNuiEvent('PEFCL', Broadcasts.RemovedSharedUser, () => {
+    updateAccounts();
   });
 };
 

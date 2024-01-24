@@ -51,6 +51,8 @@ interface MobileAppProps {
 }
 
 const MobileApp = (props: MobileAppProps) => {
+  console.log('APP PROPS', props);
+
   const lng = props.settings.language.value;
   const { i18n } = useI18n(props.i18n, lng);
 

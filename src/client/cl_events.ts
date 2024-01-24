@@ -44,47 +44,51 @@ const waitForNUILoaded = (checkInterval = 250): Promise<void> => {
   });
 };
 
-const SendBankUIMessage = (data: object) => {
-  SendNUIMessage(data);
+const SendBankUIMessage = (app: string, method: string, data: unknown) => {
+  SendNUIMessage({
+    app,
+    method,
+    data,
+  });
 
   if (GetResourceState('npwd') === 'started') {
-    npwdExports.sendUIMessage(data);
+    npwdExports.sendNPWDMessage(app, method, data);
   }
 };
 
 onNet(Broadcasts.NewAccount, (payload: Account) => {
-  SendBankUIMessage({ type: Broadcasts.NewAccount, payload });
+  SendBankUIMessage('PEFCL', Broadcasts.NewAccount, payload);
 });
 
 onNet(Broadcasts.NewAccountBalance, (balance: number) => {
-  SendBankUIMessage({ type: Broadcasts.NewAccountBalance, payload: balance });
+  SendBankUIMessage('PEFCL', Broadcasts.NewAccountBalance, balance);
 });
 
 onNet(Broadcasts.NewTransaction, (payload: Transaction) => {
-  SendBankUIMessage({ type: Broadcasts.NewTransaction, payload });
+  SendBankUIMessage('PEFCL', Broadcasts.NewTransaction, payload);
 });
 
 onNet(Broadcasts.UpdatedAccount, (payload: Account) => {
-  SendBankUIMessage({ type: Broadcasts.UpdatedAccount, payload });
+  SendBankUIMessage('PEFCL', Broadcasts.UpdatedAccount, payload);
 });
 
 onNet(Broadcasts.NewInvoice, (payload: Invoice) => {
-  SendBankUIMessage({ type: Broadcasts.NewInvoice, payload });
+  SendBankUIMessage('PEFCL', Broadcasts.NewInvoice, payload);
 });
 
 onNet(Broadcasts.NewSharedUser, () => {
-  SendBankUIMessage({ type: Broadcasts.NewSharedUser });
+  SendBankUIMessage('PEFCL', Broadcasts.NewSharedUser, {});
 });
 
 onNet(Broadcasts.RemovedSharedUser, () => {
-  SendBankUIMessage({ type: Broadcasts.RemovedSharedUser });
+  SendBankUIMessage('PEFCL', Broadcasts.RemovedSharedUser, {});
 });
 
 onNet(UserEvents.Loaded, async () => {
   console.debug('Waiting for NUI to load ..');
   await waitForNUILoaded();
   console.debug('Loaded. Emitting data to NUI.');
-  SendBankUIMessage({ type: UserEvents.Loaded, payload: true });
+  SendBankUIMessage('PEFCL', UserEvents.Loaded, true);
 
   if (!useFrameworkIntegration) {
     StatSetInt(CASH_BAL_STAT, (await API.getMyCash()) ?? 0, true);
@@ -92,7 +96,7 @@ onNet(UserEvents.Loaded, async () => {
 });
 
 onNet(UserEvents.Unloaded, () => {
-  SendBankUIMessage({ type: UserEvents.Unloaded });
+  SendBankUIMessage('PEFCL', UserEvents.Unloaded, {});
 });
 
 const CASH_BAL_STAT = GetHashKey('MP0_WALLET_BALANCE');
@@ -130,7 +134,7 @@ RegisterCommand(
     console.debug('Waiting for NUI to load ..');
     await waitForNUILoaded();
     console.debug('Loaded. Emitting data to NUI.');
-    SendBankUIMessage({ type: UserEvents.Loaded, payload: true });
+    SendBankUIMessage('PEFCL', UserEvents.Loaded, true);
   },
   false,
 );
