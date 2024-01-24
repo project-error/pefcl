@@ -15,8 +15,10 @@ const exportData = [];
 exportData.push('export default {');
 
 languages.forEach((lng) => {
-  importData.push(`import ${lng} from './${lng}/default.json';`);
-  exportData.push(`  ${lng},`);
+  const language = lng.replace('-', '');
+
+  importData.push(`import ${language} from './${lng}/default.json';`);
+  exportData.push(`  ${language},`);
 });
 
 /* Add spacing after imports */
