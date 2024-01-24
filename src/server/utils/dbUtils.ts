@@ -38,3 +38,17 @@ export const parseUri = (connectionUri: string) => {
       return connectionInfo;
     }, {});
 };
+
+export const getSslParam = (paramsStr: string) => {
+  if (!paramsStr?.length) {
+    return;
+  }
+
+  const params = new URLSearchParams(paramsStr);
+  const ssl = params.get('ssl');
+  if (!ssl) {
+    return;
+  }
+
+  return JSON.parse(ssl);
+};
