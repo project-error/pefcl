@@ -1,10 +1,17 @@
 import { Account } from '@server/../../typings/Account';
+import { Card } from '@server/../../typings/BankCard';
 import { Cash } from '@server/../../typings/Cash';
-import { AccountEvents, CashEvents, TransactionEvents } from '@server/../../typings/Events';
 import { Transaction } from '@server/../../typings/Transaction';
 import { Controller } from '@server/decorators/Controller';
 import { Event, EventListener } from '@server/decorators/Event';
 import { BroadcastService } from './broadcast.service';
+
+import {
+  AccountEvents,
+  CardEvents,
+  CashEvents,
+  TransactionEvents,
+} from '@server/../../typings/Events';
 
 @Controller('Broadcast')
 @EventListener()
@@ -42,5 +49,10 @@ export class BroadcastController {
   @Event(TransactionEvents.NewTransaction)
   async onNewTransaction(transaction: Transaction) {
     this.broadcastService.broadcastTransaction(transaction);
+  }
+
+  @Event(CardEvents.NewCard)
+  async onNewCard(card: Card) {
+    this.broadcastService.broadcastNewCard(card);
   }
 }

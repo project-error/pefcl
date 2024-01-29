@@ -1,6 +1,6 @@
 /* Exports used with framework integrations */
 
-import { OnlineUser } from './user';
+import { Card, InventoryCard } from './BankCard';
 
 export interface FrameworkIntegrationExports {
   /* Cash exports */
@@ -15,6 +15,8 @@ export interface FrameworkIntegrationExports {
    *  This export should probably remove old bank balance as well.
    */
   getBank: (source: number) => number;
+  giveCard: (source: number, card: Card) => void;
+  getCards: (source: number) => InventoryCard[];
 }
 
 export type FrameworkIntegrationFunction = keyof FrameworkIntegrationExports;

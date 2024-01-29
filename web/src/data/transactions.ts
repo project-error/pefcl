@@ -5,7 +5,7 @@ import { mockedTransactions } from '../utils/constants';
 import { fetchNui } from '../utils/fetchNui';
 import { isEnvBrowser } from '../utils/misc';
 
-const initialState: GetTransactionsResponse = {
+export const transactionInitialState: GetTransactionsResponse = {
   total: 0,
   offset: 0,
   limit: 10,
@@ -15,26 +15,31 @@ const initialState: GetTransactionsResponse = {
 const getTransactions = async (input: GetTransactionsInput): Promise<GetTransactionsResponse> => {
   try {
     const res = await fetchNui<GetTransactionsResponse>(TransactionEvents.Get, input);
-    return res ?? initialState;
+    return res ?? transactionInitialState;
   } catch (e) {
     if (isEnvBrowser()) {
       return mockedTransactions;
     }
     console.error(e);
-    return initialState;
+    return transactionInitialState;
   }
 };
 
-export const rawTransactionsAtom = atom<GetTransactionsResponse>(initialState);
+export const rawTransactionsAtom = atom<GetTransactionsResponse>(transactionInitialState);
 
-export const transactionBaseAtom = atom(
+export const transactionBaseAtom = atom<
+  Promise<GetTransactionsResponse>,
+  GetTransactionsResponse | undefined
+>(
   async (get) => {
     const hasTransactions = get(rawTransactionsAtom).transactions.length > 0;
-    return hasTransactions ? get(rawTransactionsAtom) : await getTransactions({ ...initialState });
+    return hasTransactions
+      ? get(rawTransactionsAtom)
+      : await getTransactions({ ...transactionInitialState });
   },
-  async (get, set, by: Partial<GetTransactionsInput> | undefined) => {
+  async (get, set, by?) => {
     const currentSettings = get(rawTransactionsAtom);
-    return set(rawTransactionsAtom, await getTransactions({ ...currentSettings, ...by }));
+    return set(rawTransactionsAtom, by ?? (await getTransactions({ ...currentSettings })));
   },
 );
 

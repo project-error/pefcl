@@ -11,6 +11,7 @@ const deps = require('./package.json').dependencies;
 delete deps['@emotion/react'];
 delete deps['@emotion/styled'];
 delete deps['@mui/material'];
+delete deps['@mui/icons-material'];
 delete deps['@mui/styles'];
 
 module.exports = (env, options) => ({
@@ -18,6 +19,7 @@ module.exports = (env, options) => ({
     main: './src/bootstrapApp.ts',
   },
   mode: 'development',
+  // devtool: 'none',
   output: {
     publicPath: 'auto',
     filename: '[name].js',
@@ -31,7 +33,6 @@ module.exports = (env, options) => ({
       'Access-Control-Allow-Headers': 'X-Requested-With, content-type, Authorization',
     },
   },
-  devtool: 'eval-source-map',
   module: {
     rules: [
       {

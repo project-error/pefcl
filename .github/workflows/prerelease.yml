@@ -40,7 +40,6 @@ jobs:
           LOCALAZY_WRITE_KEY: ${{ secrets.LOCALAZY_WRITE_KEY }}
         run: |
           yarn translations:pull
-          yarn translations:generate-index
 
       - name: Install src deps
         working-directory: src

@@ -1,4 +1,4 @@
-import { accountsAtom } from '@data/accounts';
+import { accountsAtom, rawAccountAtom } from '@data/accounts';
 import { invoicesAtom } from '@data/invoices';
 import { transactionBaseAtom } from '@data/transactions';
 import { Account } from '@typings/Account';
@@ -10,6 +10,7 @@ import { useNuiEvent } from '@hooks/useNuiEvent';
 export const useBroadcasts = () => {
   const updateInvoices = useSetAtom(invoicesAtom);
   const updateTransactions = useSetAtom(transactionBaseAtom);
+  const setRawAccounts = useSetAtom(rawAccountAtom);
   const [accounts, updateAccounts] = useAtom(accountsAtom);
 
   useNuiEvent('PEFCL', Broadcasts.NewTransaction, () => {
@@ -17,7 +18,7 @@ export const useBroadcasts = () => {
   });
 
   useNuiEvent('PEFCL', Broadcasts.NewAccount, (account: Account) => {
-    updateAccounts([...accounts, account]);
+    setRawAccounts([...accounts, account])
   });
 
   useNuiEvent('PEFCL', Broadcasts.UpdatedAccount, () => {
@@ -25,7 +26,7 @@ export const useBroadcasts = () => {
   });
 
   useNuiEvent('PEFCL', Broadcasts.NewAccountBalance, (account: Account) => {
-    updateAccounts(updateAccount(accounts, account));
+    setRawAccounts(updateAccount(accounts, account));
   });
 
   useNuiEvent('PEFCL', Broadcasts.NewInvoice, () => {

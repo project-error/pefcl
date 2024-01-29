@@ -1,4 +1,4 @@
-import { AccountCard } from '@components/Card';
+import { AccountCard } from '@components/AccountCard';
 import InvoiceItem from '@components/InvoiceItem';
 import TotalBalance from '@components/TotalBalance';
 import TransactionItem from '@components/TransactionItem';

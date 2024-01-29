@@ -1,5 +1,5 @@
 import { useGlobalSettings } from '@hooks/useGlobalSettings';
-import { Dialog, DialogProps } from '@mui/material';
+import { Backdrop, Dialog, DialogProps } from '@mui/material';
 import React, { ReactNode } from 'react';
 
 interface BaseDialogProps extends DialogProps {

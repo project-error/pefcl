@@ -5,10 +5,10 @@ import { GeneralEvents } from '@typings/Events';
 
 const LISTENED_KEYS = ['Escape'];
 
-export const useExitListener = () => {
+export const useExitListener = (enabled: boolean) => {
   useEffect(() => {
     const keyHandler = (e: KeyboardEvent) => {
-      if (LISTENED_KEYS.includes(e.code) && !isEnvBrowser()) {
+      if (LISTENED_KEYS.includes(e.code) && !isEnvBrowser() && enabled) {
         fetchNui(GeneralEvents.CloseUI);
       }
     };
@@ -16,5 +16,5 @@ export const useExitListener = () => {
     window.addEventListener('keydown', keyHandler);
 
     return () => window.removeEventListener('keydown', keyHandler);
-  }, []);
+  }, [enabled]);
 };
