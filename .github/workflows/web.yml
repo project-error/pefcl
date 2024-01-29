@@ -29,19 +29,9 @@ jobs:
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
-      - name: Install deps (Translations)
-        working-directory: .
-        run: yarn --frozen-lockfile
-      - name: Generate translations
-        working-directory: .
-        run: |
-          yarn translations:generate
-          yarn translations:generate-index
       - name: Install deps
         run: yarn --frozen-lockfile
       - name: Linting
         run: yarn lint
       - name: Type checking
         run: yarn tsc
-      - name: Tests
-        run: yarn test

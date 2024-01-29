@@ -114,7 +114,8 @@ export interface ExternalAccountInput {
 export interface UpdateBankBalanceInput {
   amount: number;
   message: string;
-  identifier?: string;
+  toIdentifier?: string;
+  fromIdentifier?: string;
 }
 
 export interface UpdateBankBalanceByNumberInput {

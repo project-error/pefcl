@@ -629,8 +629,8 @@ export class AccountService {
   }
 
   async addMoneyByIdentifier(req: Request<UpdateBankBalanceInput>) {
-    logger.silly(`Adding money by identifier to ${req.data.identifier} ..`);
-    const { amount, message, identifier, fromIdentifier } = req.data;
+    logger.silly(`Adding money by identifier to ${req.data.toIdentifier} ..`);
+    const { amount, message, toIdentifier, fromIdentifier } = req.data;
     if (amount <= 0) {
       throw new ServerError(GenericErrors.BadInput);
     }
@@ -638,7 +638,7 @@ export class AccountService {
     const t = await sequelize.transaction();
     try {
       let fromAccount = undefined;
-      const account = await this._accountDB.getDefaultAccountByIdentifier(identifier ?? '');
+      const account = await this._accountDB.getDefaultAccountByIdentifier(toIdentifier ?? '');
 
       if (!account) {
         throw new ServerError(GenericErrors.NotFound);
@@ -752,8 +752,8 @@ export class AccountService {
   }
 
   async removeMoneyByIdentifier(req: Request<UpdateBankBalanceInput>) {
-    const { amount, identifier, message, toIdentifier } = req.data;
-    logger.silly(`Removing ${amount} money by identifier from ${identifier} ..`);
+    const { amount, fromIdentifier, message, toIdentifier } = req.data;
+    logger.silly(`Removing ${amount} money by identifier from ${fromIdentifier} ..`);
 
     if (amount <= 0) {
       throw new ServerError(GenericErrors.BadInput);
@@ -762,8 +762,8 @@ export class AccountService {
     const t = await sequelize.transaction();
     try {
       let toAccount = undefined;
-      const account = await this._accountDB.getDefaultAccountByIdentifier(identifier ?? '');
-      if (!account) {
+      const fromAccount = await this._accountDB.getDefaultAccountByIdentifier(fromIdentifier ?? '');
+      if (!fromAccount) {
         throw new ServerError(GenericErrors.NotFound);
       }
 
@@ -776,12 +776,12 @@ export class AccountService {
         await this._accountDB.decrement(toAccount, amount, t);
       }
 
-      await this._accountDB.decrement(account, amount, t);
+      await this._accountDB.decrement(fromAccount, amount, t);
       await this._transactionService.handleCreateTransaction(
         {
           amount,
           message,
-          fromAccount: account?.toJSON(),
+          fromAccount: fromAccount?.toJSON(),
           toAccount: toAccount?.toJSON(),
           type: TransactionType.Outgoing,
         },
