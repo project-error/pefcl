@@ -13,7 +13,7 @@ const Container = styled.div`
   height: 100%;
 `;
 
-const Content = styled(motion.div)`
+const Content = styled.div`
   padding: 2rem;
   flex: 1;
   height: 100%;
@@ -26,34 +26,13 @@ const LoadingContainer = styled.div`
   padding: 2rem;
 `;
 
-const pageVariants = {
-  initial: {
-    x: 0,
-    y: 400,
-  },
-  in: {
-    x: 0,
-    y: 0,
-  },
-  out: {
-    x: 100,
-    y: -200,
-  },
-};
-
 const Layout: React.FC<{ title?: string }> = ({ children, title }) => {
   const { t } = useTranslation();
   return (
     <Container>
       <Sidebar />
       <AnimatePresence>
-        <Content
-          initial="initial"
-          animate="in"
-          exit="out"
-          variants={pageVariants}
-          transition={{ duration: 0.45, type: 'spring' }}
-        >
+        <Content>
           <Heading2>{title}</Heading2>
           <React.Suspense
             fallback={

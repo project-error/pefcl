@@ -34,14 +34,6 @@ jobs:
       - name: Install main deps
         run: yarn --frozen-lockfile
 
-      - name: Translations
-        env:
-          LOCALAZY_READ_KEY: ${{ secrets.LOCALAZY_READ_KEY }}
-          LOCALAZY_WRITE_KEY: ${{ secrets.LOCALAZY_WRITE_KEY }}
-        run: |
-          yarn translations:pull
-          yarn translations:generate-index
-
       - name: Install src deps
         working-directory: src
         run: yarn --frozen-lockfile

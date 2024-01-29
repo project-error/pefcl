@@ -16,7 +16,7 @@ import ATM from './views/ATM/ATM';
 import { BroadcastsWrapper } from '@hooks/useBroadcasts';
 import Transfer from './views/transfer/Transfer';
 import Transactions from './views/transactions/Transactions';
-import Devbar from '@components/DebugBar';
+import Devbar from '@components/Devbar';
 import { NUIEvents, UserEvents } from '@typings/Events';
 import Deposit from './views/Deposit/Deposit';
 import { fetchNui } from '@utils/fetchNui';

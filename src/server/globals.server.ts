@@ -7,7 +7,7 @@ export const mockedResourceName = 'pefcl';
 
 // TODO: Move this into package
 const convars = {
-  mysql_connection_string: 'mysql://root:bruv@localhost/dev',
+  mysql_connection_string: 'mysql://rideApp:hejhej123123@172.20.192.1:3306/ride-app',
 };
 
 const players: any = {
